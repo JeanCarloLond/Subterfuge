@@ -378,6 +378,24 @@ export class CirujanoSacerdote {
     this.eventos.emit('pociones', this.cargasPocion);
   }
 
+  /**
+   * Caida al vacio: cuesta vitalidad y devuelve al Altar, pero no es muerte.
+   * Si el golpe resulta mortal, `morir()` se encarga por el evento de siempre.
+   */
+  recibirCaida(cantidad: number, x: number, y: number): void {
+    if (this.estado === 'muerto') return;
+
+    this.vitalidad.recibirDano(cantidad);
+    if (this.vitalidad.estaMuerto) return;
+
+    this.estado = 'aire';
+    this.sprite.setPosition(x, y);
+    this.cuerpo.setAllowGravity(true);
+    this.cuerpo.setVelocity(0, 0);
+    this.finInvulnerabilidad = this.escena.time.now + VITALIDAD.invulnerabilidadMs;
+    this.inicioCargaAtaque = -Infinity;
+  }
+
   /** Rezar en un Altar repone el frasco sin devolver el Fervor gastado. */
   reponerEnAltar(): void {
     this.vitalidad.restaurar();
@@ -549,8 +567,41 @@ export class CirujanoSacerdote {
 
   // -- Presentacion --------------------------------------------------------
 
+  /**
+   * Squash y stretch: se estira al subir, se aplasta al aterrizar y cabecea al
+   * caminar. Es animacion procedural, no sustituye al spritesheet del equipo,
+   * pero quita la rigidez de bloque mientras no lo hay.
+   */
+  private actualizarDeformacion(): void {
+    const cuerpo = this.cuerpo;
+    const enSuelo = cuerpo.blocked.down || cuerpo.touching.down;
+
+    let escalaX = 1;
+    let escalaY = 1;
+
+    if (this.estado === 'dash') {
+      // El dash se alarga en la direccion del movimiento.
+      escalaX = 1.18;
+      escalaY = 0.86;
+    } else if (!enSuelo) {
+      const vertical = Phaser.Math.Clamp(cuerpo.velocity.y / 620, -1, 1);
+      // Subiendo estira; cayendo estira menos, para no parecer de goma.
+      const intensidad = vertical < 0 ? 0.14 : 0.09;
+      escalaY = 1 + Math.abs(vertical) * intensidad;
+      escalaX = 1 - Math.abs(vertical) * intensidad * 0.7;
+    } else if (Math.abs(cuerpo.velocity.x) > 20) {
+      // Cabeceo al caminar, en fase con el avance recorrido.
+      const paso = Math.sin(this.escena.time.now / 90);
+      escalaY = 1 + paso * 0.035;
+      escalaX = 1 - paso * 0.025;
+    }
+
+    this.sprite.setScale(escalaX, escalaY);
+  }
+
   private actualizarOrientacion(): void {
     this.sprite.setFlipX(!this.mirandoDerecha);
+    this.actualizarDeformacion();
 
     // Legibilidad sin arte definitivo: el color comunica el estado.
     if (this.estado === 'parry') {

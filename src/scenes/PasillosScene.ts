@@ -25,37 +25,47 @@ export class PasillosScene extends EscenaNivel {
       colorFondo: '#0f0c0c',
       inicio: { x: 60, y: 130 },
 
+      // Como en el Atrio: los corredores están a 176-184 px entre sí, muy por
+      // encima del salto (92 px), así que el retorno va por escalones que
+      // solapan en x. Bajar es directo; subir es la escalera del lado derecho.
       plataformas: [
         // Techo del primer corredor: comprime el espacio desde el primer paso.
-        [0, 64, 34],
-        [640, 64, 30],
+        [0, 64, 34], //            x 0..544
+        [640, 64, 30], //          x 640..1120
 
         // Corredor 1: tramos interrumpidos, se cruzan con salto y dash.
-        [0, 160, 12],
-        [280, 160, 14],
-        [600, 160, 12],
-        [880, 160, 15],
+        [0, 160, 12], //           x 0..192
+        [280, 160, 14], //         x 280..504
+        [600, 160, 12], //         x 600..792
+        [880, 160, 15], //         x 880..1120
 
-        // Techo del segundo corredor.
-        [80, 248, 44],
+        // Techo del segundo corredor. Acaba en 784 para dejar libre la escalera.
+        [80, 248, 44], //          x 80..784
+
+        // Escalera de retorno del corredor 2 al 1.
+        [800, 256, 5], //          x 800..880
+        [800, 168, 4], //          x 800..864
 
         // Corredor 2: mas largo, con un hueco central que obliga al dash.
-        [100, 344, 26],
-        [660, 344, 28],
+        [100, 344, 26], //         x 100..516
+        [660, 344, 28], //         x 660..1108
+
+        // Escalón de retorno del corredor 3 al 2.
+        [420, 432, 6], //          x 420..516
+
+        // Repisa de archivo: ruta alta opcional con un fragmento.
+        [840, 448, 5], //          x 840..920
 
         // Corredor 3 (fondo): suelo continuo hasta el umbral.
-        [0, 520, 70],
-
-        // Repisas de archivo: rutas altas opcionales.
-        [420, 440, 6],
-        [840, 448, 5],
+        [0, 520, 70], //           x 0..1120
       ],
 
       // Paredes de los corredores: sitio para el agarre de bordes.
+      // La interior arranca en 420 para no partir el hueco del dash (y = 344).
       paredes: [
         [0, 180, 520],
         [1104, 180, 520],
-        [560, 380, 520],
+        [560, 420, 520],
       ],
 
       // Mas apretados que en el Atrio: aqui hay que pelear, no rodear.
@@ -74,7 +84,7 @@ export class PasillosScene extends EscenaNivel {
       ],
 
       fragmentos: [
-        [470, 420, 'codice-04'],
+        [470, 412, 'codice-04'],
         [880, 428, 'codice-05'],
       ],
 
@@ -84,6 +94,9 @@ export class PasillosScene extends EscenaNivel {
         destino: 'Final',
         etiqueta: 'las Salas de Sacramento',
       },
+
+      // Por debajo del corredor del fondo: devuelve al Altar en vez de encallar.
+      limiteCaida: 580,
     };
   }
 }

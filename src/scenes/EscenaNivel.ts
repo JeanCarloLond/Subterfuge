@@ -41,6 +41,12 @@ export interface DefinicionNivel {
   altares: ReadonlyArray<{ x: number; y: number }>;
   fragmentos: ReadonlyArray<readonly [number, number, string]>;
   umbral?: Umbral;
+  /**
+   * y por debajo de la cual se considera que el Cirujano cayo al vacio.
+   * Sin esto, caerse fuera de las plataformas deja al jugador atrapado contra
+   * el limite inferior del mundo, sin forma de volver a subir.
+   */
+  limiteCaida?: number;
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
 }
@@ -87,6 +93,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private umbralSprite?: Phaser.GameObjects.Sprite;
   private umbralAviso?: Phaser.GameObjects.Text;
+  private fondoLejano?: Phaser.GameObjects.TileSprite;
+  private fondoCercano?: Phaser.GameObjects.TileSprite;
 
   /** Cada zona describe aqui su contenido. */
   protected abstract definirNivel(): DefinicionNivel;
@@ -102,6 +110,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, mundo.ancho, mundo.alto);
     this.cameras.main.setBackgroundColor(colorFondo);
 
+    this.crearFondo();
     this.suelos = this.construirGeometria();
     this.controles = new Controles(this);
     this.impacto = new Impacto(this);
@@ -126,9 +135,30 @@ export abstract class EscenaNivel extends Phaser.Scene {
       devoto.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
     }
 
+    this.actualizarParallax();
     this.actualizarAltares();
     this.actualizarUmbral();
+    this.comprobarCaidaAlVacio();
     this.limpiarDevotosMuertos();
+  }
+
+  /**
+   * Red de seguridad: caer fuera de las plataformas devuelve al ultimo Altar
+   * en vez de dejar al jugador tirado contra el borde del mundo.
+   *
+   * Cuesta un punto de vitalidad para que la caida tenga consecuencia, pero no
+   * es una muerte: quedarse encallado nunca debe ser la respuesta del juego.
+   */
+  private comprobarCaidaAlVacio(): void {
+    const limite = this.definicion.limiteCaida;
+    if (limite === undefined || this.reapareciendo) return;
+    if (this.cirujano.estaMuerto || this.cirujano.sprite.y < limite) return;
+
+    const destino = this.altarActivo?.puntoReaparicion ?? this.definicion.inicio;
+
+    this.cirujano.recibirCaida(1, destino.x, destino.y);
+    this.cameras.main.flash(200, 11, 9, 11);
+    this.game.events.emit(EVENTOS_HUD.aviso, 'el Vientre te devuelve');
   }
 
   private reiniciarEstado(): void {
@@ -141,9 +171,54 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.descendiendo = false;
     this.umbralSprite = undefined;
     this.umbralAviso = undefined;
+    this.fondoLejano = undefined;
+    this.fondoCercano = undefined;
   }
 
   // -- Construccion --------------------------------------------------------
+
+  /**
+   * Telon de arcadas con parallax.
+   *
+   * Dos capas a distinta velocidad: la lejana casi no se mueve, la cercana
+   * acompaña. Es lo que convierte un plano de plataformas en un sitio con
+   * profundidad, y ademas recuerda que el Vientre es una catedral, no cuevas.
+   */
+  private crearFondo(): void {
+    // El telon va fijo a la camara (scrollFactor 0), asi que se dimensiona con
+    // la resolucion interna, no con el tamaño del mundo.
+    const { ancho, alto } = RESOLUCION;
+
+    const lejano = this.add.tileSprite(0, 0, ancho, alto, 'fondo-arcos');
+    lejano.setOrigin(0, 0);
+    lejano.setScrollFactor(0);
+    lejano.setScale(2);
+    lejano.setAlpha(0.5);
+    lejano.setDepth(-20);
+    this.fondoLejano = lejano;
+
+    const cercano = this.add.tileSprite(0, 0, ancho, alto, 'fondo-arcos');
+    cercano.setOrigin(0, 0);
+    cercano.setScrollFactor(0);
+    cercano.setAlpha(0.75);
+    cercano.setDepth(-10);
+    this.fondoCercano = cercano;
+  }
+
+  /** Desplaza las capas segun la camara, no segun el reloj. */
+  private actualizarParallax(): void {
+    const camara = this.cameras.main;
+
+    if (this.fondoLejano) {
+      this.fondoLejano.tilePositionX = camara.scrollX * 0.08;
+      this.fondoLejano.tilePositionY = camara.scrollY * 0.05;
+    }
+
+    if (this.fondoCercano) {
+      this.fondoCercano.tilePositionX = camara.scrollX * 0.25;
+      this.fondoCercano.tilePositionY = camara.scrollY * 0.18;
+    }
+  }
 
   private construirGeometria(): Phaser.Physics.Arcade.StaticGroup {
     const suelos = this.physics.add.staticGroup();

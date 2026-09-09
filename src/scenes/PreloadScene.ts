@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
+import { generarArteProvisional } from '../systems/ArteProvisional';
 
 /**
  * Preload: carga de assets y pantalla de espera.
@@ -47,21 +48,6 @@ export class PreloadScene extends Phaser.Scene {
    * Sirven para validar fisicas y colisiones, nada mas.
    */
   private generarPlaceholders(): void {
-    this.crearRectangulo('cirujano-placeholder', 16, 24, 0xd6cfc4);
-    this.crearRectangulo('piedra-placeholder', 16, 16, 0x4a4038);
-    this.crearRectangulo('altar-placeholder', 16, 20, 0x8c2f2f);
-    this.crearRectangulo('devoto-placeholder', 16, 24, 0x7a5c46);
-    this.crearRectangulo('codice-placeholder', 8, 10, 0xe8d9a0);
-    this.crearRectangulo('chispa-placeholder', 2, 2, 0xffffff);
-    this.crearRectangulo('tajo-placeholder', 4, 20, 0xffffff);
-    this.crearRectangulo('umbral-placeholder', 20, 34, 0x2a1f28);
-  }
-
-  private crearRectangulo(clave: string, ancho: number, alto: number, color: number): void {
-    const textura = this.make.graphics({ x: 0, y: 0 }, false);
-    textura.fillStyle(color, 1);
-    textura.fillRect(0, 0, ancho, alto);
-    textura.generateTexture(clave, ancho, alto);
-    textura.destroy();
+    generarArteProvisional(this);
   }
 }

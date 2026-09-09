@@ -31,10 +31,24 @@ La propuesta técnica se equivoca en ese punto.
 
 ```bash
 npm install
-npm run dev      # servidor de desarrollo con hot-reload
-npm run build    # comprobación de tipos + build de producción en dist/
-npm run preview  # sirve el build de producción
+npm run dev              # servidor de desarrollo con hot-reload
+npm run build            # comprobación de tipos + build de producción en dist/
+npm run preview          # sirve el build de producción
+npm run verificar-rutas  # comprueba que todos los niveles se puedan desandar
 ```
+
+### `verificar-rutas` — léelo antes de tocar un nivel
+
+Comprueba que desde el fondo de cada nivel se pueda **volver a subir**. Es un
+error fácil de cometer y difícil de ver leyendo datos: el Atrio se publicó con
+tramos separados 432 px cuando el salto sube 92, y el jugador quedaba encallado
+abajo sin forma de regresar.
+
+La trampa está en el alcance horizontal. El salto sube 92 px, pero el tiempo que
+el Cirujano pasa **por encima** de una altura `h` es `2·√(v²−2gh)/g`: subiendo
+80 px son 0,32 s, o sea unos **41 px** de avance. Por eso los tramos de la ruta
+de vuelta **solapan en x** en vez de separarse. Ejecuta el comando después de
+cambiar la geometría de cualquier zona, o los valores de salto.
 
 ## Estructura
 
@@ -56,6 +70,7 @@ src/
     Altar.ts                     Punto de guardado
     FragmentoCodice.ts           Coleccionable de lore
     Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
+    ArteProvisional.ts           Pixel art de relleno escrito a mano en código
   ui/
     HudScene.ts                  HUD como escena paralela, alimentada por eventos
   scenes/
@@ -213,9 +228,17 @@ Primigenio viendo o reaccionando visualmente a algo. Aplica también a iconograf
 relieves y vitrales.
 
 **Arte sin IA.** Decisión del equipo: los sprites de personajes son pixel art hecho
-a mano en Aseprite, sin excepción. Los *placeholders* actuales son rectángulos
-generados por código y deben sustituirse por arte del equipo, nunca por imágenes
-generadas.
+a mano en Aseprite, sin excepción.
+
+El arte que se ve hoy vive en `src/systems/ArteProvisional.ts` y es **provisional**:
+pixel art escrito a mano en código con un mapa de caracteres, un píxel por
+carácter. No hay ninguna imagen generada. Existe solo para que el prototipo deje
+de ser cubos mientras el equipo produce el arte definitivo.
+
+Para sustituirlo: carga los `.png` del equipo en `PreloadScene` con las **mismas
+claves de textura** (`cirujano-placeholder`, `piedra-placeholder`…) y borra
+`ArteProvisional.ts` entero. Nada más depende de él. Mientras el sufijo
+`-placeholder` siga apareciendo, es que el arte final no ha entrado.
 
 ## Servidores MCP configurados
 

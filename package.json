@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verificar-rutas": "node scripts/verificar-rutas.mjs"
   },
   "devDependencies": {
     "typescript": "~6.0.2",
