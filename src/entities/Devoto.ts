@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { COMBATE, DEVOTO, MOVIMIENTO } from '../config/Sacramento';
+import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
 
 export type EstadoDevoto =
@@ -19,7 +20,7 @@ export interface RangoPatrulla {
  * Su golpe se telegrafia a proposito (420 ms) para que el parry sea una lectura
  * justa y no un reflejo imposible.
  */
-export class Devoto {
+export class Devoto implements Enemigo {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   /** Zona de dano del golpe, activa solo durante la ventana de ataque. */
   readonly hitbox: Phaser.GameObjects.Zone;
@@ -47,6 +48,7 @@ export class Devoto {
     this.sprite = escena.physics.add.sprite(x, y, 'devoto-placeholder');
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setData('devoto', this);
+    this.sprite.setData('enemigo', this);
 
     const cuerpo = this.cuerpo;
     cuerpo.setSize(12, 22);

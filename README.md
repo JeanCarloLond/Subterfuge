@@ -83,8 +83,9 @@ pararlo, `Ctrl + C` en la terminal.
 | Trepar (colgado)      | `W` / flecha arriba        |
 | Soltarse (colgado)    | `S` / flecha abajo         |
 
-El **parry** es la mecánica que más se disfruta: cuando un Devoto se tensa y se
-tiñe de rojo, te está avisando de que va a golpear. Pulsa `K` en ese momento.
+El **parry** es la mecánica central. Cuando un enemigo se tensa y se tiñe,
+te está avisando de que va a golpear: pulsa `K` en ese momento. Contra el
+Vestal, además, no solo paras su sello — se lo devuelves con el triple de daño.
 
 ### Si algo falla
 
@@ -109,11 +110,13 @@ principio a fin:
 - **Combate**: ataque, ataque cargado (gasta Fervor) y parry que aturde.
 - **Sistemas**: Fervor, Poción de Carne, Altares de guardado y fragmentos del
   Códice de la Carne.
-- **Dos zonas**: El Atrio y los Pasillos de Preparación, más una pantalla de
-  cierre.
+- **Tres enemigos**: el Devoto (cuerpo a cuerpo), el Vestal (a distancia, y sus
+  sellos se le pueden devolver con el parry) y el Reformado, el jefe, con tres
+  fases.
+- **Tres zonas**: El Atrio, los Pasillos de Preparación y las Salas de
+  Sacramento, más una pantalla de cierre.
 
-Pendiente: el arte definitivo, un segundo tipo de enemigo, el jefe o evento
-narrativo, y el audio.
+Pendiente: el arte definitivo, el audio, y escribir el gancho final.
 
 > **Sobre el arte que se ve ahora:** es provisional. Es pixel art escrito a mano
 > en código (`src/systems/ArteProvisional.ts`), sin ninguna imagen generada por

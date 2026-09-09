@@ -137,6 +137,7 @@ console.log(
 const resultados = [
   verificar('Atrio', 'src/scenes/AtrioScene.ts'),
   verificar('Pasillos', 'src/scenes/PasillosScene.ts'),
+  verificar('Salas', 'src/scenes/SalasScene.ts'),
 ];
 
 process.exit(resultados.every(Boolean) ? 0 : 1);

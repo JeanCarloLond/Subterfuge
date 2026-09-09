@@ -1,10 +1,14 @@
 import Phaser from 'phaser';
 import { CirujanoSacerdote } from '../entities/CirujanoSacerdote';
 import { Devoto } from '../entities/Devoto';
+import { enemigoDe } from '../entities/Enemigo';
+import { Reformado } from '../entities/Reformado';
+import { Sello } from '../entities/Sello';
+import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
-import { DEVOTO, RESOLUCION } from '../config/Sacramento';
+import { DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
 import { EVENTOS_HUD } from '../ui/HudScene';
 
@@ -38,6 +42,13 @@ export interface DefinicionNivel {
   plataformas: readonly Plataforma[];
   paredes: readonly Pared[];
   devotos: readonly RondaDevoto[];
+  /** Vestales: opcional, no toda zona tiene clero. */
+  vestales?: readonly RondaDevoto[];
+  /**
+   * Jefe de la zona. Duerme hasta que el Cirujano se acerca, y mientras siga
+   * vivo el umbral de salida permanece cerrado.
+   */
+  jefe?: RondaDevoto;
   altares: ReadonlyArray<{ x: number; y: number }>;
   fragmentos: ReadonlyArray<readonly [number, number, string]>;
   umbral?: Umbral;
@@ -82,6 +93,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private definicion!: DefinicionNivel;
   private devotos: Devoto[] = [];
+  private vestales: Vestal[] = [];
+  private sellos: Sello[] = [];
+  private jefe?: Reformado;
+  private jefeDerrotado = false;
   private altares: Altar[] = [];
   private fragmentos: FragmentoCodice[] = [];
   private grupoEnemigos?: Phaser.Physics.Arcade.Group;
@@ -135,6 +150,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
       devoto.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
     }
 
+    for (const vestal of this.vestales) {
+      vestal.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
+    }
+
+    this.actualizarJefe();
+
     this.actualizarParallax();
     this.actualizarAltares();
     this.actualizarUmbral();
@@ -163,6 +184,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private reiniciarEstado(): void {
     this.devotos = [];
+    this.vestales = [];
+    this.sellos = [];
+    this.jefe = undefined;
+    this.jefeDerrotado = false;
     this.altares = [];
     this.fragmentos = [];
     this.grupoEnemigos = undefined;
@@ -288,6 +313,22 @@ export abstract class EscenaNivel extends Phaser.Scene {
       );
     }
 
+    for (const ronda of this.definicion.vestales ?? []) {
+      const vestal = new Vestal(this, ronda.x, ronda.y, {
+        izquierda: ronda.izquierda,
+        derecha: ronda.derecha,
+      });
+
+      this.physics.add.collider(vestal.sprite, this.suelos);
+      grupo.add(vestal.sprite);
+      this.vestales.push(vestal);
+
+      // El Vestal no conoce el grupo de proyectiles: solo avisa de que lanza.
+      vestal.eventos.on('lanzar', (donde: { x: number; y: number; direccion: number }) => {
+        this.lanzarSello(donde.x, donde.y, donde.direccion);
+      });
+    }
+
     // Sin collider a proposito: el Altar es decorado atravesable, no un muro.
     for (const punto of this.definicion.altares) {
       this.altares.push(new Altar(this, punto.x, punto.y));
@@ -308,13 +349,101 @@ export abstract class EscenaNivel extends Phaser.Scene {
       );
     }
 
+    if (this.definicion.jefe) this.crearJefe(this.definicion.jefe);
     if (this.definicion.umbral) this.crearUmbral(this.definicion.umbral);
+  }
+
+  private crearJefe(datos: RondaDevoto): void {
+    const jefe = new Reformado(this, datos.x, datos.y, {
+      izquierda: datos.izquierda,
+      derecha: datos.derecha,
+    });
+
+    this.jefe = jefe;
+    this.physics.add.collider(jefe.sprite, this.suelos);
+    this.obtenerGrupoEnemigos().add(jefe.sprite);
+
+    this.physics.add.overlap(jefe.hitbox, this.cirujano.sprite, () =>
+      this.resolverGolpeDeJefe(jefe),
+    );
+
+    jefe.eventos.on('vida', (puntos: number, maximo: number) => {
+      this.game.events.emit(EVENTOS_HUD.jefe, puntos, maximo);
+    });
+
+    jefe.eventos.on('despierta', () => {
+      this.game.events.emit(EVENTOS_HUD.jefe, REFORMADO.vida, REFORMADO.vida);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'el Reformado');
+    });
+
+    jefe.eventos.on('fase', (fase: number) => {
+      this.cameras.main.flash(180, 140, 60, 60);
+      this.game.events.emit(EVENTOS_HUD.aviso, `fase ${fase}`);
+    });
+
+    // Estrellarse contra el muro: el momento en que se le puede castigar.
+    jefe.eventos.on('choque', (x: number, y: number) => {
+      this.impacto.golpeAsestado(x, y - 20, 0, true);
+      this.cameras.main.shake(220, 0.01);
+    });
+
+    jefe.eventos.on('impacto-suelo', (x: number, y: number, alcance: number) => {
+      this.resolverOndaDeJefe(x, y, alcance);
+    });
+
+    jefe.eventos.on('muerte', () => {
+      this.jefeDerrotado = true;
+      this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
+      this.abrirUmbral();
+    });
+  }
+
+  /** La onda barre a ras de suelo: saltar es la respuesta correcta. */
+  private resolverOndaDeJefe(x: number, y: number, alcance: number): void {
+    this.impacto.ondaSuelo(x, y, alcance);
+
+    if (this.cirujano.estaMuerto) return;
+
+    const cuerpo = this.cirujano.cuerpo;
+    const enSuelo = cuerpo.blocked.down || cuerpo.touching.down;
+    const distancia = Math.abs(this.cirujano.sprite.x - x);
+    const mismaAltura = Math.abs(this.cirujano.sprite.y - y) < 40;
+
+    if (!enSuelo || !mismaAltura || distancia > alcance) return;
+
+    const resultado = this.cirujano.recibirDano(REFORMADO.dano, x);
+    if (resultado === 'herido') this.impacto.danoRecibido();
+  }
+
+  private resolverGolpeDeJefe(jefe: Reformado): void {
+    if (jefe.estaMuerto || this.cirujano.estaMuerto) return;
+    if (!jefe.consumirGolpe()) return;
+
+    const resultado = this.cirujano.recibirDano(REFORMADO.dano, jefe.sprite.x);
+
+    if (resultado === 'parado') {
+      jefe.aturdir();
+      this.impacto.parryLogrado(
+        (this.cirujano.sprite.x + jefe.sprite.x) / 2,
+        this.cirujano.sprite.y - 12,
+      );
+      this.game.events.emit(EVENTOS_HUD.aviso, 'parry');
+      return;
+    }
+
+    if (resultado === 'herido') this.impacto.danoRecibido();
   }
 
   private crearUmbral(umbral: Umbral): void {
     this.umbralSprite = this.add.sprite(umbral.x, umbral.y, 'umbral-placeholder');
     this.umbralSprite.setOrigin(0.5, 1);
     this.umbralSprite.setDepth(1);
+
+    // Con un jefe en la sala, la salida no existe hasta que cae.
+    if (this.definicion.jefe && !this.jefeDerrotado) {
+      this.umbralSprite.setVisible(false);
+      return;
+    }
 
     // Latido lento: el descenso llama sin gritar.
     this.tweens.add({
@@ -339,23 +468,78 @@ export abstract class EscenaNivel extends Phaser.Scene {
   // -- Combate -------------------------------------------------------------
 
   private resolverGolpeDelCirujano(spriteEnemigo: Phaser.GameObjects.GameObject): void {
-    const devoto = spriteEnemigo.getData('devoto') as Devoto | undefined;
-    if (!devoto || devoto.estaMuerto) return;
+    // Da igual si es Devoto, Vestal o el Reformado: todos son Enemigo.
+    const enemigo = enemigoDe(spriteEnemigo);
+    if (!enemigo || enemigo.estaMuerto) return;
 
-    const dano = this.cirujano.registrarGolpe(devoto);
+    const dano = this.cirujano.registrarGolpe(enemigo);
     if (dano <= 0) return; // ya golpeado en este swing
 
-    const direccion = devoto.sprite.x >= this.cirujano.sprite.x ? 1 : -1;
-    const puntoX = devoto.sprite.x;
-    const puntoY = devoto.sprite.y - 12;
+    const direccion = enemigo.sprite.x >= this.cirujano.sprite.x ? 1 : -1;
+    const puntoX = enemigo.sprite.x;
+    const puntoY = enemigo.sprite.y - 12;
 
-    devoto.recibirDano(dano, this.cirujano.sprite.x);
+    enemigo.recibirDano(dano, this.cirujano.sprite.x);
 
-    if (devoto.estaMuerto) {
+    if (enemigo.estaMuerto) {
       this.impacto.muerteEnemigo(puntoX, puntoY);
     } else {
       this.impacto.golpeAsestado(puntoX, puntoY, direccion, this.cirujano.golpeActualEsCargado);
     }
+  }
+
+  // -- Sellos del diezmo ---------------------------------------------------
+
+  private lanzarSello(x: number, y: number, direccion: number): void {
+    const sello = new Sello(this, x, y, direccion);
+    this.sellos.push(sello);
+
+    // Contra el escenario se disuelve: no atraviesa muros.
+    this.physics.add.collider(sello.sprite, this.suelos, () => sello.destruir());
+
+    this.physics.add.overlap(sello.sprite, this.cirujano.sprite, () =>
+      this.resolverSelloContraCirujano(sello),
+    );
+
+    // Ya devuelto, el mismo sello puede herir a cualquier enemigo.
+    this.physics.add.overlap(sello.sprite, this.obtenerGrupoEnemigos(), (_s, spriteEnemigo) =>
+      this.resolverSelloContraEnemigo(sello, spriteEnemigo as Phaser.GameObjects.GameObject),
+    );
+  }
+
+  private resolverSelloContraCirujano(sello: Sello): void {
+    if (!sello.estaVivo || sello.fueDevuelto || this.cirujano.estaMuerto) return;
+
+    // El parry no rompe el sello: se lo queda el Cirujano y sale rebotado.
+    if (this.cirujano.estaParando) {
+      sello.devolver();
+      this.cirujano.premiarParry();
+      this.impacto.parryLogrado(sello.sprite.x, sello.sprite.y);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'sello devuelto');
+      return;
+    }
+
+    if (!sello.consumir()) return;
+
+    const resultado = this.cirujano.recibirDano(sello.dano, sello.sprite.x);
+    if (resultado === 'herido') this.impacto.danoRecibido();
+    sello.destruir();
+  }
+
+  private resolverSelloContraEnemigo(
+    sello: Sello,
+    spriteEnemigo: Phaser.GameObjects.GameObject,
+  ): void {
+    // Solo hiere a los suyos una vez ha sido parado.
+    if (!sello.estaVivo || !sello.fueDevuelto) return;
+
+    const enemigo = enemigoDe(spriteEnemigo);
+    if (!enemigo || enemigo.estaMuerto) return;
+    if (!sello.consumir()) return;
+
+    enemigo.recibirDano(sello.dano, sello.sprite.x);
+    this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, true);
+    sello.destruir();
   }
 
   private resolverGolpeDeDevoto(devoto: Devoto): void {
@@ -413,6 +597,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const umbral = this.definicion.umbral;
     if (!umbral || !this.umbralSprite || this.descendiendo) return;
     if (this.cirujano.estaMuerto) return;
+    if (this.definicion.jefe && !this.jefeDerrotado) return;
 
     const distancia = Phaser.Math.Distance.Between(
       this.cirujano.sprite.x,
@@ -454,8 +639,38 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.game.events.emit(EVENTOS_HUD.aviso, 'las manos recuerdan');
   }
 
+  /** El jefe duerme hasta que el Cirujano entra de verdad en la sala. */
+  private actualizarJefe(): void {
+    const jefe = this.jefe;
+    if (!jefe || jefe.estaMuerto) return;
+
+    if (jefe.estadoActual === 'dormido') {
+      const distancia = Math.abs(this.cirujano.sprite.x - jefe.sprite.x);
+      if (distancia < 190) jefe.despertar();
+      return;
+    }
+
+    jefe.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
+  }
+
+  /** Cae el jefe y la salida aparece. */
+  private abrirUmbral(): void {
+    if (!this.umbralSprite) return;
+
+    this.umbralSprite.setVisible(true);
+    this.umbralSprite.setAlpha(0);
+    this.tweens.add({
+      targets: this.umbralSprite,
+      alpha: 1,
+      duration: 1200,
+      ease: 'Quad.easeOut',
+    });
+  }
+
   private limpiarDevotosMuertos(): void {
     this.devotos = this.devotos.filter((devoto) => !devoto.estaMuerto);
+    this.vestales = this.vestales.filter((vestal) => !vestal.estaMuerto);
+    this.sellos = this.sellos.filter((sello) => sello.estaVivo);
   }
 
   // -- Presentacion --------------------------------------------------------

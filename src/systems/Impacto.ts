@@ -69,6 +69,16 @@ export class Impacto {
     this.escena.cameras.main.flash(90, 140, 40, 40);
   }
 
+  /** Onda de la caida del Reformado: sacude y barre el suelo. */
+  ondaSuelo(x: number, y: number, alcance: number): void {
+    this.congelar(IMPACTO.hitstopCargadoMs);
+    this.escena.cameras.main.shake(260, IMPACTO.sacudidaMuerte);
+
+    this.anillo(x, y, alcance, 0xe8a03a, 420);
+    this.chispas(x, y - 4, 1, 10, 0x8c4f4f);
+    this.chispas(x, y - 4, -1, 10, 0x8c4f4f);
+  }
+
   muerteEnemigo(x: number, y: number): void {
     this.congelar(IMPACTO.hitstopMuerteMs);
     this.escena.cameras.main.shake(180, IMPACTO.sacudidaMuerte);

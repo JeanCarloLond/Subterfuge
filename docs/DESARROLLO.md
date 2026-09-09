@@ -64,8 +64,12 @@ src/
     Vitalidad.ts                 Puntos de vida, daño y curación (jugador y enemigos)
     Fervor.ts                    Recurso de devoción
   entities/
+    Enemigo.ts                   Interfaz común a todos los enemigos
     CirujanoSacerdote.ts         Personaje jugable: locomoción y combate
-    Devoto.ts                    Enemigo del Atrio con IA de patrulla/persecución
+    Devoto.ts                    Enemigo cuerpo a cuerpo (Atrio)
+    Vestal.ts                    Enemigo a distancia, lanza sellos (Pasillos)
+    Sello.ts                     Proyectil del Vestal; el parry lo devuelve
+    Reformado.ts                 Jefe del teaser, tres fases (Salas)
   objetos/
     Altar.ts                     Punto de guardado
     FragmentoCodice.ts           Coleccionable de lore
@@ -79,6 +83,7 @@ src/
     EscenaNivel.ts               Lógica común a todos los niveles del descenso
     AtrioScene.ts                Zona 1: el Atrio (solo datos)
     PasillosScene.ts             Zona 2: Pasillos de Preparación (solo datos)
+    SalasScene.ts                Zona 3: Salas de Sacramento, el jefe (solo datos)
     FinalScene.ts                Cierre del teaser con gancho
 public/assets/
   tilesets/  sprites/  audio/  maps/
@@ -95,9 +100,9 @@ scripts/
 ## Flujo de escenas
 
 ```
-Boot ──► Preload ──► Atrio ──► Pasillos ──► Final
-                       │          │
-                       └──────────┴──► Hud  (escena paralela)
+Boot ──► Preload ──► Atrio ──► Pasillos ──► Salas ──► Final
+                       │          │           │
+                       └──────────┴───────────┴──► Hud  (escena paralela)
 ```
 
 ### Añadir una zona nueva
@@ -191,6 +196,10 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 - [x] Segunda zona: Pasillos de Preparación
 - [x] Umbrales de transición entre zonas
 - [x] Final con gancho y recuento del Códice
+- [x] Segundo tipo de enemigo: el Vestal, a distancia
+- [x] Sellos del diezmo: proyectiles que el parry **devuelve** al remitente
+- [x] Jefe: el Reformado, tres fases (`SalasScene`)
+- [x] Tercera zona: Salas de Sacramento
 - [ ] Sustituir placeholders por el arte del equipo
 - [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
@@ -212,6 +221,31 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 | Rezar en un Altar     | `E`                         |
 | Trepar (colgado)      | `W` / flecha arriba         |
 | Soltarse (colgado)    | `S` / flecha abajo          |
+
+## Diseño de los enemigos
+
+Los tres se resuelven con la misma regla: **telegrafiar largo y castigar el
+error**. Ninguno pide reflejos; todos piden leer.
+
+| Enemigo   | Papel           | Aviso                          | Cómo se castiga                   |
+| --------- | --------------- | ------------------------------ | --------------------------------- |
+| Devoto    | Cuerpo a cuerpo | 420 ms tensándose en rojo      | Parry → 900 ms aturdido           |
+| Vestal    | A distancia     | 520 ms irguiéndose en dorado   | Parry al sello → se lo devuelve   |
+| Reformado | Jefe, 3 fases   | 380-620 ms, color por maniobra | Embestida fallida → 1,1 s abierto |
+
+**El Vestal** no es un Devoto que dispara: tiene la mitad de vida y retrocede si
+te acercas, así que el problema no es matarlo sino llegar hasta él. Su sello
+**no se destruye con el parry**, cambia de dueño y sale rebotado más rápido y
+con 3 de daño en vez de 1. Es la razón de que exista como enemigo.
+
+**El Reformado** usa el mismo repertorio en sus tres fases y solo acelera
+(×0,85 y ×0,7). Se aprende leyendo, no memorizando. Cada maniobra tiene su
+color y su gesto —la embestida se echa atrás en rojo, el salto se agacha en
+ámbar, el zarpazo es rosa y corto— y estrellarse contra un muro lo deja
+expuesto: esa es la ventana de castigo y el pulso del combate.
+
+Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
+salida no existe.
 
 ## Ajuste de sensación (game feel)
 

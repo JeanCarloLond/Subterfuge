@@ -371,6 +371,15 @@ export class CirujanoSacerdote {
   }
 
   /**
+   * Parry logrado contra algo que no es un golpe cuerpo a cuerpo (un sello del
+   * diezmo, por ejemplo). Paga el mismo Fervor y consume la ventana.
+   */
+  premiarParry(): void {
+    this.fervor.ganar(FERVOR.porParry);
+    this.finVentanaParry = -Infinity;
+  }
+
+  /**
    * Caida al vacio: cuesta vitalidad y devuelve al Altar, pero no es muerte.
    * Si el golpe resulta mortal, `morir()` se encarga por el evento de siempre.
    */

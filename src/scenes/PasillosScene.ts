@@ -78,6 +78,15 @@ export class PasillosScene extends EscenaNivel {
         { x: 820, y: 520, izquierda: 620, derecha: 1040 },
       ],
 
+      // El clero administra esta zona, así que aquí es donde aparece. Se
+      // colocan al fondo de los corredores: obligan a avanzar bajo fuego o a
+      // pararles el sello y devolvérselo.
+      vestales: [
+        { x: 960, y: 160, izquierda: 900, derecha: 1090 },
+        { x: 950, y: 344, izquierda: 700, derecha: 1090 },
+        { x: 980, y: 520, izquierda: 880, derecha: 1090 },
+      ],
+
       altares: [
         { x: 60, y: 160 },
         { x: 120, y: 520 },
@@ -91,7 +100,7 @@ export class PasillosScene extends EscenaNivel {
       umbral: {
         x: 1060,
         y: 520,
-        destino: 'Final',
+        destino: 'Salas',
         etiqueta: 'las Salas de Sacramento',
       },
 

@@ -213,9 +213,126 @@ const UMBRAL: Figura = {
   ],
 };
 
+// -- Vestal ------------------------------------------------------------------
+// Clero: erguido, tocado alto y tunica limpia. Se distingue del Devoto por la
+// postura, no solo por el color: el Vestal no se dobla, administra.
+
+const VESTAL: Figura = {
+  paleta: {
+    m: 0xd8cdbe, // tocado
+    r: 0x6b6070, // tunica clerical
+    s: 0x453d4d, // sombra
+    o: 0xe8d9a0, // oro del sello
+    p: 0x9a8878, // piel
+  },
+  filas: [
+    '.......oo.......',
+    '......oooo......',
+    '......mmmm......',
+    '.....mmmmmm.....',
+    '.....mppppm.....',
+    '.....mppppm.....',
+    '......pppp......',
+    '.....rrrrrr.....',
+    '....rrrrrrrr....',
+    '....rrroorrr....',
+    '...prrroorrrp...',
+    '...prrrrrrrrp...',
+    '...prrrrrrrrp...',
+    '....rrrrrrrr....',
+    '....rrrsrrrr....',
+    '....rrsssrrr....',
+    '....rsssssrr....',
+    '...rsssssssr....',
+    '...rsssssssr....',
+    '...rsssssssr....',
+    '...rsssssssr....',
+    '...rsssssssr....',
+    '...rrsssssrr....',
+    '...rrrsssrrr....',
+    '..rrrrrrrrrr....',
+    '..rrrrrrrrrr....',
+  ],
+};
+
+// -- Sello del diezmo --------------------------------------------------------
+// El proyectil del Vestal. Es pequeño y gira, asi que necesita contraste alto:
+// tiene que verse llegar con tiempo para pararlo.
+
+const SELLO: Figura = {
+  paleta: {
+    o: 0xe8d9a0, // lacre dorado
+    i: 0x7d2b2b, // impronta
+    s: 0xb9a878, // sombra
+  },
+  filas: [
+    '..oooo..',
+    '.oooooo.',
+    'ooiiiioo',
+    'oiiiiiio',
+    'oiiiiiio',
+    'ooiiiioo',
+    '.ssssss.',
+    '..ssss..',
+  ],
+};
+
+// -- El Reformado ------------------------------------------------------------
+// Jefe. Masa de carne con restos de instrumental fusionado y vendaje que ya no
+// cubre nada. Conserva simetria y dos piernas: tiene que seguir leyendose como
+// alguien que fue una persona, o el encuentro pierde su sentido. Donde estaria
+// la cara no hay ojos: en la Diocesis, mirar no es cosa de lo que se venera.
+
+const REFORMADO: Figura = {
+  paleta: {
+    c: 0x8c4f4f, // carne
+    o: 0x5c2f33, // carne en sombra
+    m: 0xb9c2c9, // instrumental fusionado
+    v: 0xc9bda8, // vendaje
+    n: 0x2a1a1e, // hueco
+  },
+  filas: [
+    '.........cccccccc...........',
+    '.......cccccccccccc.........',
+    '......cccccccccccccc........',
+    '.....cccccccccccccccc.......',
+    '....cccccnnnnccccccccc......',
+    '....ccccnnnnnncccccccc......',
+    '....ccccnnnnnncccccccc......',
+    '.....cccccnnnnccccccccc.....',
+    '.....cccccccccccccccccc.....',
+    '....cccccccccccccccccccc....',
+    '...mmccccccccccccccccccmm...',
+    '..mmmccccccccccccccccccmmm..',
+    '..mmccccccccccccccccccccmm..',
+    '..mcccccccvvvvcccccccccccm..',
+    '..cccccccvvvvvvcccccccccc...',
+    '..ccccccvvvvvvvvcccccccc....',
+    '...cccccvvvvvvvvcccccccc....',
+    '...ccccccvvvvvvcccccccc.....',
+    '....cccccccccccccccccc......',
+    '....ooccccccccccccccoo......',
+    '....ooocccccccccccooo.......',
+    '.....ooocccccccccooo........',
+    '.....oooooccccooooo.........',
+    '.....ooooo..ooooo...........',
+    '....ooooo....ooooo..........',
+    '....oooo......oooo..........',
+    '....oooo......oooo..........',
+    '...ooooo......ooooo.........',
+    '...ooooo......ooooo.........',
+    '..oooooo......oooooo........',
+    '..cccccc......cccccc........',
+    '.cccccccc....cccccccc.......',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
+  vestal: VESTAL,
+  sello: SELLO,
+  reformado: REFORMADO,
   piedra: PIEDRA,
   altar: ALTAR,
   codice: CODICE,

@@ -164,3 +164,87 @@ export const DEVOTO = {
   /** Tiempo que sigue buscando tras perder de vista al Cirujano (ms). */
   memoriaMs: 2000,
 } as const;
+
+/**
+ * Vestal: clero de la Diocesis, un escalon por encima del Devoto.
+ *
+ * No se ensucia las manos: mantiene la distancia y lanza sellos del diezmo. Es
+ * fragil de cerca, asi que el jugador tiene que decidir entre cerrar la
+ * distancia o devolverle sus propios sellos con el parry.
+ */
+export const VESTAL = {
+  vida: 5,
+  velocidad: 55,
+  rangoDeteccion: 210,
+  /** Distancia que intenta mantener con el Cirujano (px). */
+  rangoPreferido: 115,
+  /** Si el Cirujano entra aqui, retrocede en vez de atacar. */
+  rangoHuida: 72,
+  /** Telegrafia del lanzamiento. Mas larga que la del Devoto: se ve venir. */
+  anticipacionMs: 520,
+  enfriamientoMs: 1500,
+  retroceso: 90,
+  memoriaMs: 2400,
+} as const;
+
+/** Sello del diezmo: el proyectil del Vestal. */
+export const PROYECTIL = {
+  velocidad: 165,
+  dano: 1,
+  /** Se disuelve solo si no acierta, para no dejar basura volando. */
+  vidaMs: 3200,
+  /** Al ser parado, sale rebotado mas rapido y hiere a quien lo lanzo. */
+  velocidadDevuelto: 260,
+  danoDevuelto: 3,
+} as const;
+
+/**
+ * El Reformado: jefe del teaser.
+ *
+ * Un Elegido que sobrevivio a medias al sacramento. No es un demonio: es el
+ * resultado de lo que el propio Cirujano hace cada dia, y por eso el encuentro
+ * es lo que cierra el teaser.
+ *
+ * Todas sus fases telegrafian largo. Un jefe de este juego se aprende leyendo,
+ * no memorizando.
+ */
+export const REFORMADO = {
+  vida: 30,
+  dano: 2,
+
+  /** Umbrales de vida en los que cambia de fase. */
+  vidaFase2: 20,
+  vidaFase3: 10,
+
+  /** Embestida: se planta, se tensa y cruza la sala. */
+  embestida: {
+    anticipacionMs: 620,
+    velocidad: 210,
+    duracionMs: 620,
+    enfriamientoMs: 1500,
+  },
+
+  /** Salto con onda al aterrizar. Entra en fase 2. */
+  salto: {
+    anticipacionMs: 540,
+    impulso: 420,
+    /** Alcance de la onda de impacto al tocar suelo (px). */
+    alcanceOnda: 90,
+    enfriamientoMs: 1900,
+  },
+
+  /** Zarpazo cercano, la unica opcion si el Cirujano se le pega. */
+  zarpazo: {
+    anticipacionMs: 380,
+    duracionMs: 140,
+    alcance: 34,
+    enfriamientoMs: 1000,
+  },
+
+  /** Cada fase acelera lo anterior: mismo repertorio, menos margen. */
+  factorVelocidadFase2: 0.85,
+  factorVelocidadFase3: 0.7,
+
+  /** Pausa vulnerable tras fallar una embestida. La ventana de castigo. */
+  aturdimientoTrasFalloMs: 1100,
+} as const;

@@ -8,6 +8,8 @@ export const EVENTOS_HUD = {
   pociones: 'hud-pociones',
   codice: 'hud-codice',
   aviso: 'hud-aviso',
+  /** Vida del jefe: (puntos, maximo). Con puntos < 0 la barra se oculta. */
+  jefe: 'hud-jefe',
 } as const;
 
 const COLOR = {
@@ -39,6 +41,9 @@ export class HudScene extends Phaser.Scene {
   private fervorActual: number = FERVOR.inicial;
   private pocionesActuales: number = POCION.cargasMaximas;
   private fragmentos = 0;
+  /** Negativo mientras no hay jefe en escena: la barra no se dibuja. */
+  private jefeVida = -1;
+  private jefeMaximo = 1;
 
   constructor() {
     super({ key: 'Hud' });
@@ -94,12 +99,18 @@ export class HudScene extends Phaser.Scene {
       this.redibujar();
     };
     const alAviso = (texto: string) => this.mostrarAviso(texto);
+    const alJefe = (puntos: number, maximo: number) => {
+      this.jefeVida = puntos;
+      this.jefeMaximo = maximo;
+      this.redibujar();
+    };
 
     bus.on(EVENTOS_HUD.vitalidad, alVitalidad);
     bus.on(EVENTOS_HUD.fervor, alFervor);
     bus.on(EVENTOS_HUD.pociones, alPociones);
     bus.on(EVENTOS_HUD.codice, alCodice);
     bus.on(EVENTOS_HUD.aviso, alAviso);
+    bus.on(EVENTOS_HUD.jefe, alJefe);
 
     // El bus global sobrevive a la escena: hay que soltar estos listeners a
     // mano o se acumularian en cada relanzamiento del HUD.
@@ -109,6 +120,7 @@ export class HudScene extends Phaser.Scene {
       bus.off(EVENTOS_HUD.pociones, alPociones);
       bus.off(EVENTOS_HUD.codice, alCodice);
       bus.off(EVENTOS_HUD.aviso, alAviso);
+      bus.off(EVENTOS_HUD.jefe, alJefe);
     });
   }
 
@@ -118,6 +130,7 @@ export class HudScene extends Phaser.Scene {
     this.dibujarVitalidad(8, 8);
     this.dibujarFervor(8, 22);
     this.dibujarPociones(8, 32);
+    if (this.jefeVida >= 0) this.dibujarJefe();
 
     this.textoCodice.setText(this.fragmentos > 0 ? `codice  ${this.fragmentos}` : '');
   }
@@ -178,6 +191,35 @@ export class HudScene extends Phaser.Scene {
         this.grafico.lineStyle(1, COLOR.frasco, 1);
         this.grafico.strokeRect(px, y, lado, lado);
       }
+    }
+  }
+
+  /**
+   * Barra del jefe: abajo y a lo ancho, separada del resto del HUD.
+   * Que ocupe el pie de pantalla es la señal de que este combate es distinto.
+   */
+  private dibujarJefe(): void {
+    const margen = 40;
+    const ancho = this.scale.width - margen * 2;
+    const alto = 6;
+    const x = margen;
+    const y = this.scale.height - 18;
+    const proporcion = Phaser.Math.Clamp(this.jefeVida / this.jefeMaximo, 0, 1);
+
+    this.grafico.fillStyle(0x1d1418, 1);
+    this.grafico.fillRect(x, y, ancho, alto);
+
+    this.grafico.fillStyle(0x8c4f4f, 1);
+    this.grafico.fillRect(x, y, ancho * proporcion, alto);
+
+    this.grafico.lineStyle(1, COLOR.borde, 1);
+    this.grafico.strokeRect(x, y, ancho, alto);
+
+    // Marcas de las fases: el jugador ve venir el cambio de ritmo.
+    this.grafico.lineStyle(1, COLOR.borde, 1);
+    for (const corte of [1 / 3, 2 / 3]) {
+      const px = x + ancho * corte;
+      this.grafico.lineBetween(px, y, px, y + alto);
     }
   }
 
