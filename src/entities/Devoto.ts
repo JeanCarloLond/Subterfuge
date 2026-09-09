@@ -3,12 +3,7 @@ import { COMBATE, DEVOTO, MOVIMIENTO } from '../config/Sacramento';
 import { Vitalidad } from '../systems/Vitalidad';
 
 export type EstadoDevoto =
-  | 'patrulla'
-  | 'persecucion'
-  | 'anticipando'
-  | 'atacando'
-  | 'aturdido'
-  | 'muerto';
+  'patrulla' | 'persecucion' | 'anticipando' | 'atacando' | 'aturdido' | 'muerto';
 
 /** Limites de la ronda de patrulla, en coordenadas de mundo. */
 export interface RangoPatrulla {

@@ -119,9 +119,7 @@ export class HudScene extends Phaser.Scene {
     this.dibujarFervor(8, 22);
     this.dibujarPociones(8, 32);
 
-    this.textoCodice.setText(
-      this.fragmentos > 0 ? `codice  ${this.fragmentos}` : '',
-    );
+    this.textoCodice.setText(this.fragmentos > 0 ? `codice  ${this.fragmentos}` : '');
   }
 
   /** Carne: un segmento por punto. El cuerpo del Cirujano tambien es moneda. */

@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Si alguien empuja dos veces seguidas, cancela la ejecución anterior en vez de
+# gastar minutos comprobando un commit que ya quedó atrás.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  # Formato, reglas de código y tipos. Es lo más rápido, así que va primero:
+  # da el aviso en menos de un minuto.
+  calidad:
+    name: Formato, lint y tipos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Formato (Prettier)
+        run: npm run format:check
+
+      - name: Reglas de código (ESLint)
+        run: npm run lint
+
+      - name: Comprobación de tipos (TypeScript)
+        run: npm run typecheck
+
+  # Comprobaciones propias del juego. No son linters: verifican que el
+  # contenido siga siendo jugable, que es lo que un linter no puede ver.
+  jugabilidad:
+    name: Verificaciones de jugabilidad
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Una fila de más o de menos en el pixel art descuadra todo el dibujo.
+      - name: Figuras del arte provisional
+        run: npm run verificar-arte
+
+      # Impide repetir el bug que dejaba al jugador encallado en el fondo de un
+      # nivel, sin salto suficiente para volver a subir.
+      - name: Rutas de retorno de los niveles
+        run: npm run verificar-rutas
+
+  # El build es lo que de verdad demuestra que la rama no está rota.
+  build:
+    name: Build de producción
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar
+        run: npm run build
+
+      # Queda descargable desde la pestaña Actions: sirve para probar una rama
+      # sin tener que clonarla y montarla en local.
+      - name: Publicar el build como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: subterfuge-dist
+          path: dist/
+          retention-days: 14

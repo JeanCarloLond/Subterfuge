@@ -225,7 +225,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     for (const [x, y, anchoTiles] of this.definicion.plataformas) {
       for (let i = 0; i < anchoTiles; i += 1) {
-        suelos.create(x + i * T, y, 'piedra-placeholder').setOrigin(0, 0).refreshBody();
+        suelos
+          .create(x + i * T, y, 'piedra-placeholder')
+          .setOrigin(0, 0)
+          .refreshBody();
       }
     }
 

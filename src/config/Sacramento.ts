@@ -84,7 +84,7 @@ export const IMPACTO = {
   hitstopMuerteMs: 110,
 
   sacudidaGolpe: 0.005,
-  sacudidaCargado: 0.010,
+  sacudidaCargado: 0.01,
   sacudidaRecibir: 0.008,
   sacudidaMuerte: 0.014,
 

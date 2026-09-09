@@ -1,0 +1,11 @@
+dist
+node_modules
+public
+*.docx
+
+# Documentos del equipo: se respetan tal cual se escribieron.
+docs/Propuesta-inicial.md
+
+# Encargos de arte: ya publicados como issues en GitHub, reformatearlos aquí
+# solo crearía diferencias con lo que el equipo ya está leyendo allí.
+docs/issues

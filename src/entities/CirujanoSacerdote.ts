@@ -5,15 +5,7 @@ import { Fervor } from '../systems/Fervor';
 import { Vitalidad } from '../systems/Vitalidad';
 
 export type EstadoCirujano =
-  | 'suelo'
-  | 'aire'
-  | 'dash'
-  | 'agarre'
-  | 'atacando'
-  | 'parry'
-  | 'bebiendo'
-  | 'herido'
-  | 'muerto';
+  'suelo' | 'aire' | 'dash' | 'agarre' | 'atacando' | 'parry' | 'bebiendo' | 'herido' | 'muerto';
 
 /** Resultado de un intento de dano sobre el Cirujano. */
 export type ResultadoDano = 'parado' | 'herido' | 'ignorado';
@@ -485,9 +477,8 @@ export class CirujanoSacerdote {
       this.dashesEnAireRestantes -= 1;
     }
 
-    const direccion = this.controles.ejeX !== 0
-      ? Math.sign(this.controles.ejeX)
-      : (this.mirandoDerecha ? 1 : -1);
+    const direccion =
+      this.controles.ejeX !== 0 ? Math.sign(this.controles.ejeX) : this.mirandoDerecha ? 1 : -1;
 
     this.estado = 'dash';
     this.finDash = ahora + DASH.duracionMs;
@@ -520,8 +511,11 @@ export class CirujanoSacerdote {
 
     const cuerpo = this.cuerpo;
     const contraPared =
-      (cuerpo.blocked.left || cuerpo.touching.left) ? -1 :
-      (cuerpo.blocked.right || cuerpo.touching.right) ? 1 : 0;
+      cuerpo.blocked.left || cuerpo.touching.left
+        ? -1
+        : cuerpo.blocked.right || cuerpo.touching.right
+          ? 1
+          : 0;
 
     if (contraPared === 0) return;
     // Debe empujarse contra la pared para engancharse.
@@ -614,6 +608,8 @@ export class CirujanoSacerdote {
       this.sprite.clearTint();
     }
 
-    this.sprite.setAlpha(this.esInvulnerable && !this.estaMuerto ? 0.55 : this.estaMuerto ? 0.4 : 1);
+    this.sprite.setAlpha(
+      this.esInvulnerable && !this.estaMuerto ? 0.55 : this.estaMuerto ? 0.4 : 1,
+    );
   }
 }

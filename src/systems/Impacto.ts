@@ -80,11 +80,12 @@ export class Impacto {
    * `explode` las suelta de una vez y el emisor se autodestruye al acabar.
    */
   private chispas(x: number, y: number, direccion: number, cantidad: number, color: number): void {
-    const angulo = direccion === 0
-      ? { min: 0, max: 360 }
-      : direccion > 0
-        ? { min: -55, max: 55 }
-        : { min: 125, max: 235 };
+    const angulo =
+      direccion === 0
+        ? { min: 0, max: 360 }
+        : direccion > 0
+          ? { min: -55, max: 55 }
+          : { min: 125, max: 235 };
 
     const emisor = this.escena.add.particles(x, y, 'chispa-placeholder', {
       speed: { min: 60, max: 190 },

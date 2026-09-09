@@ -29,9 +29,9 @@ const DASH_VELOCIDAD = 340;
 const DASH_DURACION = 0.16;
 const TILE = 16;
 
-const alturaSalto = (IMPULSO_SALTO ** 2) / (2 * GRAVEDAD);
+const alturaSalto = IMPULSO_SALTO ** 2 / (2 * GRAVEDAD);
 /** El doble salto encadena, así que la altura total es mayor que la simple. */
-const alturaDoble = alturaSalto + (IMPULSO_DOBLE ** 2) / (2 * GRAVEDAD);
+const alturaDoble = alturaSalto + IMPULSO_DOBLE ** 2 / (2 * GRAVEDAD);
 const avanceDash = DASH_VELOCIDAD * DASH_DURACION;
 
 /** Tiempo que el Cirujano pasa por encima de la altura h durante un salto. */

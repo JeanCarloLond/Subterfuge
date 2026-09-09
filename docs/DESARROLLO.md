@@ -5,13 +5,13 @@ ver el [README](../README.md).
 
 ## Stack
 
-| Componente | Elección | Notas |
-|---|---|---|
-| Motor | **Phaser 3.90.0** | Fijado a 3.x a propósito (ver más abajo) |
-| Lenguaje | TypeScript | |
-| Bundler | Vite 8 | |
-| Física | Arcade Physics | Suficiente para plataformas; Matter.js solo si el combate lo exige |
-| Mapas | Tiled (`.tmj`) | Entra en Fase 2 |
+| Componente | Elección          | Notas                                                              |
+| ---------- | ----------------- | ------------------------------------------------------------------ |
+| Motor      | **Phaser 3.90.0** | Fijado a 3.x a propósito (ver más abajo)                           |
+| Lenguaje   | TypeScript        |                                                                    |
+| Bundler    | Vite 8            |                                                                    |
+| Física     | Arcade Physics    | Suficiente para plataformas; Matter.js solo si el combate lo exige |
+| Mapas      | Tiled (`.tmj`)    | Entra en Fase 2                                                    |
 
 ### Por qué Phaser 3 y no Phaser 4
 
@@ -107,11 +107,22 @@ zona nueva **solo describe su contenido**:
 
 ```ts
 export class SalasScene extends EscenaNivel {
-  constructor() { super({ key: 'Salas' }); }
+  constructor() {
+    super({ key: 'Salas' });
+  }
 
   protected definirNivel(): DefinicionNivel {
-    return { mundo, colorFondo, inicio, plataformas, paredes,
-             devotos, altares, fragmentos, umbral };
+    return {
+      mundo,
+      colorFondo,
+      inicio,
+      plataformas,
+      paredes,
+      devotos,
+      altares,
+      fragmentos,
+      umbral,
+    };
   }
 }
 ```
@@ -122,7 +133,7 @@ clave. El descenso del Vientre continúa: Salas de Sacramento → Criptas de Esp
 orgánica y más peligrosa que la anterior** — empezando por su `colorFondo`.
 
 - **Boot**: arranque mínimo, sin carga pesada.
-- **Preload**: carga de assets y barra de progreso. Hoy genera *placeholders* por
+- **Preload**: carga de assets y barra de progreso. Hoy genera _placeholders_ por
   código (rectángulos de color) porque aún no hay arte.
 - **Atrio**: el primer nivel. Geometría provisional por código; se sustituye por un
   tilemap de Tiled cuando lleguen los tilesets.
@@ -189,18 +200,18 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 
 ## Controles
 
-| Acción | Teclas |
-|---|---|
-| Mover | `A` / `D` o flechas |
-| Saltar / doble saltar | `Espacio` o `Z` |
-| Dash | `Shift` o `X` |
-| Atacar | `J` o `C` |
-| Ataque cargado | mantener `J` / `C` y soltar |
-| Parry | `K` o `V` |
-| Poción de Carne | `Q` |
-| Rezar en un Altar | `E` |
-| Trepar (colgado) | `W` / flecha arriba |
-| Soltarse (colgado) | `S` / flecha abajo |
+| Acción                | Teclas                      |
+| --------------------- | --------------------------- |
+| Mover                 | `A` / `D` o flechas         |
+| Saltar / doble saltar | `Espacio` o `Z`             |
+| Dash                  | `Shift` o `X`               |
+| Atacar                | `J` o `C`                   |
+| Ataque cargado        | mantener `J` / `C` y soltar |
+| Parry                 | `K` o `V`                   |
+| Poción de Carne       | `Q`                         |
+| Rezar en un Altar     | `E`                         |
+| Trepar (colgado)      | `W` / flecha arriba         |
+| Soltarse (colgado)    | `S` / flecha abajo          |
 
 ## Ajuste de sensación (game feel)
 
@@ -217,12 +228,12 @@ Al ajustar, ten en cuenta las dependencias:
 ## Convenciones
 
 **Léxico del mundo.** El código usa el vocabulario de la Diócesis, no términos
-genéricos de videojuego. Es *Fervor*, no "mana". Es *Poción de Carne*, no "health
-potion". Es *Altar*, no "checkpoint". Esto aplica a nombres de clases, variables,
+genéricos de videojuego. Es _Fervor_, no "mana". Es _Poción de Carne_, no "health
+potion". Es _Altar_, no "checkpoint". Esto aplica a nombres de clases, variables,
 archivos y a cualquier texto visible.
 
 **Regla de consistencia del universo.** Todos los Primigenios son **ciegos** — de
-ahí el dogma *"los dioses no miran, son mirados"*. Conocen el mundo por tacto e
+ahí el dogma _"los dioses no miran, son mirados"_. Conocen el mundo por tacto e
 ingesta. Ninguna mecánica, diálogo, descripción o pieza de arte puede mostrar a un
 Primigenio viendo o reaccionando visualmente a algo. Aplica también a iconografía,
 relieves y vitrales.
@@ -244,10 +255,10 @@ claves de textura** (`cirujano-placeholder`, `piedra-placeholder`…) y borra
 
 Ambos son MIT y están dados de alta a nivel de proyecto:
 
-| Servidor | Uso |
-|---|---|
-| `tiled` (`tiled-mcp-server`) | Inspeccionar y editar mapas `.tmx`/`.tmj` sin abrir Tiled. **Versión 0.0.2 — trátalo como experimental.** |
-| `image-tiler` (`image-tiler-mcp-server`) | Analizar capturas de referencia grandes a resolución completa sin degradarlas |
+| Servidor                                 | Uso                                                                                                       |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `tiled` (`tiled-mcp-server`)             | Inspeccionar y editar mapas `.tmx`/`.tmj` sin abrir Tiled. **Versión 0.0.2 — trátalo como experimental.** |
+| `image-tiler` (`image-tiler-mcp-server`) | Analizar capturas de referencia grandes a resolución completa sin degradarlas                             |
 
 Comprobar estado con `claude mcp list`.
 
