@@ -39,6 +39,7 @@ export class Devoto {
   private ultimoAvistamiento = -Infinity;
   /** Evita que un mismo golpe hiera dos veces en la misma ventana. */
   private yaGolpeoEnSwing = false;
+  private tweenTelegrafia?: Phaser.Tweens.Tween;
 
   private readonly escena: Phaser.Scene;
   private readonly patrulla: RangoPatrulla;
@@ -156,6 +157,44 @@ export class Devoto {
     this.cuerpo.setVelocityX(0);
     this.finAccion = ahora + DEVOTO.anticipacionAtaqueMs;
     this.yaGolpeoEnSwing = false;
+    this.telegrafiarGolpe();
+  }
+
+  /**
+   * Aviso visible de que el golpe viene.
+   *
+   * Sin esto el parry es adivinar, no leer: la ventana de 140 ms solo es justa
+   * si el jugador puede ver la intencion durante los 420 ms previos. El Devoto
+   * se tensa hacia atras y se tine de rojo antes de descargar.
+   */
+  private telegrafiarGolpe(): void {
+    const direccion = this.mirandoDerecha ? 1 : -1;
+
+    this.sprite.setTint(0xc94f4f);
+
+    this.tweenTelegrafia?.remove();
+    this.tweenTelegrafia = this.escena.tweens.add({
+      targets: this.sprite,
+      // Se echa hacia atras: la clasica anticipacion antes del golpe.
+      x: this.sprite.x - direccion * 3,
+      scaleY: 1.12,
+      duration: DEVOTO.anticipacionAtaqueMs * 0.75,
+      ease: 'Quad.easeOut',
+      yoyo: false,
+    });
+
+    // Destello de aviso justo antes de que la hitbox exista.
+    this.escena.time.delayedCall(DEVOTO.anticipacionAtaqueMs - 110, () => {
+      if (this.estado !== 'anticipando') return;
+      this.sprite.setTint(0xffffff);
+    });
+  }
+
+  private limpiarTelegrafia(): void {
+    this.tweenTelegrafia?.remove();
+    this.tweenTelegrafia = undefined;
+    this.sprite.setScale(1);
+    if (!this.estaMuerto) this.sprite.clearTint();
   }
 
   private actualizarAnticipacion(ahora: number): void {
@@ -166,6 +205,16 @@ export class Devoto {
     this.inicioHitbox = ahora;
     this.finAccion = ahora + DEVOTO.duracionAtaqueMs;
     this.finEnfriamientoAtaque = this.finAccion + DEVOTO.enfriamientoAtaqueMs;
+
+    // Descarga: la tension acumulada se suelta de golpe hacia delante.
+    this.limpiarTelegrafia();
+    const direccion = this.mirandoDerecha ? 1 : -1;
+    this.escena.tweens.add({
+      targets: this.sprite,
+      x: this.sprite.x + direccion * 5,
+      duration: DEVOTO.duracionAtaqueMs,
+      ease: 'Quad.easeOut',
+    });
   }
 
   private actualizarAtaque(ahora: number): void {
@@ -227,7 +276,23 @@ export class Devoto {
     this.finEnfriamientoAtaque = this.finAccion;
     (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
     this.cuerpo.setVelocityX(0);
-    this.destellar(0xe8d9a0);
+    this.limpiarTelegrafia();
+
+    // Aturdido: se tambalea y queda tintado hasta recuperarse. El jugador debe
+    // ver de un vistazo que esta abierto.
+    this.sprite.setTint(0xe8d9a0);
+    this.escena.tweens.add({
+      targets: this.sprite,
+      angle: { from: -6, to: 6 },
+      duration: 160,
+      yoyo: true,
+      repeat: Math.floor(COMBATE.parry.aturdimientoMs / 320),
+      ease: 'Sine.easeInOut',
+      onComplete: () => {
+        this.sprite.setAngle(0);
+        if (!this.estaMuerto) this.sprite.clearTint();
+      },
+    });
   }
 
   /** La hitbox solo hiere una vez por ventana de ataque. */
@@ -242,6 +307,9 @@ export class Devoto {
     (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
     this.cuerpo.setVelocityX(0);
     this.cuerpo.enable = false;
+    this.tweenTelegrafia?.remove();
+    this.escena.tweens.killTweensOf(this.sprite);
+    this.sprite.setScale(1);
 
     // Se desploma. Sin fanfarria: aqui morir es rutina.
     this.escena.tweens.add({

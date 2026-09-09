@@ -19,12 +19,13 @@ export const MOVIMIENTO = {
   friccionSuelo: 1600,
   friccionAire: 300,
 
-  gravedad: 1100,
+  gravedad: 1000,
   velocidadCaidaMax: 620,
 
-  impulsoSalto: 360,
+  /** Altura resultante ~92 px (5.7 tiles). Formula: impulso^2 / (2 * gravedad). */
+  impulsoSalto: 430,
   /** Segundo salto: mas debil. El Cirujano no es un acrobata, es un tecnico. */
-  impulsoDobleSalto: 300,
+  impulsoDobleSalto: 360,
 
   /** Margen tras abandonar el suelo en el que el salto aun se acepta (ms). */
   coyoteMs: 90,
@@ -69,6 +70,26 @@ export const FERVOR = {
   inicial: 0,
   porGolpeAsestado: 6,
   porParry: 20,
+} as const;
+
+/**
+ * Sensacion de impacto. El "hitstop" es la pausa brevisima al conectar un golpe:
+ * es lo que hace que un impacto se sienta solido en vez de blando. Subirlo mucho
+ * vuelve el combate pastoso; bajarlo lo vuelve intangible.
+ */
+export const IMPACTO = {
+  hitstopGolpeMs: 55,
+  hitstopCargadoMs: 90,
+  hitstopParryMs: 130,
+  hitstopMuerteMs: 110,
+
+  sacudidaGolpe: 0.005,
+  sacudidaCargado: 0.010,
+  sacudidaRecibir: 0.008,
+  sacudidaMuerte: 0.014,
+
+  /** Duracion del destello de tinte sobre el objetivo herido (ms). */
+  destelloMs: 90,
 } as const;
 
 /** Vitalidad del Cirujano. Pocos puntos, como en Blasphemous: cada golpe pesa. */

@@ -4,6 +4,8 @@ import { ESCALA_PIXEL, MOVIMIENTO, RESOLUCION } from './config/Sacramento';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { AtrioScene } from './scenes/AtrioScene';
+import { PasillosScene } from './scenes/PasillosScene';
+import { FinalScene } from './scenes/FinalScene';
 import { HudScene } from './ui/HudScene';
 
 /**
@@ -30,7 +32,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [BootScene, PreloadScene, AtrioScene, HudScene],
+  scene: [BootScene, PreloadScene, AtrioScene, PasillosScene, FinalScene, HudScene],
 };
 
 new Phaser.Game(configuracion);

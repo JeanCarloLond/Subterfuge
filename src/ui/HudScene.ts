@@ -67,39 +67,48 @@ export class HudScene extends Phaser.Scene {
     this.redibujar();
   }
 
+  /**
+   * Escucha el bus global del juego, no el de una escena concreta.
+   *
+   * El teaser cambia de escena en cada zona del descenso (Atrio, Pasillos...) y
+   * el HUD sobrevive a esos cambios, asi que atarlo a una escena por nombre
+   * dejaria el HUD sordo en cuanto el jugador bajase un nivel.
+   */
   private escucharEscenaDeJuego(): void {
-    const juego = this.scene.get('Atrio');
-    if (!juego) return;
+    const bus = this.game.events;
 
-    juego.events.on(EVENTOS_HUD.vitalidad, (puntos: number) => {
+    const alVitalidad = (puntos: number) => {
       this.vitalidadActual = puntos;
       this.redibujar();
-    });
-
-    juego.events.on(EVENTOS_HUD.fervor, (puntos: number) => {
+    };
+    const alFervor = (puntos: number) => {
       this.fervorActual = puntos;
       this.redibujar();
-    });
-
-    juego.events.on(EVENTOS_HUD.pociones, (cargas: number) => {
+    };
+    const alPociones = (cargas: number) => {
       this.pocionesActuales = cargas;
       this.redibujar();
-    });
-
-    juego.events.on(EVENTOS_HUD.codice, (total: number) => {
+    };
+    const alCodice = (total: number) => {
       this.fragmentos = total;
       this.redibujar();
-    });
+    };
+    const alAviso = (texto: string) => this.mostrarAviso(texto);
 
-    juego.events.on(EVENTOS_HUD.aviso, (texto: string) => this.mostrarAviso(texto));
+    bus.on(EVENTOS_HUD.vitalidad, alVitalidad);
+    bus.on(EVENTOS_HUD.fervor, alFervor);
+    bus.on(EVENTOS_HUD.pociones, alPociones);
+    bus.on(EVENTOS_HUD.codice, alCodice);
+    bus.on(EVENTOS_HUD.aviso, alAviso);
 
-    // Si la escena de juego se reinicia, el HUD deja de escuchar la anterior.
-    juego.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      juego.events.off(EVENTOS_HUD.vitalidad);
-      juego.events.off(EVENTOS_HUD.fervor);
-      juego.events.off(EVENTOS_HUD.pociones);
-      juego.events.off(EVENTOS_HUD.codice);
-      juego.events.off(EVENTOS_HUD.aviso);
+    // El bus global sobrevive a la escena: hay que soltar estos listeners a
+    // mano o se acumularian en cada relanzamiento del HUD.
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      bus.off(EVENTOS_HUD.vitalidad, alVitalidad);
+      bus.off(EVENTOS_HUD.fervor, alFervor);
+      bus.off(EVENTOS_HUD.pociones, alPociones);
+      bus.off(EVENTOS_HUD.codice, alCodice);
+      bus.off(EVENTOS_HUD.aviso, alAviso);
     });
   }
 

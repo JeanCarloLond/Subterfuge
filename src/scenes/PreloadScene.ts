@@ -52,6 +52,9 @@ export class PreloadScene extends Phaser.Scene {
     this.crearRectangulo('altar-placeholder', 16, 20, 0x8c2f2f);
     this.crearRectangulo('devoto-placeholder', 16, 24, 0x7a5c46);
     this.crearRectangulo('codice-placeholder', 8, 10, 0xe8d9a0);
+    this.crearRectangulo('chispa-placeholder', 2, 2, 0xffffff);
+    this.crearRectangulo('tajo-placeholder', 4, 20, 0xffffff);
+    this.crearRectangulo('umbral-placeholder', 20, 34, 0x2a1f28);
   }
 
   private crearRectangulo(clave: string, ancho: number, alto: number, color: number): void {

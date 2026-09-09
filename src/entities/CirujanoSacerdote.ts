@@ -61,6 +61,8 @@ export class CirujanoSacerdote {
   private inicioCargaAtaque = -Infinity;
 
   private ataqueEnCurso: TipoAtaque = 'basico';
+  /** El arco del golpe se dibuja una sola vez por swing. */
+  private tajoMostrado = false;
   private direccionAgarre: -1 | 1 = 1;
   /** Enemigos ya golpeados por el swing actual: un golpe no cuenta dos veces. */
   private golpeadosEnSwing = new Set<object>();
@@ -117,6 +119,11 @@ export class CirujanoSacerdote {
 
   get pociones(): number {
     return this.cargasPocion;
+  }
+
+  /** Variante del swing en curso, para que la escena module el impacto. */
+  get golpeActualEsCargado(): boolean {
+    return this.ataqueEnCurso === 'cargado';
   }
 
   /** true mientras el golpe cargado esta listo para soltarse. */
@@ -225,6 +232,7 @@ export class CirujanoSacerdote {
     this.estado = 'atacando';
     this.ataqueEnCurso = tipo;
     this.golpeadosEnSwing.clear();
+    this.tajoMostrado = false;
 
     this.inicioHitbox = ahora + perfil.anticipacionMs;
     this.finAccion = this.inicioHitbox + perfil.duracionMs;
@@ -268,6 +276,36 @@ export class CirujanoSacerdote {
     );
     cuerpoHitbox.reset(this.hitbox.x, this.hitbox.y);
     cuerpoHitbox.enable = true;
+
+    if (!this.tajoMostrado) {
+      this.tajoMostrado = true;
+      this.dibujarTajo(perfil.alcance, perfil.alto, direccion);
+    }
+  }
+
+  /**
+   * Arco visible del golpe. Sin esto el ataque es invisible hasta que toca algo,
+   * y el jugador no puede leer su propio alcance.
+   */
+  private dibujarTajo(alcance: number, alto: number, direccion: number): void {
+    const cargado = this.ataqueEnCurso === 'cargado';
+
+    const tajo = this.escena.add.sprite(this.hitbox.x, this.hitbox.y, 'tajo-placeholder');
+    tajo.setDepth(58);
+    tajo.setTint(cargado ? 0xc94f4f : 0xd6cfc4);
+    tajo.setDisplaySize(4, alto);
+    tajo.setAlpha(0.9);
+
+    // Barrido: el arco se estira a lo ancho del alcance y se desvanece.
+    this.escena.tweens.add({
+      targets: tajo,
+      displayWidth: alcance,
+      x: this.sprite.x + direccion * (alcance / 2 + 4),
+      alpha: 0,
+      duration: cargado ? 190 : 130,
+      ease: 'Quad.easeOut',
+      onComplete: () => tajo.destroy(),
+    });
   }
 
   /**

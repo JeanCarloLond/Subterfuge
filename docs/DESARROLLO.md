@@ -55,12 +55,16 @@ src/
   objetos/
     Altar.ts                     Punto de guardado
     FragmentoCodice.ts           Coleccionable de lore
+    Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
   ui/
     HudScene.ts                  HUD como escena paralela, alimentada por eventos
   scenes/
     BootScene.ts                 Arranque mínimo
     PreloadScene.ts              Carga de assets + placeholders generados por código
-    AtrioScene.ts                Nivel 1: el Atrio
+    EscenaNivel.ts               Lógica común a todos los niveles del descenso
+    AtrioScene.ts                Zona 1: el Atrio (solo datos)
+    PasillosScene.ts             Zona 2: Pasillos de Preparación (solo datos)
+    FinalScene.ts                Cierre del teaser con gancho
 public/assets/
   tilesets/  sprites/  audio/  maps/
 docs/
@@ -76,9 +80,31 @@ scripts/
 ## Flujo de escenas
 
 ```
-Boot ──► Preload ──► Atrio
-                       └──► Hud  (escena paralela)
+Boot ──► Preload ──► Atrio ──► Pasillos ──► Final
+                       │          │
+                       └──────────┴──► Hud  (escena paralela)
 ```
+
+### Añadir una zona nueva
+
+`EscenaNivel` contiene toda la lógica (combate, altares, muerte, umbrales). Una
+zona nueva **solo describe su contenido**:
+
+```ts
+export class SalasScene extends EscenaNivel {
+  constructor() { super({ key: 'Salas' }); }
+
+  protected definirNivel(): DefinicionNivel {
+    return { mundo, colorFondo, inicio, plataformas, paredes,
+             devotos, altares, fragmentos, umbral };
+  }
+}
+```
+
+Luego regístrala en `main.ts` y apunta el `umbral` de la zona anterior a su
+clave. El descenso del Vientre continúa: Salas de Sacramento → Criptas de Espera
+→ Niveles Reformados → Vientre Profundo. **Cada una debe ser más oscura, más
+orgánica y más peligrosa que la anterior** — empezando por su `colorFondo`.
 
 - **Boot**: arranque mínimo, sin carga pesada.
 - **Preload**: carga de assets y barra de progreso. Hoy genera *placeholders* por
@@ -131,15 +157,20 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 - [x] HUD desacoplado por eventos
 - [ ] **Tilemap de Tiled** — bloqueado hasta que lleguen los tilesets
 
-**Pendiente (Fase 3):**
+**Fase 3 — Pulido y contenido (en curso):**
 
+- [x] Sensación de impacto: hitstop, sacudida, chispas y anillos (`Impacto.ts`)
+- [x] Arco visible del golpe (sin él, el ataque es invisible hasta que toca algo)
+- [x] Telegrafía del Devoto: se tensa y se tiñe antes de golpear
+- [x] Segunda zona: Pasillos de Preparación
+- [x] Umbrales de transición entre zonas
+- [x] Final con gancho y recuento del Códice
 - [ ] Sustituir placeholders por el arte del equipo
+- [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
 - [ ] Jefe o evento narrativo clave
-- [ ] Transición del Atrio a los Pasillos de Preparación
-- [ ] Final con gancho
 - [ ] Audio
-- [ ] Retirar la ayuda de controles y el HUD de depuración de `AtrioScene`
+- [ ] Retirar la ayuda de controles antes de una build pública
 
 ## Controles
 
