@@ -211,13 +211,16 @@ export abstract class EscenaNivel extends Phaser.Scene {
    */
   private crearFondo(): void {
     // El telon va fijo a la camara (scrollFactor 0), asi que se dimensiona con
-    // la resolucion interna, no con el tamaño del mundo.
-    const { ancho, alto } = RESOLUCION;
+    // el lienzo, no con el tamaño del mundo.
+    const ancho = this.scale.width;
+    const alto = this.scale.height;
 
     const lejano = this.add.tileSprite(0, 0, ancho, alto, 'fondo-arcos');
     lejano.setOrigin(0, 0);
     lejano.setScrollFactor(0);
-    lejano.setScale(2);
+    // setTileScale agranda el PATRON dentro del telon. Con setScale se agrandaba
+    // el telon entero y su borde quedaba a la vista sobre el fondo.
+    lejano.setTileScale(2);
     lejano.setAlpha(0.5);
     lejano.setDepth(-20);
     this.fondoLejano = lejano;
@@ -690,7 +693,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.add
       .text(
         6,
-        RESOLUCION.alto - 22,
+        RESOLUCION.alto - 30,
         'A/D mover  ESPACIO saltar  SHIFT dash\nJ atacar (mantener = cargado)  K parry  Q pocion  E interactuar',
         {
           fontFamily: 'monospace',

@@ -74,8 +74,11 @@ export class CirujanoSacerdote {
     this.sprite.setCollideWorldBounds(true);
 
     const cuerpo = this.cuerpo;
+    // El sprite mide 16x32, pero el capirote NO colisiona: la caja empieza a la
+    // altura de la mascara. Un cono de 10 px que choque con los techos volveria
+    // el salto impredecible sin que el jugador entienda por que.
     cuerpo.setSize(10, 22);
-    cuerpo.setOffset(3, 2);
+    cuerpo.setOffset(3, 10);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setMaxVelocity(MOVIMIENTO.velocidadCaminar, MOVIMIENTO.velocidadCaidaMax);
 
@@ -262,9 +265,10 @@ export class CirujanoSacerdote {
 
     this.hitbox.setSize(perfil.alcance, perfil.alto);
     cuerpoHitbox.setSize(perfil.alcance, perfil.alto);
+    // A la altura del torso, no del capirote.
     this.hitbox.setPosition(
       this.sprite.x + direccion * (perfil.alcance / 2 + 4),
-      this.sprite.y - 12,
+      this.sprite.y - 14,
     );
     cuerpoHitbox.reset(this.hitbox.x, this.hitbox.y);
     cuerpoHitbox.enable = true;

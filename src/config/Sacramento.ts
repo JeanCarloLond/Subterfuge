@@ -5,11 +5,12 @@
  * tiene "stamina" ni "mana", tiene Fervor. No renombrar a terminos genericos.
  */
 
-/** Resolucion interna. El Vientre es vertical: alto > ancho a proposito. */
+/**
+ * Resolucion interna del lienzo. Todo el arte se produce a 1x contra estas
+ * medidas; del escalado a la ventana se encarga Phaser (Scale.FIT), asi que no
+ * hay ninguna constante de zoom que mantener sincronizada.
+ */
 export const RESOLUCION = { ancho: 480, alto: 320 } as const;
-
-/** Escala de pixel art. El arte se produce a 1x y se escala en el canvas. */
-export const ESCALA_PIXEL = 3;
 
 /** Cinematica del Cirujano-Sacerdote. Valores en px/s y px/s^2. */
 export const MOVIMIENTO = {

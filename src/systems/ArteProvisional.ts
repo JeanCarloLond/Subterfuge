@@ -25,42 +25,68 @@ interface Figura {
 }
 
 // -- Cirujano-Sacerdote ------------------------------------------------------
-// Silueta encapuchada de tecnico, no de guerrero. Las manos palidas asoman a
-// los lados a proposito: son su oficio y su condena, y deben leerse a 1x.
+//
+// Silueta a partir del boceto de la artista y del lenguaje visual de
+// Blasphemous: capirote conico alto, mascara de metal sin ojos y tunica
+// morada con estola roja.
+//
+// Tres cosas que no se pueden perder al pasarlo a Aseprite:
+//
+//   1. Las MANOS palidas asoman a los lados. Son su oficio y su condena, y hay
+//      que poder leerlas a 1x sin ampliar.
+//   2. El capirote da toda la silueta reconocible en negativo. Es lo unico que
+//      distingue al Cirujano a contraluz.
+//   3. La mascara no tiene ojos, solo una hendidura. En la Diocesis mirar no es
+//      lo que da estatus, y el habito clerical lo refleja.
+//
+// Es un tecnico, no un guerrero: postura recta y estrecha, sin hombros de heroe.
 
 const CIRUJANO: Figura = {
   paleta: {
-    c: 0x241c22, // capucha
-    t: 0x342a32, // tunica
-    s: 0x1d171c, // sombra de la tunica
-    p: 0xd8cdbe, // manos
-    r: 0x7d2b2b, // estola
+    K: 0xc2d1d4, // brillo del metal
+    k: 0x8fa3a8, // metal del capirote y la mascara
+    j: 0x5c6b70, // sombra del metal
+    n: 0x171319, // hendidura de la mascara
+    P: 0x63456f, // morado claro
+    p: 0x4a3358, // morado de la tunica
+    s: 0x2e1f38, // sombra de la tunica
+    r: 0x8c2f2f, // estola
+    m: 0xd8cdbe, // manos
+    g: 0x3a2c22, // botas y correas
   },
   filas: [
-    '......cccc......',
-    '.....cccccc.....',
-    '....cccccccc....',
-    '....cc....cc....',
-    '...cc......cc...',
-    '...cc......cc...',
-    '...cccccccccc...',
-    '...cttttttttc...',
-    '..cttttttttttc..',
-    '..cttrrrrrrttc..',
-    '.pcttrrrrrrttcp.',
-    '.ppttrrrrrrttpp.',
-    '.pptttttttttpp..',
-    '..ttttttttttt...',
-    '..tttttsttttt...',
-    '..ttttsssttt....',
-    '..tttssssttt....',
-    '..tttsssssttt...',
-    '..ttsssssssttt..',
-    '..ttsssssssttt..',
-    '..tts.....sttt..',
-    '..tts.....sttt..',
-    '..ttt.....sttt..',
-    '.tttt.....ttttt.',
+    '.......KK.......',
+    '.......Kk.......',
+    '......jKKk......',
+    '......jKKk......',
+    '......jKKk......',
+    '.....jjKKkk.....',
+    '.....jKKKkk.....',
+    '.....jKKKkk.....',
+    '....jjKKKKkk....',
+    '....jKKKKKkk....',
+    '...jjKKKKKkkk...',
+    '...jKKKKKKkkk...',
+    '...jjkkkkkkkj...',
+    '...jkkkkkkkkj...',
+    '...jknnnnnnkj...',
+    '...jkkkkkkkkj...',
+    '....kkkkkkkk....',
+    '...pppppppp.....',
+    '..ppppPPpppp....',
+    '..pppPPrrPPpp...',
+    '.mppPPrrrrPPpm..',
+    '.mmppPPrrPPppm..',
+    '..mpppppppppm...',
+    '...pppppppppp...',
+    '...ppppspppp....',
+    '...pppssppp.....',
+    '...ppsssspp.....',
+    '..ppssssspp.....',
+    '..pssssssspp....',
+    '..pss....ssp....',
+    '..gss....ssg....',
+    '.gggg....gggg...',
   ],
 };
 

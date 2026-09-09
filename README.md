@@ -4,8 +4,13 @@
 
 Teaser jugable 2D del universo narrativo **"La Diócesis de la Carne"**.
 
-> **¿Solo quieres jugarlo?** Salta a [Ejecutar en local](#ejecutar-en-local). Son
-> tres comandos.
+### ▶ [Jugar ahora](https://jeancarlolond.github.io/Subterfuge/)
+
+Se juega en el navegador, sin instalar nada. Se publica solo en cada cambio que
+llega a `main`.
+
+> ¿Prefieres levantarlo en tu máquina? [Ejecutar en local](#ejecutar-en-local),
+> son tres comandos.
 
 ## Descripción
 

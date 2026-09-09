@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import './style.css';
-import { ESCALA_PIXEL, MOVIMIENTO, RESOLUCION } from './config/Sacramento';
+import { MOVIMIENTO, RESOLUCION } from './config/Sacramento';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { AtrioScene } from './scenes/AtrioScene';
@@ -23,9 +23,11 @@ const configuracion: Phaser.Types.Core.GameConfig = {
   pixelArt: true,
   roundPixels: true,
   scale: {
+    // FIT ya escala el lienzo de 480x320 para llenar la ventana. Combinarlo con
+    // `zoom` hacia que se pisaran: la vista quedaba recortada, el telon de fondo
+    // no llegaba a los bordes y el texto de ayuda se salia por abajo.
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    zoom: ESCALA_PIXEL,
   },
   physics: {
     default: 'arcade',
