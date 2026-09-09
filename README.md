@@ -46,6 +46,23 @@ El proyecto se desarrolla utilizando herramientas de código abierto y gratuitas
 
 Subterfuge se encuentra en fase de desarrollo. El equipo está trabajando en la definición de mecánicas, el diseño de niveles y la producción de arte.
 
+**Fase 1 (Prototipo) — en curso.** El primer nivel, El Atrio, ya es jugable con el
+kit de movimiento completo del Cirujano-Sacerdote: salto, doble salto, dash con
+invulnerabilidad breve y agarre de bordes. Aún sin combate ni arte definitivo.
+
+## Desarrollo
+
+```bash
+npm install
+npm run dev
+```
+
+La documentación técnica completa —estructura del proyecto, flujo de escenas,
+convenciones de código y estado por fases— está en
+**[docs/DESARROLLO.md](docs/DESARROLLO.md)**.
+
+Los encargos de arte pendientes están en [docs/issues/](docs/issues/).
+
 ## Cómo Contribuir
 
 Este es un proyecto académico del equipo conformado por:
