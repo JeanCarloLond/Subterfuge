@@ -1,0 +1,23 @@
+:root {
+  color-scheme: dark;
+  background-color: #0b090b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background-color: #0b090b;
+  overflow: hidden;
+}
+
+#juego canvas {
+  image-rendering: pixelated;
+  display: block;
+}
