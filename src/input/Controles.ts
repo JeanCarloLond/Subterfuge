@@ -11,6 +11,10 @@ export class Controles {
   private readonly abajo: Phaser.Input.Keyboard.Key[];
   private readonly saltar: Phaser.Input.Keyboard.Key[];
   private readonly dash: Phaser.Input.Keyboard.Key[];
+  private readonly atacar: Phaser.Input.Keyboard.Key[];
+  private readonly parry: Phaser.Input.Keyboard.Key[];
+  private readonly pocion: Phaser.Input.Keyboard.Key[];
+  private readonly interactuar: Phaser.Input.Keyboard.Key[];
 
   constructor(escena: Phaser.Scene) {
     const teclado = escena.input.keyboard;
@@ -25,6 +29,10 @@ export class Controles {
     this.abajo = [tecla(K.S), tecla(K.DOWN)];
     this.saltar = [tecla(K.SPACE), tecla(K.Z)];
     this.dash = [tecla(K.SHIFT), tecla(K.X)];
+    this.atacar = [tecla(K.J), tecla(K.C)];
+    this.parry = [tecla(K.K), tecla(K.V)];
+    this.pocion = [tecla(K.Q)];
+    this.interactuar = [tecla(K.E)];
   }
 
   /** Eje horizontal: -1 izquierda, 0 neutro, 1 derecha. */
@@ -55,11 +63,40 @@ export class Controles {
     return this.algunaRecien(this.dash);
   }
 
+  get ataquePresionado(): boolean {
+    return this.algunaRecien(this.atacar);
+  }
+
+  /** Mantener el boton carga el golpe: gasta Fervor a cambio de dano. */
+  get ataqueMantenido(): boolean {
+    return this.algunaAbajo(this.atacar);
+  }
+
+  get ataqueSoltado(): boolean {
+    return this.algunaSoltada(this.atacar);
+  }
+
+  get parryPresionado(): boolean {
+    return this.algunaRecien(this.parry);
+  }
+
+  get pocionPresionada(): boolean {
+    return this.algunaRecien(this.pocion);
+  }
+
+  get interactuarPresionado(): boolean {
+    return this.algunaRecien(this.interactuar);
+  }
+
   private algunaAbajo(teclas: Phaser.Input.Keyboard.Key[]): boolean {
     return teclas.some((t) => t.isDown);
   }
 
   private algunaRecien(teclas: Phaser.Input.Keyboard.Key[]): boolean {
     return teclas.some((t) => Phaser.Input.Keyboard.JustDown(t));
+  }
+
+  private algunaSoltada(teclas: Phaser.Input.Keyboard.Key[]): boolean {
+    return teclas.some((t) => Phaser.Input.Keyboard.JustUp(t));
   }
 }

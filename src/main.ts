@@ -4,6 +4,7 @@ import { ESCALA_PIXEL, MOVIMIENTO, RESOLUCION } from './config/Sacramento';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { AtrioScene } from './scenes/AtrioScene';
+import { HudScene } from './ui/HudScene';
 
 /**
  * Subterfuge - teaser jugable de "La Diocesis de la Carne".
@@ -29,7 +30,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [BootScene, PreloadScene, AtrioScene],
+  scene: [BootScene, PreloadScene, AtrioScene, HudScene],
 };
 
 new Phaser.Game(configuracion);

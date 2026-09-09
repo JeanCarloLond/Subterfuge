@@ -59,7 +59,87 @@ export const AGARRE = {
 } as const;
 
 /**
- * Fervor: recurso de devocion. En Fase 1 solo existe como contador; el gasto
- * real (ataque cargado, parry) llega en Fase 2 junto con el combate.
+ * Fervor: recurso de devocion.
+ *
+ * No se regenera solo. Se gana hiriendo y, sobre todo, parando golpes: la
+ * devocion se demuestra con el cuerpo, no se acumula esperando.
  */
-export const FERVOR = { maximo: 100, inicial: 0 } as const;
+export const FERVOR = {
+  maximo: 100,
+  inicial: 0,
+  porGolpeAsestado: 6,
+  porParry: 20,
+} as const;
+
+/** Vitalidad del Cirujano. Pocos puntos, como en Blasphemous: cada golpe pesa. */
+export const VITALIDAD = {
+  maxima: 6,
+  /** Invulnerabilidad tras recibir dano (ms). */
+  invulnerabilidadMs: 700,
+  /** Retroceso al ser herido (px/s). */
+  retrocesoX: 140,
+  retrocesoY: 180,
+} as const;
+
+/** Combate cuerpo a cuerpo. */
+export const COMBATE = {
+  ataque: {
+    dano: 2,
+    /** Ventana en la que la hitbox hace dano (ms). */
+    duracionMs: 110,
+    /** Retardo desde la pulsacion hasta que la hitbox se activa (ms). */
+    anticipacionMs: 60,
+    enfriamientoMs: 300,
+    alcance: 22,
+    alto: 20,
+  },
+  cargado: {
+    dano: 6,
+    /** Tiempo manteniendo el boton hasta que el golpe queda cargado (ms). */
+    tiempoCargaMs: 450,
+    costeFervor: 30,
+    duracionMs: 150,
+    anticipacionMs: 110,
+    enfriamientoMs: 520,
+    alcance: 30,
+    alto: 24,
+  },
+  parry: {
+    /** Ventana activa. Corta a proposito: es una lectura, no un escudo. */
+    ventanaMs: 140,
+    enfriamientoMs: 480,
+    /** Aturdimiento infligido al enemigo parado (ms). */
+    aturdimientoMs: 900,
+  },
+} as const;
+
+/** Pocion de Carne: cura consumible. Se repone al rezar en un Altar. */
+export const POCION = {
+  cargasMaximas: 3,
+  curacion: 3,
+  /** Duracion del trago. El Cirujano queda quieto y vulnerable. */
+  duracionMs: 600,
+} as const;
+
+/**
+ * Devoto: fiel de la Diocesis, primer enemigo del Atrio.
+ * No es un monstruo: es un engranaje mas del sistema. Por eso es humano.
+ */
+export const DEVOTO = {
+  vida: 8,
+  dano: 1,
+  velocidadPatrulla: 40,
+  velocidadPersecucion: 80,
+  /** Radio en el que detecta al Cirujano (px). */
+  rangoDeteccion: 130,
+  /** Distancia a la que se detiene y ataca (px). */
+  rangoAtaque: 26,
+  /** Telegrafia del golpe: el jugador debe poder leerlo para hacer parry. */
+  anticipacionAtaqueMs: 420,
+  duracionAtaqueMs: 120,
+  enfriamientoAtaqueMs: 1100,
+  /** Retroceso al ser herido (px/s). */
+  retroceso: 120,
+  /** Tiempo que sigue buscando tras perder de vista al Cirujano (ms). */
+  memoriaMs: 2000,
+} as const;
