@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { PROYECTIL } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 
 /** Quien es dueño del sello ahora mismo. Cambia con el parry. */
 export type DuenoSello = 'vestal' | 'cirujano';
@@ -39,6 +40,7 @@ export class Sello {
       repeat: -1,
     });
 
+    sonido.selloLanzado();
     this.temporizador = escena.time.delayedCall(PROYECTIL.vidaMs, () => this.destruir());
   }
 

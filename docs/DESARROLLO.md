@@ -74,6 +74,7 @@ src/
     Altar.ts                     Punto de guardado
     FragmentoCodice.ts           Coleccionable de lore
     Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
+    Sonido.ts                    Audio sintetizado con la Web Audio API
     ArteProvisional.ts           Pixel art de relleno escrito a mano en código
   ui/
     HudScene.ts                  HUD como escena paralela, alimentada por eventos
@@ -200,6 +201,7 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 - [x] Sellos del diezmo: proyectiles que el parry **devuelve** al remitente
 - [x] Jefe: el Reformado, tres fases (`SalasScene`)
 - [x] Tercera zona: Salas de Sacramento
+- [x] Audio: efectos y drone de ambiente, sintetizados sin archivos
 - [ ] Sustituir placeholders por el arte del equipo
 - [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
@@ -218,6 +220,7 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 | Ataque cargado        | mantener `J` / `C` y soltar |
 | Parry                 | `K` o `V`                   |
 | Poción de Carne       | `Q`                         |
+| Silenciar el audio    | `M`                         |
 | Rezar en un Altar     | `E`                         |
 | Trepar (colgado)      | `W` / flecha arriba         |
 | Soltarse (colgado)    | `S` / flecha abajo          |
@@ -246,6 +249,35 @@ expuesto: esa es la ventana de castigo y el pulso del combate.
 
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
+
+## Audio
+
+Todo el sonido se **sintetiza en tiempo real** con la Web Audio API
+(`src/systems/Sonido.ts`). No hay ni un solo archivo de audio en el repo, por
+tres razones:
+
+- **Licencias**: todo lo que suena es original. Cero riesgo de arrastrar un
+  sample con condiciones raras a un proyecto que se publica.
+- **Peso**: el build ya carga 1,2 MB de Phaser; unos cuantos `.ogg` sumarían
+  varios MB más para un teaser que se juega en el navegador.
+- **Ajuste**: se afina cambiando números, igual que el resto del game feel.
+
+Dos primitivas lo componen todo: `tono()` (oscilador con barrido y caída
+exponencial) y `ruido()` (ruido blanco filtrado). Los golpes son ruido grave
+"de carne"; el parry es lo **único** metálico y limpio del juego, para que se
+distinga en mitad de una pelea; los Altares son campana litúrgica con cola.
+
+El drone de ambiente son tres graves ligeramente desafinados entre sí: el
+batido lento que producen es lo que da la sensación de estar dentro de algo
+vivo. Va muy bajo — se nota cuando se apaga, no cuando suena.
+
+**Cuando el equipo grabe audio propio en Audacity**, se sustituye llamada por
+llamada: la interfaz pública (`golpe`, `parry`, `altar`…) puede quedarse igual
+y cargar samples por dentro.
+
+Nota de navegador: el `AudioContext` nace suspendido y no suena nada hasta que
+el usuario interactúa. `BootScene` engancha la reanudación al primer teclazo o
+clic, así que el primer sonido llega con la primera acción del jugador.
 
 ## Ajuste de sensación (game feel)
 

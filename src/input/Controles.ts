@@ -15,6 +15,7 @@ export class Controles {
   private readonly parry: Phaser.Input.Keyboard.Key[];
   private readonly pocion: Phaser.Input.Keyboard.Key[];
   private readonly interactuar: Phaser.Input.Keyboard.Key[];
+  private readonly silenciar: Phaser.Input.Keyboard.Key[];
 
   constructor(escena: Phaser.Scene) {
     const teclado = escena.input.keyboard;
@@ -33,6 +34,7 @@ export class Controles {
     this.parry = [tecla(K.K), tecla(K.V)];
     this.pocion = [tecla(K.Q)];
     this.interactuar = [tecla(K.E)];
+    this.silenciar = [tecla(K.M)];
   }
 
   /** Eje horizontal: -1 izquierda, 0 neutro, 1 derecha. */
@@ -86,6 +88,10 @@ export class Controles {
 
   get interactuarPresionado(): boolean {
     return this.algunaRecien(this.interactuar);
+  }
+
+  get silencioPresionado(): boolean {
+    return this.algunaRecien(this.silenciar);
   }
 
   private algunaAbajo(teclas: Phaser.Input.Keyboard.Key[]): boolean {

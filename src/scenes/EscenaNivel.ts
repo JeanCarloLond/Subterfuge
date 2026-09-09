@@ -10,6 +10,7 @@ import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
+import { sonido } from '../systems/Sonido';
 import { EVENTOS_HUD } from '../ui/HudScene';
 
 /** Plataforma: [x, y, anchoEnTiles]. y crece hacia abajo. */
@@ -137,6 +138,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cameras.main.setDeadzone(60, 40);
     this.cameras.main.fadeIn(360, 11, 9, 11);
 
+    // El drone de fondo acompana todo el descenso; se apaga en el cierre.
+    sonido.ambienteEncendido();
+
     if (!this.scene.isActive('Hud')) this.scene.launch('Hud');
     this.emitirEstadoInicial();
 
@@ -155,6 +159,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     this.actualizarJefe();
+
+    if (this.controles.silencioPresionado) {
+      const silenciado = sonido.alternarSilencio();
+      this.game.events.emit(EVENTOS_HUD.aviso, silenciado ? 'sin sonido' : 'con sonido');
+    }
 
     this.actualizarParallax();
     this.actualizarAltares();
@@ -568,6 +577,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!fragmento.recoger()) return;
 
     this.fragmentosRecogidos += 1;
+    sonido.codice();
     this.game.events.emit(EVENTOS_HUD.codice, this.fragmentosRecogidos);
     // Aviso discreto: el lore no interrumpe la partida.
     this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Codice');
@@ -589,6 +599,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
       if (altar.puedeRezar && this.controles.interactuarPresionado) {
         altar.rezar();
+        sonido.altar();
         this.altarActivo = altar;
         this.cirujano.reponerEnAltar();
         this.game.events.emit(EVENTOS_HUD.aviso, 'el Altar responde');
@@ -616,6 +627,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private descender(umbral: Umbral): void {
     this.descendiendo = true;
+    sonido.descenso();
 
     this.cameras.main.fade(600, 11, 9, 11);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -627,6 +639,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private alMorir(): void {
     if (this.reapareciendo) return;
     this.reapareciendo = true;
+    sonido.muerteJugador();
 
     this.cameras.main.shake(240, 0.012);
     this.cameras.main.fade(RETARDO_REAPARICION - 200, 11, 9, 11);

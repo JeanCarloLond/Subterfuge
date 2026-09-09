@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 
 /**
  * Cierre del teaser: el gancho.
@@ -27,8 +28,9 @@ export class FinalScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#0b090b');
     this.cameras.main.fadeIn(900, 11, 9, 11);
 
-    // El HUD no pinta en una pantalla de cierre.
+    // El HUD no pinta en una pantalla de cierre, y el Vientre deja de respirar.
     if (this.scene.isActive('Hud')) this.scene.stop('Hud');
+    sonido.ambienteApagado();
 
     const centroX = RESOLUCION.ancho / 2;
 

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { AGARRE, COMBATE, DASH, FERVOR, MOVIMIENTO, POCION, VITALIDAD } from '../config/Sacramento';
 import type { Controles } from '../input/Controles';
 import { Fervor } from '../systems/Fervor';
+import { sonido } from '../systems/Sonido';
 import { Vitalidad } from '../systems/Vitalidad';
 
 export type EstadoCirujano =
@@ -463,6 +464,7 @@ export class CirujanoSacerdote {
   }
 
   private ejecutarSalto(impulso: number): void {
+    sonido.salto();
     this.cuerpo.setVelocityY(-impulso);
     this.instanteSaltoEncolado = -Infinity;
     this.ultimoInstanteEnSuelo = -Infinity;
@@ -493,6 +495,7 @@ export class CirujanoSacerdote {
     const direccion =
       this.controles.ejeX !== 0 ? Math.sign(this.controles.ejeX) : this.mirandoDerecha ? 1 : -1;
 
+    sonido.dash();
     this.estado = 'dash';
     this.finDash = ahora + DASH.duracionMs;
     this.finInvulnerabilidad = ahora + DASH.invulnerabilidadMs;

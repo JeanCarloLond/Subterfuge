@@ -26,16 +26,20 @@ interface Figura {
 
 // -- Cirujano-Sacerdote ------------------------------------------------------
 //
-// Silueta a partir del boceto de la artista y del lenguaje visual de
-// Blasphemous: capirote conico alto, mascara de metal sin ojos y tunica
-// morada con estola roja.
+// Silueta segun el boceto de la artista: el hombre de la MASCARA DORADA.
+// Capirote conico alto en oro, mascara sin ojos y tunica morada con estola
+// roja y hombreras doradas.
+//
+// Blasphemous es referente de TONO, no de diseno de personaje: sirve para el
+// horror gotico-religioso y el peso de la silueta, no para copiar al Penitente.
+// El Cirujano es oro y morado, no acero.
 //
 // Tres cosas que no se pueden perder al pasarlo a Aseprite:
 //
 //   1. Las MANOS palidas asoman a los lados. Son su oficio y su condena, y hay
 //      que poder leerlas a 1x sin ampliar.
-//   2. El capirote da toda la silueta reconocible en negativo. Es lo unico que
-//      distingue al Cirujano a contraluz.
+//   2. El oro de la mascara es su color identitario. Es lo que lo separa de
+//      cualquier otra figura encapuchada del genero.
 //   3. La mascara no tiene ojos, solo una hendidura. En la Diocesis mirar no es
 //      lo que da estatus, y el habito clerical lo refleja.
 //
@@ -43,9 +47,9 @@ interface Figura {
 
 const CIRUJANO: Figura = {
   paleta: {
-    K: 0xc2d1d4, // brillo del metal
-    k: 0x8fa3a8, // metal del capirote y la mascara
-    j: 0x5c6b70, // sombra del metal
+    K: 0xf2dc8c, // reflejo del oro
+    k: 0xc9a44c, // oro de la mascara y el capirote
+    j: 0x8a6a2a, // oro en sombra
     n: 0x171319, // hendidura de la mascara
     P: 0x63456f, // morado claro
     p: 0x4a3358, // morado de la tunica
@@ -72,8 +76,8 @@ const CIRUJANO: Figura = {
     '...jknnnnnnkj...',
     '...jkkkkkkkkj...',
     '....kkkkkkkk....',
-    '...pppppppp.....',
-    '..ppppPPpppp....',
+    '...kppppppppk...',
+    '..kkppPPppppkk..',
     '..pppPPrrPPpp...',
     '.mppPPrrrrPPpm..',
     '.mmppPPrrPPppm..',

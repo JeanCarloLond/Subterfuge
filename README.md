@@ -87,6 +87,7 @@ pararlo, `Ctrl + C` en la terminal.
 | Rezar / descender     | `E`                        |
 | Trepar (colgado)      | `W` / flecha arriba        |
 | Soltarse (colgado)    | `S` / flecha abajo         |
+| Silenciar el audio    | `M`                        |
 
 El **parry** es la mecánica central. Cuando un enemigo se tensa y se tiñe,
 te está avisando de que va a golpear: pulsa `K` en ese momento. Contra el
@@ -121,7 +122,10 @@ principio a fin:
 - **Tres zonas**: El Atrio, los Pasillos de Preparación y las Salas de
   Sacramento, más una pantalla de cierre.
 
-Pendiente: el arte definitivo, el audio, y escribir el gancho final.
+- **Audio**: efectos y ambiente sintetizados en tiempo real, sin ningún
+  archivo de sonido en el proyecto.
+
+Pendiente: el arte definitivo y escribir el gancho final.
 
 > **Sobre el arte que se ve ahora:** es provisional. Es pixel art escrito a mano
 > en código (`src/systems/ArteProvisional.ts`), sin ninguna imagen generada por

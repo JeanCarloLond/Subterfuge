@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { IMPACTO } from '../config/Sacramento';
+import { sonido } from './Sonido';
 
 /**
  * Sensacion de impacto: hitstop, sacudida de camara, chispas y destellos.
@@ -38,6 +39,7 @@ export class Impacto {
 
   /** Golpe del Cirujano conectando sobre un enemigo. */
   golpeAsestado(x: number, y: number, direccion: number, cargado: boolean): void {
+    sonido.golpe(cargado);
     this.congelar(cargado ? IMPACTO.hitstopCargadoMs : IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(
       cargado ? 140 : 90,
@@ -50,6 +52,7 @@ export class Impacto {
 
   /** Parry logrado: el momento mas legible de todo el combate. */
   parryLogrado(x: number, y: number): void {
+    sonido.parry();
     this.congelar(IMPACTO.hitstopParryMs);
 
     const camara = this.escena.cameras.main;
@@ -64,6 +67,7 @@ export class Impacto {
 
   /** El Cirujano encaja un golpe. */
   danoRecibido(): void {
+    sonido.dano();
     this.congelar(IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(160, IMPACTO.sacudidaRecibir);
     this.escena.cameras.main.flash(90, 140, 40, 40);
@@ -71,6 +75,7 @@ export class Impacto {
 
   /** Onda de la caida del Reformado: sacude y barre el suelo. */
   ondaSuelo(x: number, y: number, alcance: number): void {
+    sonido.ondaJefe();
     this.congelar(IMPACTO.hitstopCargadoMs);
     this.escena.cameras.main.shake(260, IMPACTO.sacudidaMuerte);
 
@@ -80,6 +85,7 @@ export class Impacto {
   }
 
   muerteEnemigo(x: number, y: number): void {
+    sonido.muerteEnemigo();
     this.congelar(IMPACTO.hitstopMuerteMs);
     this.escena.cameras.main.shake(180, IMPACTO.sacudidaMuerte);
     this.chispas(x, y, 0, 18, 0x8c2f2f);
