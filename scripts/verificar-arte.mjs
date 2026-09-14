@@ -18,7 +18,7 @@ const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
 const archivo = 'src/systems/ArteProvisional.ts';
 const src = readFileSync(join(raiz, archivo), 'utf8');
 
-const figuras = [...src.matchAll(/const (\w+): Figura = \{[\s\S]*?filas: \[([\s\S]*?)\n {2}\],/g)];
+const figuras = [...src.matchAll(/const (\w+): Figura = \{[\s\S]*?filas: \[([^\]]*)\]/g)];
 
 if (figuras.length === 0) {
   console.error(`No encontré ninguna figura en ${archivo}.`);

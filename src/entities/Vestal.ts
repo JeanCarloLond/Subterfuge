@@ -72,6 +72,10 @@ export class Vestal implements Enemigo {
     return this.estado === 'muerto';
   }
 
+  get hiereAlContacto(): boolean {
+    return !this.estaMuerto;
+  }
+
   get estadoActual(): EstadoVestal {
     return this.estado;
   }

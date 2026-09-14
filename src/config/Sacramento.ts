@@ -135,6 +135,32 @@ export const COMBATE = {
   },
 } as const;
 
+/**
+ * Dano por contacto: rozar el cuerpo de un enemigo hiere.
+ *
+ * Sin esto se podia atravesar a los Devotos sin consecuencia, porque su unica
+ * hitbox esta DELANTE de ellos. El contacto no se puede parar con el parry (no
+ * es un golpe), pero si atravesar con los i-frames del dash: pasar a traves de
+ * un enemigo es una habilidad, no algo gratis.
+ */
+export const CONTACTO = {
+  dano: 1,
+  /** Empujon al rozar, para separar los cuerpos y que no se encadene el dano. */
+  retrocesoX: 160,
+  retrocesoY: 140,
+} as const;
+
+/**
+ * Reliquias: mejoras permanentes escondidas por el Vientre.
+ * Son el incentivo de explorar: una ruta opcional siempre guarda algo.
+ */
+export const RELIQUIA = {
+  /** Puntos de vitalidad maxima que anade un Relicario de Carne. */
+  vitalidadExtra: 1,
+  /** Cargas de Pocion que anade un Frasco Consagrado. */
+  pocionExtra: 1,
+} as const;
+
 /** Pocion de Carne: cura consumible. Se repone al rezar en un Altar. */
 export const POCION = {
   cargasMaximas: 3,

@@ -39,8 +39,10 @@ export class HudScene extends Phaser.Scene {
   private textoAviso!: Phaser.GameObjects.Text;
 
   private vitalidadActual: number = VITALIDAD.maxima;
+  private vitalidadMaxima: number = VITALIDAD.maxima;
   private fervorActual: number = FERVOR.inicial;
   private pocionesActuales: number = POCION.cargasMaximas;
+  private pocionesMaximas: number = POCION.cargasMaximas;
   private fragmentos = 0;
   /** Negativo mientras no hay jefe en escena: la barra no se dibuja. */
   private jefeVida = -1;
@@ -83,16 +85,18 @@ export class HudScene extends Phaser.Scene {
   private escucharEscenaDeJuego(): void {
     const bus = this.game.events;
 
-    const alVitalidad = (puntos: number) => {
+    const alVitalidad = (puntos: number, maximo?: number) => {
       this.vitalidadActual = puntos;
+      if (maximo !== undefined) this.vitalidadMaxima = maximo;
       this.redibujar();
     };
     const alFervor = (puntos: number) => {
       this.fervorActual = puntos;
       this.redibujar();
     };
-    const alPociones = (cargas: number) => {
+    const alPociones = (cargas: number, maximo?: number) => {
       this.pocionesActuales = cargas;
+      if (maximo !== undefined) this.pocionesMaximas = maximo;
       this.redibujar();
     };
     const alCodice = (total: number) => {
@@ -144,7 +148,7 @@ export class HudScene extends Phaser.Scene {
     const alto = 8;
     const separacion = 2;
 
-    for (let i = 0; i < VITALIDAD.maxima; i += 1) {
+    for (let i = 0; i < this.vitalidadMaxima; i += 1) {
       const lleno = i < this.vitalidadActual;
       const px = x + i * (ancho + separacion);
 
@@ -180,7 +184,7 @@ export class HudScene extends Phaser.Scene {
     const lado = 5;
     const separacion = 3;
 
-    for (let i = 0; i < POCION.cargasMaximas; i += 1) {
+    for (let i = 0; i < this.pocionesMaximas; i += 1) {
       const disponible = i < this.pocionesActuales;
       const px = x + i * (lado + separacion);
 

@@ -56,6 +56,14 @@ export class PasillosScene extends EscenaNivel {
         // Repisa de archivo: ruta alta opcional con un fragmento.
         [840, 448, 5], //          x 840..920
 
+        // Archivo cerrado (secreto): un escalon mas alla de la repisa, pegado
+        // al muro derecho. Guarda un Relicario.
+        [980, 440, 6], //          x 980..1076 — hueco de 60 px desde la repisa
+
+        // Altillo (secreto): sobre el primer corredor, entre el techo y el
+        // suelo. Solo se ve si se mira hacia arriba al pasar. Frasco.
+        [400, 108, 6], //          x 400..496  — desde 160, 52 px: salto simple
+
         // Corredor 3 (fondo): suelo continuo hasta el umbral.
         [0, 520, 70], //           x 0..1120
       ],
@@ -95,6 +103,42 @@ export class PasillosScene extends EscenaNivel {
       fragmentos: [
         [470, 412, 'codice-04'],
         [880, 428, 'codice-05'],
+      ],
+
+      reliquias: [
+        [1030, 440, 'pasillos-relicario', 'relicario'],
+        [448, 108, 'pasillos-frasco', 'frasco'],
+      ],
+
+      // Burocracia: columnas como estanterias, cera de archivo, exvotos que
+      // cuelgan del techo bajo, y la primera sangre en el suelo del fondo.
+      decorado: [
+        [100, 160, 'columna'],
+        [420, 160, 'columna'],
+        [700, 160, 'columna'],
+        [1000, 160, 'columna'],
+        [40, 160, 'vela'],
+        [80, 160, 'vela'],
+        [200, 264, 'exvoto'],
+        [320, 264, 'exvoto'],
+        [520, 264, 'exvoto'],
+        [640, 264, 'exvoto'],
+        [150, 344, 'vela'],
+        [300, 344, 'vela'],
+        [720, 344, 'vela'],
+        [1000, 344, 'vela'],
+        [220, 344, 'columna'],
+        [900, 344, 'columna'],
+        [100, 520, 'vela'],
+        [140, 520, 'vela'],
+        [300, 520, 'charco'],
+        [640, 520, 'charco'],
+        [500, 520, 'columna'],
+        [960, 520, 'columna'],
+        [1010, 440, 'vela'],
+        [1060, 440, 'vela'],
+        [424, 108, 'vela'],
+        [472, 108, 'vela'],
       ],
 
       umbral: {

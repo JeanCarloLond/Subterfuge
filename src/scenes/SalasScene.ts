@@ -56,6 +56,25 @@ export class SalasScene extends EscenaNivel {
 
       fragmentos: [[350, 180, 'codice-06']],
 
+      // Un Frasco en la repisa derecha, la mas expuesta al jefe: cogerlo en
+      // mitad del combate es una decision, no un paseo.
+      reliquias: [[568, 208, 'salas-frasco', 'frasco']],
+
+      // El quirofano-altar: la camilla en el centro y la sangre de los
+      // sacramentos anteriores. Nada de exvotos aqui: nadie da las gracias.
+      decorado: [
+        [400, 288, 'camilla'],
+        [360, 288, 'vela'],
+        [440, 288, 'vela'],
+        [300, 288, 'charco'],
+        [520, 288, 'charco'],
+        [410, 288, 'charco'],
+        [60, 288, 'columna'],
+        [740, 288, 'columna'],
+        [200, 208, 'vela'],
+        [232, 208, 'vela'],
+      ],
+
       umbral: {
         x: 730,
         y: 288,

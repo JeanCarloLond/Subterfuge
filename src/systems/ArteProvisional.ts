@@ -58,6 +58,7 @@ const CIRUJANO: Figura = {
     m: 0xd8cdbe, // manos
     g: 0x3a2c22, // botas y correas
   },
+  // prettier-ignore
   filas: [
     '.......KK.......',
     '.......Kk.......',
@@ -105,6 +106,7 @@ const DEVOTO: Figura = {
     g: 0x5c4636, // ropa
     d: 0x3a2c22, // sombra
   },
+  // prettier-ignore
   filas: [
     '.....hhhh.......',
     '....hhhhhh......',
@@ -144,6 +146,7 @@ const PIEDRA: Figura = {
     c: 0x37302a,
     j: 0x241f1b, // junta
   },
+  // prettier-ignore
   filas: [
     'jjjjjjjjjjjjjjjj',
     'jaaaaaaabaaaaaaj',
@@ -176,6 +179,7 @@ const ALTAR: Figura = {
     F: 0xf5d78a, // llama clara
     r: 0x8c2f2f,
   },
+  // prettier-ignore
   filas: [
     '................',
     '.......F........',
@@ -208,6 +212,7 @@ const CODICE: Figura = {
     i: 0x5c4a2a, // tinta
     s: 0xb9a878, // sombra
   },
+  // prettier-ignore
   filas: [
     '.vvvvvv.',
     'vvvvvvvv',
@@ -231,6 +236,7 @@ const UMBRAL: Figura = {
     m: 0x3a2f38, // marco
     o: 0x0d0a0d, // oscuridad
   },
+  // prettier-ignore
   filas: [
     '......mmmmmmmm......',
     '....mmmmmmmmmmmm....',
@@ -255,6 +261,7 @@ const VESTAL: Figura = {
     o: 0xe8d9a0, // oro del sello
     p: 0x9a8878, // piel
   },
+  // prettier-ignore
   filas: [
     '.......oo.......',
     '......oooo......',
@@ -295,6 +302,7 @@ const SELLO: Figura = {
     i: 0x7d2b2b, // impronta
     s: 0xb9a878, // sombra
   },
+  // prettier-ignore
   filas: [
     '..oooo..',
     '.oooooo.',
@@ -321,6 +329,7 @@ const REFORMADO: Figura = {
     v: 0xc9bda8, // vendaje
     n: 0x2a1a1e, // hueco
   },
+  // prettier-ignore
   filas: [
     '.........cccccccc...........',
     '.......cccccccccccc.........',
@@ -357,6 +366,174 @@ const REFORMADO: Figura = {
   ],
 };
 
+// -- Reliquias ---------------------------------------------------------------
+// Relicario de Carne (vitalidad) y Frasco Consagrado (pocion). Mas ricos en
+// color que un fragmento del Codice: son un premio de cuerpo, no de lectura.
+
+const RELICARIO: Figura = {
+  paleta: {
+    o: 0xc9a44c, // oro del relicario
+    O: 0xf2dc8c, // reflejo
+    c: 0x8c2f2f, // carne dentro
+    C: 0xb85454, // carne clara
+    s: 0x5c3a1a, // sombra
+  },
+  // prettier-ignore
+  filas: [
+    '...oOo...',
+    '..oOOOo..',
+    '.oOcCcOo.',
+    'oOcCCCcOo',
+    'oOcCcCcOo',
+    'oOscCcsOo',
+    '.oOsssOo.',
+    '..ooooo..',
+    '...sss...',
+    '..sssss..',
+  ],
+};
+
+const FRASCO: Figura = {
+  paleta: {
+    v: 0x8fa3a8, // vidrio
+    V: 0xc2d1d4, // brillo del vidrio
+    l: 0xa8563f, // liquido
+    L: 0xc9705a, // liquido claro
+    t: 0x3a2c22, // tapon
+  },
+  // prettier-ignore
+  filas: [
+    '...tt...',
+    '...tt...',
+    '..vVVv..',
+    '..v..v..',
+    '.vV..Vv.',
+    '.vLllLv.',
+    '.vlLLlv.',
+    '.vlllLv.',
+    '.vVllVv.',
+    '..vvvv..',
+  ],
+};
+
+// -- Decorado ----------------------------------------------------------------
+// Piezas de escenografia sin colision. Existen para que cada zona tenga
+// puntos de referencia: sin ellos todo son plataformas identicas y el jugador
+// no sabe donde ha estado. Ninguna representa a un Primigenio.
+
+const COLUMNA: Figura = {
+  paleta: {
+    a: 0x51473d,
+    b: 0x453c33,
+    c: 0x37302a,
+    j: 0x241f1b,
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjj',
+    'jaaaaaaaaaaj',
+    'jaaaaaaaaaaj',
+    'jjjjjjjjjjjj',
+    '..jbbbbbbj..',
+    ...Array<string>(32).fill('..jbbabbcbj.'.slice(0, 12)),
+    '..jbbbbbbj..',
+    'jjjjjjjjjjjj',
+    'jaaaaaaaaaaj',
+    'jjjjjjjjjjjj',
+  ],
+};
+
+const VELA: Figura = {
+  paleta: {
+    F: 0xf5d78a, // llama clara
+    f: 0xe8a03a, // llama
+    w: 0xd8cdbe, // cera
+    W: 0xb9a878, // cera en sombra
+    p: 0x4a4038, // pie
+  },
+  // prettier-ignore
+  filas: [
+    '..F..',
+    '.FfF.',
+    '.fff.',
+    '..w..',
+    '.wwW.',
+    '.wwW.',
+    '.wwW.',
+    '.wwW.',
+    '.ppp.',
+    'ppppp',
+  ],
+};
+
+// Exvoto: ofrenda de agradecimiento colgada de una cadena. Una forma de
+// extremidad en cera, como los exvotos reales, sin rostro.
+const EXVOTO: Figura = {
+  paleta: {
+    k: 0x5c5c62, // cadena
+    w: 0xd8cdbe, // cera
+    W: 0xb9a878, // cera en sombra
+    r: 0x8c2f2f, // cinta
+  },
+  // prettier-ignore
+  filas: [
+    '....k.....',
+    '....k.....',
+    '....k.....',
+    '...rrr....',
+    '...www....',
+    '...wwW....',
+    '...wwW....',
+    '..wwwW....',
+    '.wwwwWW...',
+    'wwWwwWW...',
+    'wWW.wWW...',
+    '.....WW...',
+    '......W...',
+  ],
+};
+
+const CHARCO: Figura = {
+  paleta: {
+    r: 0x5c1f24,
+    R: 0x7d2b2b,
+  },
+  // prettier-ignore
+  filas: [
+    '......rrrrr.......',
+    '...rrrRRRRrrrr....',
+    '.rrrRRRRRRRrrrrr..',
+    'rrrRRRRrRRRRrrrrrr',
+    '.rrrrrrrrrrrrrrr..',
+  ],
+};
+
+// Altar-camilla: la mesa del sacramento. Metal quirurgico con correas.
+const CAMILLA: Figura = {
+  paleta: {
+    m: 0x8fa3a8, // metal
+    M: 0xc2d1d4, // brillo
+    d: 0x5c6b70, // metal en sombra
+    c: 0x3a2c22, // correas
+    r: 0x8c2f2f, // mancha
+  },
+  // prettier-ignore
+  filas: [
+    'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
+    'mmmmcmmmmmmmmmrrmmmmmmmmmcmmmmmm',
+    'mmmmcmmmmmmmmrrrrmmmmmmmmcmmmmmm',
+    'dddddddddddddddddddddddddddddddd',
+    '..dd......................dd....',
+    '..dd......................dd....',
+    '..dd......................dd....',
+    '..dd......................dd....',
+    '..dd......................dd....',
+    '..dd......................dd....',
+    '.dddd....................dddd...',
+    '.dddd....................dddd...',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -367,6 +544,13 @@ const FIGURAS: Record<string, Figura> = {
   altar: ALTAR,
   codice: CODICE,
   umbral: UMBRAL,
+  relicario: RELICARIO,
+  frasco: FRASCO,
+  columna: COLUMNA,
+  vela: VELA,
+  exvoto: EXVOTO,
+  charco: CHARCO,
+  camilla: CAMILLA,
 };
 
 /**

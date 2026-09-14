@@ -1,4 +1,8 @@
 import { CODICE } from '../lore/Codice';
+import { RELIQUIA } from '../config/Sacramento';
+
+/** Tipos de reliquia. Cada una mejora algo del Cirujano de forma permanente. */
+export type TipoReliquia = 'relicario' | 'frasco';
 
 /**
  * Estado de la partida que sobrevive a los cambios de escena.
@@ -10,6 +14,7 @@ import { CODICE } from '../lore/Codice';
 class Progreso {
   private recogidos = new Set<string>();
   private leidos = new Set<string>();
+  private reliquias = new Map<string, TipoReliquia>();
 
   /** @returns true si es la primera vez que se recoge este fragmento. */
   recogerFragmento(id: string): boolean {
@@ -47,10 +52,42 @@ class Progreso {
     return CODICE.map((f) => f.id).filter((id) => this.recogidos.has(id));
   }
 
+  // -- Reliquias -----------------------------------------------------------
+
+  /** @returns true si es la primera vez que se recoge esta reliquia. */
+  recogerReliquia(id: string, tipo: TipoReliquia): boolean {
+    if (this.reliquias.has(id)) return false;
+    this.reliquias.set(id, tipo);
+    return true;
+  }
+
+  tieneReliquia(id: string): boolean {
+    return this.reliquias.has(id);
+  }
+
+  get reliquiasRecogidas(): number {
+    return this.reliquias.size;
+  }
+
+  private contar(tipo: TipoReliquia): number {
+    return [...this.reliquias.values()].filter((t) => t === tipo).length;
+  }
+
+  /** Vitalidad maxima extra acumulada por Relicarios de Carne. */
+  get vitalidadExtra(): number {
+    return this.contar('relicario') * RELIQUIA.vitalidadExtra;
+  }
+
+  /** Cargas de Pocion extra acumuladas por Frascos Consagrados. */
+  get pocionesExtra(): number {
+    return this.contar('frasco') * RELIQUIA.pocionExtra;
+  }
+
   /** Volver al Atrio desde el cierre empieza una partida limpia. */
   reiniciar(): void {
     this.recogidos.clear();
     this.leidos.clear();
+    this.reliquias.clear();
   }
 }
 

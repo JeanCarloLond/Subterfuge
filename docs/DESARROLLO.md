@@ -73,6 +73,7 @@ src/
   objetos/
     Altar.ts                     Punto de guardado
     FragmentoCodice.ts           Coleccionable de lore
+    Reliquia.ts                  Mejora permanente escondida (vida o pociones)
     Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
     Sonido.ts                    Audio sintetizado con la Web Audio API
     ArteProvisional.ts           Pixel art de relleno escrito a mano en código
@@ -218,6 +219,12 @@ posición, para que las colisiones no se enteren.
 - [x] Jefe: el Reformado, tres fases (`SalasScene`)
 - [x] Tercera zona: Salas de Sacramento
 - [x] Audio: efectos y drone de ambiente, sintetizados sin archivos
+- [x] Daño por contacto: rozar a un enemigo hiere (el dash lo atraviesa)
+- [x] Barras de vida flotantes en enemigos
+- [x] Lectura del Códice (`L`) con estado persistente entre zonas
+- [x] Reliquias en rutas secretas: +vitalidad máxima, +pociones
+- [x] Decorado por zona: columnas, velas, exvotos, charcos, altar-camilla
+- [x] Cierre con línea oculta al completar el Códice
 - [ ] Sustituir placeholders por el arte del equipo
 - [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
@@ -267,6 +274,27 @@ expuesto: esa es la ventana de castigo y el pulso del combate.
 
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
+
+## Diseño de niveles: por qué hay desvíos
+
+Un nivel sin nada que ganar explorando es un pasillo, por muy largo que sea.
+Cada zona sigue la misma regla: **el camino principal enseña, los desvíos
+premian**. Cada desvío exige una mecánica (doble salto, dash, agarre) y guarda
+una de dos cosas:
+
+- **Fragmento del Códice** — premio de lectura. Seis en total.
+- **Reliquia** — premio de cuerpo. `Relicario de Carne` (+1 vitalidad máxima)
+  y `Frasco Consagrado` (+1 Poción). Cinco en total, persistentes entre zonas
+  (`Progreso.ts`).
+
+El decorado (`decorado:` en cada definición) no es adorno: da **puntos de
+referencia** para que el jugador sepa dónde ha estado. Cada zona tiene su
+vocabulario — el Atrio columnas y exvotos, los Pasillos cera de archivo y
+techos bajos, las Salas la camilla y la sangre — y ninguna pieza representa a
+un Primigenio.
+
+Rejugabilidad: el cierre cuenta fragmentos y reliquias, y **con el Códice
+completo aparece una última línea al margen** que no se ve de otra forma.
 
 ## El Códice de la Carne
 

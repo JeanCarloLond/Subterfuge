@@ -8,9 +8,10 @@ import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
+import { Reliquia } from '../objetos/Reliquia';
 import { DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
-import { progreso } from '../systems/Progreso';
+import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
 import { EVENTOS_HUD } from '../ui/HudScene';
 
@@ -26,6 +27,13 @@ export interface RondaDevoto {
   izquierda: number;
   derecha: number;
 }
+
+/** Pieza de escenografia sin colision: [x, y, tipo]. y es la base. */
+export type Decorado = readonly [x: number, y: number, tipo: TipoDecorado];
+export type TipoDecorado = 'columna' | 'vela' | 'exvoto' | 'charco' | 'camilla';
+
+/** Reliquia escondida: [x, y, id, tipo]. */
+export type ReliquiaDef = readonly [x: number, y: number, id: string, tipo: TipoReliquia];
 
 /** Umbral de paso a la siguiente zona del descenso. */
 export interface Umbral {
@@ -53,6 +61,10 @@ export interface DefinicionNivel {
   jefe?: RondaDevoto;
   altares: ReadonlyArray<{ x: number; y: number }>;
   fragmentos: ReadonlyArray<readonly [number, number, string]>;
+  /** Mejoras permanentes en rutas opcionales. El motivo de explorar. */
+  reliquias?: readonly ReliquiaDef[];
+  /** Escenografia. Da puntos de referencia a la zona; no colisiona. */
+  decorado?: readonly Decorado[];
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -101,6 +113,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private jefeDerrotado = false;
   private altares: Altar[] = [];
   private fragmentos: FragmentoCodice[] = [];
+  private reliquias: Reliquia[] = [];
   private grupoEnemigos?: Phaser.Physics.Arcade.Group;
 
   private altarActivo: Altar | null = null;
@@ -127,6 +140,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(colorFondo);
 
     this.crearFondo();
+    this.crearDecorado();
     this.suelos = this.construirGeometria();
     this.controles = new Controles(this);
     this.impacto = new Impacto(this);
@@ -205,6 +219,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.jefeDerrotado = false;
     this.altares = [];
     this.fragmentos = [];
+    this.reliquias = [];
     this.grupoEnemigos = undefined;
     this.altarActivo = null;
     this.reapareciendo = false;
@@ -264,6 +279,40 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
   }
 
+  /**
+   * Escenografia. Va entre el telon de fondo y las plataformas, y algunas
+   * piezas tienen vida propia (la llama de la vela, el vaiven del exvoto) para
+   * que la zona no parezca una foto.
+   */
+  private crearDecorado(): void {
+    for (const [x, y, tipo] of this.definicion.decorado ?? []) {
+      const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
+      pieza.setOrigin(0.5, tipo === 'exvoto' ? 0 : 1);
+      pieza.setDepth(-5);
+
+      if (tipo === 'vela') {
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.75, to: 1 },
+          duration: Phaser.Math.Between(260, 420),
+          yoyo: true,
+          repeat: -1,
+        });
+      } else if (tipo === 'exvoto') {
+        this.tweens.add({
+          targets: pieza,
+          angle: { from: -3, to: 3 },
+          duration: Phaser.Math.Between(1800, 2600),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'columna') {
+        pieza.setAlpha(0.85);
+      }
+    }
+  }
+
   private construirGeometria(): Phaser.Physics.Arcade.StaticGroup {
     const suelos = this.physics.add.staticGroup();
 
@@ -289,14 +338,14 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cirujano = new CirujanoSacerdote(this, x, y, this.controles);
     this.physics.add.collider(this.cirujano.sprite, this.suelos);
 
-    this.cirujano.vitalidad.on('cambio', (puntos: number) => {
-      this.game.events.emit(EVENTOS_HUD.vitalidad, puntos);
+    this.cirujano.vitalidad.on('cambio', (puntos: number, maximo: number) => {
+      this.game.events.emit(EVENTOS_HUD.vitalidad, puntos, maximo);
     });
     this.cirujano.fervor.on('cambio', (puntos: number) => {
       this.game.events.emit(EVENTOS_HUD.fervor, puntos);
     });
-    this.cirujano.eventos.on('pociones', (cargas: number) => {
-      this.game.events.emit(EVENTOS_HUD.pociones, cargas);
+    this.cirujano.eventos.on('pociones', (cargas: number, maximo: number) => {
+      this.game.events.emit(EVENTOS_HUD.pociones, cargas, maximo);
     });
     this.cirujano.vitalidad.on('muerte', () => this.alMorir());
 
@@ -307,6 +356,24 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.resolverGolpeDelCirujano(spriteEnemigo as Phaser.GameObjects.GameObject);
       },
     );
+
+    // Rozar a un enemigo hiere. Sin esto se los atravesaba gratis, porque su
+    // hitbox de ataque esta delante de ellos y no cubre su propio cuerpo.
+    this.physics.add.overlap(
+      this.cirujano.sprite,
+      this.obtenerGrupoEnemigos(),
+      (_jugador, spriteEnemigo) => {
+        this.resolverContacto(spriteEnemigo as Phaser.GameObjects.GameObject);
+      },
+    );
+  }
+
+  private resolverContacto(spriteEnemigo: Phaser.GameObjects.GameObject): void {
+    const enemigo = enemigoDe(spriteEnemigo);
+    if (!enemigo || !enemigo.hiereAlContacto || this.cirujano.estaMuerto) return;
+
+    const resultado = this.cirujano.recibirContacto(enemigo.sprite.x);
+    if (resultado === 'herido') this.impacto.danoRecibido();
   }
 
   private obtenerGrupoEnemigos(): Phaser.Physics.Arcade.Group {
@@ -368,6 +435,17 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
       this.physics.add.overlap(this.cirujano.sprite, fragmento.sprite, () =>
         this.resolverRecogidaDeFragmento(fragmento),
+      );
+    }
+
+    for (const [x, y, id, tipo] of this.definicion.reliquias ?? []) {
+      if (progreso.tieneReliquia(id)) continue;
+
+      const reliquia = new Reliquia(this, x, y, id, tipo);
+      this.reliquias.push(reliquia);
+
+      this.physics.add.overlap(this.cirujano.sprite, reliquia.sprite, () =>
+        this.resolverRecogidaDeReliquia(reliquia),
       );
     }
 
@@ -593,6 +671,16 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Codice  ·  L para leer');
   }
 
+  private resolverRecogidaDeReliquia(reliquia: Reliquia): void {
+    if (!reliquia.recoger()) return;
+    if (!progreso.recogerReliquia(reliquia.id, reliquia.tipo)) return;
+
+    this.cirujano.aplicarReliquia(reliquia.tipo);
+    sonido.altar();
+    this.cameras.main.flash(160, 232, 217, 160);
+    this.game.events.emit(EVENTOS_HUD.aviso, `${reliquia.nombre}  ·  ${reliquia.efecto}`);
+  }
+
   /**
    * Abre la lectura del Codice sobre el juego en pausa.
    * Si no hay nada recogido, solo lo dice: no merece una pantalla entera.
@@ -720,9 +808,17 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private emitirEstadoInicial(): void {
     // Un frame de margen: el HUD debe existir antes de recibir eventos.
     this.time.delayedCall(0, () => {
-      this.game.events.emit(EVENTOS_HUD.vitalidad, this.cirujano.vitalidad.puntos);
+      this.game.events.emit(
+        EVENTOS_HUD.vitalidad,
+        this.cirujano.vitalidad.puntos,
+        this.cirujano.vitalidad.maxima,
+      );
       this.game.events.emit(EVENTOS_HUD.fervor, this.cirujano.fervor.puntos);
-      this.game.events.emit(EVENTOS_HUD.pociones, this.cirujano.pociones);
+      this.game.events.emit(
+        EVENTOS_HUD.pociones,
+        this.cirujano.pociones,
+        this.cirujano.pocionesMaximas,
+      );
       this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
     });
   }

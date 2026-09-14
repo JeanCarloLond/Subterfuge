@@ -8,6 +8,14 @@ import { EscenaNivel, type DefinicionNivel } from './EscenaNivel';
  * en orden, sin un solo cartel: caminar -> salto -> doble salto -> dash ->
  * agarre de bordes.
  *
+ * Ademas del camino principal (el descenso en zigzag) tiene TRES desvios, y
+ * cada uno guarda algo:
+ *   - la ruta alta, a la derecha de la entrada: un fragmento del Codice
+ *   - el campanario, arriba a la izquierda: un Relicario (exige doble salto)
+ *   - la capilla lateral, a media bajada: un Frasco (exige dash)
+ *   - el nicho del fondo, a la derecha: otro fragmento (exige dash)
+ * Sin desvios que guarden algo no hay motivo para mirar a los lados.
+ *
  * Cuando lleguen los tilesets, esta descripcion se sustituye por la carga de
  * public/assets/maps/atrio.tmj.
  */
@@ -36,13 +44,17 @@ export class AtrioScene extends EscenaNivel {
         // Suelo inicial: espacio para caminar.
         [0, 288, 22], //           x 0..352
 
-        // Ruta alta opcional, con un fragmento del Códice al final.
+        // Campanario (secreto): arriba a la izquierda, subiendo por el muro.
+        [40, 200, 4], //           x 40..104   — 88 px: salto simple
+        [0, 96, 6], //             x 0..96     — 104 px: exige doble salto
+
+        // Ruta alta opcional, con un fragmento del Codice al final.
         [400, 240, 5], //          x 400..480 — 48 px: salto simple holgado
         [540, 128, 5], //          x 540..620 — 112 px: exige doble salto
         [760, 128, 4], //          x 760..824 — hueco de 140 px: exige dash
 
-        // Descenso hacia los Pasillos. Es también la ruta de vuelta: cada tramo
-        // solapa en x con el de arriba, con 80 px de caída entre ellos.
+        // Descenso hacia los Pasillos. Es tambien la ruta de vuelta: cada tramo
+        // solapa en x con el de arriba, con 80 px de caida entre ellos.
         [330, 368, 6], //          x 330..426  solapa con el suelo en 330..352
         [250, 448, 6], //          x 250..346
         [330, 528, 6], //          x 330..426
@@ -52,12 +64,21 @@ export class AtrioScene extends EscenaNivel {
         [180, 848, 12], //         x 180..372
         [340, 928, 12], //         x 340..532
         [120, 1008, 20], //        x 120..440 — fondo, umbral al descenso
+
+        // Capilla lateral (secreto): a media bajada, cruzando un hueco con dash.
+        [560, 528, 7], //          x 560..672 — hueco de 134 px desde 426
+
+        // Nicho del fondo (secreto): tras un hueco de 150 px, solo con dash.
+        [590, 1008, 7], //         x 590..702
       ],
 
-      // Superficies para el agarre de bordes.
+      // Superficies para el agarre de bordes. La del campanario es la que se
+      // trepa para llegar arriba; la del nicho lo cierra por detras.
       paredes: [
         [944, 360, 940],
         [560, 600, 780],
+        [0, 112, 200],
+        [704, 940, 1010],
       ],
 
       devotos: [
@@ -65,6 +86,8 @@ export class AtrioScene extends EscenaNivel {
         { x: 380, y: 528, izquierda: 340, derecha: 420 },
         { x: 150, y: 688, izquierda: 70, derecha: 300 },
         { x: 430, y: 928, izquierda: 360, derecha: 520 },
+        // Guardia de la capilla: el desvio no sale gratis.
+        { x: 610, y: 528, izquierda: 570, derecha: 660 },
       ],
 
       altares: [
@@ -76,7 +99,45 @@ export class AtrioScene extends EscenaNivel {
       fragmentos: [
         [840, 106, 'codice-01'],
         [380, 346, 'codice-02'],
-        [180, 986, 'codice-03'],
+        [650, 986, 'codice-03'],
+      ],
+
+      reliquias: [
+        [48, 96, 'atrio-relicario', 'relicario'],
+        [640, 528, 'atrio-frasco', 'frasco'],
+      ],
+
+      // Puntos de referencia. El Atrio aun es arquitectura: columnas, cera,
+      // exvotos de sacramentos "exitosos" colgando. La carne solo asoma en los
+      // charcos que dejan las rondas de los Devotos.
+      decorado: [
+        // Entrada: columnata y la cera del primer Altar.
+        [40, 288, 'columna'],
+        [200, 288, 'columna'],
+        [340, 288, 'columna'],
+        [104, 288, 'vela'],
+        [136, 288, 'vela'],
+        [262, 288, 'charco'],
+        // Exvotos colgando bajo la ruta alta y bajo el campanario.
+        [556, 144, 'exvoto'],
+        [596, 144, 'exvoto'],
+        [24, 112, 'exvoto'],
+        [60, 112, 'exvoto'],
+        // Segundo Altar.
+        [84, 688, 'vela'],
+        [116, 688, 'vela'],
+        [130, 688, 'columna'],
+        [300, 688, 'columna'],
+        // Capilla lateral: cera y una columna que la cierra.
+        [576, 528, 'vela'],
+        [604, 528, 'vela'],
+        [664, 528, 'columna'],
+        // Fondo, junto al umbral.
+        [160, 1008, 'columna'],
+        [400, 1008, 'columna'],
+        [300, 1008, 'charco'],
+        [620, 1008, 'vela'],
+        [680, 1008, 'vela'],
       ],
 
       umbral: {

@@ -91,6 +91,10 @@ export class Reformado implements Enemigo {
     return this.estado === 'muerto';
   }
 
+  get hiereAlContacto(): boolean {
+    return this.estado !== 'dormido' && this.estado !== 'muerto';
+  }
+
   get estadoActual(): EstadoReformado {
     return this.estado;
   }

@@ -13,6 +13,8 @@ import type Phaser from 'phaser';
 export interface Enemigo {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   readonly estaMuerto: boolean;
+  /** false mientras no suponga amenaza (el jefe dormido, por ejemplo). */
+  readonly hiereAlContacto: boolean;
 
   /** @returns true si el golpe conecto. */
   recibirDano(cantidad: number, origenX: number): boolean;

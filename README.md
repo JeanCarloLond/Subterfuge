@@ -123,6 +123,9 @@ principio a fin:
   fases.
 - **Tres zonas**: El Atrio, los Pasillos de Preparación y las Salas de
   Sacramento, más una pantalla de cierre.
+- **Exploración**: rutas secretas con **reliquias** (mejoras permanentes de
+  vida y pociones), seis fragmentos del Códice que se leen en el juego, y una
+  última línea que solo aparece si se completa.
 
 - **Audio**: efectos y ambiente sintetizados en tiempo real, sin ningún
   archivo de sonido en el proyecto.

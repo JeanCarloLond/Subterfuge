@@ -10,17 +10,28 @@ export type EventoVitalidad = 'cambio' | 'herido' | 'muerte';
  * lo usen tanto el Cirujano como los enemigos sin duplicar logica.
  */
 export class Vitalidad extends Phaser.Events.EventEmitter {
-  readonly maxima: number;
+  private maxima_: number;
   private actual: number;
 
   constructor(maxima: number) {
     super();
-    this.maxima = maxima;
+    this.maxima_ = maxima;
     this.actual = maxima;
   }
 
   get puntos(): number {
     return this.actual;
+  }
+
+  get maxima(): number {
+    return this.maxima_;
+  }
+
+  /** Una reliquia amplia el maximo y cura esa misma cantidad. */
+  aumentarMaximo(cantidad: number): void {
+    this.maxima_ += cantidad;
+    this.actual = Math.min(this.maxima_, this.actual + cantidad);
+    this.emit('cambio', this.actual, this.maxima_);
   }
 
   get estaMuerto(): boolean {
@@ -32,7 +43,7 @@ export class Vitalidad extends Phaser.Events.EventEmitter {
     if (this.estaMuerto) return false;
 
     this.actual = Math.max(0, this.actual - cantidad);
-    this.emit('cambio', this.actual, this.maxima);
+    this.emit('cambio', this.actual, this.maxima_);
     this.emit('herido', cantidad);
 
     if (this.estaMuerto) this.emit('muerte');
@@ -42,12 +53,12 @@ export class Vitalidad extends Phaser.Events.EventEmitter {
   curar(cantidad: number): void {
     if (this.estaMuerto) return;
 
-    this.actual = Math.min(this.maxima, this.actual + cantidad);
-    this.emit('cambio', this.actual, this.maxima);
+    this.actual = Math.min(this.maxima_, this.actual + cantidad);
+    this.emit('cambio', this.actual, this.maxima_);
   }
 
   restaurar(): void {
-    this.actual = this.maxima;
-    this.emit('cambio', this.actual, this.maxima);
+    this.actual = this.maxima_;
+    this.emit('cambio', this.actual, this.maxima_);
   }
 }

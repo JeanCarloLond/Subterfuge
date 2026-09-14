@@ -79,6 +79,10 @@ export class Devoto implements Enemigo {
     return this.estado === 'muerto';
   }
 
+  get hiereAlContacto(): boolean {
+    return !this.estaMuerto;
+  }
+
   get estadoActual(): EstadoDevoto {
     return this.estado;
   }

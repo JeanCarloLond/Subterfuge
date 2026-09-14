@@ -1,7 +1,18 @@
 import Phaser from 'phaser';
-import { AGARRE, COMBATE, DASH, FERVOR, MOVIMIENTO, POCION, VITALIDAD } from '../config/Sacramento';
+import {
+  AGARRE,
+  COMBATE,
+  CONTACTO,
+  DASH,
+  FERVOR,
+  MOVIMIENTO,
+  POCION,
+  RELIQUIA,
+  VITALIDAD,
+} from '../config/Sacramento';
 import type { Controles } from '../input/Controles';
 import { Fervor } from '../systems/Fervor';
+import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
 import { Vitalidad } from '../systems/Vitalidad';
 
@@ -37,7 +48,8 @@ export class CirujanoSacerdote {
 
   private saltosRestantes = 0;
   private dashesEnAireRestantes = DASH.usosEnAire;
-  private cargasPocion = POCION.cargasMaximas;
+  private cargasPocionMax: number = POCION.cargasMaximas;
+  private cargasPocion: number = POCION.cargasMaximas;
 
   /** Marcas de tiempo del reloj de la escena (ms). */
   private ultimoInstanteEnSuelo = -Infinity;
@@ -67,8 +79,11 @@ export class CirujanoSacerdote {
     this.escena = escena;
     this.controles = controles;
 
-    this.vitalidad = new Vitalidad(VITALIDAD.maxima);
+    // Las reliquias recogidas en zonas anteriores siguen contando.
+    this.vitalidad = new Vitalidad(VITALIDAD.maxima + progreso.vitalidadExtra);
     this.fervor = new Fervor();
+    this.cargasPocionMax = POCION.cargasMaximas + progreso.pocionesExtra;
+    this.cargasPocion = this.cargasPocionMax;
 
     this.sprite = escena.physics.add.sprite(x, y, 'cirujano-placeholder');
     this.sprite.setOrigin(0.5, 1);
@@ -115,6 +130,25 @@ export class CirujanoSacerdote {
 
   get pociones(): number {
     return this.cargasPocion;
+  }
+
+  get pocionesMaximas(): number {
+    return this.cargasPocionMax;
+  }
+
+  /**
+   * Una reliquia recien recogida cambia al Cirujano aqui mismo. El progreso
+   * global ya la tiene apuntada; esto solo aplica su efecto a esta instancia.
+   */
+  aplicarReliquia(tipo: TipoReliquia): void {
+    if (tipo === 'relicario') {
+      this.vitalidad.aumentarMaximo(RELIQUIA.vitalidadExtra);
+      return;
+    }
+
+    this.cargasPocionMax += RELIQUIA.pocionExtra;
+    this.cargasPocion = Math.min(this.cargasPocionMax, this.cargasPocion + RELIQUIA.pocionExtra);
+    this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
   }
 
   /** Variante del swing en curso, para que la escena module el impacto. */
@@ -269,7 +303,7 @@ export class CirujanoSacerdote {
     this.estado = 'bebiendo';
     this.finAccion = ahora + POCION.duracionMs;
     this.vitalidad.curar(POCION.curacion);
-    this.eventos.emit('pociones', this.cargasPocion);
+    this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
   }
 
   /** Coloca y activa/desactiva la zona de dano segun la fase del golpe. */
@@ -444,7 +478,7 @@ export class CirujanoSacerdote {
     this.estado = 'aire';
     this.vitalidad.restaurar();
     this.fervor.reiniciar();
-    this.cargasPocion = POCION.cargasMaximas;
+    this.cargasPocion = this.cargasPocionMax;
 
     this.sprite.setAlpha(1);
     this.sprite.setPosition(x, y);
@@ -453,7 +487,34 @@ export class CirujanoSacerdote {
 
     this.finInvulnerabilidad = this.escena.time.now + VITALIDAD.invulnerabilidadMs;
     this.inicioCargaAtaque = -Infinity;
-    this.eventos.emit('pociones', this.cargasPocion);
+    this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
+  }
+
+  /**
+   * Rozar el cuerpo de un enemigo. A diferencia de un golpe, NO se puede parar:
+   * el parry lee ataques, no evita chocarse. Los i-frames (dash, o los de haber
+   * sido herido hace un instante) si lo evitan.
+   */
+  recibirContacto(origenX: number): ResultadoDano {
+    if (this.estado === 'muerto' || this.estado === 'dash') return 'ignorado';
+    if (this.esInvulnerable) return 'ignorado';
+
+    const ahora = this.escena.time.now;
+    this.vitalidad.recibirDano(CONTACTO.dano);
+    if (this.vitalidad.estaMuerto) return 'herido';
+
+    this.estado = 'herido';
+    this.finAccion = ahora + 220;
+    this.finInvulnerabilidad = ahora + VITALIDAD.invulnerabilidadMs;
+    this.inicioCargaAtaque = -Infinity;
+
+    // Empujon que separa los cuerpos: sin el, el contacto se encadenaria en
+    // cuanto acabaran los i-frames.
+    const direccion = this.sprite.x < origenX ? -1 : 1;
+    this.cuerpo.setAllowGravity(true);
+    this.cuerpo.setVelocity(direccion * CONTACTO.retrocesoX, -CONTACTO.retrocesoY);
+
+    return 'herido';
   }
 
   /**
@@ -486,8 +547,8 @@ export class CirujanoSacerdote {
   /** Rezar en un Altar repone el frasco sin devolver el Fervor gastado. */
   reponerEnAltar(): void {
     this.vitalidad.restaurar();
-    this.cargasPocion = POCION.cargasMaximas;
-    this.eventos.emit('pociones', this.cargasPocion);
+    this.cargasPocion = this.cargasPocionMax;
+    this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
   }
 
   private actualizarAccion(ahora: number, enSuelo: boolean): void {

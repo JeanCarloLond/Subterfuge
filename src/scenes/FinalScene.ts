@@ -83,6 +83,25 @@ export class FinalScene extends Phaser.Scene {
     this.aparecer(recuento, 2400);
     this.aparecer(reinicio, 3200);
 
+    // Codice completo: el margen tiene una ultima linea que solo aparece
+    // cuando se han leido todas las demas. Es el premio de rejugar y el
+    // motivo del lore-hunter para volver a bajar. El "no vengas" escondido lo
+    // describe el world bible como parte de la campana ARG.
+    if (this.fragmentos >= progreso.fragmentosTotales) {
+      const ultimoMargen = this.add
+        .text(centroX, 244, ['al margen, en otra tinta:', '"No vengas."'].join('\n'), {
+          fontFamily: 'monospace',
+          fontSize: '8px',
+          fontStyle: 'italic',
+          color: '#c98a8a',
+          align: 'center',
+          lineSpacing: 4,
+        })
+        .setOrigin(0.5, 0.5)
+        .setAlpha(0);
+      this.aparecer(ultimoMargen, 4400);
+    }
+
     this.input.keyboard?.once('keydown-R', () => {
       this.cameras.main.fade(400, 11, 9, 11);
       this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -98,8 +117,13 @@ export class FinalScene extends Phaser.Scene {
    */
   private textoRecuento(): string {
     const total = progreso.fragmentosTotales;
-    if (this.fragmentos === 0) return 'no recogiste ningun fragmento del Codice';
-    return `${this.fragmentos} de ${total} fragmentos del Codice`;
+    const reliquias = progreso.reliquiasRecogidas;
+    const codice =
+      this.fragmentos === 0
+        ? 'ningun fragmento del Codice'
+        : `${this.fragmentos} de ${total} fragmentos del Codice`;
+    const relicario = reliquias === 0 ? '' : `   ·   ${reliquias} de 5 reliquias`;
+    return codice + relicario;
   }
 
   private aparecer(objeto: Phaser.GameObjects.Text, retardoMs: number): void {
