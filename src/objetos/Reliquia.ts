@@ -6,18 +6,22 @@ export const RELIQUIAS: Record<TipoReliquia, { nombre: string; efecto: string; t
   {
     relicario: {
       nombre: 'Relicario de Carne',
-      efecto: 'vitalidad maxima +1',
+      efecto: 'vida maxima +1  ·  te cura',
       textura: 'relicario-placeholder',
     },
     frasco: {
       nombre: 'Frasco Consagrado',
-      efecto: 'Pocion de Carne +1',
+      efecto: 'Pocion de Carne +1  ·  te cura  ·  Q para beber',
       textura: 'frasco-placeholder',
     },
   };
 
 /**
  * Reliquia: mejora permanente escondida en una ruta opcional.
+ *
+ * Recogerla tambien CURA. Sin eso, el jugador que la coge con la vida baja
+ * —que es justo cuando mas la busca— ve subir el maximo y no la barra, y cree
+ * que no ha servido para nada (issue #25).
  *
  * Es el incentivo de explorar. A diferencia del Codice, que premia con lore,
  * la reliquia premia con cuerpo: un punto mas de vitalidad, una carga mas del

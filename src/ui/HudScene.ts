@@ -41,6 +41,7 @@ const COLOR = {
 export class HudScene extends Phaser.Scene {
   private grafico!: Phaser.GameObjects.Graphics;
   private textoCodice!: Phaser.GameObjects.Text;
+  private textoPocion!: Phaser.GameObjects.Text;
   private textoAviso!: Phaser.GameObjects.Text;
   private textoInscripcion!: Phaser.GameObjects.Text;
   private avisoAudio!: Phaser.GameObjects.Text;
@@ -62,6 +63,13 @@ export class HudScene extends Phaser.Scene {
 
   create(): void {
     this.grafico = this.add.graphics();
+
+    // La tecla junto a los frascos: sin ella nadie sabia que se bebian (issue #26).
+    this.textoPocion = this.add.text(8, 31, '', {
+      fontFamily: 'monospace',
+      fontSize: '7px',
+      color: '#8a7d70',
+    });
 
     this.textoCodice = this.add.text(8, 44, '', {
       fontFamily: 'monospace',
@@ -207,6 +215,9 @@ export class HudScene extends Phaser.Scene {
     this.dibujarVitalidad(8, 8);
     this.dibujarFervor(8, 22);
     this.dibujarPociones(8, 32);
+    // A la derecha del ultimo frasco, con el nombre del recurso y su tecla.
+    this.textoPocion.setX(8 + this.pocionesMaximas * 8 + 4);
+    this.textoPocion.setText(this.pocionesActuales > 0 ? 'Q  Pocion de Carne' : 'sin Pocion');
     if (this.jefeVida >= 0) this.dibujarJefe();
 
     this.textoCodice.setText(

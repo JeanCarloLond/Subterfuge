@@ -175,6 +175,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private altarActivo: Altar | null = null;
   private reapareciendo = false;
   private descendiendo = false;
+  /** La pista de la Pocion se da una vez por zona, no cada vez que baja la vida. */
+  private pistaPocionDada = false;
 
   private umbralSprite?: Phaser.GameObjects.Sprite;
   private umbralAviso?: Phaser.GameObjects.Text;
@@ -285,6 +287,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.altarActivo = null;
     this.reapareciendo = false;
     this.descendiendo = false;
+    this.pistaPocionDada = false;
     this.umbralSprite = undefined;
     this.umbralAviso = undefined;
     this.fondoLejano = undefined;
@@ -463,6 +466,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.cirujano.vitalidad.on('cambio', (puntos: number, maximo: number) => {
       this.game.events.emit(EVENTOS_HUD.vitalidad, puntos, maximo);
+
+      // Vida baja y frascos sin usar: recordar que existen, una vez por zona.
+      if (!this.pistaPocionDada && puntos > 0 && puntos <= 2 && this.cirujano.pociones > 0) {
+        this.pistaPocionDada = true;
+        this.game.events.emit(EVENTOS_HUD.aviso, 'Q  beber Pocion de Carne  (+3 vida)');
+      }
     });
     this.cirujano.fervor.on('cambio', (puntos: number) => {
       this.game.events.emit(EVENTOS_HUD.fervor, puntos);

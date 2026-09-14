@@ -53,8 +53,11 @@ export class AtrioScene extends EscenaNivel {
         [0, 288, 22], //           x 0..352
 
         // Campanario (secreto): arriba a la izquierda, subiendo por el muro.
-        [40, 200, 4], //           x 40..104   — 88 px: salto simple
-        [0, 96, 6], //             x 0..96     — 104 px: exige doble salto
+        // La repisa alta NO cuelga sobre la baja: si lo hiciera, al saltar te
+        // darias con su techo y solo cabria pasar por un resquicio. Se sube
+        // desde el borde izquierdo de la baja, derivando hacia el muro.
+        [48, 200, 4], //           x 48..112   — 88 px: salto simple
+        [0, 96, 3], //             x 0..48     — 104 px: exige doble salto
 
         // Ruta alta opcional, con un fragmento del Codice al final.
         [400, 240, 5], //          x 400..480 — 48 px: salto simple holgado
@@ -111,7 +114,7 @@ export class AtrioScene extends EscenaNivel {
       ],
 
       reliquias: [
-        [48, 96, 'atrio-relicario', 'relicario'],
+        [24, 96, 'atrio-relicario', 'relicario'],
         [640, 528, 'atrio-frasco', 'frasco'],
       ],
 
@@ -129,8 +132,8 @@ export class AtrioScene extends EscenaNivel {
         // Exvotos colgando bajo la ruta alta y bajo el campanario.
         [556, 144, 'exvoto'],
         [596, 144, 'exvoto'],
-        [24, 112, 'exvoto'],
-        [60, 112, 'exvoto'],
+        [16, 112, 'exvoto'],
+        [36, 112, 'exvoto'],
         // Segundo Altar.
         [84, 688, 'vela'],
         [116, 688, 'vela'],

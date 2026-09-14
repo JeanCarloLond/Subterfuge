@@ -165,12 +165,17 @@ export class CirujanoSacerdote {
    */
   aplicarReliquia(tipo: TipoReliquia): void {
     if (tipo === 'relicario') {
+      // Amplia el maximo y ademas cura de verdad: una reliquia cogida con la
+      // vida baja tiene que notarse en la barra, no solo en su longitud.
       this.vitalidad.aumentarMaximo(RELIQUIA.vitalidadExtra);
+      this.vitalidad.curar(POCION.curacion);
       return;
     }
 
     this.cargasPocionMax += RELIQUIA.pocionExtra;
     this.cargasPocion = Math.min(this.cargasPocionMax, this.cargasPocion + RELIQUIA.pocionExtra);
+    // El Frasco llega lleno: cura lo mismo que un trago, sin gastar la carga.
+    this.vitalidad.curar(POCION.curacion);
     this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
   }
 

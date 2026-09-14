@@ -256,6 +256,8 @@ posición, para que las colisiones no se enteren.
 - [x] Aviso en pantalla mientras el navegador tenga el audio bloqueado
 - [x] Daño por caída proporcional a la altura, con umbral por encima del doble salto
 - [x] Alcance del golpe ampliado: banda segura frente al zarpazo del jefe
+- [x] Reliquias que también curan al recogerse, y el HUD enseña la tecla de la Poción
+- [x] Campanario del Atrio sin voladizo: la primera reliquia se alcanza con doble salto
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
@@ -336,6 +338,12 @@ una de dos cosas:
 - **Reliquia** — premio de cuerpo. `Relicario de Carne` (+1 vitalidad máxima)
   y `Frasco Consagrado` (+1 Poción). Cinco en total, persistentes entre zonas
   (`Progreso.ts`).
+
+**Regla de trazado de repisas**: una plataforma alta no debe **colgar sobre** la
+que se usa para subir a ella. Si lo hace, al saltar te das con su techo y solo
+queda un resquicio por el borde. Pasó con el campanario del Atrio (#24): la
+repisa alta iba de x 0 a 96 sobre una baja de 40 a 104. Ahora la alta acaba
+donde empieza la baja, y se sube derivando hacia el muro.
 
 El decorado (`decorado:` en cada definición) no es adorno: da **puntos de
 referencia** para que el jugador sepa dónde ha estado. Cada zona tiene su
