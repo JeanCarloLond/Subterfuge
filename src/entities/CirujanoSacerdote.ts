@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import {
   AGARRE,
+  CAIDA,
   COMBATE,
   CONTACTO,
   DASH,
@@ -540,12 +541,39 @@ export class CirujanoSacerdote {
     return 'herido';
   }
 
+  /**
+   * El Cirujano cae.
+   *
+   * Antes solo se volvia translucido, y eso no se leia como morir: se leia
+   * como un fallo de dibujo. Ahora se desploma a la vista — se dobla sobre si
+   * mismo hasta quedar hecho un monton en el suelo.
+   *
+   * Cae distinto a como caen sus enemigos. Un Devoto se va de lado y con
+   * limpieza, porque ahi morir es rutina; el Cirujano se hunde de golpe y se
+   * queda tenido de carne, porque es el unico cuerpo del Vientre que al
+   * jugador le importa.
+   *
+   * `actualizar()` sale antes de tocar nada cuando el estado es 'muerto', asi
+   * que ninguna pose posterior pisa este tween.
+   */
   private morir(): void {
     this.estado = 'muerto';
     (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
     this.cuerpo.setAllowGravity(true);
     this.cuerpo.setVelocityX(0);
-    this.sprite.setAlpha(0.4);
+
+    this.escena.tweens.killTweensOf(this.sprite);
+    this.sprite.setTint(0x8c2f2f);
+
+    this.escena.tweens.add({
+      targets: this.sprite,
+      scaleY: 0.3,
+      scaleX: 1.3,
+      alpha: 0.35,
+      y: this.sprite.y + 3,
+      duration: CAIDA.desplomeMs,
+      ease: 'Quad.easeIn',
+    });
   }
 
   /** Resurreccion en el ultimo Altar: restaura cuerpo, Fervor y pociones. */
@@ -554,6 +582,14 @@ export class CirujanoSacerdote {
     this.vitalidad.restaurar();
     this.fervor.reiniciar();
     this.cargasPocion = this.cargasPocionMax;
+
+    // Deshace el desplome de `morir()` por completo. Sin esto el Cirujano
+    // reaparece aplastado, tenido de rojo y medio transparente.
+    this.escena.tweens.killTweensOf(this.sprite);
+    this.sprite.clearTint();
+    this.sprite.setScale(1);
+    this.sprite.setAngle(0);
+    this.sprite.setOrigin(0.5, 1);
 
     this.sprite.setAlpha(1);
     this.sprite.setPosition(x, y);
