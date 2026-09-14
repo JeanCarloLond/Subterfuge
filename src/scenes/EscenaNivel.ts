@@ -31,6 +31,19 @@ export interface RondaDevoto {
   derecha: number;
 }
 
+/**
+ * El jefe de la zona. Ademas de su ronda, lo que el juego dice de el: el
+ * titulo con que se presenta y lo que el Cirujano piensa al verlo y al verlo
+ * caer (issue #33). Sin esto era un enemigo mas con la barra abajo.
+ */
+export interface Jefe extends RondaDevoto {
+  presentacion: { titulo: string; subtitulo: string };
+  /** Pensamiento del Cirujano cuando despierta. */
+  alDespertar?: string;
+  /** Pensamiento del Cirujano cuando cae. */
+  alCaer?: string;
+}
+
 /** Pieza de escenografia sin colision: [x, y, tipo]. y es la base. */
 export type Decorado = readonly [x: number, y: number, tipo: TipoDecorado];
 export type TipoDecorado =
@@ -73,7 +86,7 @@ export interface DefinicionNivel {
    * Jefe de la zona. Duerme hasta que el Cirujano se acerca, y mientras siga
    * vivo el umbral de salida permanece cerrado.
    */
-  jefe?: RondaDevoto;
+  jefe?: Jefe;
   altares: ReadonlyArray<{ x: number; y: number }>;
   fragmentos: ReadonlyArray<readonly [number, number, string]>;
   /** Mejoras permanentes en rutas opcionales. El motivo de explorar. */
@@ -108,6 +121,8 @@ export interface DefinicionNivel {
    * reintenta desde el principio, no desde donde se dejo.
    */
   reja?: { x: number; yInicio: number; yFin: number };
+  /** Lo que el Cirujano piensa al entrar en la zona. Una linea, en la esquina. */
+  llegada?: string;
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
   /** Pista de fondo de la zona. Ver Musica.ts. */
@@ -208,6 +223,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private altarActivo: Altar | null = null;
   private reapareciendo = false;
   private descendiendo = false;
+  /** Para poder cancelar el cambio de zona si el Cirujano muere en el fundido (#37). */
+  private alTerminarDescenso?: () => void;
   /** La pista de la Pocion se da una vez por zona, no cada vez que baja la vida. */
   private pistaPocionDada = false;
 
@@ -330,6 +347,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.altarActivo = null;
     this.reapareciendo = false;
     this.descendiendo = false;
+    this.alTerminarDescenso = undefined;
     this.pistaPocionDada = false;
     this.umbralSprite = undefined;
     this.umbralAviso = undefined;
@@ -621,8 +639,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.game.events.emit(EVENTOS_HUD.pociones, cargas, maximo);
     });
     this.cirujano.eventos.on('caida', (dano: number) => {
-      this.impacto.danoRecibido();
-      this.cameras.main.shake(200, 0.012);
+      this.impacto.danoPorCaida(dano);
       this.game.events.emit(EVENTOS_HUD.aviso, `caida: -${dano}`);
     });
     this.cirujano.vitalidad.on('muerte', () => this.alMorir());
@@ -806,7 +823,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
   }
 
-  private crearJefe(datos: RondaDevoto): void {
+  private crearJefe(datos: Jefe): void {
     const jefe = new Reformado(this, datos.x, datos.y, {
       izquierda: datos.izquierda,
       derecha: datos.derecha,
@@ -830,7 +847,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     jefe.eventos.on('despierta', () => {
       this.game.events.emit(EVENTOS_HUD.jefe, REFORMADO.vida, REFORMADO.vida);
-      this.game.events.emit(EVENTOS_HUD.aviso, 'el Reformado');
+      this.game.events.emit(
+        EVENTOS_HUD.presentacion,
+        datos.presentacion.titulo,
+        datos.presentacion.subtitulo,
+      );
+      if (datos.alDespertar) {
+        const pensamiento = datos.alDespertar;
+        this.time.delayedCall(1400, () => this.game.events.emit(EVENTOS_HUD.aviso, pensamiento));
+      }
       sonido.jefeDespierta();
       musica.poner('jefe');
       this.bajarReja();
@@ -862,6 +887,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
       // Campanas, y la musica de la zona vuelve despacio: se acabo el sacramento.
       sonido.victoria();
       if (this.definicion.musica) musica.poner(this.definicion.musica);
+      if (datos.alCaer) {
+        const pensamiento = datos.alCaer;
+        this.time.delayedCall(1600, () => this.game.events.emit(EVENTOS_HUD.aviso, pensamiento));
+      }
     });
   }
 
@@ -1295,11 +1324,33 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.descendiendo = true;
     sonido.descenso();
 
+    // El contador del Codice viaja con el jugador entre zonas.
+    this.alTerminarDescenso = () => this.scene.start(umbral.destino);
     this.cameras.main.fade(600, 11, 9, 11);
-    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-      // El contador del Codice viaja con el jugador entre zonas.
-      this.scene.start(umbral.destino);
-    });
+    this.cameras.main.once(
+      Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+      this.alTerminarDescenso,
+    );
+  }
+
+  /**
+   * Morir en mitad del fundido de un umbral (issue #37). Antes la zona
+   * siguiente arrancaba igual, con la vida entera y el cartel de la caida
+   * todavia puesto: la muerte se perdia entre escenas. La muerte manda: se
+   * cancela el cambio de zona y se sigue con la caida normal.
+   */
+  private cancelarDescenso(): void {
+    if (!this.descendiendo) return;
+    this.descendiendo = false;
+
+    if (this.alTerminarDescenso) {
+      this.cameras.main.off(
+        Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+        this.alTerminarDescenso,
+      );
+      this.alTerminarDescenso = undefined;
+    }
+    this.cameras.main.fadeEffect.reset();
   }
 
   /**
@@ -1317,6 +1368,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private alMorir(): void {
     if (this.reapareciendo) return;
     this.reapareciendo = true;
+    this.cancelarDescenso();
 
     this.impacto.muerteCirujano(this.cirujano.sprite.x, this.cirujano.sprite.y);
     this.game.events.emit(EVENTOS_HUD.caida, true);
@@ -1324,7 +1376,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // El fundido arranca DESPUES del desplome, y termina ANTES de reaparecer:
     // ese hueco es el instante de negro con el aviso todavia en pantalla.
     this.time.delayedCall(CAIDA.retardoFundidoMs, () => {
-      this.cameras.main.fade(CAIDA.fundidoMs, 11, 9, 11);
+      this.cameras.main.fade(CAIDA.fundidoMs, 11, 9, 11, true);
     });
     this.time.delayedCall(CAIDA.reaparecerMs, () => this.reaparecer());
   }
@@ -1415,7 +1467,16 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.cirujano.pocionesMaximas,
       );
       this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
+      // Por si la zona anterior se dejo el cartel de la caida puesto (#37).
+      this.game.events.emit(EVENTOS_HUD.caida, false);
     });
+
+    if (this.definicion.llegada) {
+      const pensamiento = this.definicion.llegada;
+      this.time.delayedCall(900, () => {
+        if (!this.cirujano.estaMuerto) this.game.events.emit(EVENTOS_HUD.aviso, pensamiento);
+      });
+    }
   }
 
   /**

@@ -339,6 +339,16 @@ se reaparecía dentro con el jefe donde se dejó, y la pelea era desgaste, no
 aprendizaje. La reja es un muro para los dos: al Cirujano lo encierra y al
 Reformado le sirve para estrellarse, igual que la pared del fondo.
 
+**Quién es** (issue #33): la biblia deja al progenitor del Cirujano "muerto, o
+reformado, en un sacramento fallido". El teaser toma lo segundo: el Reformado
+de la Sala 7 es lo que queda de las **Manos anteriores** de esa misma Sala,
+dejadas donde fueron hechas. Se cuenta sin cinemáticas, con lo que ya existe:
+el margen del Códice V ("Mi padre está allí"), dos placas del Registro en la
+antesala, un pensamiento del Cirujano al entrar (`DefinicionNivel.llegada`), la
+**presentación** centrada al despertar (`Jefe.presentacion`: cargo y subtítulo)
+y dos pensamientos más al despertar y al caer (`alDespertar`, `alCaer`). Sin
+nombre propio: nadie lo tiene en la Diócesis; se le llama por su cargo.
+
 **Presencia** (issue #31): el Reformado mide 44×40 (un Devoto, 16×32) y lleva
 lo que cuenta lo que es: instrumental del quirófano fundido en el lomo, la
 cabeza vendada **sin ojos** y el sello dorado del Elegido en el pecho. Respira
@@ -435,8 +445,9 @@ Web Audio API. Cada clase de enemigo tiene su materia — el Devoto es carne y
 hueso, el Vestal tela y metal fino, el Reformado carne húmeda sobre algo que ya
 no es hueso — y cada uno cae a su manera. El golpe al aire suena siempre (el
 impacto se suma encima si conecta), y hay sonido para aterrizar, agarrarse,
-trepar, beber, el frasco vacío, reliquias, menús, el despertar del jefe, sus
-fases, la reja de la arena, los escombros y la victoria. Sin archivos, por tres razones:
+trepar, beber, el frasco vacío, el daño por caída (grave y con crujido, distinto
+del golpe de un enemigo), reliquias, menús, el despertar del jefe, sus fases,
+la reja de la arena, los escombros y la victoria. Sin archivos, por tres razones:
 
 - **Licencias**: todo lo que suena es original. Cero riesgo de arrastrar un
   sample con condiciones raras a un proyecto que se publica.

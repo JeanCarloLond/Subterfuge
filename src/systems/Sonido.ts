@@ -288,6 +288,35 @@ class Sonido {
     this.ruido({ duracion: 0.28, frecuencia: 700, barridoHasta: 120, volumen: 0.4 });
   }
 
+  /**
+   * Dano por caida (issue #39). Distinto del golpe de un enemigo: es el
+   * cuerpo entero contra la piedra. Un golpe sordo y grave, algo que cruje, y
+   * si la caida fue mala, el aire que se escapa.
+   */
+  danoPorCaida(dano: number): void {
+    this.tono({ desde: 95, hasta: 28, onda: 'sine', duracion: 0.32, volumen: 0.55 });
+    this.ruido({ duracion: 0.16, frecuencia: 260, barridoHasta: 60, volumen: 0.5 });
+    // El crujido: corto y agudo, encima del golpe.
+    this.ruido({ duracion: 0.05, frecuencia: 3200, tipo: 'highpass', volumen: 0.3, retardo: 0.02 });
+    this.ruido({
+      duracion: 0.04,
+      frecuencia: 2600,
+      tipo: 'highpass',
+      volumen: 0.22,
+      retardo: 0.09,
+    });
+    if (dano >= 2) {
+      this.tono({
+        desde: 150,
+        hasta: 70,
+        onda: 'sawtooth',
+        duracion: 0.38,
+        volumen: 0.14,
+        retardo: 0.12,
+      });
+    }
+  }
+
   /** Cada enemigo cae a su manera. */
   muerteEnemigo(clase: ClaseEnemigo = 'devoto'): void {
     switch (clase) {

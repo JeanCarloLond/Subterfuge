@@ -33,6 +33,7 @@ export class SalasScene extends EscenaNivel {
       colorFondo: '#0c0a0c',
       musica: 'salas',
       inicio: { x: 70, y: 260 },
+      llegada: 'Sala 7. La mia. Alguien la ocupa.',
 
       // El unico sitio del descenso donde la piedra vuelve a tirar a rojo, y no
       // por luz: es la sala donde se hace el sacramento. Mas oscura que las
@@ -83,7 +84,19 @@ export class SalasScene extends EscenaNivel {
       // Sin escolta: el encuentro es entre el Cirujano y lo que él mismo hace.
       devotos: [],
 
-      jefe: { x: 860, y: 288, izquierda: 280, derecha: 1000 },
+      // Quien es (issue #33): lo que queda de las Manos que tuvieron esta
+      // Sala antes que el Cirujano, reformadas en un sacramento fallido. La
+      // biblia deja al progenitor "muerto, o reformado": aqui es lo segundo.
+      // No se le pone nombre porque nadie lo tiene: se le llama por su cargo.
+      jefe: {
+        x: 860,
+        y: 288,
+        izquierda: 280,
+        derecha: 1000,
+        presentacion: { titulo: 'MANOS DEL SACRAMENTO N.o 7', subtitulo: 'las anteriores' },
+        alDespertar: 'reconozco esas manos: ensenaron a las mias',
+        alCaer: 'ya no hay manos anteriores. Solo las mias.',
+      },
 
       // El Altar esta en la antesala, ANTES de la reja: es el punto de
       // reintento. Morir dentro devuelve aqui, con el jefe entero al otro lado.
@@ -138,9 +151,18 @@ export class SalasScene extends EscenaNivel {
         [1000, 300, 'columna'],
       ],
 
-      // La placa esta en la antesala: se lee antes de entrar, no en mitad de
-      // la pelea.
-      inscripciones: [[180, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.']],
+      // Las placas estan en la antesala: se leen antes de entrar, no en mitad
+      // de la pelea. La segunda dice, en el tono del Registro, lo que hay al
+      // otro lado de la reja y por que sigue ahi.
+      inscripciones: [
+        [60, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.'],
+        [
+          180,
+          288,
+          'REGISTRO. Manos anteriores de esta Sala: reformadas en acto de servicio. ' +
+            'No trasladadas. Se dejan donde fueron hechas.',
+        ],
+      ],
 
       umbral: {
         x: 970,

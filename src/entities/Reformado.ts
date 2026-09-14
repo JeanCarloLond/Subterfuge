@@ -19,10 +19,12 @@ type Maniobra = 'embestida' | 'salto' | 'zarpazo' | 'doble';
 /**
  * El Reformado: jefe del teaser.
  *
- * Un Elegido que sobrevivio a medias al sacramento. No es un demonio ni una
+ * Alguien que sobrevivio a medias a un sacramento. No es un demonio ni una
  * bestia: es exactamente el resultado de lo que el Cirujano-Sacerdote hace con
  * sus manos cada dia. Por eso es el encuentro que cierra el teaser — el jugador
- * pelea contra su propio oficio.
+ * pelea contra su propio oficio. Y en el teaser, contra quien se lo enseno: son
+ * las Manos anteriores de la Sala 7, reformadas en un sacramento fallido y
+ * dejadas donde fueron hechas (ver `SalasScene`, issue #33).
  *
  * Diseño del combate: tres fases con el MISMO repertorio, cada vez mas rapido.
  * Se aprende leyendo, no memorizando. Todas las maniobras telegrafian largo, y

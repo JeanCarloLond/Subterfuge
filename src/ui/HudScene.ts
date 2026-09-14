@@ -14,6 +14,8 @@ export const EVENTOS_HUD = {
   jefe: 'hud-jefe',
   /** Texto de una placa del Registro: se muestra unos segundos, centrado abajo. */
   inscripcion: 'hud-inscripcion',
+  /** Presentacion del jefe: (titulo, subtitulo). Centrada, una vez. */
+  presentacion: 'hud-presentacion',
   /** Cae el Cirujano: (true) lo anuncia, (false) lo retira al reaparecer. */
   caida: 'hud-caida',
 } as const;
@@ -46,6 +48,8 @@ export class HudScene extends Phaser.Scene {
   private textoInscripcion!: Phaser.GameObjects.Text;
   private avisoAudio!: Phaser.GameObjects.Text;
   private textoCaida!: Phaser.GameObjects.Text;
+  private textoPresentacion!: Phaser.GameObjects.Text;
+  private textoSubtitulo!: Phaser.GameObjects.Text;
 
   private vitalidadActual: number = VITALIDAD.maxima;
   private vitalidadMaxima: number = VITALIDAD.maxima;
@@ -114,6 +118,28 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setAlpha(0);
 
+    // Presentacion del jefe (issue #33): quien es, en el centro y en grande,
+    // como un titulo. Es la unica vez que el juego nombra a un enemigo.
+    this.textoPresentacion = this.add
+      .text(this.scale.width / 2, this.scale.height / 2 - 44, '', {
+        fontFamily: 'monospace',
+        fontSize: '13px',
+        color: '#c9a44c',
+        align: 'center',
+      })
+      .setOrigin(0.5, 0.5)
+      .setAlpha(0);
+    this.textoSubtitulo = this.add
+      .text(this.scale.width / 2, this.scale.height / 2 - 28, '', {
+        fontFamily: 'monospace',
+        fontSize: '8px',
+        fontStyle: 'italic',
+        color: '#c9bda8',
+        align: 'center',
+      })
+      .setOrigin(0.5, 0.5)
+      .setAlpha(0);
+
     // Los navegadores no dejan sonar nada hasta el primer clic o tecla. Si el
     // jugador no lo sabe, cree que el juego no tiene sonido: se le dice.
     this.avisoAudio = this.add
@@ -132,6 +158,34 @@ export class HudScene extends Phaser.Scene {
   update(): void {
     // Barato: una comparacion de estado por fotograma.
     this.avisoAudio.setVisible(!sonido.estaActivo && !sonido.estaSilenciado);
+  }
+
+  private mostrarPresentacion(titulo: string, subtitulo: string): void {
+    this.textoPresentacion.setText(titulo);
+    this.textoSubtitulo.setText(subtitulo);
+    for (const texto of [this.textoPresentacion, this.textoSubtitulo]) {
+      this.tweens.killTweensOf(texto);
+      texto.setAlpha(0);
+    }
+
+    this.tweens.add({
+      targets: this.textoPresentacion,
+      alpha: 1,
+      duration: 380,
+      hold: 2600,
+      yoyo: true,
+      ease: 'Quad.easeOut',
+    });
+    // El subtitulo llega un instante despues: primero el cargo, luego quien.
+    this.tweens.add({
+      targets: this.textoSubtitulo,
+      alpha: 1,
+      delay: 520,
+      duration: 380,
+      hold: 2080,
+      yoyo: true,
+      ease: 'Quad.easeOut',
+    });
   }
 
   private mostrarInscripcion(texto: string): void {
@@ -179,6 +233,8 @@ export class HudScene extends Phaser.Scene {
     };
     const alAviso = (texto: string) => this.mostrarAviso(texto);
     const alInscripcion = (texto: string) => this.mostrarInscripcion(texto);
+    const alPresentacion = (titulo: string, subtitulo: string) =>
+      this.mostrarPresentacion(titulo, subtitulo);
     const alCaida = (cae: boolean) => this.mostrarCaida(cae);
     const alJefe = (puntos: number, maximo: number) => {
       this.jefeVida = puntos;
@@ -193,6 +249,7 @@ export class HudScene extends Phaser.Scene {
     bus.on(EVENTOS_HUD.aviso, alAviso);
     bus.on(EVENTOS_HUD.jefe, alJefe);
     bus.on(EVENTOS_HUD.inscripcion, alInscripcion);
+    bus.on(EVENTOS_HUD.presentacion, alPresentacion);
     bus.on(EVENTOS_HUD.caida, alCaida);
 
     // El bus global sobrevive a la escena: hay que soltar estos listeners a
@@ -205,6 +262,7 @@ export class HudScene extends Phaser.Scene {
       bus.off(EVENTOS_HUD.aviso, alAviso);
       bus.off(EVENTOS_HUD.jefe, alJefe);
       bus.off(EVENTOS_HUD.inscripcion, alInscripcion);
+      bus.off(EVENTOS_HUD.presentacion, alPresentacion);
       bus.off(EVENTOS_HUD.caida, alCaida);
     });
   }

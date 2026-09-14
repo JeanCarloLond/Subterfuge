@@ -79,6 +79,14 @@ export class Impacto {
     this.escena.cameras.main.flash(90, 140, 40, 40);
   }
 
+  /** El Cirujano se estrella contra el suelo. Mas largo y mas grave que un golpe. */
+  danoPorCaida(dano: number): void {
+    sonido.danoPorCaida(dano);
+    this.congelar(IMPACTO.hitstopCargadoMs);
+    this.escena.cameras.main.shake(220, IMPACTO.sacudidaRecibir * 1.4);
+    this.escena.cameras.main.flash(120, 140, 40, 40);
+  }
+
   /** Una piedra del techo que se rompe contra el suelo (o contra el Cirujano). */
   escombro(x: number, y: number): void {
     sonido.escombro();
