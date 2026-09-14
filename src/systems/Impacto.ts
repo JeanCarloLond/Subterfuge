@@ -84,6 +84,27 @@ export class Impacto {
     this.chispas(x, y - 4, -1, 10, 0x8c4f4f);
   }
 
+  /**
+   * Cae el Cirujano. Es el golpe mas fuerte que da la camara en todo el juego,
+   * y a proposito: el jugador tiene que saber que ha muerto EL, no que le han
+   * hecho dano otra vez. Se distingue de `danoRecibido` en que el destello es
+   * mas largo y mas rojo, y en que la sacudida no se parece a ninguna otra.
+   */
+  muerteCirujano(x: number, y: number): void {
+    sonido.muerteJugador();
+    this.congelar(IMPACTO.hitstopMuerteMs);
+
+    // El destello es corto a proposito: si dura mas que el desplome, lo unico
+    // que se ve es la pantalla ponerse roja y el cuerpo cae sin que nadie lo
+    // vea. Primero el golpe, y enseguida el sitio para mirar lo que queda.
+    const camara = this.escena.cameras.main;
+    camara.flash(260, 120, 20, 24);
+    camara.shake(420, IMPACTO.sacudidaMuerte * 1.4);
+
+    this.chispas(x, y - 12, 0, 22, 0x8c2f2f);
+    this.anillo(x, y - 12, 46, 0x8c2f2f, 620);
+  }
+
   muerteEnemigo(x: number, y: number): void {
     sonido.muerteEnemigo();
     this.congelar(IMPACTO.hitstopMuerteMs);
