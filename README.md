@@ -85,6 +85,7 @@ pararlo, `Ctrl + C` en la terminal.
 | Parry                 | `K`, `V` o clic derecho       |
 | Poción de Carne       | `Q`                           |
 | Rezar / descender     | `E`                           |
+| Leer el Códice        | `L`                           |
 | Trepar (colgado)      | `W` / flecha arriba           |
 | Soltarse (colgado)    | `S` / flecha abajo            |
 | Silenciar el audio    | `M`                           |

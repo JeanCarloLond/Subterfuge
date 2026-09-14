@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
+import { progreso } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
 
 /**
@@ -22,8 +23,8 @@ export class FinalScene extends Phaser.Scene {
     super({ key: 'Final' });
   }
 
-  create(datos?: { fragmentos?: number }): void {
-    this.fragmentos = datos?.fragmentos ?? 0;
+  create(): void {
+    this.fragmentos = progreso.fragmentosRecogidos;
 
     this.cameras.main.setBackgroundColor('#0b090b');
     this.cameras.main.fadeIn(900, 11, 9, 11);
@@ -85,6 +86,7 @@ export class FinalScene extends Phaser.Scene {
     this.input.keyboard?.once('keydown-R', () => {
       this.cameras.main.fade(400, 11, 9, 11);
       this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+        progreso.reiniciar();
         this.scene.start('Atrio');
       });
     });
@@ -95,9 +97,9 @@ export class FinalScene extends Phaser.Scene {
    * el que un lore-hunter volveria a jugar el teaser.
    */
   private textoRecuento(): string {
+    const total = progreso.fragmentosTotales;
     if (this.fragmentos === 0) return 'no recogiste ningun fragmento del Codice';
-    if (this.fragmentos === 1) return '1 fragmento del Codice';
-    return `${this.fragmentos} fragmentos del Codice`;
+    return `${this.fragmentos} de ${total} fragmentos del Codice`;
   }
 
   private aparecer(objeto: Phaser.GameObjects.Text, retardoMs: number): void {

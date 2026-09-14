@@ -22,6 +22,7 @@ export class Controles {
   private readonly interactuar: Phaser.Input.Keyboard.Key[];
   private readonly silenciar: Phaser.Input.Keyboard.Key[];
   private readonly ayuda: Phaser.Input.Keyboard.Key[];
+  private readonly codice: Phaser.Input.Keyboard.Key[];
 
   private readonly puntero: Phaser.Input.Pointer;
 
@@ -50,6 +51,7 @@ export class Controles {
     this.interactuar = [tecla(K.E)];
     this.silenciar = [tecla(K.M)];
     this.ayuda = [tecla(K.H), tecla(K.TAB)];
+    this.codice = [tecla(K.L)];
 
     this.puntero = escena.input.activePointer;
     // El clic derecho es el parry: que no abra el menu contextual del navegador.
@@ -125,6 +127,11 @@ export class Controles {
 
   get ayudaPresionada(): boolean {
     return this.algunaRecien(this.ayuda);
+  }
+
+  /** Abrir el Codice de la Carne para leer lo recogido. */
+  get codicePresionado(): boolean {
+    return this.algunaRecien(this.codice);
   }
 
   private algunaAbajo(teclas: Phaser.Input.Keyboard.Key[]): boolean {

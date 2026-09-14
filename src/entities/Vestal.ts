@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { MOVIMIENTO, VESTAL } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
+import { BarraVida } from '../ui/BarraVida';
 
 export type EstadoVestal = 'espera' | 'reposicion' | 'invocando' | 'aturdido' | 'muerto';
 
@@ -24,6 +25,7 @@ export interface RangoVestal {
 export class Vestal implements Enemigo {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   readonly vitalidad: Vitalidad;
+  private readonly barra: BarraVida;
 
   /** La escena escucha esto para crear el sello en el sitio correcto. */
   readonly eventos = new Phaser.Events.EventEmitter();
@@ -55,6 +57,10 @@ export class Vestal implements Enemigo {
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setCollideWorldBounds(true);
 
+    this.barra = new BarraVida(escena, 16);
+    this.vitalidad.on('cambio', (puntos: number, maximo: number) => {
+      this.barra.registrar(puntos, maximo);
+    });
     this.vitalidad.on('muerte', () => this.morir());
   }
 
@@ -88,6 +94,7 @@ export class Vestal implements Enemigo {
     }
 
     this.sprite.setFlipX(!this.mirandoDerecha);
+    this.barra.actualizar(this.sprite.x, this.sprite.y - this.sprite.height - 5);
   }
 
   // -- Comportamiento ------------------------------------------------------
@@ -206,6 +213,7 @@ export class Vestal implements Enemigo {
 
   private morir(): void {
     this.estado = 'muerto';
+    this.barra.ocultar();
     this.tweenTelegrafia?.remove();
     this.escena.tweens.killTweensOf(this.sprite);
     this.sprite.setScale(1);
@@ -231,6 +239,7 @@ export class Vestal implements Enemigo {
   }
 
   destruir(): void {
+    this.barra.destruir();
     this.eventos.removeAllListeners();
     this.sprite.destroy();
   }

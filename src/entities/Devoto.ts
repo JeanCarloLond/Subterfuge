@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { COMBATE, DEVOTO, MOVIMIENTO } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
+import { BarraVida } from '../ui/BarraVida';
 
 export type EstadoDevoto =
   'patrulla' | 'persecucion' | 'anticipando' | 'atacando' | 'aturdido' | 'muerto';
@@ -25,6 +26,7 @@ export class Devoto implements Enemigo {
   /** Zona de dano del golpe, activa solo durante la ventana de ataque. */
   readonly hitbox: Phaser.GameObjects.Zone;
   readonly vitalidad: Vitalidad;
+  private readonly barra: BarraVida;
 
   private estado: EstadoDevoto = 'patrulla';
   private mirandoDerecha = true;
@@ -62,6 +64,10 @@ export class Devoto implements Enemigo {
     cuerpoHitbox.setAllowGravity(false);
     cuerpoHitbox.enable = false;
 
+    this.barra = new BarraVida(escena, 18);
+    this.vitalidad.on('cambio', (puntos: number, maximo: number) => {
+      this.barra.registrar(puntos, maximo);
+    });
     this.vitalidad.on('muerte', () => this.morir());
   }
 
@@ -101,6 +107,7 @@ export class Devoto implements Enemigo {
 
     this.actualizarHitbox(ahora);
     this.sprite.setFlipX(!this.mirandoDerecha);
+    this.barra.actualizar(this.sprite.x, this.sprite.y - this.sprite.height - 5);
   }
 
   // -- Comportamiento ------------------------------------------------------
@@ -301,6 +308,7 @@ export class Devoto implements Enemigo {
 
   private morir(): void {
     this.estado = 'muerto';
+    this.barra.ocultar();
     (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
     this.cuerpo.setVelocityX(0);
     this.cuerpo.enable = false;
@@ -328,6 +336,7 @@ export class Devoto implements Enemigo {
   }
 
   destruir(): void {
+    this.barra.destruir();
     this.hitbox.destroy();
     this.sprite.destroy();
   }

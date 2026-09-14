@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { FERVOR, POCION, VITALIDAD } from '../config/Sacramento';
+import { CODICE } from '../lore/Codice';
 
 /** Nombres de los eventos que la escena de juego emite para el HUD. */
 export const EVENTOS_HUD = {
@@ -132,7 +133,9 @@ export class HudScene extends Phaser.Scene {
     this.dibujarPociones(8, 32);
     if (this.jefeVida >= 0) this.dibujarJefe();
 
-    this.textoCodice.setText(this.fragmentos > 0 ? `codice  ${this.fragmentos}` : '');
+    this.textoCodice.setText(
+      this.fragmentos > 0 ? `codice  ${this.fragmentos}/${CODICE.length}   L` : '',
+    );
   }
 
   /** Carne: un segmento por punto. El cuerpo del Cirujano tambien es moneda. */

@@ -8,6 +8,7 @@ import { PasillosScene } from './scenes/PasillosScene';
 import { SalasScene } from './scenes/SalasScene';
 import { FinalScene } from './scenes/FinalScene';
 import { HudScene } from './ui/HudScene';
+import { CodiceScene } from './ui/CodiceScene';
 
 /**
  * Subterfuge - teaser jugable de "La Diocesis de la Carne".
@@ -36,7 +37,16 @@ const configuracion: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [BootScene, PreloadScene, AtrioScene, PasillosScene, SalasScene, FinalScene, HudScene],
+  scene: [
+    BootScene,
+    PreloadScene,
+    AtrioScene,
+    PasillosScene,
+    SalasScene,
+    FinalScene,
+    HudScene,
+    CodiceScene,
+  ],
 };
 
 new Phaser.Game(configuracion);

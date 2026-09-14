@@ -10,6 +10,7 @@ import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
+import { progreso } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
 import { EVENTOS_HUD } from '../ui/HudScene';
 
@@ -103,7 +104,6 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private grupoEnemigos?: Phaser.Physics.Arcade.Group;
 
   private altarActivo: Altar | null = null;
-  private fragmentosRecogidos = 0;
   private reapareciendo = false;
   private descendiendo = false;
 
@@ -116,9 +116,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   /** Cada zona describe aqui su contenido. */
   protected abstract definirNivel(): DefinicionNivel;
 
-  create(datos?: { fragmentos?: number }): void {
+  create(): void {
     this.reiniciarEstado();
-    this.fragmentosRecogidos = datos?.fragmentos ?? 0;
 
     this.definicion = this.definirNivel();
     const { mundo, colorFondo, inicio } = this.definicion;
@@ -153,6 +152,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.controles.actualizar();
 
     if (this.controles.ayudaPresionada) this.alternarAyuda();
+    if (this.controles.codicePresionado) this.abrirCodice();
 
     this.cirujano.actualizar();
 
@@ -360,6 +360,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     for (const [x, y, id] of this.definicion.fragmentos) {
+      // Lo ya recogido no vuelve a aparecer si se regresa a la zona.
+      if (progreso.estaRecogido(id)) continue;
+
       const fragmento = new FragmentoCodice(this, x, y, id);
       this.fragmentos.push(fragmento);
 
@@ -582,12 +585,28 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverRecogidaDeFragmento(fragmento: FragmentoCodice): void {
     if (!fragmento.recoger()) return;
+    if (!progreso.recogerFragmento(fragmento.id)) return;
 
-    this.fragmentosRecogidos += 1;
     sonido.codice();
-    this.game.events.emit(EVENTOS_HUD.codice, this.fragmentosRecogidos);
-    // Aviso discreto: el lore no interrumpe la partida.
-    this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Codice');
+    this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
+    // Aviso discreto: el lore no interrumpe la partida. Se lee cuando se quiera.
+    this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Codice  ·  L para leer');
+  }
+
+  /**
+   * Abre la lectura del Codice sobre el juego en pausa.
+   * Si no hay nada recogido, solo lo dice: no merece una pantalla entera.
+   */
+  private abrirCodice(): void {
+    if (this.cirujano.estaMuerto || this.descendiendo) return;
+
+    if (progreso.fragmentosRecogidos === 0) {
+      this.game.events.emit(EVENTOS_HUD.aviso, 'aun no tienes fragmentos del Codice');
+      return;
+    }
+
+    this.scene.pause();
+    this.scene.launch('Codice', { escenaJuego: this.scene.key });
   }
 
   // -- Altares, umbral, muerte ---------------------------------------------
@@ -639,7 +658,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cameras.main.fade(600, 11, 9, 11);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
       // El contador del Codice viaja con el jugador entre zonas.
-      this.scene.start(umbral.destino, { fragmentos: this.fragmentosRecogidos });
+      this.scene.start(umbral.destino);
     });
   }
 
@@ -704,7 +723,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.game.events.emit(EVENTOS_HUD.vitalidad, this.cirujano.vitalidad.puntos);
       this.game.events.emit(EVENTOS_HUD.fervor, this.cirujano.fervor.puntos);
       this.game.events.emit(EVENTOS_HUD.pociones, this.cirujano.pociones);
-      this.game.events.emit(EVENTOS_HUD.codice, this.fragmentosRecogidos);
+      this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
     });
   }
 
@@ -763,6 +782,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
         'PARRY      K  o clic derecho',
         'POCION     Q',
         'REZAR      E  junto a un Altar',
+        'CODICE     L  leer lo recogido',
       ].join('\n'),
       estilo,
     );

@@ -76,8 +76,13 @@ src/
     Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
     Sonido.ts                    Audio sintetizado con la Web Audio API
     ArteProvisional.ts           Pixel art de relleno escrito a mano en código
+    Progreso.ts                  Estado que sobrevive al cambio de zona (Códice)
+  lore/
+    Codice.ts                    Textos de los fragmentos, derivados del world bible
   ui/
     HudScene.ts                  HUD como escena paralela, alimentada por eventos
+    BarraVida.ts                 Barra flotante de los enemigos normales
+    CodiceScene.ts               Lectura del Códice sobre el juego en pausa
   scenes/
     BootScene.ts                 Arranque mínimo
     PreloadScene.ts              Carga de assets + placeholders generados por código
@@ -234,6 +239,7 @@ posición, para que las colisiones no se enteren.
 | Silenciar el audio    | `M`                           |
 | Ayuda de controles    | `H` o `Tab`                   |
 | Rezar en un Altar     | `E`                           |
+| Leer el Códice        | `L`                           |
 | Trepar (colgado)      | `W` / flecha arriba           |
 | Soltarse (colgado)    | `S` / flecha abajo            |
 
@@ -261,6 +267,25 @@ expuesto: esa es la ventana de castigo y el pulso del combate.
 
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
+
+## El Códice de la Carne
+
+Los textos viven en `src/lore/Codice.ts` y son **borrador derivado del world
+bible**, para que el equipo narrativo los apruebe o reescriba. Siguen la
+estructura que el propio documento describe para el Códice: un versículo de la
+escritura que Genesis Vestal reescribió sobre su fracaso, y debajo, en otra
+tinta, **una anotación al margen de alguien que intentó advertir**. Leídos en
+orden, los márgenes dejan ver la verdad debajo de la doctrina.
+
+Lo que ninguna versión futura puede romper: los Primigenios son ciegos y nunca
+"miran"; fueron mil; la niña no fue sorteada, vino a pagar una deuda de su casa;
+y nadie dentro del mundo percibe el sacramento como violencia — el horror está
+en la distancia entre lo que ellos creen y lo que el jugador lee.
+
+Recoger un fragmento **no abre nada**: solo un aviso. Se lee con `L` cuando el
+jugador quiere, sobre el juego en pausa. El índice muestra los huecos de lo que
+falta, así que se sabe cuántos hay sin saber dónde. Lo recogido sobrevive al
+cambio de zona (`Progreso.ts`) y se reinicia al volver al Atrio desde el cierre.
 
 ## Audio
 
