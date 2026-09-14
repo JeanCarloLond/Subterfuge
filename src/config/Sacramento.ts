@@ -126,6 +126,17 @@ export const COMBATE = {
     alcance: 30,
     alto: 24,
   },
+  /**
+   * Golpe hacia abajo en el aire. Al conectar, el Cirujano REBOTA: sale
+   * despedido hacia arriba y recupera el doble salto y el dash. Es lo que
+   * permite encadenar golpes desde el aire sin tocar el suelo, y castigar a un
+   * enemigo desde arriba sin pagar el contacto.
+   */
+  rebote: {
+    impulso: 400,
+    /** El enfriamiento tras un rebote es corto: los pogos se encadenan. */
+    enfriamientoMs: 90,
+  },
   parry: {
     /** Ventana activa. Corta a proposito: es una lectura, no un escudo. */
     ventanaMs: 140,

@@ -30,7 +30,11 @@ export interface RondaDevoto {
 
 /** Pieza de escenografia sin colision: [x, y, tipo]. y es la base. */
 export type Decorado = readonly [x: number, y: number, tipo: TipoDecorado];
-export type TipoDecorado = 'columna' | 'vela' | 'exvoto' | 'charco' | 'camilla';
+export type TipoDecorado =
+  'columna' | 'vela' | 'exvoto' | 'charco' | 'camilla' | 'durmiente' | 'reja';
+
+/** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
+export type Inscripcion = readonly [x: number, y: number, texto: string];
 
 /** Reliquia escondida: [x, y, id, tipo]. */
 export type ReliquiaDef = readonly [x: number, y: number, id: string, tipo: TipoReliquia];
@@ -65,6 +69,8 @@ export interface DefinicionNivel {
   reliquias?: readonly ReliquiaDef[];
   /** Escenografia. Da puntos de referencia a la zona; no colisiona. */
   decorado?: readonly Decorado[];
+  /** Placas del Registro: lore de una linea, sin abrir nada. */
+  inscripciones?: readonly Inscripcion[];
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -84,6 +90,9 @@ const RADIO_ALTAR = 26;
 
 /** Radio en el que un Umbral ofrece el descenso (px). */
 const RADIO_UMBRAL = 24;
+
+/** Radio en el que una placa ofrece leerse (px). */
+const RADIO_PLACA = 22;
 
 /** Retardo entre morir y reaparecer en el ultimo Altar (ms). */
 const RETARDO_REAPARICION = 1100;
@@ -114,6 +123,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private altares: Altar[] = [];
   private fragmentos: FragmentoCodice[] = [];
   private reliquias: Reliquia[] = [];
+  private placas: {
+    sprite: Phaser.GameObjects.Sprite;
+    texto: string;
+    aviso: Phaser.GameObjects.Text;
+  }[] = [];
   private grupoEnemigos?: Phaser.Physics.Arcade.Group;
 
   private altarActivo: Altar | null = null;
@@ -188,6 +202,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.actualizarParallax();
     this.actualizarAltares();
     this.actualizarUmbral();
+    this.actualizarPlacas();
     this.comprobarCaidaAlVacio();
     this.limpiarDevotosMuertos();
   }
@@ -220,6 +235,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.altares = [];
     this.fragmentos = [];
     this.reliquias = [];
+    this.placas = [];
     this.grupoEnemigos = undefined;
     this.altarActivo = null;
     this.reapareciendo = false;
@@ -309,6 +325,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
         });
       } else if (tipo === 'columna') {
         pieza.setAlpha(0.85);
+      } else if (tipo === 'reja') {
+        pieza.setAlpha(0.9);
       }
     }
   }
@@ -447,6 +465,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.physics.add.overlap(this.cirujano.sprite, reliquia.sprite, () =>
         this.resolverRecogidaDeReliquia(reliquia),
       );
+    }
+
+    for (const [x, y, texto] of this.definicion.inscripciones ?? []) {
+      const sprite = this.add.sprite(x, y, 'placa-placeholder').setOrigin(0.5, 1).setDepth(-4);
+      const aviso = this.add
+        .text(x, y - 14, 'E  leer', { fontFamily: 'monospace', fontSize: '8px', color: '#d6cfc4' })
+        .setOrigin(0.5, 1)
+        .setVisible(false);
+      this.placas.push({ sprite, texto, aviso });
     }
 
     if (this.definicion.jefe) this.crearJefe(this.definicion.jefe);
@@ -721,6 +748,27 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
   }
 
+  /** Las placas del Registro se leen de pasada, con E, sin pausar nada. */
+  private actualizarPlacas(): void {
+    if (this.cirujano.estaMuerto) return;
+
+    for (const placa of this.placas) {
+      const distancia = Phaser.Math.Distance.Between(
+        this.cirujano.sprite.x,
+        this.cirujano.sprite.y,
+        placa.sprite.x,
+        placa.sprite.y,
+      );
+      const cerca = distancia <= RADIO_PLACA;
+      placa.aviso.setVisible(cerca);
+
+      if (cerca && this.controles.interactuarPresionado) {
+        sonido.codice();
+        this.game.events.emit(EVENTOS_HUD.inscripcion, placa.texto);
+      }
+    }
+  }
+
   private actualizarUmbral(): void {
     const umbral = this.definicion.umbral;
     if (!umbral || !this.umbralSprite || this.descendiendo) return;
@@ -836,7 +884,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
    */
   private crearAyudaControles(visibleAlEmpezar: boolean): void {
     const ancho = 292;
-    const alto = 128;
+    const alto = 140;
     const x = (RESOLUCION.ancho - ancho) / 2;
     const y = RESOLUCION.alto - alto - 14;
 
@@ -873,8 +921,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
       10,
       [
         'GOLPEAR    J  o clic izquierdo',
-        'CARGADO    mantener y soltar',
-        '           cuesta 30 de Fervor',
+        '           + W arriba, + S abajo (en el aire)',
+        '           abajo y acertar: rebotas',
+        'CARGADO    mantener y soltar (30 Fervor)',
         'PARRY      K  o clic derecho',
         'POCION     Q',
         'REZAR      E  junto a un Altar',

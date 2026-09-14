@@ -141,11 +141,17 @@ export class PasillosScene extends EscenaNivel {
         [472, 108, 'vela'],
       ],
 
+      inscripciones: [
+        [150, 160, 'OFICINA DEL DIEZMO. Deudas de casa se saldan en carne de casa.'],
+        [560, 344, 'Sorteo de hoy: cerrado. Una inscripcion voluntaria. Sin numero.'],
+        [820, 520, 'Los Reformados no reciben visitas. Honrenlos desde aqui.'],
+      ],
+
       umbral: {
         x: 1060,
         y: 520,
-        destino: 'Salas',
-        etiqueta: 'las Salas de Sacramento',
+        destino: 'Criptas',
+        etiqueta: 'las Criptas de Espera',
       },
 
       // Por debajo del corredor del fondo: devuelve al Altar en vez de encallar.

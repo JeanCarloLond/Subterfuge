@@ -69,6 +69,14 @@ class Progreso {
     return this.reliquias.size;
   }
 
+  /**
+   * Cuantas reliquias hay repartidas por el Vientre. Se mantiene a mano: dos en
+   * el Atrio, dos en los Pasillos, dos en las Criptas y una en las Salas.
+   */
+  get reliquiasTotales(): number {
+    return 7;
+  }
+
   private contar(tipo: TipoReliquia): number {
     return [...this.reliquias.values()].filter((t) => t === tipo).length;
   }

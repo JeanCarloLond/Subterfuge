@@ -129,6 +129,36 @@ export const CODICE: readonly FragmentoCodice[] = [
       'Que nadie lea esto antes de tiempo.',
     ],
   },
+  {
+    id: 'codice-07',
+    cita: 'Codice V, 9',
+    titulo: 'De la espera',
+    versiculo: [
+      'Quien espera su turno dormira, y el sueno sera su primera ofrenda.',
+      'Nadie entrara en la Sala despierto: la carne serena es carne grata.',
+      'Las Criptas guardan lo que la Diocesis aun no ha entregado.',
+    ],
+    margen: [
+      'Los sedamos para que no griten. No por ellos: por los que esperan',
+      'en la fila de arriba, que no deben oir lo que hay abajo.',
+      'La carne grata es la que no se resiste.',
+    ],
+  },
+  {
+    id: 'codice-08',
+    cita: 'Codice VII, 3',
+    titulo: 'Del silencio',
+    versiculo: [
+      'No preguntaras donde moran los nuevos dioses,',
+      'pues los dioses son mil y mil seran, y la cuenta no es del fiel.',
+      'Quien cuente, dude; quien dude, ofrezca.',
+    ],
+    margen: [
+      'Hace tres generaciones que no aparece un dios nuevo.',
+      'Ningun Elegido ha llegado abajo entero. Ninguno.',
+      'Nadie lo dice. Yo lo escribo aqui para que quede.',
+    ],
+  },
 ];
 
 export function fragmentoPorId(id: string): FragmentoCodice | undefined {

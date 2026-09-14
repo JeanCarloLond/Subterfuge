@@ -81,6 +81,7 @@ pararlo, `Ctrl + C` en la terminal.
 | Saltar / doble saltar | `Espacio` o `Z`               |
 | Dash (esquiva)        | `Shift` o `X`                 |
 | Atacar                | `J`, `C` o clic izquierdo     |
+| Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
 | Ataque cargado        | mantener y soltar (30 Fervor) |
 | Parry                 | `K`, `V` o clic derecho       |
 | Poción de Carne       | `Q`                           |
@@ -121,11 +122,11 @@ principio a fin:
 - **Tres enemigos**: el Devoto (cuerpo a cuerpo), el Vestal (a distancia, y sus
   sellos se le pueden devolver con el parry) y el Reformado, el jefe, con tres
   fases.
-- **Tres zonas**: El Atrio, los Pasillos de Preparación y las Salas de
-  Sacramento, más una pantalla de cierre.
+- **Cuatro zonas**: El Atrio, los Pasillos de Preparación, las Criptas de
+  Espera y las Salas de Sacramento, más una pantalla de cierre.
 - **Exploración**: rutas secretas con **reliquias** (mejoras permanentes de
-  vida y pociones), seis fragmentos del Códice que se leen en el juego, y una
-  última línea que solo aparece si se completa.
+  vida y pociones), ocho fragmentos del Códice que se leen en el juego, placas del
+  Registro por las paredes, y una última línea que solo aparece si se completa.
 
 - **Audio**: efectos y ambiente sintetizados en tiempo real, sin ningún
   archivo de sonido en el proyecto.

@@ -90,7 +90,8 @@ src/
     EscenaNivel.ts               Lógica común a todos los niveles del descenso
     AtrioScene.ts                Zona 1: el Atrio (solo datos)
     PasillosScene.ts             Zona 2: Pasillos de Preparación (solo datos)
-    SalasScene.ts                Zona 3: Salas de Sacramento, el jefe (solo datos)
+    CriptasScene.ts              Zona 3: Criptas de Espera (solo datos)
+    SalasScene.ts                Zona 4: Salas de Sacramento, el jefe (solo datos)
     FinalScene.ts                Cierre del teaser con gancho
 public/assets/
   tilesets/  sprites/  audio/  maps/
@@ -107,9 +108,9 @@ scripts/
 ## Flujo de escenas
 
 ```
-Boot ──► Preload ──► Atrio ──► Pasillos ──► Salas ──► Final
-                       │          │           │
-                       └──────────┴───────────┴──► Hud  (escena paralela)
+Boot ──► Preload ──► Atrio ──► Pasillos ──► Criptas ──► Salas ──► Final
+                       │          │            │          │
+                       └──────────┴────────────┴──────────┴──► Hud  (escena paralela)
 ```
 
 ### Añadir una zona nueva
@@ -174,6 +175,13 @@ tecla no hace nada hasta que se levanta el dedo, el jugador cree que no
 funciona. El cargado se decide después, al soltar tras mantener 450 ms, y
 salta por encima del enfriamiento del básico porque suele soltarse durante él.
 
+**Golpes direccionales.** Mantener `W` al atacar golpea arriba; mantener `S`
+en el aire golpea abajo. La caja de daño se gira (alto por ancho) y el arco se
+rota ±90°. El golpe hacia abajo que conecta **rebota**: impulso hacia arriba,
+devuelve el doble salto y el dash, y deja un enfriamiento de 90 ms para que los
+pogos se encadenen. Es lo que convierte el aire en un sitio desde el que pelear
+y lo que permite castigar desde arriba sin pagar el daño por contacto.
+
 **El arco del golpe se dibuja siempre, acierte o falle.** La confirmación de
 "he golpeado" no puede depender de que hubiera un enemigo delante. Va con dos
 poses del personaje (se recoge en la anticipación, se lanza en el impacto) y un
@@ -225,6 +233,10 @@ posición, para que las colisiones no se enteren.
 - [x] Reliquias en rutas secretas: +vitalidad máxima, +pociones
 - [x] Decorado por zona: columnas, velas, exvotos, charcos, altar-camilla
 - [x] Cierre con línea oculta al completar el Códice
+- [x] Golpes hacia arriba y hacia abajo; el de abajo rebota al conectar
+- [x] Cuarta zona: Criptas de Espera
+- [x] Placas del Registro: lore de una línea con `E`
+- [x] Ocho fragmentos del Códice
 - [ ] Sustituir placeholders por el arte del equipo
 - [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
@@ -240,6 +252,7 @@ posición, para que las colisiones no se enteren.
 | Saltar / doble saltar | `Espacio` o `Z`               |
 | Dash                  | `Shift` o `X`                 |
 | Atacar                | `J`, `C` o clic izquierdo     |
+| Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
 | Ataque cargado        | mantener y soltar (30 Fervor) |
 | Parry                 | `K`, `V` o clic derecho       |
 | Poción de Carne       | `Q`                           |
@@ -292,6 +305,10 @@ referencia** para que el jugador sepa dónde ha estado. Cada zona tiene su
 vocabulario — el Atrio columnas y exvotos, los Pasillos cera de archivo y
 techos bajos, las Salas la camilla y la sangre — y ninguna pieza representa a
 un Primigenio.
+
+**Placas del Registro** (`inscripciones:` en cada definición): una línea de
+burocracia diegética que se lee con `E` sin abrir nada. Son la forma más barata
+de profundidad narrativa: el sistema se cuenta a sí mismo en sus carteles.
 
 Rejugabilidad: el cierre cuenta fragmentos y reliquias, y **con el Códice
 completo aparece una última línea al margen** que no se ve de otra forma.

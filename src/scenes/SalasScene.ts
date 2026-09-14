@@ -75,6 +75,8 @@ export class SalasScene extends EscenaNivel {
         [232, 208, 'vela'],
       ],
 
+      inscripciones: [[140, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.']],
+
       umbral: {
         x: 730,
         y: 288,

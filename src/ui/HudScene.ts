@@ -11,6 +11,8 @@ export const EVENTOS_HUD = {
   aviso: 'hud-aviso',
   /** Vida del jefe: (puntos, maximo). Con puntos < 0 la barra se oculta. */
   jefe: 'hud-jefe',
+  /** Texto de una placa del Registro: se muestra unos segundos, centrado abajo. */
+  inscripcion: 'hud-inscripcion',
 } as const;
 
 const COLOR = {
@@ -37,6 +39,7 @@ export class HudScene extends Phaser.Scene {
   private grafico!: Phaser.GameObjects.Graphics;
   private textoCodice!: Phaser.GameObjects.Text;
   private textoAviso!: Phaser.GameObjects.Text;
+  private textoInscripcion!: Phaser.GameObjects.Text;
 
   private vitalidadActual: number = VITALIDAD.maxima;
   private vitalidadMaxima: number = VITALIDAD.maxima;
@@ -71,8 +74,37 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setAlpha(0);
 
+    // Inscripciones del Registro: una linea, centrada, en cursiva. Se lee de
+    // pasada y desaparece. No abre nada.
+    this.textoInscripcion = this.add
+      .text(this.scale.width / 2, this.scale.height - 34, '', {
+        fontFamily: 'monospace',
+        fontSize: '8px',
+        fontStyle: 'italic',
+        color: '#c9bda8',
+        align: 'center',
+        wordWrap: { width: this.scale.width - 80 },
+      })
+      .setOrigin(0.5, 1)
+      .setAlpha(0);
+
     this.escucharEscenaDeJuego();
     this.redibujar();
+  }
+
+  private mostrarInscripcion(texto: string): void {
+    this.textoInscripcion.setText(texto);
+    this.tweens.killTweensOf(this.textoInscripcion);
+    this.textoInscripcion.setAlpha(0);
+
+    this.tweens.add({
+      targets: this.textoInscripcion,
+      alpha: 1,
+      duration: 260,
+      hold: 4200,
+      yoyo: true,
+      ease: 'Quad.easeOut',
+    });
   }
 
   /**
@@ -104,6 +136,7 @@ export class HudScene extends Phaser.Scene {
       this.redibujar();
     };
     const alAviso = (texto: string) => this.mostrarAviso(texto);
+    const alInscripcion = (texto: string) => this.mostrarInscripcion(texto);
     const alJefe = (puntos: number, maximo: number) => {
       this.jefeVida = puntos;
       this.jefeMaximo = maximo;
@@ -116,6 +149,7 @@ export class HudScene extends Phaser.Scene {
     bus.on(EVENTOS_HUD.codice, alCodice);
     bus.on(EVENTOS_HUD.aviso, alAviso);
     bus.on(EVENTOS_HUD.jefe, alJefe);
+    bus.on(EVENTOS_HUD.inscripcion, alInscripcion);
 
     // El bus global sobrevive a la escena: hay que soltar estos listeners a
     // mano o se acumularian en cada relanzamiento del HUD.
@@ -126,6 +160,7 @@ export class HudScene extends Phaser.Scene {
       bus.off(EVENTOS_HUD.codice, alCodice);
       bus.off(EVENTOS_HUD.aviso, alAviso);
       bus.off(EVENTOS_HUD.jefe, alJefe);
+      bus.off(EVENTOS_HUD.inscripcion, alInscripcion);
     });
   }
 

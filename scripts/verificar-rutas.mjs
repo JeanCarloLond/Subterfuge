@@ -137,6 +137,7 @@ console.log(
 const resultados = [
   verificar('Atrio', 'src/scenes/AtrioScene.ts'),
   verificar('Pasillos', 'src/scenes/PasillosScene.ts'),
+  verificar('Criptas', 'src/scenes/CriptasScene.ts'),
   verificar('Salas', 'src/scenes/SalasScene.ts'),
 ];
 

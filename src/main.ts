@@ -5,6 +5,7 @@ import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { AtrioScene } from './scenes/AtrioScene';
 import { PasillosScene } from './scenes/PasillosScene';
+import { CriptasScene } from './scenes/CriptasScene';
 import { SalasScene } from './scenes/SalasScene';
 import { FinalScene } from './scenes/FinalScene';
 import { HudScene } from './ui/HudScene';
@@ -12,7 +13,8 @@ import { CodiceScene } from './ui/CodiceScene';
 
 /**
  * Subterfuge - teaser jugable de "La Diocesis de la Carne".
- * Flujo de escenas: Boot -> Preload -> Atrio -> Pasillos -> Salas -> Final,
+ * Flujo de escenas: Boot -> Preload -> Atrio -> Pasillos -> Criptas -> Salas
+ * -> Final,
  * con Hud corriendo en paralelo a los niveles.
  */
 const configuracion: Phaser.Types.Core.GameConfig = {
@@ -42,6 +44,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     PreloadScene,
     AtrioScene,
     PasillosScene,
+    CriptasScene,
     SalasScene,
     FinalScene,
     HudScene,

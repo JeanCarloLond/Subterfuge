@@ -26,6 +26,12 @@ export type ResultadoDano = 'parado' | 'herido' | 'ignorado';
 type TipoAtaque = 'basico' | 'cargado';
 
 /**
+ * Hacia donde se dirige el golpe. Se decide al pulsar, segun la direccion que
+ * se mantenga: W golpea arriba; S, solo en el aire, golpea abajo.
+ */
+type DireccionAtaque = 'lateral' | 'arriba' | 'abajo';
+
+/**
  * "Manos del Sacramento N.o 7".
  *
  * Fase 2: locomocion + combate cuerpo a cuerpo (ataque, ataque cargado, parry),
@@ -66,6 +72,7 @@ export class CirujanoSacerdote {
   private inicioCargaAtaque = -Infinity;
 
   private ataqueEnCurso: TipoAtaque = 'basico';
+  private direccionAtaque: DireccionAtaque = 'lateral';
   /** El arco del golpe se dibuja una sola vez por swing. */
   private tajoMostrado = false;
   private direccionAgarre: -1 | 1 = 1;
@@ -281,6 +288,15 @@ export class CirujanoSacerdote {
       return;
     }
 
+    const enSuelo = this.cuerpo.blocked.down || this.cuerpo.touching.down;
+    // Abajo solo tiene sentido en el aire: en el suelo golpearias la piedra.
+    this.direccionAtaque =
+      this.controles.abajoMantenido && !enSuelo
+        ? 'abajo'
+        : this.controles.arribaMantenido
+          ? 'arriba'
+          : 'lateral';
+
     this.estado = 'atacando';
     this.ataqueEnCurso = tipo;
     this.golpeadosEnSwing.clear();
@@ -320,13 +336,28 @@ export class CirujanoSacerdote {
     const perfil = this.ataqueEnCurso === 'cargado' ? COMBATE.cargado : COMBATE.ataque;
     const direccion = this.mirandoDerecha ? 1 : -1;
 
-    this.hitbox.setSize(perfil.alcance, perfil.alto);
-    cuerpoHitbox.setSize(perfil.alcance, perfil.alto);
-    // A la altura del torso, no del capirote.
-    this.hitbox.setPosition(
-      this.sprite.x + direccion * (perfil.alcance / 2 + 4),
-      this.sprite.y - 14,
-    );
+    // Lateral: delante, a la altura del torso. Arriba: sobre el capirote.
+    // Abajo: bajo los pies. En vertical la caja se gira (alto por ancho).
+    let ancho: number = perfil.alcance;
+    let alto: number = perfil.alto;
+    let x = this.sprite.x + direccion * (perfil.alcance / 2 + 4);
+    let y = this.sprite.y - 14;
+
+    if (this.direccionAtaque === 'arriba') {
+      ancho = perfil.alto;
+      alto = perfil.alcance;
+      x = this.sprite.x;
+      y = this.sprite.y - 32 - perfil.alcance / 2 + 4;
+    } else if (this.direccionAtaque === 'abajo') {
+      ancho = perfil.alto;
+      alto = perfil.alcance;
+      x = this.sprite.x;
+      y = this.sprite.y + perfil.alcance / 2 - 2;
+    }
+
+    this.hitbox.setSize(ancho, alto);
+    cuerpoHitbox.setSize(ancho, alto);
+    this.hitbox.setPosition(x, y);
     cuerpoHitbox.reset(this.hitbox.x, this.hitbox.y);
     cuerpoHitbox.enable = true;
 
@@ -350,21 +381,32 @@ export class CirujanoSacerdote {
     const color = cargado ? 0xc94f4f : 0xe8e0d0;
     const radio = alcance + (cargado ? 6 : 2);
     const duracion = cargado ? 200 : 140;
-    const origenX = this.sprite.x + direccion * 2;
-    const origenY = this.hitbox.y;
+
+    // La media luna se dibuja abriendo hacia +x; para arriba y abajo se gira
+    // el conjunto -90 o +90 grados y el barrido va en el sentido del golpe.
+    const giro =
+      this.direccionAtaque === 'arriba' ? -90 : this.direccionAtaque === 'abajo' ? 90 : 0;
+    const vertical = giro !== 0;
+    const origenX = vertical ? this.sprite.x : this.sprite.x + direccion * 2;
+    const origenY = vertical
+      ? this.direccionAtaque === 'arriba'
+        ? this.sprite.y - 30
+        : this.sprite.y - 2
+      : this.hitbox.y;
+    const espejo = vertical ? 1 : direccion;
 
     // Media luna: borde nitido + relleno translucido, abriendo hacia delante.
     const arco = this.crearMediaLuna(origenX, origenY, radio, alto, color, cargado ? 3 : 2);
-    arco.setScale(direccion * 0.55, 0.55);
-    arco.setAngle(-38 * direccion);
+    arco.setScale(espejo * 0.55, 0.55);
+    arco.setAngle(giro - 38 * espejo);
 
     // Barre hacia abajo mientras crece y se apaga: lectura de "tajo", no de
     // "rectangulo que aparece".
     this.escena.tweens.add({
       targets: arco,
-      scaleX: direccion,
+      scaleX: espejo,
       scaleY: 1,
-      angle: 30 * direccion,
+      angle: giro + 30 * espejo,
       alpha: 0,
       duration: duracion,
       ease: 'Cubic.easeOut',
@@ -373,15 +415,15 @@ export class CirujanoSacerdote {
 
     // Estela: la misma luna, mas fina y con retardo, siguiendo al arco.
     const estela = this.crearMediaLuna(origenX, origenY, radio * 0.85, alto, color, 1);
-    estela.setScale(direccion * 0.5, 0.5);
-    estela.setAngle(-42 * direccion);
+    estela.setScale(espejo * 0.5, 0.5);
+    estela.setAngle(giro - 42 * espejo);
     estela.setAlpha(0.45);
 
     this.escena.tweens.add({
       targets: estela,
-      scaleX: direccion * 0.95,
+      scaleX: espejo * 0.95,
       scaleY: 0.95,
-      angle: 26 * direccion,
+      angle: giro + 26 * espejo,
       alpha: 0,
       delay: 35,
       duration: duracion,
@@ -429,7 +471,29 @@ export class CirujanoSacerdote {
     this.golpeadosEnSwing.add(enemigo);
 
     this.fervor.ganar(FERVOR.porGolpeAsestado);
+    if (this.direccionAtaque === 'abajo') this.rebotar();
+
     return this.ataqueEnCurso === 'cargado' ? COMBATE.cargado.dano : COMBATE.ataque.dano;
+  }
+
+  /**
+   * Rebote tras un golpe hacia abajo que conecta. Devuelve el doble salto y
+   * el dash, cierra el golpe en curso y deja un enfriamiento minimo: asi los
+   * pogos se encadenan y el aire se convierte en un sitio desde el que pelear.
+   */
+  private rebotar(): void {
+    const ahora = this.escena.time.now;
+
+    this.cuerpo.setVelocityY(-COMBATE.rebote.impulso);
+    this.saltosRestantes = 1;
+    this.dashesEnAireRestantes = DASH.usosEnAire;
+
+    this.finAccion = ahora;
+    this.finEnfriamientoAtaque = ahora + COMBATE.rebote.enfriamientoMs;
+    (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
+    this.estado = 'aire';
+
+    sonido.salto();
   }
 
   /**
@@ -775,7 +839,7 @@ export class CirujanoSacerdote {
     const anchoFrame = this.sprite.width || 16;
     let desfasePx = 0;
 
-    if (this.estado === 'atacando') {
+    if (this.estado === 'atacando' && this.direccionAtaque === 'lateral') {
       const ahora = this.escena.time.now;
       const cargado = this.ataqueEnCurso === 'cargado';
       // Se echa atras 2 px al preparar y se lanza 4-6 px al golpear.

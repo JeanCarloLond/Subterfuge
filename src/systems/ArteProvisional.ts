@@ -534,6 +534,65 @@ const CAMILLA: Figura = {
   ],
 };
 
+// Placa del Registro: una inscripcion de la Diocesis fijada al muro.
+const PLACA: Figura = {
+  paleta: {
+    m: 0x8fa3a8, // metal
+    M: 0xc2d1d4, // brillo
+    d: 0x5c6b70, // sombra
+    i: 0x2a2428, // grabado
+  },
+  // prettier-ignore
+  filas: [
+    'MMMMMMMMMMMMMM',
+    'MmiimimiimimmM',
+    'Mmmmmmmmmmmmmm',
+    'MmiiimiimiimmM',
+    'Mmmmmmmmmmmmmm',
+    'MmiimiiimimmmM',
+    'Mmmmmmmmmmmmmm',
+    'dddddddddddddd',
+  ],
+};
+
+// Durmiente: un Elegido sedado sobre su camilla, esperando turno. Sin rostro,
+// cubierto hasta la cabeza: lo que se guarda en las Criptas no se mira.
+const DURMIENTE: Figura = {
+  paleta: {
+    w: 0xd8cdbe, // sabana
+    W: 0xb9a878, // sabana en sombra
+    p: 0x9a8878, // piel
+  },
+  // prettier-ignore
+  filas: [
+    '....wwwwwwwwwwwwww....',
+    '..wwwwwwwwwwwwwwwwww..',
+    '.wwwwWWWWWWWWWWWWwwwp.',
+    'wWWWWWWWWWWWWWWWWWWppp',
+    'WWWWWWWWWWWWWWWWWWWWpp',
+  ],
+};
+
+// Reja: la puerta de una cripta. Deja ver lo que hay detras.
+const REJA: Figura = {
+  paleta: {
+    k: 0x5c5c62, // hierro
+    K: 0x8a8a92, // brillo
+    d: 0x2e2e33, // sombra
+  },
+  // prettier-ignore
+  filas: [
+    'kkkkkkkkkkkkkkkk',
+    'Kd.Kd.Kd.Kd.Kd.K',
+    ...Array<string>(26).fill('Kd.Kd.Kd.Kd.Kd.K'),
+    'kkkkkkkkkkkkkkkk',
+    'kkkkkkkkkkkkkkkk',
+    'Kd.Kd.Kd.Kd.Kd.K',
+    'Kd.Kd.Kd.Kd.Kd.K',
+    'kkkkkkkkkkkkkkkk',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -551,6 +610,9 @@ const FIGURAS: Record<string, Figura> = {
   exvoto: EXVOTO,
   charco: CHARCO,
   camilla: CAMILLA,
+  placa: PLACA,
+  durmiente: DURMIENTE,
+  reja: REJA,
 };
 
 /**
