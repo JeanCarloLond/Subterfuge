@@ -103,6 +103,34 @@ export const VITALIDAD = {
   retrocesoY: 180,
 } as const;
 
+/**
+ * La caida del Cirujano.
+ *
+ * Los cuatro tiempos van ENCADENADOS y en este orden, que es lo que hace que
+ * se entienda: primero el cuerpo se desploma a la vista, despues el Vientre se
+ * apaga a su alrededor, y el aviso se queda un momento sobre el negro antes de
+ * devolver el control.
+ *
+ * Si tocas uno, revisa los de al lado:
+ *
+ *   - `retardoFundidoMs` debe ser MAYOR que `desplomeMs`, o la pantalla se
+ *     pone negra antes de que se vea caer el cuerpo.
+ *   - `retardoFundidoMs + fundidoMs` debe ser MENOR que `reaparecerMs`, o no
+ *     queda ningun instante de negro con el aviso todavia en pantalla.
+ */
+export const CAIDA = {
+  /** Lo que tarda el cuerpo en doblarse hasta quedar hecho un monton. */
+  desplomeMs: 900,
+  /** Entrada del aviso. Lenta: llega detras del destello, no encima. */
+  avisoEntradaMs: 700,
+  /** Espera antes de empezar a apagar la zona. */
+  retardoFundidoMs: 950,
+  /** Lo que tarda el Vientre en apagarse del todo. */
+  fundidoMs: 850,
+  /** Del ultimo golpe a estar otra vez en pie en el Altar. */
+  reaparecerMs: 2200,
+} as const;
+
 /** Combate cuerpo a cuerpo. */
 export const COMBATE = {
   ataque: {

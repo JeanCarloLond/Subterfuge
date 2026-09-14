@@ -9,7 +9,7 @@ import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { Reliquia } from '../objetos/Reliquia';
-import { DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
+import { CAIDA, DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
@@ -132,17 +132,6 @@ const RADIO_UMBRAL = 24;
 
 /** Radio en el que una placa ofrece leerse (px). */
 const RADIO_PLACA = 22;
-
-/** Retardo entre morir y reaparecer en el ultimo Altar (ms). */
-const RETARDO_REAPARICION = 1400;
-
-/**
- * Margen entre la muerte y el fundido a negro (ms).
- *
- * Tiene que durar mas que el desplome del Cirujano (520 ms) o la pantalla se
- * pone negra antes de que se le vea caer, que era justo el problema.
- */
-const RETARDO_ANTES_DEL_FUNDIDO = 600;
 
 /**
  * Logica comun a todos los niveles del descenso.
@@ -1022,8 +1011,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * palabras en mitad de la pantalla. Antes solo bajaba la opacidad del
    * sprite y se fundia a negro, y eso se confundia con recibir un golpe mas.
    *
-   * El fundido arranca despues del desplome, no encima: si se solapan, lo
-   * unico que se ve es la pantalla ponerse negra.
+   * El orden importa y esta afinado en `CAIDA`: el cuerpo cae, despues se
+   * apaga la zona, y el aviso aguanta un momento sobre el negro.
    */
   private alMorir(): void {
     if (this.reapareciendo) return;
@@ -1032,10 +1021,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.impacto.muerteCirujano(this.cirujano.sprite.x, this.cirujano.sprite.y);
     this.game.events.emit(EVENTOS_HUD.caida, true);
 
-    this.time.delayedCall(RETARDO_ANTES_DEL_FUNDIDO, () => {
-      this.cameras.main.fade(RETARDO_REAPARICION - RETARDO_ANTES_DEL_FUNDIDO, 11, 9, 11);
+    // El fundido arranca DESPUES del desplome, y termina ANTES de reaparecer:
+    // ese hueco es el instante de negro con el aviso todavia en pantalla.
+    this.time.delayedCall(CAIDA.retardoFundidoMs, () => {
+      this.cameras.main.fade(CAIDA.fundidoMs, 11, 9, 11);
     });
-    this.time.delayedCall(RETARDO_REAPARICION, () => this.reaparecer());
+    this.time.delayedCall(CAIDA.reaparecerMs, () => this.reaparecer());
   }
 
   private reaparecer(): void {

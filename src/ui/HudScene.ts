@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FERVOR, POCION, VITALIDAD } from '../config/Sacramento';
+import { CAIDA, FERVOR, POCION, VITALIDAD } from '../config/Sacramento';
 import { CODICE } from '../lore/Codice';
 
 /** Nombres de los eventos que la escena de juego emite para el HUD. */
@@ -292,8 +292,15 @@ export class HudScene extends Phaser.Scene {
   private mostrarCaida(cae: boolean): void {
     this.tweens.killTweensOf(this.textoCaida);
 
+    // Al volver en pie se va desvaneciendo mientras la zona reaparece, en vez
+    // de desaparecer de golpe: cortado en seco delataba que era un cartel.
     if (!cae) {
-      this.textoCaida.setAlpha(0);
+      this.tweens.add({
+        targets: this.textoCaida,
+        alpha: 0,
+        duration: 320,
+        ease: 'Quad.easeIn',
+      });
       return;
     }
 
@@ -301,7 +308,7 @@ export class HudScene extends Phaser.Scene {
     this.tweens.add({
       targets: this.textoCaida,
       alpha: 1,
-      duration: 420,
+      duration: CAIDA.avisoEntradaMs,
       ease: 'Quad.easeOut',
     });
   }
