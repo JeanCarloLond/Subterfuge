@@ -45,7 +45,18 @@ jobs:
           # El sitio cuelga de github.io/Subterfuge/, no de la raíz del dominio.
           BASE_URL: /Subterfuge/
 
+      # `enablement` da de alta el sitio de Pages la primera vez, usando el
+      # propio token del workflow. Sin esto, el despliegue falla con
+      # "Get Pages site failed ... Not Found" en cada ejecución, que es lo que
+      # llevaba pasando desde que se añadió: Pages nunca estuvo activado y el
+      # enlace de "Jugar ahora" del README daba 404.
+      #
+      # Si aun así fallara, es que hace falta activarlo a mano una vez, y eso
+      # solo puede hacerlo alguien con permiso de administración del repo:
+      # Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
