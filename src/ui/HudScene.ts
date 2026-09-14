@@ -13,6 +13,8 @@ export const EVENTOS_HUD = {
   jefe: 'hud-jefe',
   /** Texto de una placa del Registro: se muestra unos segundos, centrado abajo. */
   inscripcion: 'hud-inscripcion',
+  /** Cae el Cirujano: (true) lo anuncia, (false) lo retira al reaparecer. */
+  caida: 'hud-caida',
 } as const;
 
 const COLOR = {
@@ -40,6 +42,7 @@ export class HudScene extends Phaser.Scene {
   private textoCodice!: Phaser.GameObjects.Text;
   private textoAviso!: Phaser.GameObjects.Text;
   private textoInscripcion!: Phaser.GameObjects.Text;
+  private textoCaida!: Phaser.GameObjects.Text;
 
   private vitalidadActual: number = VITALIDAD.maxima;
   private vitalidadMaxima: number = VITALIDAD.maxima;
@@ -86,6 +89,19 @@ export class HudScene extends Phaser.Scene {
         wordWrap: { width: this.scale.width - 80 },
       })
       .setOrigin(0.5, 1)
+      .setAlpha(0);
+
+    // La caida se anuncia en el centro, no en la esquina de los avisos: es el
+    // unico mensaje del juego que el jugador NO puede permitirse pasar por
+    // alto, y en la esquina se confunde con "has recogido un fragmento".
+    this.textoCaida = this.add
+      .text(this.scale.width / 2, this.scale.height / 2 - 12, 'LA CARNE CEDE', {
+        fontFamily: 'monospace',
+        fontSize: '14px',
+        color: '#8c2f2f',
+        align: 'center',
+      })
+      .setOrigin(0.5, 0.5)
       .setAlpha(0);
 
     this.escucharEscenaDeJuego();
@@ -137,6 +153,7 @@ export class HudScene extends Phaser.Scene {
     };
     const alAviso = (texto: string) => this.mostrarAviso(texto);
     const alInscripcion = (texto: string) => this.mostrarInscripcion(texto);
+    const alCaida = (cae: boolean) => this.mostrarCaida(cae);
     const alJefe = (puntos: number, maximo: number) => {
       this.jefeVida = puntos;
       this.jefeMaximo = maximo;
@@ -150,6 +167,7 @@ export class HudScene extends Phaser.Scene {
     bus.on(EVENTOS_HUD.aviso, alAviso);
     bus.on(EVENTOS_HUD.jefe, alJefe);
     bus.on(EVENTOS_HUD.inscripcion, alInscripcion);
+    bus.on(EVENTOS_HUD.caida, alCaida);
 
     // El bus global sobrevive a la escena: hay que soltar estos listeners a
     // mano o se acumularian en cada relanzamiento del HUD.
@@ -161,6 +179,7 @@ export class HudScene extends Phaser.Scene {
       bus.off(EVENTOS_HUD.aviso, alAviso);
       bus.off(EVENTOS_HUD.jefe, alJefe);
       bus.off(EVENTOS_HUD.inscripcion, alInscripcion);
+      bus.off(EVENTOS_HUD.caida, alCaida);
     });
   }
 
@@ -263,6 +282,28 @@ export class HudScene extends Phaser.Scene {
       const px = x + ancho * corte;
       this.grafico.lineBetween(px, y, px, y + alto);
     }
+  }
+
+  /**
+   * Anuncio de la caida. Entra despacio, porque llega junto al destello rojo y
+   * a la sacudida y no debe competir con ellos, y se retira de golpe cuando el
+   * Cirujano vuelve a estar en pie.
+   */
+  private mostrarCaida(cae: boolean): void {
+    this.tweens.killTweensOf(this.textoCaida);
+
+    if (!cae) {
+      this.textoCaida.setAlpha(0);
+      return;
+    }
+
+    this.textoCaida.setAlpha(0);
+    this.tweens.add({
+      targets: this.textoCaida,
+      alpha: 1,
+      duration: 420,
+      ease: 'Quad.easeOut',
+    });
   }
 
   private mostrarAviso(texto: string): void {

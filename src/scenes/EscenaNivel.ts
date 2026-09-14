@@ -95,7 +95,15 @@ const RADIO_UMBRAL = 24;
 const RADIO_PLACA = 22;
 
 /** Retardo entre morir y reaparecer en el ultimo Altar (ms). */
-const RETARDO_REAPARICION = 1100;
+const RETARDO_REAPARICION = 1400;
+
+/**
+ * Margen entre la muerte y el fundido a negro (ms).
+ *
+ * Tiene que durar mas que el desplome del Cirujano (520 ms) o la pantalla se
+ * pone negra antes de que se le vea caer, que era justo el problema.
+ */
+const RETARDO_ANTES_DEL_FUNDIDO = 600;
 
 /**
  * Logica comun a todos los niveles del descenso.
@@ -901,13 +909,28 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
   }
 
+  /**
+   * Muere el Cirujano.
+   *
+   * Tres cosas a la vez, por el mismo motivo que al rezar: una sola no basta
+   * para que el jugador entienda QUE ha pasado. El cuerpo se desploma, la
+   * camara pega el golpe mas fuerte de todo el juego y el HUD lo dice con
+   * palabras en mitad de la pantalla. Antes solo bajaba la opacidad del
+   * sprite y se fundia a negro, y eso se confundia con recibir un golpe mas.
+   *
+   * El fundido arranca despues del desplome, no encima: si se solapan, lo
+   * unico que se ve es la pantalla ponerse negra.
+   */
   private alMorir(): void {
     if (this.reapareciendo) return;
     this.reapareciendo = true;
-    sonido.muerteJugador();
 
-    this.cameras.main.shake(240, 0.012);
-    this.cameras.main.fade(RETARDO_REAPARICION - 200, 11, 9, 11);
+    this.impacto.muerteCirujano(this.cirujano.sprite.x, this.cirujano.sprite.y);
+    this.game.events.emit(EVENTOS_HUD.caida, true);
+
+    this.time.delayedCall(RETARDO_ANTES_DEL_FUNDIDO, () => {
+      this.cameras.main.fade(RETARDO_REAPARICION - RETARDO_ANTES_DEL_FUNDIDO, 11, 9, 11);
+    });
     this.time.delayedCall(RETARDO_REAPARICION, () => this.reaparecer());
   }
 
@@ -915,6 +938,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const destino = this.altarActivo?.puntoReaparicion ?? this.definicion.inicio;
 
     this.cirujano.reaparecerEn(destino.x, destino.y);
+    this.game.events.emit(EVENTOS_HUD.caida, false);
     this.cameras.main.fadeIn(320, 11, 9, 11);
     this.reapareciendo = false;
     this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al ultimo Altar donde rezaste');
