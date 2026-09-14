@@ -100,6 +100,22 @@ export class SalasScene extends EscenaNivel {
         [760, 288, 'reja'],
       ],
 
+      // Fondo lejano: el quirofano-altar visto desde dentro. Ventanas altas
+      // ya sin luz, cadenas sobre la camilla, y polvo con algo de rojo.
+      polvo: 0xa87a7a,
+      fondo: [
+        [120, 300, 'ventana'],
+        [320, 300, 'ventana'],
+        [480, 300, 'ventana'],
+        [680, 300, 'ventana'],
+        [200, 112, 'cadena'],
+        [360, 112, 'cadena'],
+        [440, 112, 'cadena'],
+        [600, 112, 'cadena'],
+        [40, 300, 'columna'],
+        [760, 300, 'columna'],
+      ],
+
       inscripciones: [[140, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.']],
 
       umbral: {

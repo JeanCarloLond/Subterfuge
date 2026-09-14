@@ -144,6 +144,26 @@ export class CriptasScene extends EscenaNivel {
         [704, 880, 'columna'],
       ],
 
+      // Fondo lejano: el pozo. Rejas al fondo y cadenas que bajan de la
+      // oscuridad. Polvo gris: aqui nada esta vivo salvo lo que espera.
+      polvo: 0x8a8f9c,
+      fondo: [
+        [120, 200, 'cadena'],
+        [360, 200, 'cadena'],
+        [600, 200, 'cadena'],
+        [80, 380, 'reja'],
+        [640, 380, 'reja'],
+        [240, 460, 'cadena'],
+        [480, 460, 'cadena'],
+        [100, 640, 'reja'],
+        [620, 640, 'reja'],
+        [340, 700, 'cadena'],
+        [200, 900, 'columna'],
+        [520, 900, 'columna'],
+        [60, 760, 'cadena'],
+        [660, 760, 'cadena'],
+      ],
+
       // Placas del Registro. Burocracia hasta aqui abajo.
       inscripciones: [
         [140, 160, 'REGISTRO DE ESPERA. Turno por sorteo. No despertar a los inscritos.'],

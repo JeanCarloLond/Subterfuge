@@ -11,7 +11,7 @@ import { EscenaNivel, type DefinicionNivel } from './EscenaNivel';
  * Ademas del camino principal (el descenso en zigzag) tiene TRES desvios, y
  * cada uno guarda algo:
  *   - la ruta alta, a la derecha de la entrada: un fragmento del Codice
- *   - el campanario, arriba a la izquierda: un Relicario (exige doble salto)
+ *   - el campanario, arriba a la izquierda: un Relicario (hay que verlo)
  *   - la capilla lateral, a media bajada: un Frasco (exige dash)
  *   - el nicho del fondo, a la derecha: otro fragmento (exige dash)
  * Sin desvios que guarden algo no hay motivo para mirar a los lados.
@@ -52,12 +52,14 @@ export class AtrioScene extends EscenaNivel {
         // Suelo inicial: espacio para caminar.
         [0, 288, 22], //           x 0..352
 
-        // Campanario (secreto): arriba a la izquierda, subiendo por el muro.
-        // La repisa alta NO cuelga sobre la baja: si lo hiciera, al saltar te
-        // darias con su techo y solo cabria pasar por un resquicio. Se sube
-        // desde el borde izquierdo de la baja, derivando hacia el muro.
-        [48, 200, 4], //           x 48..112   — 88 px: salto simple
-        [0, 96, 3], //             x 0..48     — 104 px: exige doble salto
+        // Campanario (secreto): arriba a la izquierda, pegado al muro.
+        // La repisa alta NO cuelga sobre la baja (si lo hiciera te darias con
+        // su techo) y esta a 80 px, al alcance del salto simple: el secreto es
+        // VERLA, no el salto. A 104 px "exigia doble salto" y en la practica
+        // era una prueba de precision, porque el segundo salto fija la
+        // velocidad en vez de sumarla y solo rinde 157 px con timing perfecto.
+        [48, 200, 4], //           x 48..112
+        [0, 120, 3], //            x 0..48     — 80 px: salto simple
 
         // Ruta alta opcional, con un fragmento del Codice al final.
         [400, 240, 5], //          x 400..480 — 48 px: salto simple holgado
@@ -88,7 +90,7 @@ export class AtrioScene extends EscenaNivel {
       paredes: [
         [944, 360, 940],
         [560, 600, 780],
-        [0, 112, 200],
+        [0, 136, 200],
         [704, 940, 1010],
       ],
 
@@ -114,7 +116,7 @@ export class AtrioScene extends EscenaNivel {
       ],
 
       reliquias: [
-        [24, 96, 'atrio-relicario', 'relicario'],
+        [24, 120, 'atrio-relicario', 'relicario'],
         [640, 528, 'atrio-frasco', 'frasco'],
       ],
 
@@ -132,8 +134,8 @@ export class AtrioScene extends EscenaNivel {
         // Exvotos colgando bajo la ruta alta y bajo el campanario.
         [556, 144, 'exvoto'],
         [596, 144, 'exvoto'],
-        [16, 112, 'exvoto'],
-        [36, 112, 'exvoto'],
+        [16, 136, 'exvoto'],
+        [36, 136, 'exvoto'],
         // Segundo Altar.
         [84, 688, 'vela'],
         [116, 688, 'vela'],
@@ -149,6 +151,28 @@ export class AtrioScene extends EscenaNivel {
         [300, 1008, 'charco'],
         [620, 1008, 'vela'],
         [680, 1008, 'vela'],
+      ],
+
+      // Fondo lejano: la ciudad-catedral. Ventanas ojivales altas y columnas
+      // que se pierden hacia arriba. Es el unico sitio donde aun entra luz.
+      polvo: 0xc9b48a,
+      fondo: [
+        [180, 250, 'ventana'],
+        [420, 210, 'ventana'],
+        [700, 260, 'ventana'],
+        [880, 230, 'ventana'],
+        [100, 300, 'columna'],
+        [300, 300, 'columna'],
+        [520, 300, 'columna'],
+        [760, 300, 'columna'],
+        [240, 640, 'ventana'],
+        [560, 600, 'ventana'],
+        [80, 720, 'columna'],
+        [460, 720, 'columna'],
+        [660, 720, 'columna'],
+        [360, 980, 'ventana'],
+        [620, 1000, 'columna'],
+        [200, 1040, 'columna'],
       ],
 
       // Placas del Registro: la burocracia del diezmo empieza en la calle.

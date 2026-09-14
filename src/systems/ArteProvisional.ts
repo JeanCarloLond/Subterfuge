@@ -582,6 +582,51 @@ const CARNE: Figura = {
   ],
 };
 
+// Ventana ojival: para el fondo lejano. Un resto de luz de arriba que ya no
+// ilumina nada. Es lo que dice que esto fue una catedral antes que un pozo.
+const VENTANA: Figura = {
+  paleta: {
+    m: 0x2a2230, // marco
+    v: 0x3a3048, // vidrio
+    V: 0x4a3d5c, // vidrio con algo de luz
+  },
+  // prettier-ignore
+  filas: [
+    '......mm......',
+    '.....mvvm.....',
+    '....mvVVvm....',
+    '...mvVVVVvm...',
+    '..mvVVVVVVvm..',
+    '..mvVVVVVVvm..',
+    '.mvvVVmmVVvvm.',
+    '.mvvVVmmVVvvm.',
+    ...Array<string>(22).fill('.mvvvvmmvvvvm.'),
+    '.mvvvvmmvvvvm.',
+    '.mmmmmmmmmmmm.',
+    '.mmmmmmmmmmmm.',
+  ],
+};
+
+// Cadena colgando del techo. Hay ganchos en todo el Vientre; lo que colgaba de
+// ellos no se muestra.
+const CADENA: Figura = {
+  paleta: {
+    k: 0x4a4a52,
+    K: 0x6a6a72,
+  },
+  // prettier-ignore
+  filas: [
+    'kKk',
+    'k.k',
+    'kKk',
+    '.k.',
+    ...Array<string>(40).fill('.k.').map((f, i) => (i % 4 === 1 ? 'kKk' : i % 4 === 3 ? 'k.k' : f)),
+    'kKk',
+    'k.k',
+    'kKk',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -602,6 +647,8 @@ const FIGURAS: Record<string, Figura> = {
   durmiente: DURMIENTE,
   reja: REJA,
   carne: CARNE,
+  ventana: VENTANA,
+  cadena: CADENA,
 };
 
 /**
@@ -619,6 +666,56 @@ export function generarArteProvisional(escena: Phaser.Scene): void {
   rectangulo(escena, 'chispa-placeholder', 2, 2, 0xffffff);
 
   fondoArcos(escena, 'fondo-arcos');
+  resplandor(escena, 'brillo-placeholder', 96);
+  vineta(escena, 'vineta-placeholder', 480, 320);
+}
+
+/**
+ * Resplandor radial para velas y Altares. Se dibuja con el canvas del
+ * navegador porque Graphics no sabe de degradados; en modo ADD sobre la escena
+ * funciona como una luz. Es lo que hace que una vela parezca ENCENDIDA y no
+ * solo pintada.
+ */
+function resplandor(escena: Phaser.Scene, clave: string, diametro: number): void {
+  if (escena.textures.exists(clave)) return;
+  const lienzo = escena.textures.createCanvas(clave, diametro, diametro);
+  if (!lienzo) return;
+
+  const ctx = lienzo.getContext();
+  const centro = diametro / 2;
+  const grad = ctx.createRadialGradient(centro, centro, 0, centro, centro, centro);
+  grad.addColorStop(0, 'rgba(255, 214, 140, 0.55)');
+  grad.addColorStop(0.35, 'rgba(232, 160, 58, 0.22)');
+  grad.addColorStop(1, 'rgba(232, 160, 58, 0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, diametro, diametro);
+  lienzo.refresh();
+}
+
+/**
+ * Vineta: oscurece los bordes de la pantalla. Fija a la camara, encima de
+ * todo. Concentra la mirada en el centro y hace que el Vientre parezca mas
+ * hondo de lo que es.
+ */
+function vineta(escena: Phaser.Scene, clave: string, ancho: number, alto: number): void {
+  if (escena.textures.exists(clave)) return;
+  const lienzo = escena.textures.createCanvas(clave, ancho, alto);
+  if (!lienzo) return;
+
+  const ctx = lienzo.getContext();
+  const grad = ctx.createRadialGradient(
+    ancho / 2,
+    alto / 2,
+    alto * 0.35,
+    ancho / 2,
+    alto / 2,
+    Math.max(ancho, alto) * 0.72,
+  );
+  grad.addColorStop(0, 'rgba(11, 9, 11, 0)');
+  grad.addColorStop(1, 'rgba(11, 9, 11, 0.78)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, ancho, alto);
+  lienzo.refresh();
 }
 
 /** Dibuja una figura pixel a pixel y la registra como textura. */

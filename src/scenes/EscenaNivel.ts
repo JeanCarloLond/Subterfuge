@@ -34,7 +34,15 @@ export interface RondaDevoto {
 /** Pieza de escenografia sin colision: [x, y, tipo]. y es la base. */
 export type Decorado = readonly [x: number, y: number, tipo: TipoDecorado];
 export type TipoDecorado =
-  'columna' | 'vela' | 'exvoto' | 'charco' | 'camilla' | 'durmiente' | 'reja';
+  | 'columna'
+  | 'vela'
+  | 'exvoto'
+  | 'charco'
+  | 'camilla'
+  | 'durmiente'
+  | 'reja'
+  | 'ventana'
+  | 'cadena';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -74,6 +82,14 @@ export interface DefinicionNivel {
   decorado?: readonly Decorado[];
   /** Placas del Registro: lore de una linea, sin abrir nada. */
   inscripciones?: readonly Inscripcion[];
+  /**
+   * Atrezo LEJANO: detras de todo, mas oscuro y con parallax. Da profundidad;
+   * el jugador nunca lo toca. Las posiciones son aproximadas: al moverse la
+   * camara se desplaza mas despacio que el mundo.
+   */
+  fondo?: readonly Decorado[];
+  /** Color del polvo en suspension. Calido arriba, frio y gris abajo. */
+  polvo?: number;
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -184,6 +200,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private umbralAviso?: Phaser.GameObjects.Text;
   private fondoLejano?: Phaser.GameObjects.TileSprite;
   private fondoCercano?: Phaser.GameObjects.TileSprite;
+  private brillos: Phaser.GameObjects.Image[] = [];
   private panelAyuda?: Phaser.GameObjects.Container;
 
   /** Cada zona describe aqui su contenido. */
@@ -200,6 +217,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(colorFondo);
 
     this.crearFondo();
+    this.crearAtrezoLejano();
     this.crearDecorado();
     this.suelos = this.construirGeometria();
     this.sembrarDesgaste();
@@ -208,6 +226,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.crearCirujano(inicio.x, inicio.y);
     this.poblarNivel();
+
+    this.crearLuces();
+    this.crearPolvo();
+    this.crearVineta();
 
     this.cameras.main.startFollow(this.cirujano.sprite, true, 0.12, 0.12);
     this.cameras.main.setDeadzone(60, 40);
@@ -295,6 +317,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.umbralAviso = undefined;
     this.fondoLejano = undefined;
     this.fondoCercano = undefined;
+    this.brillos = [];
     this.panelAyuda = undefined;
   }
 
@@ -344,6 +367,103 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.fondoCercano.tilePositionX = camara.scrollX * 0.25;
       this.fondoCercano.tilePositionY = camara.scrollY * 0.18;
     }
+  }
+
+  /**
+   * Atrezo lejano con parallax. Mismas piezas que el decorado, pero detras,
+   * mas oscuras, y moviendose a 0,6 de la camara: la diferencia de velocidad
+   * con las plataformas es lo que se lee como distancia (issue #36).
+   */
+  private crearAtrezoLejano(): void {
+    for (const [x, y, tipo] of this.definicion.fondo ?? []) {
+      const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
+      pieza.setOrigin(0.5, tipo === 'exvoto' || tipo === 'cadena' ? 0 : 1);
+      pieza.setDepth(-8);
+      pieza.setScrollFactor(0.6);
+      pieza.setTint(0x5a4c58);
+      pieza.setAlpha(0.8);
+
+      if (tipo === 'cadena') {
+        this.tweens.add({
+          targets: pieza,
+          angle: { from: -1.5, to: 1.5 },
+          duration: Phaser.Math.Between(2400, 3600),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      }
+    }
+  }
+
+  /**
+   * Luz de las velas y los Altares: un resplandor aditivo que parpadea. Sin
+   * esto las velas eran un dibujo; con esto son una fuente de luz y el resto
+   * de la sala, por contraste, se lee como oscuridad.
+   */
+  private crearLuces(): void {
+    const puntos: { x: number; y: number; escala: number }[] = [];
+
+    for (const [x, y, tipo] of this.definicion.decorado ?? []) {
+      if (tipo === 'vela') puntos.push({ x, y: y - 8, escala: 0.55 });
+    }
+    for (const altar of this.altares) {
+      puntos.push({ x: altar.sprite.x, y: altar.sprite.y - 16, escala: 0.9 });
+    }
+    if (this.definicion.umbral) {
+      puntos.push({ x: this.definicion.umbral.x, y: this.definicion.umbral.y - 16, escala: 0.7 });
+    }
+
+    for (const punto of puntos) {
+      const luz = this.add.image(punto.x, punto.y, 'brillo-placeholder');
+      luz.setDepth(-3);
+      luz.setBlendMode(Phaser.BlendModes.ADD);
+      luz.setScale(punto.escala);
+      luz.setAlpha(0.5);
+      this.brillos.push(luz);
+
+      this.tweens.add({
+        targets: luz,
+        alpha: { from: 0.4, to: 0.6 },
+        scale: { from: punto.escala * 0.94, to: punto.escala * 1.06 },
+        duration: Phaser.Math.Between(320, 520),
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
+  }
+
+  /**
+   * Polvo en suspension, fijo a la camara. Muy poco y muy lento: se nota como
+   * aire, no como nieve. Es la senal mas barata de que el espacio tiene volumen.
+   */
+  private crearPolvo(): void {
+    const { ancho, alto } = RESOLUCION;
+    const color = this.definicion.polvo ?? 0xc9b48a;
+
+    const emisor = this.add.particles(0, 0, 'chispa-placeholder', {
+      x: { min: 0, max: ancho },
+      y: { min: 0, max: alto },
+      lifespan: { min: 6000, max: 11000 },
+      speedX: { min: -6, max: 6 },
+      speedY: { min: 2, max: 9 },
+      alpha: { start: 0, end: 0.35, ease: 'Sine.easeInOut' },
+      scale: { min: 0.5, max: 1 },
+      tint: color,
+      frequency: 260,
+      maxAliveParticles: 34,
+    });
+    emisor.setScrollFactor(0);
+    emisor.setDepth(-2);
+  }
+
+  private crearVineta(): void {
+    const vineta = this.add.image(0, 0, 'vineta-placeholder');
+    vineta.setOrigin(0, 0);
+    vineta.setScrollFactor(0);
+    vineta.setDepth(95);
+    vineta.setAlpha(0.85);
   }
 
   /**

@@ -108,9 +108,21 @@ export class CodiceScene extends Phaser.Scene {
     this.add.text(
       panelX + 10,
       panelY + panelAlto - 16,
-      'W S  o  flechas: cambiar        L  o  ESC: cerrar',
+      'W S  o  clic: cambiar        L  o  ESC: cerrar',
       { fontFamily: 'monospace', fontSize: '8px', color: COLOR.tenue },
     );
+
+    const cerrar = this.add
+      .text(panelX + panelAncho - 10, panelY + 8, '[ cerrar ]', {
+        fontFamily: 'monospace',
+        fontSize: '8px',
+        color: COLOR.tenue,
+      })
+      .setOrigin(1, 0)
+      .setInteractive({ useHandCursor: true });
+    cerrar.on('pointerover', () => cerrar.setColor(COLOR.pergamino));
+    cerrar.on('pointerout', () => cerrar.setColor(COLOR.tenue));
+    cerrar.on('pointerdown', () => this.cerrar());
 
     this.mostrar(this.indice);
     this.cameras.main.fadeIn(180, 11, 9, 11);
@@ -134,6 +146,18 @@ export class CodiceScene extends Phaser.Scene {
         fontSize: '8px',
         color: recogido ? COLOR.texto : COLOR.tenue,
       });
+
+      // Raton: cada entrada recogida se puede elegir con clic (issue #29).
+      if (recogido) {
+        texto.setInteractive({ useHandCursor: true });
+        texto.on('pointerdown', () => {
+          const indice = this.ids.indexOf(fragmento.id);
+          if (indice >= 0 && indice !== this.indice) {
+            sonido.interfazMover();
+            this.mostrar(indice);
+          }
+        });
+      }
       this.indiceTextos.push(texto);
     });
 

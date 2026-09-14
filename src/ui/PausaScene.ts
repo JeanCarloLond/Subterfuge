@@ -104,18 +104,35 @@ export class PausaScene extends Phaser.Scene {
     });
     titulo.setOrigin(0.5, 0);
 
-    this.opciones = PausaScene.OPCIONES.map((_, i) =>
-      this.add
+    this.opciones = PausaScene.OPCIONES.map((_, i) => {
+      const texto = this.add
         .text(ancho / 2, 46 + i * 20, '', {
           fontFamily: 'monospace',
           fontSize: '9px',
           color: COLOR.texto,
         })
-        .setOrigin(0.5, 0),
-    );
+        .setOrigin(0.5, 0);
+
+      // Raton: pasar por encima selecciona, el clic confirma (issue #29). El
+      // area sensible es mas alta que el texto para que no haya que apuntar.
+      texto.setInteractive({ useHandCursor: true });
+      texto.on('pointerover', () => {
+        if (this.mostrandoControles || this.indice === i) return;
+        this.indice = i;
+        sonido.interfazMover();
+        this.refrescar();
+      });
+      texto.on('pointerdown', () => {
+        if (this.mostrandoControles) return;
+        this.indice = i;
+        this.refrescar();
+        this.confirmar();
+      });
+      return texto;
+    });
 
     const pie = this.add
-      .text(ancho / 2, alto - 16, 'W S  elegir     E  confirmar', {
+      .text(ancho / 2, alto - 16, 'W S  o raton  elegir     E  o clic  confirmar', {
         fontFamily: 'monospace',
         fontSize: '7px',
         color: COLOR.tenue,
@@ -148,9 +165,17 @@ export class PausaScene extends Phaser.Scene {
     const movimiento = this.add.text(12, 26, CONTROLES_MOVIMIENTO.join('\n'), estilo);
     const combate = this.add.text(236, 26, CONTROLES_COMBATE.join('\n'), estilo);
     const sistema = this.add.text(12, 118, CONTROLES_SISTEMA.join('\n'), estiloTenue);
-    const pie = this.add.text(10, alto - 16, 'ESC  volver', estiloTenue);
+    const pie = this.add.text(12, alto - 16, 'ESC  o clic  volver', estiloTenue);
 
-    return this.add.container(x, y, [fondo, titulo, movimiento, combate, sistema, pie]);
+    const contenedor = this.add.container(x, y, [fondo, titulo, movimiento, combate, sistema, pie]);
+    // Todo el panel es un boton de "volver": no hay que buscar la esquina.
+    contenedor.setSize(ancho, alto);
+    contenedor.setInteractive(
+      new Phaser.Geom.Rectangle(ancho / 2, alto / 2, ancho, alto),
+      Phaser.Geom.Rectangle.Contains,
+    );
+    contenedor.on('pointerdown', () => this.ocultarControles());
+    return contenedor;
   }
 
   // -- Navegacion ----------------------------------------------------------
@@ -175,6 +200,8 @@ export class PausaScene extends Phaser.Scene {
         `${activa ? '>  ' : ''}${this.etiqueta(opcion)}${activa ? '  <' : ''}`,
       );
       this.opciones[i].setColor(activa ? COLOR.activo : COLOR.texto);
+      this.opciones[i].input?.hitArea.setSize(160, 18);
+      this.opciones[i].input?.hitArea.setPosition(this.opciones[i].width / 2 - 80, -4);
     });
   }
 

@@ -147,6 +147,30 @@ export class PasillosScene extends EscenaNivel {
         [472, 108, 'vela'],
       ],
 
+      // Fondo lejano: archivo. Columnas como estanterias y cadenas de los
+      // ganchos del techo. Las ventanas ya quedan lejos.
+      polvo: 0xb8a888,
+      fondo: [
+        [60, 180, 'columna'],
+        [260, 180, 'columna'],
+        [500, 180, 'columna'],
+        [760, 180, 'columna'],
+        [1000, 180, 'columna'],
+        [160, 80, 'cadena'],
+        [420, 80, 'cadena'],
+        [680, 80, 'cadena'],
+        [940, 80, 'cadena'],
+        [120, 360, 'columna'],
+        [380, 360, 'columna'],
+        [640, 360, 'columna'],
+        [900, 360, 'columna'],
+        [300, 264, 'cadena'],
+        [560, 264, 'cadena'],
+        [820, 264, 'cadena'],
+        [200, 540, 'columna'],
+        [700, 540, 'columna'],
+      ],
+
       inscripciones: [
         [150, 160, 'OFICINA DEL DIEZMO. Deudas de casa se saldan en carne de casa.'],
         [560, 344, 'Sorteo de hoy: cerrado. Una inscripcion voluntaria. Sin numero.'],

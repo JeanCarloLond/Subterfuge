@@ -70,14 +70,18 @@ export class FinalScene extends Phaser.Scene {
       .setAlpha(0);
 
     const reinicio = this.add
-      .text(centroX, RESOLUCION.alto - 40, 'R  volver al Atrio', {
+      .text(centroX, RESOLUCION.alto - 40, 'R  o clic:  volver al Atrio', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#4a4038',
         align: 'center',
       })
       .setOrigin(0.5, 0.5)
-      .setAlpha(0);
+      .setAlpha(0)
+      .setInteractive({ useHandCursor: true });
+    reinicio.on('pointerover', () => reinicio.setColor('#d6cfc4'));
+    reinicio.on('pointerout', () => reinicio.setColor('#4a4038'));
+    reinicio.on('pointerdown', () => this.volverAlAtrio());
 
     // Entradas escalonadas: el cierre debe respirar, no soltarlo todo de golpe.
     this.aparecer(gancho, 700);
@@ -104,12 +108,19 @@ export class FinalScene extends Phaser.Scene {
       this.aparecer(ultimoMargen, 4400);
     }
 
-    this.input.keyboard?.once('keydown-R', () => {
-      this.cameras.main.fade(400, 11, 9, 11);
-      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-        progreso.reiniciar();
-        this.scene.start('Atrio');
-      });
+    this.input.keyboard?.once('keydown-R', () => this.volverAlAtrio());
+  }
+
+  private volviendo = false;
+
+  private volverAlAtrio(): void {
+    if (this.volviendo) return;
+    this.volviendo = true;
+
+    this.cameras.main.fade(400, 11, 9, 11);
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      progreso.reiniciar();
+      this.scene.start('Atrio');
     });
   }
 

@@ -261,6 +261,9 @@ posición, para que las colisiones no se enteren.
 - [x] Campanario del Atrio sin voladizo: la primera reliquia se alcanza con doble salto
 - [x] Ofrendas: los enemigos sueltan carne (+1 vida) o sellos (+20 Fervor) al caer
 - [x] Panel de controles a todo el ancho, con líneas acotadas para que no se pisen
+- [x] Menús con ratón: pasar por encima selecciona, clic confirma
+- [x] Ambiente de fondo: atrezo lejano con parallax, luz de velas, polvo y viñeta
+- [x] Campanario a 80 px: el secreto es verlo, no una prueba de precisión
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
@@ -348,6 +351,16 @@ una de dos cosas:
 - **Reliquia** — premio de cuerpo. `Relicario de Carne` (+1 vitalidad máxima)
   y `Frasco Consagrado` (+1 Poción). Cinco en total, persistentes entre zonas
   (`Progreso.ts`).
+
+**Capas de ambiente** (`EscenaNivel`): detrás de todo, el telón de arcadas con
+parallax; encima, el **atrezo lejano** (`fondo:` en cada zona — ventanas
+ojivales, columnas, cadenas, rejas) a 0,6 de la velocidad de la cámara y
+oscurecido, que es lo que se lee como distancia; luego el decorado que el
+jugador roza; **luz** aditiva y parpadeante en velas, Altares y umbrales;
+**polvo** en suspensión fijo a la cámara (color por zona: cálido arriba, gris
+en las Criptas, rojizo en las Salas); y una **viñeta** encima de todo. Ninguna
+capa cuesta física: son sprites, un emisor de 34 partículas y dos texturas de
+degradado generadas con canvas.
 
 **Regla de trazado de repisas**: una plataforma alta no debe **colgar sobre** la
 que se usa para subir a ella. Si lo hace, al saltar te das con su techo y solo
