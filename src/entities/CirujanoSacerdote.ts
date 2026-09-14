@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import {
   AGARRE,
+  CAIDA,
   COMBATE,
   CONTACTO,
   DASH,
@@ -570,7 +571,7 @@ export class CirujanoSacerdote {
       scaleX: 1.3,
       alpha: 0.35,
       y: this.sprite.y + 3,
-      duration: 520,
+      duration: CAIDA.desplomeMs,
       ease: 'Quad.easeIn',
     });
   }
