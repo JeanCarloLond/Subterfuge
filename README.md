@@ -129,8 +129,8 @@ principio a fin:
   vida y pociones), ocho fragmentos del Códice que se leen en el juego, placas del
   Registro por las paredes, y una última línea que solo aparece si se completa.
 
-- **Audio**: efectos y ambiente sintetizados en tiempo real, sin ningún
-  archivo de sonido en el proyecto.
+- **Audio**: efectos sintetizados en tiempo real (distintos por enemigo) y
+  banda sonora CC0 por zona, con tema propio para el jefe y el cierre.
 
 Pendiente: los sprites de personajes y escribir el gancho final.
 
@@ -219,6 +219,13 @@ al caer al fondo el jugador quedaba encallado; ahora eso no puede colarse.
   de escenas, arquitectura del combate, convenciones y ajuste de sensación.
 - **[docs/issues/](docs/issues/)** — encargos de arte pendientes, con formatos y
   criterios de aceptación.
+
+## Créditos de terceros
+
+La música es de autores de [OpenGameArt.org](https://opengameart.org) publicada
+bajo **CC0** (dominio público). Autoría, título y enlace de cada pista en
+[public/assets/audio/musica/LICENCIAS.md](public/assets/audio/musica/LICENCIAS.md).
+Los efectos de sonido son originales del proyecto (síntesis en tiempo real).
 
 ## Licencia
 

@@ -72,6 +72,8 @@ export class Vestal implements Enemigo {
     return this.estado === 'muerto';
   }
 
+  readonly clase = 'vestal' as const;
+
   get hiereAlContacto(): boolean {
     return !this.estaMuerto;
   }

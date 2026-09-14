@@ -1,4 +1,5 @@
 import type Phaser from 'phaser';
+import type { ClaseEnemigo } from '../systems/Sonido';
 
 /**
  * Lo minimo que la escena necesita de un enemigo para resolver un golpe.
@@ -15,6 +16,8 @@ export interface Enemigo {
   readonly estaMuerto: boolean;
   /** false mientras no suponga amenaza (el jefe dormido, por ejemplo). */
   readonly hiereAlContacto: boolean;
+  /** De que esta hecho, para que suene distinto al golpearlo y al caer. */
+  readonly clase: ClaseEnemigo;
 
   /** @returns true si el golpe conecto. */
   recibirDano(cantidad: number, origenX: number): boolean;

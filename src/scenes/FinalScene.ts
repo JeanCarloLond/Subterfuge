@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
+import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 
 /**
@@ -32,6 +33,7 @@ export class FinalScene extends Phaser.Scene {
     // El HUD no pinta en una pantalla de cierre, y el Vientre deja de respirar.
     if (this.scene.isActive('Hud')) this.scene.stop('Hud');
     sonido.ambienteApagado();
+    musica.poner('final');
 
     const centroX = RESOLUCION.ancho / 2;
 

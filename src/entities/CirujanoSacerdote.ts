@@ -82,6 +82,9 @@ export class CirujanoSacerdote {
   private inicioCargaAtaque = -Infinity;
 
   private ataqueEnCurso: TipoAtaque = 'basico';
+  /** Para sonar el aterrizaje solo al pasar de aire a suelo. */
+  private enSueloAntes = true;
+  private velocidadCaidaPrevia = 0;
   private direccionAtaque: DireccionAtaque = 'lateral';
   /** El arco del golpe se dibuja una sola vez por swing. */
   private tajoMostrado = false;
@@ -196,7 +199,14 @@ export class CirujanoSacerdote {
       this.ultimoInstanteEnSuelo = ahora;
       this.dashesEnAireRestantes = DASH.usosEnAire;
       if (!this.enAccionBloqueante()) this.saltosRestantes = 1;
+
+      // Aterrizaje: solo suena al tocar suelo tras una caida de verdad.
+      if (!this.enSueloAntes && this.velocidadCaidaPrevia > 120) {
+        sonido.aterrizaje(this.velocidadCaidaPrevia > 450);
+      }
     }
+    this.enSueloAntes = enSuelo;
+    this.velocidadCaidaPrevia = cuerpo.velocity.y;
 
     if (this.controles.saltoPresionado) this.instanteSaltoEncolado = ahora;
 
@@ -264,8 +274,12 @@ export class CirujanoSacerdote {
       return;
     }
 
-    if (this.controles.pocionPresionada && this.cargasPocion > 0) {
-      this.beberPocion(ahora);
+    if (this.controles.pocionPresionada) {
+      if (this.cargasPocion > 0) {
+        this.beberPocion(ahora);
+      } else {
+        sonido.pocionVacia();
+      }
       return;
     }
 
@@ -328,6 +342,7 @@ export class CirujanoSacerdote {
 
   private beberPocion(ahora: number): void {
     this.cargasPocion -= 1;
+    sonido.pocion();
     this.estado = 'bebiendo';
     this.finAccion = ahora + POCION.duracionMs;
     this.vitalidad.curar(POCION.curacion);
@@ -375,6 +390,7 @@ export class CirujanoSacerdote {
 
     if (!this.tajoMostrado) {
       this.tajoMostrado = true;
+      sonido.golpeAlAire();
       this.dibujarTajo(perfil.alcance, perfil.alto, direccion);
     }
   }
@@ -809,6 +825,7 @@ export class CirujanoSacerdote {
 
     this.direccionAgarre = contraPared as -1 | 1;
     this.estado = 'agarre';
+    sonido.agarre();
     cuerpo.setAllowGravity(false);
     cuerpo.setVelocity(0, AGARRE.deslizamiento);
     cuerpo.setAccelerationX(0);
@@ -823,6 +840,7 @@ export class CirujanoSacerdote {
 
     // Trepar: arriba o salto impulsa hacia el borde.
     if (this.controles.arribaMantenido || saltoEncolado) {
+      sonido.trepar();
       this.soltarAgarre(ahora);
       cuerpo.setVelocityY(-AGARRE.impulsoTrepar);
       cuerpo.setVelocityX(this.direccionAgarre * MOVIMIENTO.velocidadCaminar * 0.6);

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
+import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO, CONTROLES_SISTEMA } from './TextoControles';
 
@@ -179,6 +180,7 @@ export class PausaScene extends Phaser.Scene {
 
   private mover(delta: number): void {
     if (this.mostrandoControles) return;
+    sonido.interfazMover();
     const total = PausaScene.OPCIONES.length;
     this.indice = (this.indice + delta + total) % total;
     this.refrescar();
@@ -231,6 +233,8 @@ export class PausaScene extends Phaser.Scene {
 
   private cerrar(): void {
     this.input.keyboard?.removeAllListeners();
+    sonido.interfazCerrar();
+    musica.atenuar(false);
     this.scene.resume(this.escenaJuego);
     this.scene.stop();
   }
@@ -239,7 +243,7 @@ export class PausaScene extends Phaser.Scene {
   private volverAlAtrio(): void {
     this.input.keyboard?.removeAllListeners();
     progreso.reiniciar();
-    sonido.ambienteApagado();
+    musica.atenuar(false);
 
     if (this.scene.isActive('Hud')) this.scene.stop('Hud');
     this.scene.stop(this.escenaJuego);

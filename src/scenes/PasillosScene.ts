@@ -23,6 +23,7 @@ export class PasillosScene extends EscenaNivel {
       mundo: { ancho: 1120, alto: 720 },
       // Mas apagado que el Atrio: luz de archivo, no luz de dia.
       colorFondo: '#0f0c0c',
+      musica: 'pasillos',
       inicio: { x: 60, y: 130 },
 
       // Un escalon mas abajo: la misma silleria, de vuelta de todo. Aqui ya se

@@ -79,6 +79,8 @@ export class Devoto implements Enemigo {
     return this.estado === 'muerto';
   }
 
+  readonly clase = 'devoto' as const;
+
   get hiereAlContacto(): boolean {
     return !this.estaMuerto;
   }

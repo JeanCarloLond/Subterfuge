@@ -93,6 +93,8 @@ export class Reformado implements Enemigo {
     return this.estado === 'muerto';
   }
 
+  readonly clase = 'reformado' as const;
+
   get hiereAlContacto(): boolean {
     return this.estado !== 'dormido' && this.estado !== 'muerto';
   }

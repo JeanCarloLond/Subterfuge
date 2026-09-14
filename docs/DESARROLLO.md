@@ -76,7 +76,8 @@ src/
     FragmentoCodice.ts           Coleccionable de lore
     Reliquia.ts                  Mejora permanente escondida (vida o pociones)
     Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
-    Sonido.ts                    Audio sintetizado con la Web Audio API
+    Sonido.ts                    Efectos sintetizados con la Web Audio API
+    Musica.ts                    Banda sonora: pistas por zona con fundido cruzado
     ArteProvisional.ts           Pixel art de relleno escrito a mano en código
     Progreso.ts                  Estado que sobrevive al cambio de zona (Códice)
   lore/
@@ -250,6 +251,9 @@ posición, para que las colisiones no se enteren.
 - [x] Rezar como acto: el Cirujano se arrodilla, el Altar responde, el aviso explica
 - [x] Menú de pausa (`Esc`/`P`): continuar, controles, sonido, volver al Atrio
 - [x] Menú contextual del navegador bloqueado en toda la página
+- [x] Efectos diferenciados por enemigo y por acción (aterrizar, agarre, poción…)
+- [x] Banda sonora por zona, tema de jefe y de cierre (CC0, con fundidos)
+- [x] Aviso en pantalla mientras el navegador tenga el audio bloqueado
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
@@ -375,9 +379,15 @@ cambio de zona (`Progreso.ts`) y se reinicia al volver al Atrio desde el cierre.
 
 ## Audio
 
-Todo el sonido se **sintetiza en tiempo real** con la Web Audio API
-(`src/systems/Sonido.ts`). No hay ni un solo archivo de audio en el repo, por
-tres razones:
+Dos capas, con criterios distintos:
+
+**Efectos** (`src/systems/Sonido.ts`) se **sintetizan en tiempo real** con la
+Web Audio API. Cada clase de enemigo tiene su materia — el Devoto es carne y
+hueso, el Vestal tela y metal fino, el Reformado carne húmeda sobre algo que ya
+no es hueso — y cada uno cae a su manera. El golpe al aire suena siempre (el
+impacto se suma encima si conecta), y hay sonido para aterrizar, agarrarse,
+trepar, beber, el frasco vacío, reliquias, menús, el despertar del jefe, sus
+fases, los escombros y la victoria. Sin archivos, por tres razones:
 
 - **Licencias**: todo lo que suena es original. Cero riesgo de arrastrar un
   sample con condiciones raras a un proyecto que se publica.
@@ -398,9 +408,20 @@ vivo. Va muy bajo — se nota cuando se apaga, no cuando suena.
 llamada: la interfaz pública (`golpe`, `parry`, `altar`…) puede quedarse igual
 y cargar samples por dentro.
 
+**Música** (`src/systems/Musica.ts`) son pistas **CC0 de OpenGameArt**, una por
+zona (`musica:` en cada definición de nivel), más un tema para el jefe — entra al
+despertar y vuelve la de la zona al vencerlo — y otro para el cierre. Cambiar de
+pista es un fundido cruzado hecho con un temporizador propio, **no con tweens de
+escena**: un tween muere cuando su escena se detiene, y cambiar de zona detiene
+la escena justo mientras la pista saliente se apaga. En pausa y en el Códice la
+música se atenúa, no se corta. Cada pista va en `.ogg` y `.mp3` porque Safari no
+reproduce Ogg Vorbis; el navegador carga solo el formato que sabe leer (~5 MB).
+Autoría y licencia de cada pista: `public/assets/audio/musica/LICENCIAS.md`.
+
 Nota de navegador: el `AudioContext` nace suspendido y no suena nada hasta que
-el usuario interactúa. `BootScene` engancha la reanudación al primer teclazo o
-clic, así que el primer sonido llega con la primera acción del jugador.
+el usuario interactúa. Los efectos comparten el contexto de Phaser (un solo
+contexto que desbloquear) y el HUD muestra _"pulsa cualquier tecla para activar
+el sonido"_ mientras siga bloqueado, para que nadie crea que el juego es mudo.
 
 ## Ajuste de sensación (game feel)
 

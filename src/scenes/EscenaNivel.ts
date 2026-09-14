@@ -12,6 +12,7 @@ import { Reliquia } from '../objetos/Reliquia';
 import { CAIDA, DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
+import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { EVENTOS_HUD } from '../ui/HudScene';
 import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO } from '../ui/TextoControles';
@@ -81,6 +82,8 @@ export interface DefinicionNivel {
   limiteCaida?: number;
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
+  /** Pista de fondo de la zona. Ver Musica.ts. */
+  musica?: Pista;
   /**
    * Tinte de la silleria de la zona. La misma piedra baja de tono a medida que
    * el Vientre se cierra: es la regla del descenso aplicada al arte, sin pedir
@@ -206,8 +209,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cameras.main.setDeadzone(60, 40);
     this.cameras.main.fadeIn(360, 11, 9, 11);
 
-    // El drone de fondo acompana todo el descenso; se apaga en el cierre.
-    sonido.ambienteEncendido();
+    // La banda sonora de la zona entra con fundido sobre la anterior.
+    if (this.definicion.musica) musica.poner(this.definicion.musica);
 
     if (!this.scene.isActive('Hud')) this.scene.launch('Hud');
     this.emitirEstadoInicial();
@@ -603,14 +606,14 @@ export abstract class EscenaNivel extends Phaser.Scene {
     jefe.eventos.on('despierta', () => {
       this.game.events.emit(EVENTOS_HUD.jefe, REFORMADO.vida, REFORMADO.vida);
       this.game.events.emit(EVENTOS_HUD.aviso, 'el Reformado');
+      sonido.jefeDespierta();
+      musica.poner('jefe');
     });
 
     jefe.eventos.on('fase', (fase: number) => {
       this.cameras.main.flash(180, 140, 60, 60);
       this.game.events.emit(EVENTOS_HUD.aviso, `fase ${fase}`);
-      // El drone sube de tono con cada fase: el Vientre se acelera con el.
-      sonido.ambienteApagado();
-      sonido.ambienteEncendido(55 * (1 + 0.3 * (fase - 1)));
+      sonido.jefeFase();
     });
 
     jefe.eventos.on('escombros', (cantidad: number) => this.soltarEscombros(cantidad));
@@ -629,6 +632,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.jefeDerrotado = true;
       this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
       this.abrirUmbral();
+      // Campanas, y la musica de la zona vuelve despacio: se acabo el sacramento.
+      sonido.victoria();
+      if (this.definicion.musica) musica.poner(this.definicion.musica);
     });
   }
 
@@ -690,7 +696,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const impactar = () => {
       if (resuelta) return;
       resuelta = true;
-      this.impacto.golpeAsestado(piedra.x, piedra.y, 0, false);
+      this.impacto.escombro(piedra.x, piedra.y);
       piedra.destroy();
     };
 
@@ -794,9 +800,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
     enemigo.recibirDano(dano, this.cirujano.sprite.x);
 
     if (enemigo.estaMuerto) {
-      this.impacto.muerteEnemigo(puntoX, puntoY);
+      this.impacto.muerteEnemigo(puntoX, puntoY, enemigo.clase);
     } else {
-      this.impacto.golpeAsestado(puntoX, puntoY, direccion, this.cirujano.golpeActualEsCargado);
+      this.impacto.golpeAsestado(
+        puntoX,
+        puntoY,
+        direccion,
+        this.cirujano.golpeActualEsCargado,
+        enemigo.clase,
+      );
     }
   }
 
@@ -827,6 +839,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       sello.devolver();
       this.cirujano.premiarParry();
       this.impacto.parryLogrado(sello.sprite.x, sello.sprite.y);
+      sonido.selloDevuelto();
       this.game.events.emit(EVENTOS_HUD.aviso, 'sello devuelto');
       return;
     }
@@ -850,7 +863,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!sello.consumir()) return;
 
     enemigo.recibirDano(sello.dano, sello.sprite.x);
-    this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, true);
+    this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, true, enemigo.clase);
     sello.destruir();
   }
 
@@ -888,7 +901,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!progreso.recogerReliquia(reliquia.id, reliquia.tipo)) return;
 
     this.cirujano.aplicarReliquia(reliquia.tipo);
-    sonido.altar();
+    sonido.reliquia();
     this.cameras.main.flash(160, 232, 217, 160);
     this.game.events.emit(EVENTOS_HUD.aviso, `${reliquia.nombre}  ·  ${reliquia.efecto}`);
   }
@@ -901,6 +914,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private pausar(): void {
     if (this.descendiendo) return;
 
+    sonido.interfazAbrir();
+    musica.atenuar(true);
     this.scene.pause();
     this.scene.launch('Pausa', { escenaJuego: this.scene.key });
   }
@@ -917,6 +932,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
       return;
     }
 
+    sonido.interfazAbrir();
+    musica.atenuar(true);
     this.scene.pause();
     this.scene.launch('Codice', { escenaJuego: this.scene.key });
   }

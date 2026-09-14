@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { CODICE, fragmentoPorId } from '../lore/Codice';
 import { progreso } from '../systems/Progreso';
+import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 
 /** Datos con los que se lanza: que escena de juego hay que reanudar al cerrar. */
@@ -187,6 +188,7 @@ export class CodiceScene extends Phaser.Scene {
 
   private mover(delta: number): void {
     if (this.ids.length === 0) return;
+    sonido.interfazMover();
     this.mostrar(this.indice + delta);
   }
 
@@ -197,6 +199,8 @@ export class CodiceScene extends Phaser.Scene {
 
   private cerrar(): void {
     this.input.keyboard?.removeAllListeners();
+    sonido.interfazCerrar();
+    musica.atenuar(false);
     this.scene.resume(this.escenaJuego);
     this.scene.stop();
   }

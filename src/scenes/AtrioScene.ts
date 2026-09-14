@@ -28,6 +28,7 @@ export class AtrioScene extends EscenaNivel {
     return {
       mundo: { ancho: 960, alto: 1120 },
       colorFondo: '#141014',
+      musica: 'atrio',
       inicio: { x: 80, y: 200 },
       mostrarAyuda: true,
 

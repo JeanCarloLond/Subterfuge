@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { generarArteProvisional } from '../systems/ArteProvisional';
+import { PISTAS } from '../systems/Musica';
 
 /**
  * Preload: carga de assets y pantalla de espera.
@@ -45,6 +46,16 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 24,
       frameHeight: 24,
     });
+
+    // Banda sonora: pistas CC0 de OpenGameArt (autoria en
+    // public/assets/audio/musica/LICENCIAS.md). Se dan los dos formatos y el
+    // navegador elige el que sabe reproducir: Safari no lee Ogg Vorbis.
+    for (const archivo of Object.values(PISTAS)) {
+      this.load.audio(archivo, [
+        `assets/audio/musica/${archivo}.ogg`,
+        `assets/audio/musica/${archivo}.mp3`,
+      ]);
+    }
 
     // Cuando existan los demas assets reales, se cargan aqui:
     // this.load.spritesheet('cirujano', 'assets/sprites/cirujano.png', {...});

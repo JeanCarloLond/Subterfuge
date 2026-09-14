@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { IMPACTO } from '../config/Sacramento';
-import { sonido } from './Sonido';
+import { sonido, type ClaseEnemigo } from './Sonido';
 
 /**
  * Sensacion de impacto: hitstop, sacudida de camara, chispas y destellos.
@@ -38,8 +38,14 @@ export class Impacto {
   }
 
   /** Golpe del Cirujano conectando sobre un enemigo. */
-  golpeAsestado(x: number, y: number, direccion: number, cargado: boolean): void {
-    sonido.golpe(cargado);
+  golpeAsestado(
+    x: number,
+    y: number,
+    direccion: number,
+    cargado: boolean,
+    clase: ClaseEnemigo = 'devoto',
+  ): void {
+    sonido.golpe(cargado, clase);
     this.congelar(cargado ? IMPACTO.hitstopCargadoMs : IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(
       cargado ? 140 : 90,
@@ -71,6 +77,13 @@ export class Impacto {
     this.congelar(IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(160, IMPACTO.sacudidaRecibir);
     this.escena.cameras.main.flash(90, 140, 40, 40);
+  }
+
+  /** Una piedra del techo que se rompe contra el suelo (o contra el Cirujano). */
+  escombro(x: number, y: number): void {
+    sonido.escombro();
+    this.escena.cameras.main.shake(70, IMPACTO.sacudidaGolpe);
+    this.chispas(x, y, 0, 8, 0x51473d);
   }
 
   /** Onda de la caida del Reformado: sacude y barre el suelo. */
@@ -105,8 +118,8 @@ export class Impacto {
     this.anillo(x, y - 12, 46, 0x8c2f2f, 620);
   }
 
-  muerteEnemigo(x: number, y: number): void {
-    sonido.muerteEnemigo();
+  muerteEnemigo(x: number, y: number, clase: ClaseEnemigo = 'devoto'): void {
+    sonido.muerteEnemigo(clase);
     this.congelar(IMPACTO.hitstopMuerteMs);
     this.escena.cameras.main.shake(180, IMPACTO.sacudidaMuerte);
     this.chispas(x, y, 0, 18, 0x8c2f2f);

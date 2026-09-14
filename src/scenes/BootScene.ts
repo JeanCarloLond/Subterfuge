@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 
 /**
@@ -14,6 +15,13 @@ export class BootScene extends Phaser.Scene {
     // Los navegadores no dejan sonar nada hasta que el usuario interactua, asi
     // que el audio queda a la espera del primer teclazo o clic.
     sonido.vincularActivacion();
+
+    // Un solo AudioContext para todo: los efectos usan el de Phaser, que ya se
+    // desbloquea con la primera interaccion del jugador.
+    if (this.sound instanceof Phaser.Sound.WebAudioSoundManager) {
+      sonido.adoptarContexto(this.sound.context);
+    }
+    musica.vincular(this);
 
     // El filtrado NEAREST lo aplica `pixelArt: true` en la config del juego.
     this.scene.start('Preload');
