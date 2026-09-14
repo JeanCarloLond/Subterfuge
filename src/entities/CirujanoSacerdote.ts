@@ -4,6 +4,7 @@ import {
   CAIDA,
   COMBATE,
   CONTACTO,
+  DANO_POR_CAIDA,
   DASH,
   FERVOR,
   MOVIMIENTO,
@@ -85,6 +86,8 @@ export class CirujanoSacerdote {
   /** Para sonar el aterrizaje solo al pasar de aire a suelo. */
   private enSueloAntes = true;
   private velocidadCaidaPrevia = 0;
+  /** y del punto mas alto desde el que empezo a caer. */
+  private inicioCaidaY = 0;
   private direccionAtaque: DireccionAtaque = 'lateral';
   /** El arco del golpe se dibuja una sola vez por swing. */
   private tajoMostrado = false;
@@ -203,7 +206,13 @@ export class CirujanoSacerdote {
       // Aterrizaje: solo suena al tocar suelo tras una caida de verdad.
       if (!this.enSueloAntes && this.velocidadCaidaPrevia > 120) {
         sonido.aterrizaje(this.velocidadCaidaPrevia > 450);
+        this.resolverDanoPorCaida(ahora);
       }
+      this.inicioCaidaY = this.sprite.y;
+    } else if (cuerpo.velocity.y <= 0 || this.estado === 'agarre' || this.estado === 'dash') {
+      // Mientras sube, cuelga o hace dash, la caida aun no ha empezado: el
+      // punto mas alto es el actual. Asi el dash o el agarre "perdonan" lo caido.
+      this.inicioCaidaY = this.sprite.y;
     }
     this.enSueloAntes = enSuelo;
     this.velocidadCaidaPrevia = cuerpo.velocity.y;
@@ -609,12 +618,38 @@ export class CirujanoSacerdote {
 
     this.sprite.setAlpha(1);
     this.sprite.setPosition(x, y);
+    this.inicioCaidaY = y;
+    this.enSueloAntes = true;
     this.cuerpo.setAllowGravity(true);
     this.cuerpo.setVelocity(0, 0);
 
     this.finInvulnerabilidad = this.escena.time.now + VITALIDAD.invulnerabilidadMs;
     this.inicioCargaAtaque = -Infinity;
     this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
+  }
+
+  /**
+   * Golpe contra el suelo tras una caida larga. Cuesta vitalidad segun la
+   * altura y deja al Cirujano clavado un instante, sin i-frames: una caida
+   * mala en mitad de una pelea es doblemente mala, y asi debe ser.
+   */
+  private resolverDanoPorCaida(ahora: number): void {
+    const altura = this.sprite.y - this.inicioCaidaY;
+    if (altura <= DANO_POR_CAIDA.sinDanoHasta) return;
+
+    const dano = Math.min(
+      DANO_POR_CAIDA.danoMaximo,
+      Math.ceil((altura - DANO_POR_CAIDA.sinDanoHasta) / DANO_POR_CAIDA.pxPorPunto),
+    );
+
+    this.vitalidad.recibirDano(dano);
+    this.eventos.emit('caida', dano, altura);
+    if (this.vitalidad.estaMuerto) return;
+
+    this.estado = 'herido';
+    this.finAccion = ahora + DANO_POR_CAIDA.aturdimientoMs;
+    this.inicioCargaAtaque = -Infinity;
+    this.cuerpo.setVelocityX(0);
   }
 
   /**
@@ -665,6 +700,8 @@ export class CirujanoSacerdote {
 
     this.estado = 'aire';
     this.sprite.setPosition(x, y);
+    this.inicioCaidaY = y;
+    this.enSueloAntes = true;
     this.cuerpo.setAllowGravity(true);
     this.cuerpo.setVelocity(0, 0);
     this.finInvulnerabilidad = this.escena.time.now + VITALIDAD.invulnerabilidadMs;

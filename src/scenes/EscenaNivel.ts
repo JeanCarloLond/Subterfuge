@@ -470,6 +470,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cirujano.eventos.on('pociones', (cargas: number, maximo: number) => {
       this.game.events.emit(EVENTOS_HUD.pociones, cargas, maximo);
     });
+    this.cirujano.eventos.on('caida', (dano: number) => {
+      this.impacto.danoRecibido();
+      this.cameras.main.shake(200, 0.012);
+      this.game.events.emit(EVENTOS_HUD.aviso, `caida: -${dano}`);
+    });
     this.cirujano.vitalidad.on('muerte', () => this.alMorir());
 
     this.physics.add.overlap(

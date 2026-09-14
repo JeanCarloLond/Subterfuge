@@ -131,7 +131,16 @@ export const CAIDA = {
   reaparecerMs: 2200,
 } as const;
 
-/** Combate cuerpo a cuerpo. */
+/**
+ * Combate cuerpo a cuerpo.
+ *
+ * Sobre el alcance: el golpe llega a `alcance + 4` px del centro del Cirujano.
+ * Tiene que superar el rango al que los enemigos disparan sus ataques, o no
+ * existe ninguna distancia desde la que golpear sin comerse el suyo. Con 34
+ * el golpe toca el cuerpo del Reformado (10 px de semiancho) hasta a 48 px de
+ * su centro, y el zarpazo del jefe salta a 36: quedan 12 px de banda segura.
+ * Si tocas esto, revisa REFORMADO.zarpazo y DEVOTO.rangoAtaque.
+ */
 export const COMBATE = {
   ataque: {
     dano: 2,
@@ -140,8 +149,8 @@ export const COMBATE = {
     /** Retardo desde la pulsacion hasta que la hitbox se activa (ms). */
     anticipacionMs: 60,
     enfriamientoMs: 300,
-    alcance: 22,
-    alto: 20,
+    alcance: 34,
+    alto: 22,
   },
   cargado: {
     dano: 6,
@@ -151,8 +160,8 @@ export const COMBATE = {
     duracionMs: 150,
     anticipacionMs: 110,
     enfriamientoMs: 520,
-    alcance: 30,
-    alto: 24,
+    alcance: 42,
+    alto: 26,
   },
   /**
    * Golpe hacia abajo en el aire. Al conectar, el Cirujano REBOTA: sale
@@ -172,6 +181,26 @@ export const COMBATE = {
     /** Aturdimiento infligido al enemigo parado (ms). */
     aturdimientoMs: 900,
   },
+} as const;
+
+/**
+ * Dano por caida, proporcional a la altura.
+ *
+ * Se mide desde el punto MAS ALTO de la trayectoria hasta el suelo, no desde
+ * donde se salto: tirarse desde una repisa cuenta entero. El umbral esta por
+ * encima del doble salto (157 px) y de cualquier escalon de la ruta de vuelta
+ * (80 px), asi que moverse con normalidad nunca duele; saltarse la escalera de
+ * los Pasillos (184 px) cuesta un punto, y bajar dos corredores de golpe
+ * (360 px), dos. Es una decision, no una trampa.
+ */
+export const DANO_POR_CAIDA = {
+  /** Caidas hasta aqui no cuestan nada (px). */
+  sinDanoHasta: 160,
+  /** Un punto de vitalidad por cada tramo de esta altura por encima del umbral. */
+  pxPorPunto: 120,
+  danoMaximo: 3,
+  /** El Cirujano queda clavado un instante tras un golpe contra el suelo (ms). */
+  aturdimientoMs: 320,
 } as const;
 
 /**
@@ -299,11 +328,16 @@ export const REFORMADO = {
     enfriamientoMs: 1900,
   },
 
-  /** Zarpazo cercano, la unica opcion si el Cirujano se le pega. */
+  /**
+   * Zarpazo cercano, la unica opcion si el Cirujano se le pega. Se dispara a
+   * `alcance + margenDisparo` px: ese margen es lo que deja al Cirujano una
+   * distancia desde la que golpear sin activarlo (ver COMBATE).
+   */
   zarpazo: {
     anticipacionMs: 380,
     duracionMs: 140,
     alcance: 34,
+    margenDisparo: 2,
     enfriamientoMs: 1000,
   },
 

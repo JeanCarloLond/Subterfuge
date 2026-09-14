@@ -254,6 +254,8 @@ posición, para que las colisiones no se enteren.
 - [x] Efectos diferenciados por enemigo y por acción (aterrizar, agarre, poción…)
 - [x] Banda sonora por zona, tema de jefe y de cierre (CC0, con fundidos)
 - [x] Aviso en pantalla mientras el navegador tenga el audio bloqueado
+- [x] Daño por caída proporcional a la altura, con umbral por encima del doble salto
+- [x] Alcance del golpe ampliado: banda segura frente al zarpazo del jefe
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
@@ -434,6 +436,13 @@ Al ajustar, ten en cuenta las dependencias:
 - `COMBATE.cargado.costeFervor` ↔ `FERVOR.porGolpeAsestado` y `porParry`
   (define cada cuántos golpes el jugador puede permitirse un cargado)
 - `VITALIDAD.maxima` ↔ `DEVOTO.dano` (hoy: 6 golpes de Devoto matan)
+- `COMBATE.ataque.alcance` ↔ `REFORMADO.zarpazo.alcance + margenDisparo`: el
+  golpe llega a `alcance + 4` del centro del Cirujano y toca el cuerpo del jefe
+  (semiancho 10) hasta a 48 px; el zarpazo salta a 36. **Esos 12 px son la
+  banda segura**; si desaparece, el jefe no se puede golpear sin recibir daño.
+- `DANO_POR_CAIDA.sinDanoHasta` debe quedar por encima de la altura del doble
+  salto (157 px) y de cualquier escalón de las rutas de retorno (80 px). La caída
+  se mide desde el punto más alto de la trayectoria; dash y agarre la reinician.
 
 ## Convenciones
 

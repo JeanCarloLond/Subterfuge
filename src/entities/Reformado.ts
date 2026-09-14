@@ -175,7 +175,7 @@ export class Reformado implements Enemigo {
     // Cerca: zarpazo. Lejos y a distinta altura: salto, para no dejar que el
     // jugador lo espere desde una repisa. Lejos y en llano: se sortea entre
     // embestida, salto y embestida doble segun la fase.
-    if (distancia <= REFORMADO.zarpazo.alcance + 10) {
+    if (distancia <= REFORMADO.zarpazo.alcance + REFORMADO.zarpazo.margenDisparo) {
       this.iniciarManiobra(ahora, 'zarpazo');
       return;
     }
