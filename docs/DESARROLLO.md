@@ -163,6 +163,17 @@ tocas uno de los dos valores, revisa el otro.
 Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Cirujano,
 `consumirGolpe` en el Devoto).
 
+**El golpe sale al pulsar, no al soltar.** Es una regla de respuesta: si la
+tecla no hace nada hasta que se levanta el dedo, el jugador cree que no
+funciona. El cargado se decide después, al soltar tras mantener 450 ms, y
+salta por encima del enfriamiento del básico porque suele soltarse durante él.
+
+**El arco del golpe se dibuja siempre, acierte o falle.** La confirmación de
+"he golpeado" no puede depender de que hubiera un enemigo delante. Va con dos
+poses del personaje (se recoge en la anticipación, se lanza en el impacto) y un
+impulso visual de unos píxeles hecho moviendo el origen del sprite, no su
+posición, para que las colisiones no se enteren.
+
 ## Estado actual — Fase 2 (Núcleo jugable)
 
 **Fase 1 — Prototipo (completa):**
@@ -211,19 +222,20 @@ Un swing solo puede herir una vez a cada objetivo (`registrarGolpe` en el Ciruja
 
 ## Controles
 
-| Acción                | Teclas                      |
-| --------------------- | --------------------------- |
-| Mover                 | `A` / `D` o flechas         |
-| Saltar / doble saltar | `Espacio` o `Z`             |
-| Dash                  | `Shift` o `X`               |
-| Atacar                | `J` o `C`                   |
-| Ataque cargado        | mantener `J` / `C` y soltar |
-| Parry                 | `K` o `V`                   |
-| Poción de Carne       | `Q`                         |
-| Silenciar el audio    | `M`                         |
-| Rezar en un Altar     | `E`                         |
-| Trepar (colgado)      | `W` / flecha arriba         |
-| Soltarse (colgado)    | `S` / flecha abajo          |
+| Acción                | Teclas                        |
+| --------------------- | ----------------------------- |
+| Mover                 | `A` / `D` o flechas           |
+| Saltar / doble saltar | `Espacio` o `Z`               |
+| Dash                  | `Shift` o `X`                 |
+| Atacar                | `J`, `C` o clic izquierdo     |
+| Ataque cargado        | mantener y soltar (30 Fervor) |
+| Parry                 | `K`, `V` o clic derecho       |
+| Poción de Carne       | `Q`                           |
+| Silenciar el audio    | `M`                           |
+| Ayuda de controles    | `H` o `Tab`                   |
+| Rezar en un Altar     | `E`                           |
+| Trepar (colgado)      | `W` / flecha arriba           |
+| Soltarse (colgado)    | `S` / flecha abajo            |
 
 ## Diseño de los enemigos
 

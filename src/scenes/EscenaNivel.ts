@@ -111,6 +111,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private umbralAviso?: Phaser.GameObjects.Text;
   private fondoLejano?: Phaser.GameObjects.TileSprite;
   private fondoCercano?: Phaser.GameObjects.TileSprite;
+  private panelAyuda?: Phaser.GameObjects.Container;
 
   /** Cada zona describe aqui su contenido. */
   protected abstract definirNivel(): DefinicionNivel;
@@ -144,10 +145,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!this.scene.isActive('Hud')) this.scene.launch('Hud');
     this.emitirEstadoInicial();
 
-    if (this.definicion.mostrarAyuda) this.crearAyudaControles();
+    this.crearAyudaControles(this.definicion.mostrarAyuda === true);
   }
 
   update(): void {
+    // Antes de que nadie lea la entrada: fija el estado del raton del fotograma.
+    this.controles.actualizar();
+
+    if (this.controles.ayudaPresionada) this.alternarAyuda();
+
     this.cirujano.actualizar();
 
     for (const devoto of this.devotos) {
@@ -207,6 +213,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.umbralAviso = undefined;
     this.fondoLejano = undefined;
     this.fondoCercano = undefined;
+    this.panelAyuda = undefined;
   }
 
   // -- Construccion --------------------------------------------------------
@@ -701,21 +708,111 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
   }
 
-  /** Ayuda de desarrollo. Se retira antes de cualquier build publica. */
-  private crearAyudaControles(): void {
-    this.add
-      .text(
-        6,
-        RESOLUCION.alto - 30,
-        'A/D mover  ESPACIO saltar  SHIFT dash\nJ atacar (mantener = cargado)  K parry  Q pocion  E interactuar',
-        {
-          fontFamily: 'monospace',
-          fontSize: '8px',
-          color: '#6b5f55',
-          lineSpacing: 2,
-        },
-      )
-      .setScrollFactor(0)
-      .setDepth(100);
+  /**
+   * Panel de controles.
+   *
+   * Lista TODO lo que se puede hacer, con las teclas y el raton, y describe
+   * cada accion tal como funciona de verdad (el cargado cuesta Fervor, el
+   * doble salto es pulsar dos veces...). Una ayuda que no coincide con el
+   * juego es peor que ninguna: el jugador deja de fiarse de ella.
+   *
+   * Se muestra al empezar la primera zona, se oculta sola a los segundos, y
+   * H o TAB la traen de vuelta en cualquier momento.
+   */
+  private crearAyudaControles(visibleAlEmpezar: boolean): void {
+    const ancho = 292;
+    const alto = 128;
+    const x = (RESOLUCION.ancho - ancho) / 2;
+    const y = RESOLUCION.alto - alto - 14;
+
+    const fondo = this.add.graphics();
+    fondo.fillStyle(0x0b090b, 0.86);
+    fondo.fillRect(0, 0, ancho, alto);
+    fondo.lineStyle(1, 0x4a4038, 1);
+    fondo.strokeRect(0, 0, ancho, alto);
+
+    const estilo = {
+      fontFamily: 'monospace',
+      fontSize: '8px',
+      color: '#d6cfc4',
+      lineSpacing: 3,
+    };
+    const estiloTenue = { ...estilo, color: '#8a7d70' };
+
+    const movimiento = this.add.text(
+      10,
+      10,
+      [
+        'MOVER      A D  o flechas',
+        'SALTAR     ESPACIO',
+        '           dos veces: doble salto',
+        'DASH       SHIFT   (esquiva)',
+        'TREPAR     W  colgado de un borde',
+        'SOLTARSE   S  colgado de un borde',
+      ].join('\n'),
+      estilo,
+    );
+
+    const combate = this.add.text(
+      152,
+      10,
+      [
+        'GOLPEAR    J  o clic izquierdo',
+        'CARGADO    mantener y soltar',
+        '           cuesta 30 de Fervor',
+        'PARRY      K  o clic derecho',
+        'POCION     Q',
+        'REZAR      E  junto a un Altar',
+      ].join('\n'),
+      estilo,
+    );
+
+    const pie = this.add.text(
+      10,
+      alto - 18,
+      'H  mostrar u ocultar esta ayuda        M  sonido',
+      estiloTenue,
+    );
+
+    const panel = this.add.container(x, y, [fondo, movimiento, combate, pie]);
+    panel.setScrollFactor(0);
+    panel.setDepth(100);
+    panel.setVisible(visibleAlEmpezar);
+    this.panelAyuda = panel;
+
+    // En la primera zona se retira sola: no hay que taparle el juego a nadie.
+    if (visibleAlEmpezar) {
+      this.time.delayedCall(9000, () => {
+        if (this.panelAyuda?.visible) this.ocultarAyuda();
+      });
+    }
+  }
+
+  private alternarAyuda(): void {
+    if (!this.panelAyuda) return;
+    if (this.panelAyuda.visible) {
+      this.ocultarAyuda();
+    } else {
+      this.tweens.killTweensOf(this.panelAyuda);
+      this.panelAyuda.setVisible(true);
+      this.panelAyuda.setAlpha(1);
+    }
+  }
+
+  private ocultarAyuda(): void {
+    const panel = this.panelAyuda;
+    if (!panel) return;
+
+    this.tweens.killTweensOf(panel);
+    this.tweens.add({
+      targets: panel,
+      alpha: 0,
+      duration: 500,
+      ease: 'Quad.easeIn',
+      onComplete: () => {
+        panel.setVisible(false);
+        panel.setAlpha(1);
+      },
+    });
   }
 }

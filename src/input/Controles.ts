@@ -3,6 +3,11 @@ import Phaser from 'phaser';
 /**
  * Mapa de entrada. Centralizado para poder anadir gamepad y remapeo
  * sin tocar la logica del personaje.
+ *
+ * Teclado y raton conviven: clic izquierdo golpea y clic derecho para, igual
+ * que J y K. El raton se muestrea una vez por fotograma en `actualizar()`, que
+ * la escena llama al principio de su `update`, para que "recien pulsado" y
+ * "recien soltado" signifiquen lo mismo con ambos dispositivos.
  */
 export class Controles {
   private readonly izquierda: Phaser.Input.Keyboard.Key[];
@@ -16,6 +21,15 @@ export class Controles {
   private readonly pocion: Phaser.Input.Keyboard.Key[];
   private readonly interactuar: Phaser.Input.Keyboard.Key[];
   private readonly silenciar: Phaser.Input.Keyboard.Key[];
+  private readonly ayuda: Phaser.Input.Keyboard.Key[];
+
+  private readonly puntero: Phaser.Input.Pointer;
+
+  /** Estado del raton en este fotograma y en el anterior, para sacar flancos. */
+  private izqAhora = false;
+  private izqAntes = false;
+  private derAhora = false;
+  private derAntes = false;
 
   constructor(escena: Phaser.Scene) {
     const teclado = escena.input.keyboard;
@@ -35,6 +49,19 @@ export class Controles {
     this.pocion = [tecla(K.Q)];
     this.interactuar = [tecla(K.E)];
     this.silenciar = [tecla(K.M)];
+    this.ayuda = [tecla(K.H), tecla(K.TAB)];
+
+    this.puntero = escena.input.activePointer;
+    // El clic derecho es el parry: que no abra el menu contextual del navegador.
+    escena.input.mouse?.disableContextMenu();
+  }
+
+  /** Muestrea el raton. Llamar UNA vez por fotograma, antes de leer nada. */
+  actualizar(): void {
+    this.izqAntes = this.izqAhora;
+    this.derAntes = this.derAhora;
+    this.izqAhora = this.puntero.leftButtonDown();
+    this.derAhora = this.puntero.rightButtonDown();
   }
 
   /** Eje horizontal: -1 izquierda, 0 neutro, 1 derecha. */
@@ -56,7 +83,7 @@ export class Controles {
     return this.algunaAbajo(this.saltar);
   }
 
-  /** true solo en el frame en que se presiona. */
+  /** true solo en el fotograma en que se presiona. */
   get saltoPresionado(): boolean {
     return this.algunaRecien(this.saltar);
   }
@@ -65,21 +92,23 @@ export class Controles {
     return this.algunaRecien(this.dash);
   }
 
+  /** J, C o clic izquierdo. */
   get ataquePresionado(): boolean {
-    return this.algunaRecien(this.atacar);
+    return this.algunaRecien(this.atacar) || (this.izqAhora && !this.izqAntes);
   }
 
   /** Mantener el boton carga el golpe: gasta Fervor a cambio de dano. */
   get ataqueMantenido(): boolean {
-    return this.algunaAbajo(this.atacar);
+    return this.algunaAbajo(this.atacar) || this.izqAhora;
   }
 
   get ataqueSoltado(): boolean {
-    return this.algunaSoltada(this.atacar);
+    return this.algunaSoltada(this.atacar) || (!this.izqAhora && this.izqAntes);
   }
 
+  /** K, V o clic derecho. */
   get parryPresionado(): boolean {
-    return this.algunaRecien(this.parry);
+    return this.algunaRecien(this.parry) || (this.derAhora && !this.derAntes);
   }
 
   get pocionPresionada(): boolean {
@@ -92,6 +121,10 @@ export class Controles {
 
   get silencioPresionado(): boolean {
     return this.algunaRecien(this.silenciar);
+  }
+
+  get ayudaPresionada(): boolean {
+    return this.algunaRecien(this.ayuda);
   }
 
   private algunaAbajo(teclas: Phaser.Input.Keyboard.Key[]): boolean {

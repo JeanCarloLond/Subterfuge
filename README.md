@@ -75,19 +75,20 @@ pararlo, `Ctrl + C` en la terminal.
 
 ### Controles
 
-| Acción                | Teclas                     |
-| --------------------- | -------------------------- |
-| Mover                 | `A` / `D` o flechas        |
-| Saltar / doble saltar | `Espacio` o `Z`            |
-| Dash (esquiva)        | `Shift` o `X`              |
-| Atacar                | `J` o `C`                  |
-| Ataque cargado        | mantener `J` / `C`, soltar |
-| Parry                 | `K` o `V`                  |
-| Poción de Carne       | `Q`                        |
-| Rezar / descender     | `E`                        |
-| Trepar (colgado)      | `W` / flecha arriba        |
-| Soltarse (colgado)    | `S` / flecha abajo         |
-| Silenciar el audio    | `M`                        |
+| Acción                | Teclas                        |
+| --------------------- | ----------------------------- |
+| Mover                 | `A` / `D` o flechas           |
+| Saltar / doble saltar | `Espacio` o `Z`               |
+| Dash (esquiva)        | `Shift` o `X`                 |
+| Atacar                | `J`, `C` o clic izquierdo     |
+| Ataque cargado        | mantener y soltar (30 Fervor) |
+| Parry                 | `K`, `V` o clic derecho       |
+| Poción de Carne       | `Q`                           |
+| Rezar / descender     | `E`                           |
+| Trepar (colgado)      | `W` / flecha arriba           |
+| Soltarse (colgado)    | `S` / flecha abajo            |
+| Silenciar el audio    | `M`                           |
+| Ayuda de controles    | `H` o `Tab`                   |
 
 El **parry** es la mecánica central. Cuando un enemigo se tensa y se tiñe,
 te está avisando de que va a golpear: pulsa `K` en ese momento. Contra el

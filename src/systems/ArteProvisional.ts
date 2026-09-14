@@ -382,7 +382,6 @@ export function generarArteProvisional(escena: Phaser.Scene): void {
 
   // Piezas sin forma propia: se tintan y escalan desde el codigo.
   rectangulo(escena, 'chispa-placeholder', 2, 2, 0xffffff);
-  rectangulo(escena, 'tajo-placeholder', 4, 20, 0xffffff);
 
   fondoArcos(escena, 'fondo-arcos');
 }

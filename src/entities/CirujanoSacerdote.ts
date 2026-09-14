@@ -191,6 +191,19 @@ export class CirujanoSacerdote {
   }
 
   private procesarEntradasDeCombate(ahora: number): void {
+    // La suelta del boton se evalua ANTES del bloqueo de accion: el golpe
+    // cargado se decide al soltar, y eso suele ocurrir durante el enfriamiento
+    // del basico. Si se perdiera ahi, el cargado no saldria nunca.
+    if (this.controles.ataqueSoltado) {
+      const listo = this.cargaCompleta && this.fervor.alcanzaPara(COMBATE.cargado.costeFervor);
+      this.inicioCargaAtaque = -Infinity;
+
+      if (listo && this.puedeSoltarCargado()) {
+        this.iniciarAtaque(ahora, 'cargado');
+        return;
+      }
+    }
+
     if (!this.puedeActuar()) return;
 
     if (this.controles.parryPresionado && ahora >= this.finEnfriamientoParry) {
@@ -205,17 +218,26 @@ export class CirujanoSacerdote {
 
     if (ahora < this.finEnfriamientoAtaque) return;
 
-    // Mantener el boton acumula carga; soltarlo decide que golpe sale.
+    // El golpe sale AL PULSAR, no al soltar: la respuesta tiene que ser
+    // inmediata o el jugador cree que la tecla no funciona. Seguir manteniendo
+    // el boton acumula carga para un segundo golpe, el cargado.
     if (this.controles.ataquePresionado) {
+      this.iniciarAtaque(ahora, 'basico');
       this.inicioCargaAtaque = ahora;
-      return;
     }
+  }
 
-    if (this.controles.ataqueSoltado && this.inicioCargaAtaque > 0) {
-      const cargado = this.cargaCompleta && this.fervor.alcanzaPara(COMBATE.cargado.costeFervor);
-      this.inicioCargaAtaque = -Infinity;
-      this.iniciarAtaque(ahora, cargado ? 'cargado' : 'basico');
-    }
+  /** El cargado salta por encima del enfriamiento del basico, pero no de todo. */
+  private puedeSoltarCargado(): boolean {
+    return (
+      this.estado !== 'muerto' &&
+      this.estado !== 'dash' &&
+      this.estado !== 'agarre' &&
+      this.estado !== 'herido' &&
+      this.estado !== 'bebiendo' &&
+      this.estado !== 'parry' &&
+      this.estado !== 'atacando'
+    );
   }
 
   private iniciarAtaque(ahora: number, tipo: TipoAtaque): void {
@@ -281,28 +303,87 @@ export class CirujanoSacerdote {
   }
 
   /**
-   * Arco visible del golpe. Sin esto el ataque es invisible hasta que toca algo,
-   * y el jugador no puede leer su propio alcance.
+   * Arco visible del golpe: una media luna que barre de arriba abajo por
+   * delante del Cirujano, con una estela mas tenue detras.
+   *
+   * Sin esto el ataque es invisible hasta que toca algo, y el jugador no
+   * puede leer ni su alcance ni si el golpe llego a salir. El arco se dibuja
+   * SIEMPRE, acierte o falle: la confirmacion de "he golpeado" no puede
+   * depender de que hubiera un enemigo delante.
    */
   private dibujarTajo(alcance: number, alto: number, direccion: number): void {
     const cargado = this.ataqueEnCurso === 'cargado';
+    const color = cargado ? 0xc94f4f : 0xe8e0d0;
+    const radio = alcance + (cargado ? 6 : 2);
+    const duracion = cargado ? 200 : 140;
+    const origenX = this.sprite.x + direccion * 2;
+    const origenY = this.hitbox.y;
 
-    const tajo = this.escena.add.sprite(this.hitbox.x, this.hitbox.y, 'tajo-placeholder');
-    tajo.setDepth(58);
-    tajo.setTint(cargado ? 0xc94f4f : 0xd6cfc4);
-    tajo.setDisplaySize(4, alto);
-    tajo.setAlpha(0.9);
+    // Media luna: borde nitido + relleno translucido, abriendo hacia delante.
+    const arco = this.crearMediaLuna(origenX, origenY, radio, alto, color, cargado ? 3 : 2);
+    arco.setScale(direccion * 0.55, 0.55);
+    arco.setAngle(-38 * direccion);
 
-    // Barrido: el arco se estira a lo ancho del alcance y se desvanece.
+    // Barre hacia abajo mientras crece y se apaga: lectura de "tajo", no de
+    // "rectangulo que aparece".
     this.escena.tweens.add({
-      targets: tajo,
-      displayWidth: alcance,
-      x: this.sprite.x + direccion * (alcance / 2 + 4),
+      targets: arco,
+      scaleX: direccion,
+      scaleY: 1,
+      angle: 30 * direccion,
       alpha: 0,
-      duration: cargado ? 190 : 130,
-      ease: 'Quad.easeOut',
-      onComplete: () => tajo.destroy(),
+      duration: duracion,
+      ease: 'Cubic.easeOut',
+      onComplete: () => arco.destroy(),
     });
+
+    // Estela: la misma luna, mas fina y con retardo, siguiendo al arco.
+    const estela = this.crearMediaLuna(origenX, origenY, radio * 0.85, alto, color, 1);
+    estela.setScale(direccion * 0.5, 0.5);
+    estela.setAngle(-42 * direccion);
+    estela.setAlpha(0.45);
+
+    this.escena.tweens.add({
+      targets: estela,
+      scaleX: direccion * 0.95,
+      scaleY: 0.95,
+      angle: 26 * direccion,
+      alpha: 0,
+      delay: 35,
+      duration: duracion,
+      ease: 'Cubic.easeOut',
+      onComplete: () => estela.destroy(),
+    });
+  }
+
+  /** Media luna abierta hacia +x. Se voltea con scaleX negativo. */
+  private crearMediaLuna(
+    x: number,
+    y: number,
+    radio: number,
+    alto: number,
+    color: number,
+    grosor: number,
+  ): Phaser.GameObjects.Graphics {
+    const grafico = this.escena.add.graphics({ x, y });
+    grafico.setDepth(58);
+
+    // Abertura angular proporcional al alto de la hitbox: un golpe mas alto
+    // dibuja un arco mas abierto, para que dibujo y dano coincidan.
+    const apertura = Phaser.Math.Clamp(alto / radio, 0.6, 1.4);
+    const inicio = -apertura;
+    const fin = apertura;
+
+    grafico.fillStyle(color, 0.22);
+    grafico.slice(0, 0, radio, inicio, fin, false);
+    grafico.fillPath();
+
+    grafico.lineStyle(grosor, color, 1);
+    grafico.beginPath();
+    grafico.arc(0, 0, radio, inicio, fin, false);
+    grafico.strokePath();
+
+    return grafico;
   }
 
   /**
@@ -589,7 +670,20 @@ export class CirujanoSacerdote {
     let escalaX = 1;
     let escalaY = 1;
 
-    if (this.estado === 'dash') {
+    if (this.estado === 'atacando') {
+      // Dos poses: durante la anticipacion se recoge; al soltar el golpe se
+      // lanza hacia delante. Es lo que hace que el golpe tenga PESO y no sea
+      // solo un dibujo que aparece al lado.
+      const ahora = this.escena.time.now;
+      if (ahora < this.inicioHitbox) {
+        escalaX = 0.9;
+        escalaY = 1.08;
+      } else {
+        const cargado = this.ataqueEnCurso === 'cargado';
+        escalaX = cargado ? 1.22 : 1.14;
+        escalaY = cargado ? 0.86 : 0.92;
+      }
+    } else if (this.estado === 'dash') {
       // El dash se alarga en la direccion del movimiento.
       escalaX = 1.18;
       escalaY = 0.86;
@@ -607,6 +701,28 @@ export class CirujanoSacerdote {
     }
 
     this.sprite.setScale(escalaX, escalaY);
+    this.actualizarImpulsoVisual();
+  }
+
+  /**
+   * Desplaza el DIBUJO unos pixeles hacia delante durante el golpe, moviendo
+   * el origen del sprite en vez de su posicion: el cuerpo fisico se queda
+   * donde esta y las colisiones no se enteran. Phaser voltea la textura desde
+   * su centro, asi que el desfase del origen vale igual mirando a ambos lados.
+   */
+  private actualizarImpulsoVisual(): void {
+    const anchoFrame = this.sprite.width || 16;
+    let desfasePx = 0;
+
+    if (this.estado === 'atacando') {
+      const ahora = this.escena.time.now;
+      const cargado = this.ataqueEnCurso === 'cargado';
+      // Se echa atras 2 px al preparar y se lanza 4-6 px al golpear.
+      desfasePx = ahora < this.inicioHitbox ? -2 : cargado ? 6 : 4;
+    }
+
+    const direccion = this.mirandoDerecha ? 1 : -1;
+    this.sprite.setOrigin(0.5 - (desfasePx * direccion) / anchoFrame, 1);
   }
 
   private actualizarOrientacion(): void {
