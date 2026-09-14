@@ -14,7 +14,7 @@ export type EstadoReformado =
   | 'muerto';
 
 /** Ataque que el Reformado esta preparando o ejecutando. */
-type Maniobra = 'embestida' | 'salto' | 'zarpazo';
+type Maniobra = 'embestida' | 'salto' | 'zarpazo' | 'doble';
 
 /**
  * El Reformado: jefe del teaser.
@@ -45,6 +45,8 @@ export class Reformado implements Enemigo {
   private finEnfriamiento = -Infinity;
   private yaGolpeoEnSwing = false;
   private tweenTelegrafia?: Phaser.Tweens.Tween;
+  /** Tras la primera embestida de una doble, queda la vuelta pendiente. */
+  private vueltaPendiente = false;
 
   private readonly escena: Phaser.Scene;
   private readonly limites: { izquierda: number; derecha: number };
@@ -168,8 +170,9 @@ export class Reformado implements Enemigo {
 
     if (ahora < this.finEnfriamiento) return;
 
-    // Cerca: zarpazo. Lejos y a distinta altura: salto. Lejos y en llano:
-    // embestida. La eleccion es legible, para que el jugador la anticipe.
+    // Cerca: zarpazo. Lejos y a distinta altura: salto, para no dejar que el
+    // jugador lo espere desde una repisa. Lejos y en llano: se sortea entre
+    // embestida, salto y embestida doble segun la fase.
     if (distancia <= REFORMADO.zarpazo.alcance + 10) {
       this.iniciarManiobra(ahora, 'zarpazo');
       return;
@@ -181,24 +184,45 @@ export class Reformado implements Enemigo {
       return;
     }
 
-    this.iniciarManiobra(ahora, 'embestida');
+    this.iniciarManiobra(ahora, this.sortearManiobraADistancia());
+  }
+
+  /** Azar ponderado por fase. Fase 1 es fija a proposito: se aprende. */
+  private sortearManiobraADistancia(): Maniobra {
+    const pesos =
+      this.fase >= 3
+        ? REFORMADO.pesosFase3
+        : this.fase === 2
+          ? REFORMADO.pesosFase2
+          : REFORMADO.pesosFase1;
+
+    const tirada = Math.random() * (pesos[0] + pesos[1] + pesos[2]);
+    if (tirada < pesos[0]) return 'embestida';
+    if (tirada < pesos[0] + pesos[1]) return 'salto';
+    return 'doble';
   }
 
   private iniciarManiobra(ahora: number, maniobra: Maniobra): void {
-    const anticipacion =
-      maniobra === 'embestida'
+    const base =
+      maniobra === 'embestida' || maniobra === 'doble'
         ? REFORMADO.embestida.anticipacionMs
         : maniobra === 'salto'
           ? REFORMADO.salto.anticipacionMs
           : REFORMADO.zarpazo.anticipacionMs;
 
+    // La vuelta de una doble avisa la mitad: ya se ha visto la ida.
+    const anticipacion =
+      base *
+      this.factorVelocidad *
+      (this.vueltaPendiente ? REFORMADO.doble.factorAnticipacionVuelta : 1);
+
     this.maniobra = maniobra;
     this.estado = 'anticipando';
     this.yaGolpeoEnSwing = false;
-    this.finAccion = ahora + anticipacion * this.factorVelocidad;
+    this.finAccion = ahora + anticipacion;
     this.cuerpo.setVelocityX(0);
 
-    this.telegrafiar(anticipacion * this.factorVelocidad, maniobra);
+    this.telegrafiar(anticipacion, maniobra);
   }
 
   /**
@@ -206,7 +230,14 @@ export class Reformado implements Enemigo {
    * poder distinguirlas a la primera, no aprenderlas a base de morir.
    */
   private telegrafiar(duracion: number, maniobra: Maniobra): void {
-    const color = maniobra === 'embestida' ? 0xc94f4f : maniobra === 'salto' ? 0xe8a03a : 0xd88a8a;
+    const color =
+      maniobra === 'embestida'
+        ? 0xc94f4f
+        : maniobra === 'doble'
+          ? 0x8c1f3f
+          : maniobra === 'salto'
+            ? 0xe8a03a
+            : 0xd88a8a;
 
     this.sprite.setTint(color);
     this.tweenTelegrafia?.remove();
@@ -215,7 +246,10 @@ export class Reformado implements Enemigo {
     this.tweenTelegrafia = this.escena.tweens.add({
       targets: this.sprite,
       // La embestida se echa atras; el salto se agacha.
-      x: maniobra === 'embestida' ? this.sprite.x - direccion * 6 : this.sprite.x,
+      x:
+        maniobra === 'embestida' || maniobra === 'doble'
+          ? this.sprite.x - direccion * 6
+          : this.sprite.x,
       scaleY: maniobra === 'salto' ? 0.82 : 1.1,
       scaleX: maniobra === 'salto' ? 1.15 : 1,
       duration: duracion * 0.8,
@@ -232,6 +266,7 @@ export class Reformado implements Enemigo {
 
     switch (this.maniobra) {
       case 'embestida':
+      case 'doble':
         this.estado = 'embistiendo';
         this.finAccion = ahora + REFORMADO.embestida.duracionMs * this.factorVelocidad;
         this.cuerpo.setVelocityX(direccion * REFORMADO.embestida.velocidad);
@@ -261,6 +296,7 @@ export class Reformado implements Enemigo {
 
     // Estrellarse contra la pared lo deja abierto: esa es la ventana de castigo.
     if (contraMuro) {
+      this.vueltaPendiente = false;
       this.quedarAturdido(ahora, REFORMADO.aturdimientoTrasFalloMs);
       this.eventos.emit('choque', this.sprite.x, this.sprite.y);
       return;
@@ -268,6 +304,17 @@ export class Reformado implements Enemigo {
 
     if (ahora >= this.finAccion) {
       this.cuerpo.setVelocityX(0);
+
+      // Embestida doble: la ida acaba y la vuelta arranca sin pausa. El
+      // jugador que esquivo saltando por encima se encuentra al jefe volviendo.
+      if (this.maniobra === 'doble' && !this.vueltaPendiente) {
+        this.vueltaPendiente = true;
+        this.mirandoDerecha = !this.mirandoDerecha;
+        this.iniciarManiobra(ahora, 'doble');
+        return;
+      }
+
+      this.vueltaPendiente = false;
       this.finEnfriamiento = ahora + REFORMADO.embestida.enfriamientoMs * this.factorVelocidad;
       this.estado = 'acecho';
     }
@@ -282,6 +329,10 @@ export class Reformado implements Enemigo {
       this.estado = 'acecho';
       // La escena convierte esto en onda de impacto y sacudida.
       this.eventos.emit('impacto-suelo', this.sprite.x, this.sprite.y, REFORMADO.salto.alcanceOnda);
+
+      // Y en fase 2+ el techo se viene abajo a trozos: amenaza vertical.
+      const cantidad = REFORMADO.escombros.cantidadPorFase[this.fase - 1] ?? 0;
+      if (cantidad > 0) this.eventos.emit('escombros', cantidad);
       return;
     }
 

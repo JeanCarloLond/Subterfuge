@@ -17,7 +17,16 @@ import { sonido } from '../systems/Sonido';
 import { Vitalidad } from '../systems/Vitalidad';
 
 export type EstadoCirujano =
-  'suelo' | 'aire' | 'dash' | 'agarre' | 'atacando' | 'parry' | 'bebiendo' | 'herido' | 'muerto';
+  | 'suelo'
+  | 'aire'
+  | 'dash'
+  | 'agarre'
+  | 'atacando'
+  | 'parry'
+  | 'bebiendo'
+  | 'rezando'
+  | 'herido'
+  | 'muerto';
 
 /** Resultado de un intento de dano sobre el Cirujano. */
 export type ResultadoDano = 'parado' | 'herido' | 'ignorado';
@@ -205,6 +214,7 @@ export class CirujanoSacerdote {
       case 'atacando':
       case 'parry':
       case 'bebiendo':
+      case 'rezando':
       case 'herido':
         this.actualizarAccion(ahora, enSuelo);
         break;
@@ -223,6 +233,7 @@ export class CirujanoSacerdote {
       this.estado === 'atacando' ||
       this.estado === 'parry' ||
       this.estado === 'bebiendo' ||
+      this.estado === 'rezando' ||
       this.estado === 'herido'
     );
   }
@@ -608,6 +619,23 @@ export class CirujanoSacerdote {
     this.inicioCargaAtaque = -Infinity;
   }
 
+  /**
+   * Rezar: el Cirujano se arrodilla un instante. Es un acto, no un boton.
+   * Durante el rezo no se mueve ni pelea, y eso es lo que le da peso.
+   */
+  rezar(duracionMs: number): void {
+    if (this.enAccionBloqueante() || this.estado === 'dash' || this.estado === 'muerto') return;
+
+    this.estado = 'rezando';
+    this.finAccion = this.escena.time.now + duracionMs;
+    this.inicioCargaAtaque = -Infinity;
+    this.cuerpo.setVelocityX(0);
+  }
+
+  get estaRezando(): boolean {
+    return this.estado === 'rezando';
+  }
+
   /** Rezar en un Altar repone el frasco sin devolver el Fervor gastado. */
   reponerEnAltar(): void {
     this.vitalidad.restaurar();
@@ -795,7 +823,11 @@ export class CirujanoSacerdote {
     let escalaX = 1;
     let escalaY = 1;
 
-    if (this.estado === 'atacando') {
+    if (this.estado === 'rezando') {
+      // Arrodillado: mas bajo y un poco mas ancho, quieto.
+      escalaX = 1.1;
+      escalaY = 0.78;
+    } else if (this.estado === 'atacando') {
       // Dos poses: durante la anticipacion se recoge; al soltar el golpe se
       // lanza hacia delante. Es lo que hace que el golpe tenga PESO y no sea
       // solo un dibujo que aparece al lado.
@@ -855,7 +887,7 @@ export class CirujanoSacerdote {
     this.actualizarDeformacion();
 
     // Legibilidad sin arte definitivo: el color comunica el estado.
-    if (this.estado === 'parry') {
+    if (this.estado === 'parry' || this.estado === 'rezando') {
       this.sprite.setTint(0xe8d9a0);
     } else if (this.estado === 'atacando') {
       this.sprite.setTint(this.ataqueEnCurso === 'cargado' ? 0xc94f4f : 0xffffff);

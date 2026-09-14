@@ -283,6 +283,33 @@ export const REFORMADO = {
   factorVelocidadFase2: 0.85,
   factorVelocidadFase3: 0.7,
 
+  /**
+   * Eleccion de maniobra a distancia, por fase: [embestida, salto, doble].
+   * En fase 1 es determinista para que se aprenda; despues deja de serlo para
+   * que no se pueda esperar siempre lo mismo en el mismo sitio.
+   */
+  pesosFase1: [1, 0, 0],
+  pesosFase2: [0.6, 0.4, 0],
+  pesosFase3: [0.4, 0.35, 0.25],
+
+  /** Embestida doble: vuelve sobre sus pasos con la mitad de aviso. */
+  doble: { factorAnticipacionVuelta: 0.5 },
+
+  /**
+   * Escombros: al aterrizar de un salto (fase 2+), caen piedras del techo
+   * sobre posiciones marcadas. Es la amenaza vertical que le faltaba a una
+   * arena plana: obliga a moverse tambien cuando el jefe esta lejos.
+   */
+  escombros: {
+    /** Piedras por aterrizaje, por fase (indice = fase - 1). */
+    cantidadPorFase: [0, 2, 3],
+    /** Aviso en el suelo antes de la caida (ms). */
+    avisoMs: 560,
+    dano: 1,
+    /** Separacion entre puntos de caida alrededor del Cirujano (px). */
+    separacion: 46,
+  },
+
   /** Pausa vulnerable tras fallar una embestida. La ventana de castigo. */
   aturdimientoTrasFalloMs: 1100,
 } as const;

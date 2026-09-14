@@ -9,9 +9,11 @@ import { EscenaNivel, type DefinicionNivel } from './EscenaNivel';
  * sala unica, ancha y sin salida. No hay a donde ir hasta que el encuentro
  * termine.
  *
- * La geometria es deliberadamente simple —un suelo largo y dos repisas— porque
- * el interes tiene que estar en leer al Reformado, no en el plataformeo. Meter
- * obstaculos aqui solo taparia el combate.
+ * La arena tiene tres alturas —suelo, repisas y esquinas altas— y un pedestal
+ * central que la embestida pasa por debajo. Cada altura cambia lo que el jefe
+ * hace: en llano embiste (y en fase 3, ida y vuelta); si el Cirujano se sube,
+ * salta hacia el y al aterrizar caen escombros del techo. No hay sitio donde
+ * quedarse quieto, que es lo que una arena plana permitia.
  */
 export class SalasScene extends EscenaNivel {
   constructor() {
@@ -34,8 +36,20 @@ export class SalasScene extends EscenaNivel {
 
         // Dos repisas para romper las embestidas y castigar desde arriba.
         // Están a 80 px del suelo, dentro del salto simple.
-        [176, 208, 5],
-        [544, 208, 5],
+        [176, 208, 5], //          x 176..256
+        [544, 208, 5], //          x 544..624
+
+        // Pedestal central con la camilla. Está a 56 px del suelo: el cuerpo
+        // del Reformado (28 px de alto) pasa POR DEBAJO al embestir, así que no
+        // se estrella contra él ni lo usa de muro. Es refugio de la embestida y
+        // blanco de los saltos y los escombros: subirse es una decisión.
+        [352, 232, 6], //          x 352..448
+
+        // Repisas altas en las esquinas. Desde ahí se ve la arena entera y se
+        // puede caer sobre el jefe con el golpe hacia abajo; también son a donde
+        // más lejos llega a saltar en fase 2.
+        [16, 152, 4], //           x 16..80
+        [720, 152, 4], //          x 720..784
       ],
 
       // Muros laterales: son contra lo que el Reformado se estrella al fallar
@@ -63,9 +77,9 @@ export class SalasScene extends EscenaNivel {
       // El quirofano-altar: la camilla en el centro y la sangre de los
       // sacramentos anteriores. Nada de exvotos aqui: nadie da las gracias.
       decorado: [
-        [400, 288, 'camilla'],
-        [360, 288, 'vela'],
-        [440, 288, 'vela'],
+        [400, 232, 'camilla'],
+        [366, 232, 'vela'],
+        [434, 232, 'vela'],
         [300, 288, 'charco'],
         [520, 288, 'charco'],
         [410, 288, 'charco'],
@@ -73,6 +87,10 @@ export class SalasScene extends EscenaNivel {
         [740, 288, 'columna'],
         [200, 208, 'vela'],
         [232, 208, 'vela'],
+        [48, 152, 'vela'],
+        [752, 152, 'vela'],
+        [40, 288, 'reja'],
+        [760, 288, 'reja'],
       ],
 
       inscripciones: [[140, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.']],

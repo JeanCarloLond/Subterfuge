@@ -506,7 +506,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
     jefe.eventos.on('fase', (fase: number) => {
       this.cameras.main.flash(180, 140, 60, 60);
       this.game.events.emit(EVENTOS_HUD.aviso, `fase ${fase}`);
+      // El drone sube de tono con cada fase: el Vientre se acelera con el.
+      sonido.ambienteApagado();
+      sonido.ambienteEncendido(55 * (1 + 0.3 * (fase - 1)));
     });
+
+    jefe.eventos.on('escombros', (cantidad: number) => this.soltarEscombros(cantidad));
 
     // Estrellarse contra el muro: el momento en que se le puede castigar.
     jefe.eventos.on('choque', (x: number, y: number) => {
@@ -523,6 +528,83 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
       this.abrirUmbral();
     });
+  }
+
+  /**
+   * Escombros del techo. Primero se marca en el suelo donde van a caer, y
+   * medio segundo despues caen. Se apuntan alrededor del Cirujano, no encima:
+   * el jugador tiene que moverse, no adivinar. Es lo que convierte una arena
+   * plana en un sitio donde hay que mirar hacia arriba.
+   */
+  private soltarEscombros(cantidad: number): void {
+    const { escombros } = REFORMADO;
+    const centroX = this.cirujano.sprite.x;
+    const sueloY = this.definicion.jefe?.y ?? this.cirujano.sprite.y;
+    const techoY = 112;
+    const mundoAncho = this.definicion.mundo.ancho;
+
+    // Posiciones: centro, y alternando a los lados a `separacion` px.
+    const posiciones: number[] = [];
+    for (let i = 0; i < cantidad; i += 1) {
+      const lado = i === 0 ? 0 : i % 2 === 1 ? 1 : -1;
+      const paso = Math.ceil(i / 2);
+      const x = Phaser.Math.Clamp(
+        centroX + lado * paso * escombros.separacion,
+        32,
+        mundoAncho - 32,
+      );
+      posiciones.push(x);
+    }
+
+    for (const x of posiciones) {
+      const marca = this.add.graphics({ x, y: sueloY });
+      marca.setDepth(2);
+      marca.lineStyle(1, 0xe8a03a, 1);
+      marca.strokeEllipse(0, 0, 22, 6);
+      this.tweens.add({
+        targets: marca,
+        alpha: { from: 1, to: 0.3 },
+        duration: 140,
+        yoyo: true,
+        repeat: Math.floor(escombros.avisoMs / 280),
+        onComplete: () => marca.destroy(),
+      });
+
+      this.time.delayedCall(escombros.avisoMs, () => this.dejarCaerPiedra(x, techoY, sueloY));
+    }
+  }
+
+  private dejarCaerPiedra(x: number, desdeY: number, sueloY: number): void {
+    const piedra = this.physics.add.sprite(x, desdeY, 'piedra-placeholder');
+    piedra.setDepth(25);
+    piedra.setAngle(Phaser.Math.Between(-20, 20));
+    const cuerpo = piedra.body as Phaser.Physics.Arcade.Body;
+    cuerpo.setSize(12, 12);
+    cuerpo.setAllowGravity(true);
+    cuerpo.setVelocityY(60);
+
+    let resuelta = false;
+    const impactar = () => {
+      if (resuelta) return;
+      resuelta = true;
+      this.impacto.golpeAsestado(piedra.x, piedra.y, 0, false);
+      piedra.destroy();
+    };
+
+    this.physics.add.overlap(piedra, this.cirujano.sprite, () => {
+      if (resuelta || this.cirujano.estaMuerto) return;
+      const resultado = this.cirujano.recibirDano(REFORMADO.escombros.dano, piedra.x);
+      if (resultado === 'herido') this.impacto.danoRecibido();
+      impactar();
+    });
+
+    // Contra el suelo o cualquier plataforma, se rompe.
+    this.physics.add.collider(piedra, this.suelos, impactar);
+    // Tope de seguridad por si atraviesa algo.
+    this.time.delayedCall(2500, () => {
+      if (!resuelta && piedra.active) impactar();
+    });
+    void sueloY;
   }
 
   /** La onda barre a ras de suelo: saltar es la respuesta correcta. */
@@ -738,12 +820,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
       );
       altar.marcarProximidad(distancia <= RADIO_ALTAR);
 
-      if (altar.puedeRezar && this.controles.interactuarPresionado) {
-        altar.rezar();
-        sonido.altar();
-        this.altarActivo = altar;
-        this.cirujano.reponerEnAltar();
-        this.game.events.emit(EVENTOS_HUD.aviso, 'el Altar responde');
+      if (altar.puedeRezar && this.controles.interactuarPresionado && !this.cirujano.estaRezando) {
+        this.rezarEn(altar);
       }
     }
   }
@@ -767,6 +845,31 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.game.events.emit(EVENTOS_HUD.inscripcion, placa.texto);
       }
     }
+  }
+
+  /**
+   * Rezar en un Altar. Tres cosas a la vez, para que no quede duda de que ha
+   * pasado algo y de que: el Cirujano se arrodilla, el Altar responde con luz
+   * y sonido, y el aviso dice con palabras que ES el punto de guardado.
+   */
+  private rezarEn(altar: Altar): void {
+    const DURACION_REZO_MS = 1100;
+
+    altar.rezar();
+    altar.responder();
+    this.altarActivo = altar;
+    this.cirujano.rezar(DURACION_REZO_MS);
+    sonido.altar();
+    this.cameras.main.flash(260, 232, 200, 120);
+
+    this.game.events.emit(EVENTOS_HUD.aviso, 'ALTAR: descenso guardado');
+    this.time.delayedCall(700, () => {
+      this.cirujano.reponerEnAltar();
+      this.game.events.emit(
+        EVENTOS_HUD.aviso,
+        'cuerpo y frasco repuestos  ·  aqui volveras si caes',
+      );
+    });
   }
 
   private actualizarUmbral(): void {
@@ -814,7 +917,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cirujano.reaparecerEn(destino.x, destino.y);
     this.cameras.main.fadeIn(320, 11, 9, 11);
     this.reapareciendo = false;
-    this.game.events.emit(EVENTOS_HUD.aviso, 'las manos recuerdan');
+    this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al ultimo Altar donde rezaste');
   }
 
   /** El jefe duerme hasta que el Cirujano entra de verdad en la sala. */

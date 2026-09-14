@@ -237,6 +237,9 @@ posición, para que las colisiones no se enteren.
 - [x] Cuarta zona: Criptas de Espera
 - [x] Placas del Registro: lore de una línea con `E`
 - [x] Ocho fragmentos del Códice
+- [x] Rezar como acto: el Cirujano se arrodilla, el Altar responde, el aviso explica
+- [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
+- [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [ ] Sustituir placeholders por el arte del equipo
 - [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
@@ -279,11 +282,25 @@ te acercas, así que el problema no es matarlo sino llegar hasta él. Su sello
 **no se destruye con el parry**, cambia de dueño y sale rebotado más rápido y
 con 3 de daño en vez de 1. Es la razón de que exista como enemigo.
 
-**El Reformado** usa el mismo repertorio en sus tres fases y solo acelera
-(×0,85 y ×0,7). Se aprende leyendo, no memorizando. Cada maniobra tiene su
-color y su gesto —la embestida se echa atrás en rojo, el salto se agacha en
-ámbar, el zarpazo es rosa y corto— y estrellarse contra un muro lo deja
-expuesto: esa es la ventana de castigo y el pulso del combate.
+**El Reformado** usa el mismo repertorio en sus tres fases y acelera (×0,85 y
+×0,7), pero a partir de la fase 2 **deja de ser predecible**: a distancia
+sortea entre embestida, salto y **embestida doble** (ida y vuelta, con la mitad
+de aviso en la vuelta) según pesos por fase (`REFORMADO.pesosFaseN`). La fase 1
+es determinista a propósito: se aprende.
+
+Cada maniobra tiene su color y su gesto —la embestida se echa atrás en rojo, la
+doble en granate, el salto se agacha en ámbar, el zarpazo es rosa y corto— y
+estrellarse contra un muro lo deja expuesto: esa es la ventana de castigo.
+
+**Escombros**: en fase 2+, al aterrizar de un salto caen piedras del techo sobre
+posiciones marcadas alrededor del Cirujano (2 en fase 2, 3 en fase 3, con 560 ms
+de aviso). Es la amenaza vertical que le faltaba a una arena plana.
+
+**La arena** tiene tres alturas: suelo, repisas a 80 px y esquinas altas a
+136 px, más un pedestal central a 56 px con la camilla encima. El pedestal está
+calculado para que el cuerpo del jefe (28 px) **pase por debajo** al embestir:
+es refugio de la embestida y blanco de los saltos y los escombros. Subirse es
+una decisión. El drone de ambiente sube de tono con cada fase.
 
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
@@ -312,6 +329,16 @@ de profundidad narrativa: el sistema se cuenta a sí mismo en sus carteles.
 
 Rejugabilidad: el cierre cuenta fragmentos y reliquias, y **con el Códice
 completo aparece una última línea al margen** que no se ve de otra forma.
+
+## Rezar en un Altar
+
+Rezar es el punto de guardado, y tiene que **parecerlo**. Tres cosas ocurren a
+la vez para que no quede duda: el Cirujano se arrodilla 1,1 s (estado
+`rezando`, sin control), el Altar responde con un halo, luz y campana, y el
+aviso dice con palabras qué acaba de pasar — _"ALTAR: descenso guardado"_ y
+luego _"cuerpo y frasco repuestos · aquí volverás si caes"_. El propio letrero
+del Altar ya anuncia _"E rezar (guarda el descenso)"_. Una acción que parece no
+hacer nada no se vuelve a intentar.
 
 ## El Códice de la Carne
 

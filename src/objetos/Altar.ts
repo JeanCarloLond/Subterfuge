@@ -29,7 +29,7 @@ export class Altar {
     this.sprite.setTint(0x4a4038); // apagado: aun no descubierto
 
     this.aviso = escena.add
-      .text(x, y - 30, 'E  rezar', {
+      .text(x, y - 30, 'E  rezar   (guarda el descenso)', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#d6cfc4',
@@ -66,5 +66,37 @@ export class Altar {
     });
 
     return primeraVez;
+  }
+
+  /**
+   * La respuesta visible del Altar al rezo: un halo que se expande desde la
+   * llama y la llama que crece un instante. Sin esto, rezar parecia no hacer
+   * nada, y una accion que parece no hacer nada no se vuelve a intentar.
+   */
+  responder(): void {
+    const halo = this.escena.add.graphics({ x: this.sprite.x, y: this.sprite.y - 16 });
+    halo.setDepth(40);
+    halo.lineStyle(2, 0xe8a03a, 1);
+    halo.strokeCircle(0, 0, 6);
+    halo.fillStyle(0xf5d78a, 0.18);
+    halo.fillCircle(0, 0, 6);
+
+    this.escena.tweens.add({
+      targets: halo,
+      scale: 7,
+      alpha: 0,
+      duration: 900,
+      ease: 'Quad.easeOut',
+      onComplete: () => halo.destroy(),
+    });
+
+    this.escena.tweens.add({
+      targets: this.sprite,
+      scaleY: 1.25,
+      scaleX: 1.1,
+      duration: 220,
+      yoyo: true,
+      ease: 'Quad.easeOut',
+    });
   }
 }
