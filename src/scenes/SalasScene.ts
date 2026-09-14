@@ -27,6 +27,12 @@ export class SalasScene extends EscenaNivel {
       colorFondo: '#0c0a0c',
       inicio: { x: 70, y: 260 },
 
+      // El unico sitio del descenso donde la piedra vuelve a tirar a rojo, y no
+      // por luz: es la sala donde se hace el sacramento. Mas oscura que las
+      // Criptas pero mas calida, que es lo que la vuelve incomoda.
+      tinte: 0xb08890,
+      desgaste: { grietas: 0.11, musgo: 0 },
+
       plataformas: [
         // Techo: la sala está cerrada. No se sale por arriba.
         [0, 96, 50],

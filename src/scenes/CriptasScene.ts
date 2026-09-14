@@ -32,6 +32,11 @@ export class CriptasScene extends EscenaNivel {
       colorFondo: '#0b0a0d',
       inicio: { x: 60, y: 120 },
 
+      // Penumbra sedada: la piedra pierde el rojo y se queda casi monocroma.
+      // Y no crece ni una brizna: a esta profundidad ya no llega nada vivo.
+      tinte: 0x9aa0ac,
+      desgaste: { grietas: 0.09, musgo: 0 },
+
       // Escalera de pozo: cada tramo solapa en x con el de arriba (80 px de
       // caida), asi que se puede subir de vuelta sin dash. Las criptas
       // laterales (secretos) cuelgan de los extremos y exigen dash o doble

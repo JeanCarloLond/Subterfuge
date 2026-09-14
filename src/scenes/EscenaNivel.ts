@@ -80,10 +80,49 @@ export interface DefinicionNivel {
   limiteCaida?: number;
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
+  /**
+   * Tinte de la silleria de la zona. La misma piedra baja de tono a medida que
+   * el Vientre se cierra: es la regla del descenso aplicada al arte, sin pedir
+   * un tileset distinto por nivel.
+   */
+  tinte?: number;
+  /**
+   * Cuanta ruina se siembra sobre la piedra, en proporcion de tiles (0 a 1).
+   *
+   * Va suelto y no dentro del tile a proposito: una grieta horneada en el
+   * patron reaparece cada 16 px y la pared se lee como papel pintado.
+   */
+  desgaste?: { grietas: number; musgo: number };
 }
 
 /** Lado del tile. */
 const T = 16;
+
+/** Desgaste por defecto: algo de ruina, nada de vegetacion. */
+const DESGASTE_POR_DEFECTO = { grietas: 0.06, musgo: 0 } as const;
+
+/** Separacion minima entre dos calcomanias, para que no se apelotonen (px). */
+const SEPARACION_DESGASTE = 44;
+
+/**
+ * Ruido entero reproducible a partir de una posicion.
+ *
+ * El desgaste NO puede ser aleatorio en cada partida: el jugador se orienta por
+ * la pared agrietada y la mancha de musgo igual que por las columnas, y si
+ * cambian al morir pierde sus puntos de referencia. Con esto, la misma piedra
+ * sale siempre igual sin tener que guardar nada.
+ */
+function ruido(x: number, y: number, sal: number): number {
+  let n = Math.imul(x, 73856093) ^ Math.imul(y, 19349663) ^ Math.imul(sal, 83492791);
+  n = Math.imul(n ^ (n >>> 15), 0x2c1b3c6d);
+  n = Math.imul(n ^ (n >>> 12), 0x297a2d39);
+  return (n ^ (n >>> 15)) >>> 0;
+}
+
+/** El mismo ruido, normalizado a 0..1. */
+function azarFijo(x: number, y: number, sal: number): number {
+  return ruido(x, y, sal) / 0x100000000;
+}
 
 /** Radio en el que un Altar ofrece la interaccion de rezar (px). */
 const RADIO_ALTAR = 26;
@@ -129,6 +168,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     aviso: Phaser.GameObjects.Text;
   }[] = [];
   private grupoEnemigos?: Phaser.Physics.Arcade.Group;
+  /** Esquina superior izquierda de cada tile de piedra, como "x,y". */
+  private tilesSolidos = new Set<string>();
 
   private altarActivo: Altar | null = null;
   private reapareciendo = false;
@@ -156,6 +197,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.crearFondo();
     this.crearDecorado();
     this.suelos = this.construirGeometria();
+    this.sembrarDesgaste();
     this.controles = new Controles(this);
     this.impacto = new Impacto(this);
 
@@ -237,6 +279,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.reliquias = [];
     this.placas = [];
     this.grupoEnemigos = undefined;
+    this.tilesSolidos = new Set();
     this.altarActivo = null;
     this.reapareciendo = false;
     this.descendiendo = false;
@@ -325,31 +368,91 @@ export abstract class EscenaNivel extends Phaser.Scene {
         });
       } else if (tipo === 'columna') {
         pieza.setAlpha(0.85);
+        // Esta tallada en la misma piedra que el muro, asi que se apaga con
+        // ella al bajar de zona. Las velas y la sangre no: esas son suyas.
+        if (this.definicion.tinte !== undefined) pieza.setTint(this.definicion.tinte);
       } else if (tipo === 'reja') {
         pieza.setAlpha(0.9);
       }
     }
   }
 
+  /**
+   * Silleria del nivel.
+   *
+   * Un tile del tileset es UN ladrillo de ancho por DOS hiladas de alto, asi
+   * que la piedra encaja con la rejilla sin que ningun ladrillo quede cortado
+   * en los bordes de plataforma. La variante se elige por posicion, no al azar:
+   * rompe la repeticion y ademas sale igual en cada partida.
+   */
   private construirGeometria(): Phaser.Physics.Arcade.StaticGroup {
     const suelos = this.physics.add.staticGroup();
+    const variantes = this.textures.get('piedra').getFrameNames().length;
+    const tinte = this.definicion.tinte;
+
+    const poner = (x: number, y: number) => {
+      const pieza = suelos
+        .create(x, y, 'piedra', ruido(x, y, 1) % variantes)
+        .setOrigin(0, 0)
+        .refreshBody();
+      if (tinte !== undefined) pieza.setTint(tinte);
+      this.tilesSolidos.add(`${x},${y}`);
+    };
 
     for (const [x, y, anchoTiles] of this.definicion.plataformas) {
-      for (let i = 0; i < anchoTiles; i += 1) {
-        suelos
-          .create(x + i * T, y, 'piedra-placeholder')
-          .setOrigin(0, 0)
-          .refreshBody();
-      }
+      for (let i = 0; i < anchoTiles; i += 1) poner(x + i * T, y);
     }
 
     for (const [x, yInicio, yFin] of this.definicion.paredes) {
-      for (let y = yInicio; y < yFin; y += T) {
-        suelos.create(x, y, 'piedra-placeholder').setOrigin(0, 0).refreshBody();
-      }
+      for (let y = yInicio; y < yFin; y += T) poner(x, y);
     }
 
     return suelos;
+  }
+
+  /**
+   * Ruina sobre la piedra ya colocada: grietas y musgo.
+   *
+   * Las dos se comportan al reves y por un motivo. La grieta esta DENTRO del
+   * muro, asi que nunca puede sobresalir al vacio; el musgo crece hacia fuera y
+   * se planta a caballo del canto, colgando por el borde, que es como lo dibujo
+   * la artista en su lamina de referencia.
+   */
+  private sembrarDesgaste(): void {
+    const { grietas, musgo } = this.definicion.desgaste ?? DESGASTE_POR_DEFECTO;
+    const tinte = this.definicion.tinte;
+    const puestas: { x: number; y: number }[] = [];
+
+    const lejosDeOtras = (x: number, y: number) =>
+      puestas.every(
+        (p) => Math.abs(p.x - x) >= SEPARACION_DESGASTE || Math.abs(p.y - y) >= SEPARACION_DESGASTE,
+      );
+
+    const marcar = (clave: string, densidad: number, sal: number, arriba: boolean) => {
+      if (densidad <= 0) return;
+
+      const total = this.textures.get(clave).getFrameNames().length;
+      for (const casilla of this.tilesSolidos) {
+        const [x, y] = casilla.split(',').map(Number);
+        if (azarFijo(x, y, sal) >= densidad) continue;
+
+        // El musgo solo prende donde da el aire: si hay piedra justo encima,
+        // ese tile es interior de muro y ahi no crece nada.
+        if (arriba && this.tilesSolidos.has(`${x},${y - T}`)) continue;
+
+        const cx = x + T / 2;
+        const cy = arriba ? y : y + T / 2;
+        if (!lejosDeOtras(cx, cy)) continue;
+        puestas.push({ x: cx, y: cy });
+
+        const calco = this.add.sprite(cx, cy, clave, ruido(x, y, sal + 1) % total);
+        calco.setDepth(0.5);
+        if (tinte !== undefined) calco.setTint(tinte);
+      }
+    };
+
+    marcar('grieta', grietas, 7, false);
+    marcar('musgo', musgo, 13, true);
   }
 
   private crearCirujano(x: number, y: number): void {
@@ -575,8 +678,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
   }
 
   private dejarCaerPiedra(x: number, desdeY: number, sueloY: number): void {
-    const piedra = this.physics.add.sprite(x, desdeY, 'piedra-placeholder');
+    const piedra = this.physics.add.sprite(x, desdeY, 'piedra', 0);
     piedra.setDepth(25);
+    if (this.definicion.tinte !== undefined) piedra.setTint(this.definicion.tinte);
     piedra.setAngle(Phaser.Math.Between(-20, 20));
     const cuerpo = piedra.body as Phaser.Physics.Arcade.Body;
     cuerpo.setSize(12, 12);

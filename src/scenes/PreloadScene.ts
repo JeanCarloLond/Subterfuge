@@ -5,10 +5,15 @@ import { generarArteProvisional } from '../systems/ArteProvisional';
 /**
  * Preload: carga de assets y pantalla de espera.
  *
- * IMPORTANTE: las texturas de aqui son PLACEHOLDERS generados por codigo,
- * no arte. El arte definitivo es pixel art hecho a mano en Aseprite por el
- * equipo y entra por public/assets/ (ver docs/issues/). No sustituir estos
- * placeholders por imagenes generadas con IA.
+ * Aqui conviven dos cosas distintas:
+ *
+ *   - La silleria del Vientre (`piedra`, `grieta`, `musgo`) es ARTE DEL EQUIPO,
+ *     dibujado a mano. Se carga desde public/assets/tilesets/.
+ *   - Todo lo que sigue terminando en `-placeholder` es provisional y se genera
+ *     por codigo mientras el equipo produce el sprite definitivo.
+ *
+ * El arte definitivo es pixel art hecho a mano en Aseprite (ver docs/issues/).
+ * No sustituir ningun placeholder por imagenes generadas con IA.
  */
 export class PreloadScene extends Phaser.Scene {
   constructor() {
@@ -17,9 +22,32 @@ export class PreloadScene extends Phaser.Scene {
 
   preload(): void {
     this.dibujarBarraDeCarga();
-    // Cuando existan los assets reales, se cargan aqui:
+
+    // Silleria del Vientre: arte del equipo, ya no es un placeholder. Sale de
+    // las piezas de docs/arte/piezas con scripts/generar-tileset.mjs.
+    //
+    // Las grietas y el musgo van en hojas aparte a proposito: si se hornearan
+    // dentro del tile que se repite, reaparecerian cada 16 px y la pared se
+    // leeria como papel pintado en vez de como piedra.
+    this.load.spritesheet('piedra', 'assets/tilesets/vientre.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    // La grieta cabe en un tile porque esta DENTRO de la piedra y no puede
+    // asomar al vacio; el musgo mide mas porque crece hacia fuera y cuelga por
+    // el canto. Si cambias estas medidas, cambialas tambien en
+    // scripts/generar-tileset.mjs: `verificar-arte` comprueba que cuadren.
+    this.load.spritesheet('grieta', 'assets/tilesets/vientre-grietas.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet('musgo', 'assets/tilesets/vientre-musgo.png', {
+      frameWidth: 24,
+      frameHeight: 24,
+    });
+
+    // Cuando existan los demas assets reales, se cargan aqui:
     // this.load.spritesheet('cirujano', 'assets/sprites/cirujano.png', {...});
-    // this.load.image('tileset-atrio', 'assets/tilesets/atrio.png');
     // this.load.tilemapTiledJSON('mapa-atrio', 'assets/maps/atrio.tmj');
   }
 
