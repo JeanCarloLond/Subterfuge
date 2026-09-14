@@ -35,6 +35,7 @@ npm run dev              # servidor de desarrollo con hot-reload
 npm run build            # comprobación de tipos + build de producción en dist/
 npm run preview          # sirve el build de producción
 npm run verificar-rutas  # comprueba que todos los niveles se puedan desandar
+npm run verificar-arte   # comprueba figuras y tilesets
 ```
 
 ### `verificar-rutas` — léelo antes de tocar un nivel
@@ -94,14 +95,20 @@ src/
     SalasScene.ts                Zona 4: Salas de Sacramento, el jefe (solo datos)
     FinalScene.ts                Cierre del teaser con gancho
 public/assets/
-  tilesets/  sprites/  audio/  maps/
+  tilesets/
+    vientre.png                  Sillería 16x16 que embaldosa sin costura
+    vientre-grietas.png          Calcomanías de grieta
+    vientre-musgo.png            Calcomanías de musgo
+  sprites/  audio/  maps/        Vacíos hasta que llegue el resto del arte
 docs/
   DESARROLLO.md                  Este archivo
   Propuesta-inicial.md           Propuesta técnica original
   Subterfuge-world-bible.docx    Biblia del universo
   issues/                        Encargos de arte listos para publicar
   arte/                          Paleta y guía de estilo (pendiente)
+    piezas/                      Piezas de muro del equipo (origen del tileset)
 scripts/
+  generar-tileset.mjs            Convierte docs/arte/piezas/ en el tileset
   crear-issues.ps1               Publica docs/issues/*.md como issues de GitHub
 ```
 
@@ -146,10 +153,11 @@ clave. El descenso del Vientre continúa: Salas de Sacramento → Criptas de Esp
 orgánica y más peligrosa que la anterior** — empezando por su `colorFondo`.
 
 - **Boot**: arranque mínimo, sin carga pesada.
-- **Preload**: carga de assets y barra de progreso. Hoy genera _placeholders_ por
-  código (rectángulos de color) porque aún no hay arte.
-- **Atrio**: el primer nivel. Geometría provisional por código; se sustituye por un
-  tilemap de Tiled cuando lleguen los tilesets.
+- **Preload**: carga de assets y barra de progreso. Carga la sillería del equipo
+  desde `public/assets/tilesets/` y genera por código los _placeholders_ que aún
+  faltan (personajes, objetos, decorado).
+- **Atrio**: el primer nivel. Geometría descrita por código; se sustituye por un
+  tilemap de Tiled cuando lleguen los tilesets completos de zona.
 - **Hud**: corre en paralelo al Atrio. **No conoce a las entidades**: se alimenta
   solo de los eventos de `EVENTOS_HUD`, para poder cambiar la interfaz sin tocar la
   lógica de juego.
@@ -240,7 +248,8 @@ posición, para que las colisiones no se enteren.
 - [x] Rezar como acto: el Cirujano se arrodilla, el Altar responde, el aviso explica
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
-- [ ] Sustituir placeholders por el arte del equipo
+- [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
+- [ ] Sustituir el resto de placeholders por el arte del equipo
 - [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
 - [ ] Segundo tipo de enemigo
 - [ ] Jefe o evento narrativo clave
@@ -416,15 +425,80 @@ relieves y vitrales.
 **Arte sin IA.** Decisión del equipo: los sprites de personajes son pixel art hecho
 a mano en Aseprite, sin excepción.
 
-El arte que se ve hoy vive en `src/systems/ArteProvisional.ts` y es **provisional**:
+El resto del arte vive en `src/systems/ArteProvisional.ts` y es **provisional**:
 pixel art escrito a mano en código con un mapa de caracteres, un píxel por
 carácter. No hay ninguna imagen generada. Existe solo para que el prototipo deje
 de ser cubos mientras el equipo produce el arte definitivo.
 
 Para sustituirlo: carga los `.png` del equipo en `PreloadScene` con las **mismas
-claves de textura** (`cirujano-placeholder`, `piedra-placeholder`…) y borra
-`ArteProvisional.ts` entero. Nada más depende de él. Mientras el sufijo
-`-placeholder` siga apareciendo, es que el arte final no ha entrado.
+claves de textura** (`cirujano-placeholder`, `devoto-placeholder`…) y borra su
+figura de `ArteProvisional.ts`. Nada más depende de él. Mientras el sufijo
+`-placeholder` siga apareciendo en una clave, es que ese arte final no ha entrado.
+
+## La sillería del Vientre
+
+La piedra **ya no es provisional**: es arte del equipo. Las piezas originales
+están en [`docs/arte/piezas/`](arte/piezas/) y el juego carga lo que sale de
+ellas, en `public/assets/tilesets/`.
+
+### Por qué hay un paso de conversión
+
+Las piezas están dibujadas sobre un ladrillo de **19 × 10 px** (18 de cuerpo + 1
+de mortero, y 9 + 1 en vertical). El juego trabaja a `T = 16`, y 19 no divide a
+16: a tamaño original, cada borde de plataforma cortaría un ladrillo por la
+mitad.
+
+`scripts/generar-tileset.mjs` lo resuelve **sin reescalar** —reescalar pixel art
+lo emborrona e inventa píxeles que nadie dibujó—. Lo que hace es **quitar
+relleno**: borra tres columnas y dos filas del centro plano de cada ladrillo y
+deja intactos el brillo de arriba, la sombra de abajo y el mortero, que es donde
+se lee la forma. El ladrillo queda en 15 + 1 = 16 de ancho y 7 + 1 = 8 de alto,
+así que **un tile del juego es un ladrillo de ancho por dos hiladas de alto**.
+
+Que encaje no es casualidad: tras la conversión, las piezas de dos hiladas miden
+exactamente un tile de alto —lo que miden las plataformas del juego— y las de
+cuatro hiladas, dos.
+
+### Por qué las grietas y el musgo van sueltos
+
+Horneadas dentro del tile que se repite, **reaparecen cada 16 px y la pared se
+lee como papel pintado**. Van en hojas aparte y se siembran esparcidas, con una
+separación mínima entre ellas.
+
+Se pueden separar porque la artista dibujó cada variante encima de la misma base,
+así que restar la pieza limpia de la agrietada deja exactamente la grieta. Las dos
+se comportan al revés y por un motivo: la **grieta está dentro del muro**, así que
+nunca puede asomar al vacío y se limita a un tile; el **musgo crece hacia fuera** y
+se planta a caballo del canto, colgando por el borde, que es como está dibujado en
+la lámina de referencia.
+
+La siembra es **reproducible**, no aleatoria: sale del hash de la posición. El
+jugador se orienta por la pared agrietada igual que por las columnas, y si el
+desgaste cambiara al morir perdería esos puntos de referencia.
+
+### Ajustes por zona
+
+Cada nivel declara `tinte` y `desgaste` en su `DefinicionNivel`, al lado de
+`colorFondo`. Es lo que mantiene la regla del descenso con un solo tileset: la
+misma piedra baja de tono y se agrieta más según se cierra el Vientre, y el musgo
+se apaga del todo en las Criptas, donde ya no llega nada vivo.
+
+### Si el arte cambia
+
+Se reemplazan los PNG de `docs/arte/piezas/` y se vuelve a ejecutar:
+
+```bash
+node scripts/generar-tileset.mjs
+```
+
+Si cambia el tamaño de fotograma, hay que tocarlo **también** en `PreloadScene`.
+`npm run verificar-arte` comprueba que las dos cifras cuadren, porque cuando no
+cuadran Phaser no protesta: recorta los fotogramas donde le parece.
+
+**Pendiente con el equipo de arte:** las piezas llegaron por WhatsApp, en JPEG y
+con el fondo aplastado a negro. Están reconstruidas a su resolución nativa y el
+negro recortado por umbral, pero conviene una reentrega en **PNG con alfa** y, si
+existen, los `.aseprite` fuente.
 
 ## Servidores MCP configurados
 

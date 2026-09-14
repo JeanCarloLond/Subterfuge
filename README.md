@@ -131,12 +131,18 @@ principio a fin:
 - **Audio**: efectos y ambiente sintetizados en tiempo real, sin ningún
   archivo de sonido en el proyecto.
 
-Pendiente: el arte definitivo y escribir el gancho final.
+Pendiente: los sprites de personajes y escribir el gancho final.
 
-> **Sobre el arte que se ve ahora:** es provisional. Es pixel art escrito a mano
-> en código (`src/systems/ArteProvisional.ts`), sin ninguna imagen generada por
-> IA, y existe solo para que el prototipo no fueran cuadrados de colores
-> mientras el equipo produce los sprites definitivos en Aseprite.
+- **Arte**: la sillería de las cuatro zonas ya es arte del equipo, dibujado a
+  mano. Cada nivel la tiñe y la desgasta a su manera, así que la misma piedra se
+  va cerrando conforme se baja.
+
+> **Sobre el arte que se ve ahora:** la piedra es del equipo (las piezas están en
+> `docs/arte/piezas/`). Todo lo demás —personajes, objetos, decorado— sigue
+> siendo provisional: pixel art escrito a mano en código
+> (`src/systems/ArteProvisional.ts`), sin ninguna imagen generada por IA, para
+> que el prototipo no fueran cuadrados de colores mientras el equipo produce los
+> sprites definitivos en Aseprite.
 
 ## Tecnologías
 
@@ -190,17 +196,17 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 
 ### Comandos disponibles
 
-| Comando                   | Para qué sirve                                         |
-| ------------------------- | ------------------------------------------------------ |
-| `npm run dev`             | Servidor local con recarga automática                  |
-| `npm run build`           | Build de producción en `dist/`                         |
-| `npm run preview`         | Sirve el build de producción para probarlo             |
-| `npm run verificar`       | **Todas** las comprobaciones del CI, de una vez        |
-| `npm run format`          | Aplica el formato de Prettier                          |
-| `npm run lint`            | Reglas de código (ESLint)                              |
-| `npm run typecheck`       | Comprobación de tipos sin generar build                |
-| `npm run verificar-arte`  | Comprueba que las figuras del pixel art sean correctas |
-| `npm run verificar-rutas` | Comprueba que en cada nivel se pueda volver a subir    |
+| Comando                   | Para qué sirve                                      |
+| ------------------------- | --------------------------------------------------- |
+| `npm run dev`             | Servidor local con recarga automática               |
+| `npm run build`           | Build de producción en `dist/`                      |
+| `npm run preview`         | Sirve el build de producción para probarlo          |
+| `npm run verificar`       | **Todas** las comprobaciones del CI, de una vez     |
+| `npm run format`          | Aplica el formato de Prettier                       |
+| `npm run lint`            | Reglas de código (ESLint)                           |
+| `npm run typecheck`       | Comprobación de tipos sin generar build             |
+| `npm run verificar-arte`  | Comprueba las figuras del pixel art y los tilesets  |
+| `npm run verificar-rutas` | Comprueba que en cada nivel se pueda volver a subir |
 
 Los dos últimos son propios del juego y no los cubre ningún linter.
 `verificar-rutas` existe porque el Atrio llegó a publicarse sin ruta de vuelta, y

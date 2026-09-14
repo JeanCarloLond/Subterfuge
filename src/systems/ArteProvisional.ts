@@ -135,38 +135,6 @@ const DEVOTO: Figura = {
   ],
 };
 
-// -- Piedra ------------------------------------------------------------------
-// Silleria con junta marcada arriba y abajo, para que al repetirse se lea la
-// hilada en vez de una masa uniforme.
-
-const PIEDRA: Figura = {
-  paleta: {
-    a: 0x51473d,
-    b: 0x453c33,
-    c: 0x37302a,
-    j: 0x241f1b, // junta
-  },
-  // prettier-ignore
-  filas: [
-    'jjjjjjjjjjjjjjjj',
-    'jaaaaaaabaaaaaaj',
-    'jaaabaaaaaaabaaj',
-    'jaaaaaaaaabaaaaj',
-    'jbaaaaaabaaaaaaj',
-    'jaaaaaaaaaaabaaj',
-    'jaaabaaaaaaaaaaj',
-    'jjjjjjjjjjjjjjjj',
-    'jbbbbbbbcbbbbbbj',
-    'jbbbcbbbbbbbcbbj',
-    'jbbbbbbbbbcbbbbj',
-    'jcbbbbbbcbbbbbbj',
-    'jbbbbbbbbbbbcbbj',
-    'jbbbcbbbbbbbbbbj',
-    'jbbbbbbbbbbbbbbj',
-    'jjjjjjjjjjjjjjjj',
-  ],
-};
-
 // -- Altar -------------------------------------------------------------------
 // Pila de sillar con un cuenco encendido. Apagado se tinta en gris desde el
 // codigo, asi que la forma debe leerse igual con y sin color.
@@ -421,12 +389,15 @@ const FRASCO: Figura = {
 // puntos de referencia: sin ellos todo son plataformas identicas y el jugador
 // no sabe donde ha estado. Ninguna representa a un Primigenio.
 
+// La columna comparte paleta con la silleria del equipo a proposito: esta
+// tallada en la misma piedra del Vientre. Con los grises de antes se leia como
+// otro material distinto plantado en mitad del muro.
 const COLUMNA: Figura = {
   paleta: {
-    a: 0x51473d,
-    b: 0x453c33,
-    c: 0x37302a,
-    j: 0x241f1b,
+    a: 0x805454,
+    b: 0x6c4444,
+    c: 0x603c3c,
+    j: 0x2c1c1c,
   },
   // prettier-ignore
   filas: [
@@ -599,7 +570,6 @@ const FIGURAS: Record<string, Figura> = {
   vestal: VESTAL,
   sello: SELLO,
   reformado: REFORMADO,
-  piedra: PIEDRA,
   altar: ALTAR,
   codice: CODICE,
   umbral: UMBRAL,

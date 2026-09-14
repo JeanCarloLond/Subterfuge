@@ -25,6 +25,11 @@ export class PasillosScene extends EscenaNivel {
       colorFondo: '#0f0c0c',
       inicio: { x: 60, y: 130 },
 
+      // Un escalon mas abajo: la misma silleria, de vuelta de todo. Aqui ya se
+      // agrieta mas de lo que crece.
+      tinte: 0xc8bcc0,
+      desgaste: { grietas: 0.07, musgo: 0.025 },
+
       // Como en el Atrio: los corredores están a 176-184 px entre sí, muy por
       // encima del salto (92 px), así que el retorno va por escalones que
       // solapan en x. Bajar es directo; subir es la escalera del lado derecho.

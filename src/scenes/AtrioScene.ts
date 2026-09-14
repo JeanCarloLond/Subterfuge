@@ -31,6 +31,13 @@ export class AtrioScene extends EscenaNivel {
       inicio: { x: 80, y: 200 },
       mostrarAyuda: true,
 
+      // La zona mas alta y la unica que todavia parece arquitectura: la piedra
+      // va casi a su color, apenas enfriada. Es el punto de comparacion con el
+      // que el jugador medira lo oscuro que se pone todo mas abajo.
+      tinte: 0xe8e4e0,
+      // Aqui aun entra humedad, asi que es la zona donde mas musgo prende.
+      desgaste: { grietas: 0.05, musgo: 0.05 },
+
       // Reglas del trazado, para que el descenso SIEMPRE se pueda desandar.
       //
       // Un salto simple sube 92 px (impulso^2 / 2*gravedad), PERO el tiempo que
