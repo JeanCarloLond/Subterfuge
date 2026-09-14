@@ -23,6 +23,7 @@ export class Controles {
   private readonly silenciar: Phaser.Input.Keyboard.Key[];
   private readonly ayuda: Phaser.Input.Keyboard.Key[];
   private readonly codice: Phaser.Input.Keyboard.Key[];
+  private readonly pausa: Phaser.Input.Keyboard.Key[];
 
   private readonly puntero: Phaser.Input.Pointer;
 
@@ -52,10 +53,9 @@ export class Controles {
     this.silenciar = [tecla(K.M)];
     this.ayuda = [tecla(K.H), tecla(K.TAB)];
     this.codice = [tecla(K.L)];
+    this.pausa = [tecla(K.ESC), tecla(K.P)];
 
     this.puntero = escena.input.activePointer;
-    // El clic derecho es el parry: que no abra el menu contextual del navegador.
-    escena.input.mouse?.disableContextMenu();
   }
 
   /** Muestrea el raton. Llamar UNA vez por fotograma, antes de leer nada. */
@@ -132,6 +132,10 @@ export class Controles {
   /** Abrir el Codice de la Carne para leer lo recogido. */
   get codicePresionado(): boolean {
     return this.algunaRecien(this.codice);
+  }
+
+  get pausaPresionada(): boolean {
+    return this.algunaRecien(this.pausa);
   }
 
   private algunaAbajo(teclas: Phaser.Input.Keyboard.Key[]): boolean {

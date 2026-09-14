@@ -83,6 +83,8 @@ src/
     Codice.ts                    Textos de los fragmentos, derivados del world bible
   ui/
     HudScene.ts                  HUD como escena paralela, alimentada por eventos
+    PausaScene.ts                Menú de pausa sobre el juego detenido
+    TextoControles.ts            Texto de la ayuda, compartido por el panel y la pausa
     BarraVida.ts                 Barra flotante de los enemigos normales
     CodiceScene.ts               Lectura del Códice sobre el juego en pausa
   scenes/
@@ -246,6 +248,8 @@ posición, para que las colisiones no se enteren.
 - [x] Placas del Registro: lore de una línea con `E`
 - [x] Ocho fragmentos del Códice
 - [x] Rezar como acto: el Cirujano se arrodilla, el Altar responde, el aviso explica
+- [x] Menú de pausa (`Esc`/`P`): continuar, controles, sonido, volver al Atrio
+- [x] Menú contextual del navegador bloqueado en toda la página
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
@@ -270,6 +274,7 @@ posición, para que las colisiones no se enteren.
 | Poción de Carne       | `Q`                           |
 | Silenciar el audio    | `M`                           |
 | Ayuda de controles    | `H` o `Tab`                   |
+| Pausa                 | `Esc` o `P`                   |
 | Rezar en un Altar     | `E`                           |
 | Leer el Códice        | `L`                           |
 | Trepar (colgado)      | `W` / flecha arriba           |

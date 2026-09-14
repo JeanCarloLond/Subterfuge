@@ -10,6 +10,7 @@ import { SalasScene } from './scenes/SalasScene';
 import { FinalScene } from './scenes/FinalScene';
 import { HudScene } from './ui/HudScene';
 import { CodiceScene } from './ui/CodiceScene';
+import { PausaScene } from './ui/PausaScene';
 
 /**
  * Subterfuge - teaser jugable de "La Diocesis de la Carne".
@@ -20,6 +21,10 @@ import { CodiceScene } from './ui/CodiceScene';
 const configuracion: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: 'juego',
+  // El clic derecho es el parry. Sin esto, cada parry con raton abria el menu
+  // del navegador encima del juego. Esto lo bloquea en el lienzo en TODAS las
+  // escenas; el contenedor de la pagina se bloquea mas abajo.
+  disableContextMenu: true,
   width: RESOLUCION.ancho,
   height: RESOLUCION.alto,
   backgroundColor: '#141014',
@@ -49,7 +54,13 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     FinalScene,
     HudScene,
     CodiceScene,
+    PausaScene,
   ],
 };
 
 new Phaser.Game(configuracion);
+
+// El lienzo no ocupa toda la pagina (Scale.FIT deja margenes), y un clic
+// derecho en ese margen tambien abria el menu. Toda la pagina es el juego, asi
+// que se bloquea en el documento entero: aqui el boton derecho es del juego.
+document.addEventListener('contextmenu', (evento) => evento.preventDefault());

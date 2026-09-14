@@ -14,6 +14,7 @@ import { Impacto } from '../systems/Impacto';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
 import { EVENTOS_HUD } from '../ui/HudScene';
+import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO } from '../ui/TextoControles';
 
 /** Plataforma: [x, y, anchoEnTiles]. y crece hacia abajo. */
 export type Plataforma = readonly [x: number, y: number, anchoTiles: number];
@@ -218,6 +219,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Antes de que nadie lea la entrada: fija el estado del raton del fotograma.
     this.controles.actualizar();
 
+    if (this.controles.pausaPresionada) this.pausar();
     if (this.controles.ayudaPresionada) this.alternarAyuda();
     if (this.controles.codicePresionado) this.abrirCodice();
 
@@ -892,6 +894,18 @@ export abstract class EscenaNivel extends Phaser.Scene {
   }
 
   /**
+   * Pausa. La escena entera se detiene debajo (fisica, temporizadores, entrada)
+   * y el menu se lanza encima. No se puede pausar en mitad del descenso a otra
+   * zona, para no dejar el fundido a medias.
+   */
+  private pausar(): void {
+    if (this.descendiendo) return;
+
+    this.scene.pause();
+    this.scene.launch('Pausa', { escenaJuego: this.scene.key });
+  }
+
+  /**
    * Abre la lectura del Codice sobre el juego en pausa.
    * Si no hay nada recogido, solo lo dice: no merece una pantalla entera.
    */
@@ -1124,40 +1138,14 @@ export abstract class EscenaNivel extends Phaser.Scene {
     };
     const estiloTenue = { ...estilo, color: '#8a7d70' };
 
-    const movimiento = this.add.text(
-      10,
-      10,
-      [
-        'MOVER      A D  o flechas',
-        'SALTAR     ESPACIO',
-        '           dos veces: doble salto',
-        'DASH       SHIFT   (esquiva)',
-        'TREPAR     W  colgado de un borde',
-        'SOLTARSE   S  colgado de un borde',
-      ].join('\n'),
-      estilo,
-    );
+    const movimiento = this.add.text(10, 10, CONTROLES_MOVIMIENTO.join('\n'), estilo);
 
-    const combate = this.add.text(
-      152,
-      10,
-      [
-        'GOLPEAR    J  o clic izquierdo',
-        '           + W arriba, + S abajo (en el aire)',
-        '           abajo y acertar: rebotas',
-        'CARGADO    mantener y soltar (30 Fervor)',
-        'PARRY      K  o clic derecho',
-        'POCION     Q',
-        'REZAR      E  junto a un Altar',
-        'CODICE     L  leer lo recogido',
-      ].join('\n'),
-      estilo,
-    );
+    const combate = this.add.text(152, 10, CONTROLES_COMBATE.join('\n'), estilo);
 
     const pie = this.add.text(
       10,
       alto - 18,
-      'H  mostrar u ocultar esta ayuda        M  sonido',
+      'ESC  pausa        H  mostrar u ocultar esta ayuda        M  sonido',
       estiloTenue,
     );
 

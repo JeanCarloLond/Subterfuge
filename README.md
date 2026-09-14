@@ -91,6 +91,7 @@ pararlo, `Ctrl + C` en la terminal.
 | Soltarse (colgado)    | `S` / flecha abajo            |
 | Silenciar el audio    | `M`                           |
 | Ayuda de controles    | `H` o `Tab`                   |
+| Pausa                 | `Esc` o `P`                   |
 
 El **parry** es la mecánica central. Cuando un enemigo se tensa y se tiñe,
 te está avisando de que va a golpear: pulsa `K` en ese momento. Contra el
