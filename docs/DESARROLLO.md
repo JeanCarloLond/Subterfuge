@@ -331,6 +331,22 @@ estrellarse contra un muro lo deja expuesto: esa es la ventana de castigo.
 posiciones marcadas alrededor del Cirujano (2 en fase 2, 3 en fase 3, con 560 ms
 de aviso). Es la amenaza vertical que le faltaba a una arena plana.
 
+**Reintentar** (issue #32): las Salas tienen una antesala con el Altar _antes_
+de la arena, y una reja (`DefinicionNivel.reja`) que cae cuando el Reformado
+despierta. Morir dentro devuelve al Altar de la antesala; la reja sube y el jefe
+vuelve a su sitio dormido y con toda la vida (`reiniciarCombateDeJefe`). Antes
+se reaparecía dentro con el jefe donde se dejó, y la pelea era desgaste, no
+aprendizaje. La reja es un muro para los dos: al Cirujano lo encierra y al
+Reformado le sirve para estrellarse, igual que la pared del fondo.
+
+**Presencia** (issue #31): el Reformado mide 44×40 (un Devoto, 16×32) y lleva
+lo que cuenta lo que es: instrumental del quirófano fundido en el lomo, la
+cabeza vendada **sin ojos** y el sello dorado del Elegido en el pecho. Respira
+en dos cuadros, tiene un latido de luz que se acelera con cada fase, sombra
+propia que se encoge al saltar y carne que gotea mientras está despierto. El
+cuerpo físico sigue siendo 20×28: la banda segura del zarpazo y el paso bajo el
+pedestal están afinados sobre esas medidas.
+
 **La arena** tiene tres alturas: suelo, repisas a 80 px y esquinas altas a
 136 px, más un pedestal central a 56 px con la camilla encima. El pedestal está
 calculado para que el cuerpo del jefe (28 px) **pase por debajo** al embestir:
@@ -420,7 +436,7 @@ hueso, el Vestal tela y metal fino, el Reformado carne húmeda sobre algo que ya
 no es hueso — y cada uno cae a su manera. El golpe al aire suena siempre (el
 impacto se suma encima si conecta), y hay sonido para aterrizar, agarrarse,
 trepar, beber, el frasco vacío, reliquias, menús, el despertar del jefe, sus
-fases, los escombros y la victoria. Sin archivos, por tres razones:
+fases, la reja de la arena, los escombros y la victoria. Sin archivos, por tres razones:
 
 - **Licencias**: todo lo que suena es original. Cero riesgo de arrastrar un
   sample con condiciones raras a un proyecto que se publica.

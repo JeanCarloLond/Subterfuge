@@ -359,6 +359,26 @@ class Sonido {
     this.tono({ desde: 140, hasta: 50, onda: 'triangle', duracion: 0.16, volumen: 0.3 });
   }
 
+  /** Reja de la arena cayendo: hierro contra piedra, y el eco. */
+  reja(): void {
+    this.ruido({ duracion: 0.35, frecuencia: 900, barridoHasta: 120, volumen: 0.5 });
+    this.tono({ desde: 110, hasta: 40, onda: 'square', duracion: 0.42, volumen: 0.38 });
+    this.tono({
+      desde: 1800,
+      hasta: 900,
+      onda: 'triangle',
+      duracion: 0.5,
+      volumen: 0.12,
+      retardo: 0.05,
+    });
+  }
+
+  /** La misma reja subiendo: cadena y contrapeso. */
+  rejaAbre(): void {
+    this.ruido({ duracion: 0.6, frecuencia: 500, barridoHasta: 1500, volumen: 0.2 });
+    this.tono({ desde: 60, hasta: 90, onda: 'triangle', duracion: 0.6, volumen: 0.18 });
+  }
+
   /** Sello devuelto con el parry: el mismo tintineo, mas brillante. */
   selloDevuelto(): void {
     this.tono({ desde: 1500, hasta: 2200, onda: 'triangle', duracion: 0.14, volumen: 0.18 });

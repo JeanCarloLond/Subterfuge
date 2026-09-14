@@ -289,48 +289,137 @@ const SELLO: Figura = {
 // alguien que fue una persona, o el encuentro pierde su sentido. Donde estaria
 // la cara no hay ojos: en la Diocesis, mirar no es cosa de lo que se venera.
 
+// El Reformado: un Elegido que sobrevivio a medias al sacramento. Es el
+// jefe, asi que tiene que leerse distinto de todo lo demas a primera vista
+// (issue #31): mas grande que un Devoto (44x40 frente a 16x32), a cuatro
+// patas, y con las tres cosas que cuentan lo que es. Una joroba de carne con
+// el instrumental del quirofano todavia fundido dentro (el retractor del
+// lomo, la pinza del flanco). La cabeza vendada y SIN OJOS: lo que la
+// doctrina santifica en los dioses aqui es solo lo que el sacramento le quito.
+// Y el sello dorado del Elegido en el pecho: la Diocesis lo marco como
+// bendecido antes de hacerle esto.
+//
+// Dos cuadros: en el segundo la joroba se hincha y la cabeza cae un pixel.
+// Es la respiracion. Un jefe quieto parecia un mueble.
 const REFORMADO: Figura = {
   paleta: {
     c: 0x8c4f4f, // carne
-    o: 0x5c2f33, // carne en sombra
-    m: 0xb9c2c9, // instrumental fusionado
-    v: 0xc9bda8, // vendaje
+    C: 0xa86a66, // carne a la luz
+    o: 0x5c2f33, // carne en sombra y pliegues
     n: 0x2a1a1e, // hueco
+    m: 0xb9c2c9, // instrumental fundido
+    M: 0xe4e9ee, // brillo del metal
+    v: 0xc9bda8, // vendaje
+    V: 0x9a8d78, // vendaje sucio
+    s: 0x3a1418, // sutura
+    r: 0xc03a3a, // herida abierta
+    h: 0xe6ddc8, // hueso
+    g: 0xc9a44c, // sello del Elegido
+    G: 0xf2dc8c, // reflejo del sello
   },
   // prettier-ignore
   filas: [
-    '.........cccccccc...........',
-    '.......cccccccccccc.........',
-    '......cccccccccccccc........',
-    '.....cccccccccccccccc.......',
-    '....cccccnnnnccccccccc......',
-    '....ccccnnnnnncccccccc......',
-    '....ccccnnnnnncccccccc......',
-    '.....cccccnnnnccccccccc.....',
-    '.....cccccccccccccccccc.....',
-    '....cccccccccccccccccccc....',
-    '...mmccccccccccccccccccmm...',
-    '..mmmccccccccccccccccccmmm..',
-    '..mmccccccccccccccccccccmm..',
-    '..mcccccccvvvvcccccccccccm..',
-    '..cccccccvvvvvvcccccccccc...',
-    '..ccccccvvvvvvvvcccccccc....',
-    '...cccccvvvvvvvvcccccccc....',
-    '...ccccccvvvvvvcccccccc.....',
-    '....cccccccccccccccccc......',
-    '....ooccccccccccccccoo......',
-    '....ooocccccccccccooo.......',
-    '.....ooocccccccccooo........',
-    '.....oooooccccooooo.........',
-    '.....ooooo..ooooo...........',
-    '....ooooo....ooooo..........',
-    '....oooo......oooo..........',
-    '....oooo......oooo..........',
-    '...ooooo......ooooo.........',
-    '...ooooo......ooooo.........',
-    '..oooooo......oooooo........',
-    '..cccccc......cccccc........',
-    '.cccccccc....cccccccc.......',
+    '........M........M..........................',
+    '........mMmmmmmmmM..........................',
+    '.........m.oooo.m...........................',
+    '.......ccmccccccmcc.........................',
+    '......ccCmccccccmcccc.......................',
+    '.....ccCCCcccscccccccccc....................',
+    '....ccCCccccscscsccccccccc..................',
+    '....ccCccccccccscccccccccccc......vvvv......',
+    '...cccccccccccccscccccccccccccoo.vvvvvv.....',
+    '...ccccccccccccscscsccccccccccoovVvvvvVv....',
+    '.M.cccccccccccccccscccccccccccovvvvvvvvvv...',
+    '.mmmcccccccccccccccsccccccccccoVvvvvvvvvV...',
+    '.mmcccccccccccccccscscscccccccocVVVVVVVVc...',
+    '.mmccccccccccccccccccccccccccccccccccccCc...',
+    '.mmccccccccccccccccccccrrcccccccchnhnhncc...',
+    '.mmcccccccccccccccccccrnrcccccccccnnnnncc...',
+    '.mmmccccccccccccccccccrnnrccccccoccccccco...',
+    '..mccccccccccccccccccccrnrcccccccoooooo.....',
+    '...cccccccccccccccccccccrcccccooooccccc.....',
+    '...ccccooooocccccccccccccccccccggccccccc....',
+    '...cccooocccooocccccccccccccccgGGgccccccc...',
+    '...ccccccccccccoooccccccccccccgGggccccccc...',
+    '....ccccccccccccccccoooooocooccggcccccccc...',
+    '....oocccooooccccccccccccccccccccoooccccc...',
+    '.....ooooccccccccccccccccccccccccccccccc....',
+    '.....ooooccccccccccccccccccccccccccccccc....',
+    '.....ooooooooooooooooooooooooooooooooooo....',
+    '......cccccc.....cccccc..........ccccccc....',
+    '......cccccc.....cccccc...........ccccccc...',
+    '......cccccc.....cccccc............cccccc...',
+    '......cccccc.....cccccc............cccccc...',
+    '.......cccco......cccco.............ccccc...',
+    '.......cccco......cccco.............ccccc...',
+    '.......cccco......cccco.............cccccc..',
+    '.......cccco......cccco.............cccccc..',
+    '.......cccco......cccco............ccccccc..',
+    '.......cccco......cccco...........ccccccccc.',
+    '.....occccccc...ccccccco.........occcccccc..',
+    '....ooccccccc..occcccccc........hhchchchchhh',
+    '....oooooooo...oooooooo.........h..h..h..h.h',
+  ],
+};
+
+const REFORMADO_RESPIRA: Figura = {
+  paleta: {
+    c: 0x8c4f4f, // carne
+    C: 0xa86a66, // carne a la luz
+    o: 0x5c2f33, // carne en sombra y pliegues
+    n: 0x2a1a1e, // hueco
+    m: 0xb9c2c9, // instrumental fundido
+    M: 0xe4e9ee, // brillo del metal
+    v: 0xc9bda8, // vendaje
+    V: 0x9a8d78, // vendaje sucio
+    s: 0x3a1418, // sutura
+    r: 0xc03a3a, // herida abierta
+    h: 0xe6ddc8, // hueso
+    g: 0xc9a44c, // sello del Elegido
+    G: 0xf2dc8c, // reflejo del sello
+  },
+  // prettier-ignore
+  filas: [
+    '........M........M..........................',
+    '........mMmmmmmmmM..........................',
+    '.........m.oooo.m...........................',
+    '......ccCmccccccmccc........................',
+    '.....cccCmccccccmccccc......................',
+    '....cccCCCcccsccccccccccc...................',
+    '...cccCCccccscscscccccccccc.................',
+    '...cccCccccccccsccccccccccccc...............',
+    '..ccccccccccccccscccccccccccccoo..vvvv......',
+    '...ccccccccccccscscsccccccccccoo.vvvvvv.....',
+    '.M.cccccccccccccccscccccccccccocvVvvvvVv....',
+    '.mmmcccccccccccccccsccccccccccovvvvvvvvvv...',
+    '.mmcccccccccccccccscscscccccccoVvvvvvvvvV...',
+    '.mmcccccccccccccccccccccccccccccVVVVVVVVc...',
+    '.mmccccccccccccccccccccrrccccccccccccccCc...',
+    '.mmcccccccccccccccccccrnrrccccccchnhnhncc...',
+    '.mmmccccccccccccccccccrnnrrcccccccnnnnncc...',
+    '..mccccccccccccccccccccrnrccccccoccccccco...',
+    '...cccccccccccccccccccccrcccccooooooooo.....',
+    '...ccccooooooccccccccccccccccccggccccccc....',
+    '...cccooocccooocccccccccccccccgGGgccccccc...',
+    '...ccccccccccccoooccccccccccccgGggccccccc...',
+    '....ccccccccccccccccoooooocooccggcccccccc...',
+    '....oocccooooccccccccccccccccccccoooccccc...',
+    '.....ooooccccccccccccccccccccccccccccccc....',
+    '.....ooooccccccccccccccccccccccccccccccc....',
+    '.....ooooooooooooooooooooooooooooooooooo....',
+    '......cccccc.....cccccc..........ccccccc....',
+    '......cccccc.....cccccc...........ccccccc...',
+    '......cccccc.....cccccc............cccccc...',
+    '......cccccc.....cccccc............cccccc...',
+    '.......cccco......cccco.............ccccc...',
+    '.......cccco......cccco.............ccccc...',
+    '.......cccco......cccco.............cccccc..',
+    '.......cccco......cccco.............cccccc..',
+    '.......cccco......cccco............ccccccc..',
+    '.......cccco......cccco...........ccccccccc.',
+    '.....occccccc...ccccccco.........occcccccc..',
+    '....ooccccccc..occcccccc........hhchchchchhh',
+    '....oooooooo...oooooooo.........h..h..h..h.h',
   ],
 };
 
@@ -633,6 +722,7 @@ const FIGURAS: Record<string, Figura> = {
   vestal: VESTAL,
   sello: SELLO,
   reformado: REFORMADO,
+  'reformado-2': REFORMADO_RESPIRA,
   altar: ALTAR,
   codice: CODICE,
   umbral: UMBRAL,

@@ -9,6 +9,10 @@ import { EscenaNivel, type DefinicionNivel } from './EscenaNivel';
  * sala unica, ancha y sin salida. No hay a donde ir hasta que el encuentro
  * termine.
  *
+ * Antes de la arena hay una antesala con el Altar de reintento y, entre las
+ * dos, una reja que cae cuando el Reformado despierta. Morir dentro devuelve
+ * a la antesala con el jefe entero al otro lado (issue #32).
+ *
  * La arena tiene tres alturas —suelo, repisas y esquinas altas— y un pedestal
  * central que la embestida pasa por debajo. Cada altura cambia lo que el jefe
  * hace: en llano embiste (y en fase 3, ida y vuelta); si el Cirujano se sube,
@@ -21,8 +25,10 @@ export class SalasScene extends EscenaNivel {
   }
 
   protected definirNivel(): DefinicionNivel {
+    // La arena esta desplazada 240 px a la derecha de la antesala. Todo lo
+    // que hay dentro se mide desde x = 240, que es donde cae la reja.
     return {
-      mundo: { ancho: 800, alto: 400 },
+      mundo: { ancho: 1040, alto: 400 },
       // El nivel más oscuro hasta ahora: metal quirúrgico sobre carne.
       colorFondo: '#0c0a0c',
       musica: 'salas',
@@ -36,90 +42,108 @@ export class SalasScene extends EscenaNivel {
 
       plataformas: [
         // Techo: la sala está cerrada. No se sale por arriba.
-        [0, 96, 50],
+        [0, 96, 65],
 
-        // Suelo de la sala, continuo: el terreno del combate.
-        [0, 288, 50],
+        // Suelo continuo: antesala y arena son el mismo terreno. Lo que las
+        // separa es la reja, no un desnivel.
+        [0, 288, 65],
+
+        // -- Arena (desde x 240) --
 
         // Dos repisas para romper las embestidas y castigar desde arriba.
         // Están a 80 px del suelo, dentro del salto simple.
-        [176, 208, 5], //          x 176..256
-        [544, 208, 5], //          x 544..624
+        [416, 208, 5], //          x 416..496
+        [784, 208, 5], //          x 784..864
 
         // Pedestal central con la camilla. Está a 56 px del suelo: el cuerpo
         // del Reformado (28 px de alto) pasa POR DEBAJO al embestir, así que no
         // se estrella contra él ni lo usa de muro. Es refugio de la embestida y
         // blanco de los saltos y los escombros: subirse es una decisión.
-        [352, 232, 6], //          x 352..448
+        [592, 232, 6], //          x 592..688
 
         // Repisas altas en las esquinas. Desde ahí se ve la arena entera y se
         // puede caer sobre el jefe con el golpe hacia abajo; también son a donde
         // más lejos llega a saltar en fase 2.
-        [16, 152, 4], //           x 16..80
-        [720, 152, 4], //          x 720..784
+        [256, 152, 4], //          x 256..320
+        [960, 152, 4], //          x 960..1024
       ],
 
-      // Muros laterales: son contra lo que el Reformado se estrella al fallar
-      // una embestida, que es la ventana de castigo del combate.
+      // Muros: el de la izquierda cierra la antesala; el de la derecha es
+      // contra lo que el Reformado se estrella al fallar una embestida hacia
+      // ese lado. Hacia el otro lado se estrella contra la reja.
       paredes: [
         [0, 112, 288],
-        [784, 112, 288],
+        [1024, 112, 288],
       ],
+
+      // La reja de la arena: cae al despertar el jefe y sube cuando muere, o
+      // cuando el Cirujano muere y hay que volver a entrar (issue #32).
+      reja: { x: 240, yInicio: 112, yFin: 288 },
 
       // Sin escolta: el encuentro es entre el Cirujano y lo que él mismo hace.
       devotos: [],
 
-      jefe: { x: 620, y: 288, izquierda: 40, derecha: 760 },
+      jefe: { x: 860, y: 288, izquierda: 280, derecha: 1000 },
 
-      // Un Altar justo a la entrada: reintentar el jefe no debe castigar con
-      // un paseo de vuelta.
-      altares: [{ x: 48, y: 288 }],
+      // El Altar esta en la antesala, ANTES de la reja: es el punto de
+      // reintento. Morir dentro devuelve aqui, con el jefe entero al otro lado.
+      altares: [{ x: 120, y: 288 }],
 
-      fragmentos: [[350, 180, 'codice-06']],
+      fragmentos: [[590, 180, 'codice-06']],
 
       // Un Frasco en la repisa derecha, la mas expuesta al jefe: cogerlo en
       // mitad del combate es una decision, no un paseo.
-      reliquias: [[568, 208, 'salas-frasco', 'frasco']],
+      reliquias: [[808, 208, 'salas-frasco', 'frasco']],
 
-      // El quirofano-altar: la camilla en el centro y la sangre de los
+      // Antesala: el Altar entre dos velas y las columnas que enmarcan la reja.
+      // Arena: el quirofano-altar, la camilla en el centro y la sangre de los
       // sacramentos anteriores. Nada de exvotos aqui: nadie da las gracias.
       decorado: [
-        [400, 232, 'camilla'],
-        [366, 232, 'vela'],
-        [434, 232, 'vela'],
-        [300, 288, 'charco'],
-        [520, 288, 'charco'],
-        [410, 288, 'charco'],
-        [60, 288, 'columna'],
-        [740, 288, 'columna'],
-        [200, 208, 'vela'],
-        [232, 208, 'vela'],
-        [48, 152, 'vela'],
-        [752, 152, 'vela'],
-        [40, 288, 'reja'],
-        [760, 288, 'reja'],
+        [40, 288, 'columna'],
+        [96, 288, 'vela'],
+        [144, 288, 'vela'],
+        [224, 288, 'columna'],
+
+        [640, 232, 'camilla'],
+        [606, 232, 'vela'],
+        [674, 232, 'vela'],
+        [540, 288, 'charco'],
+        [760, 288, 'charco'],
+        [650, 288, 'charco'],
+        [300, 288, 'columna'],
+        [980, 288, 'columna'],
+        [440, 208, 'vela'],
+        [472, 208, 'vela'],
+        [288, 152, 'vela'],
+        [992, 152, 'vela'],
+        [1000, 288, 'reja'],
       ],
 
       // Fondo lejano: el quirofano-altar visto desde dentro. Ventanas altas
       // ya sin luz, cadenas sobre la camilla, y polvo con algo de rojo.
       polvo: 0xa87a7a,
       fondo: [
-        [120, 300, 'ventana'],
-        [320, 300, 'ventana'],
-        [480, 300, 'ventana'],
-        [680, 300, 'ventana'],
-        [200, 112, 'cadena'],
-        [360, 112, 'cadena'],
+        [70, 300, 'ventana'],
+        [190, 300, 'ventana'],
+        [360, 300, 'ventana'],
+        [560, 300, 'ventana'],
+        [720, 300, 'ventana'],
+        [920, 300, 'ventana'],
         [440, 112, 'cadena'],
         [600, 112, 'cadena'],
-        [40, 300, 'columna'],
-        [760, 300, 'columna'],
+        [680, 112, 'cadena'],
+        [840, 112, 'cadena'],
+        [130, 300, 'columna'],
+        [280, 300, 'columna'],
+        [1000, 300, 'columna'],
       ],
 
-      inscripciones: [[140, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.']],
+      // La placa esta en la antesala: se lee antes de entrar, no en mitad de
+      // la pelea.
+      inscripciones: [[180, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.']],
 
       umbral: {
-        x: 730,
+        x: 970,
         y: 288,
         destino: 'Final',
         etiqueta: 'seguir bajando',

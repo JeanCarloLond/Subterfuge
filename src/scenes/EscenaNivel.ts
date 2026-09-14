@@ -97,6 +97,17 @@ export interface DefinicionNivel {
    * el limite inferior del mundo, sin forma de volver a subir.
    */
   limiteCaida?: number;
+  /**
+   * Reja de la arena del jefe (issue #32). Es una columna de tiles a la
+   * izquierda de la arena que cae cuando el jefe despierta y sube cuando
+   * muere. Mientras esta bajada es un muro para los dos: al Cirujano lo
+   * encierra y al Reformado le sirve para estrellarse.
+   *
+   * Si el Cirujano muere dentro, reaparece en el ultimo Altar (que esta
+   * FUERA), la reja sube y el jefe vuelve a su sitio entero: el combate se
+   * reintenta desde el principio, no desde donde se dejo.
+   */
+  reja?: { x: number; yInicio: number; yFin: number };
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
   /** Pista de fondo de la zona. Ver Musica.ts. */
@@ -177,6 +188,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private sellos: Sello[] = [];
   private jefe?: Reformado;
   private jefeDerrotado = false;
+  /** Colisiones y temporizadores del jefe: se retiran al reiniciar el combate. */
+  private ligadurasDeJefe: Phaser.Physics.Arcade.Collider[] = [];
+  private temporizadoresDeJefe: Phaser.Time.TimerEvent[] = [];
+  private reja?: { sprite: Phaser.GameObjects.TileSprite; cuerpo: Phaser.Physics.Arcade.Image };
   private altares: Altar[] = [];
   private fragmentos: FragmentoCodice[] = [];
   private reliquias: Reliquia[] = [];
@@ -302,6 +317,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.sellos = [];
     this.jefe = undefined;
     this.jefeDerrotado = false;
+    this.ligadurasDeJefe = [];
+    this.temporizadoresDeJefe = [];
+    this.reja = undefined;
     this.altares = [];
     this.fragmentos = [];
     this.reliquias = [];
@@ -719,7 +737,73 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     if (this.definicion.jefe) this.crearJefe(this.definicion.jefe);
+    if (this.definicion.reja) this.crearReja(this.definicion.reja);
     if (this.definicion.umbral) this.crearUmbral(this.definicion.umbral);
+  }
+
+  /**
+   * La reja empieza subida (invisible y sin cuerpo). Al bajar se despliega
+   * desde el techo, que es donde estaria recogida. El cuerpo es un tile de
+   * ancho, como los muros: el jefe la trata igual que a la pared del fondo.
+   */
+  private crearReja(datos: NonNullable<DefinicionNivel['reja']>): void {
+    const alto = datos.yFin - datos.yInicio;
+
+    const sprite = this.add.tileSprite(datos.x, datos.yInicio, T, alto, 'reja-placeholder');
+    sprite.setOrigin(0, 0);
+    sprite.setDepth(3);
+    if (this.definicion.tinte !== undefined) sprite.setTint(this.definicion.tinte);
+    sprite.setScale(1, 0);
+    sprite.setVisible(false);
+
+    const cuerpo = this.physics.add.staticImage(
+      datos.x + T / 2,
+      datos.yInicio + alto / 2,
+      'reja-placeholder',
+    );
+    cuerpo.setVisible(false);
+    cuerpo.setSize(T, alto);
+    (cuerpo.body as Phaser.Physics.Arcade.StaticBody).setSize(T, alto);
+    (cuerpo.body as Phaser.Physics.Arcade.StaticBody).enable = false;
+
+    this.physics.add.collider(this.cirujano.sprite, cuerpo);
+    this.reja = { sprite, cuerpo };
+  }
+
+  private bajarReja(): void {
+    if (!this.reja) return;
+    const { sprite, cuerpo } = this.reja;
+
+    sprite.setVisible(true);
+    this.tweens.killTweensOf(sprite);
+    this.tweens.add({
+      targets: sprite,
+      scaleY: 1,
+      duration: 360,
+      ease: 'Quad.easeIn',
+      onComplete: () => {
+        (cuerpo.body as Phaser.Physics.Arcade.StaticBody).enable = true;
+        this.cameras.main.shake(160, 0.006);
+        sonido.reja();
+      },
+    });
+  }
+
+  private subirReja(): void {
+    if (!this.reja) return;
+    const { sprite, cuerpo } = this.reja;
+    if (!sprite.visible) return;
+
+    (cuerpo.body as Phaser.Physics.Arcade.StaticBody).enable = false;
+    sonido.rejaAbre();
+    this.tweens.killTweensOf(sprite);
+    this.tweens.add({
+      targets: sprite,
+      scaleY: 0,
+      duration: 900,
+      ease: 'Sine.easeInOut',
+      onComplete: () => sprite.setVisible(false),
+    });
   }
 
   private crearJefe(datos: RondaDevoto): void {
@@ -729,11 +813,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
 
     this.jefe = jefe;
-    this.physics.add.collider(jefe.sprite, this.suelos);
+    this.ligadurasDeJefe.push(this.physics.add.collider(jefe.sprite, this.suelos));
+    if (this.reja)
+      this.ligadurasDeJefe.push(this.physics.add.collider(jefe.sprite, this.reja.cuerpo));
     this.obtenerGrupoEnemigos().add(jefe.sprite);
 
-    this.physics.add.overlap(jefe.hitbox, this.cirujano.sprite, () =>
-      this.resolverGolpeDeJefe(jefe),
+    this.ligadurasDeJefe.push(
+      this.physics.add.overlap(jefe.hitbox, this.cirujano.sprite, () =>
+        this.resolverGolpeDeJefe(jefe),
+      ),
     );
 
     jefe.eventos.on('vida', (puntos: number, maximo: number) => {
@@ -745,6 +833,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.game.events.emit(EVENTOS_HUD.aviso, 'el Reformado');
       sonido.jefeDespierta();
       musica.poner('jefe');
+      this.bajarReja();
     });
 
     jefe.eventos.on('fase', (fase: number) => {
@@ -769,6 +858,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.jefeDerrotado = true;
       this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
       this.abrirUmbral();
+      this.subirReja();
       // Campanas, y la musica de la zona vuelve despacio: se acabo el sacramento.
       sonido.victoria();
       if (this.definicion.musica) musica.poner(this.definicion.musica);
@@ -815,7 +905,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
         onComplete: () => marca.destroy(),
       });
 
-      this.time.delayedCall(escombros.avisoMs, () => this.dejarCaerPiedra(x, techoY, sueloY));
+      this.temporizadoresDeJefe.push(
+        this.time.delayedCall(escombros.avisoMs, () => this.dejarCaerPiedra(x, techoY, sueloY)),
+      );
     }
   }
 
@@ -1240,11 +1332,35 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private reaparecer(): void {
     const destino = this.altarActivo?.puntoReaparicion ?? this.definicion.inicio;
 
+    this.reiniciarCombateDeJefe();
     this.cirujano.reaparecerEn(destino.x, destino.y);
     this.game.events.emit(EVENTOS_HUD.caida, false);
     this.cameras.main.fadeIn(320, 11, 9, 11);
     this.reapareciendo = false;
     this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al ultimo Altar donde rezaste');
+  }
+
+  /**
+   * Morir en la arena reinicia el combate (issue #32). El jefe vuelve a su
+   * sitio, dormido y con toda la vida; la reja sube; la barra del HUD se
+   * retira y vuelve la musica de la zona. Antes reaparecia con el jefe donde
+   * lo dejo y la vida que le quedaba, y eso convertia la pelea en desgaste.
+   */
+  private reiniciarCombateDeJefe(): void {
+    const jefe = this.jefe;
+    const datos = this.definicion.jefe;
+    if (!jefe || !datos || jefe.estaMuerto || jefe.estadoActual === 'dormido') return;
+
+    for (const temporizador of this.temporizadoresDeJefe) temporizador.remove(false);
+    this.temporizadoresDeJefe = [];
+    for (const ligadura of this.ligadurasDeJefe) ligadura.destroy();
+    this.ligadurasDeJefe = [];
+    jefe.destruir();
+
+    this.crearJefe(datos);
+    this.subirReja();
+    this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
+    if (this.definicion.musica) musica.poner(this.definicion.musica);
   }
 
   /** El jefe duerme hasta que el Cirujano entra de verdad en la sala. */

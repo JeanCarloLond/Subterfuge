@@ -51,6 +51,19 @@ export class Reformado implements Enemigo {
   private readonly escena: Phaser.Scene;
   private readonly limites: { izquierda: number; derecha: number };
 
+  /**
+   * Presencia (issue #31). Lo que hace que el jefe no parezca un Devoto
+   * grande: un latido de luz en el pecho que se acelera con las fases, la
+   * sombra que lo pega al suelo, y la carne que gotea mientras esta despierto.
+   * Van aparte del sprite para no pelearse con los tintes y escalas de la
+   * telegrafia.
+   */
+  private readonly latido: Phaser.GameObjects.Image;
+  private readonly sombra: Phaser.GameObjects.Ellipse;
+  private readonly goteo: Phaser.GameObjects.Particles.ParticleEmitter;
+  private tweenLatido?: Phaser.Tweens.Tween;
+  private readonly sueloY: number;
+
   constructor(
     escena: Phaser.Scene,
     x: number,
@@ -66,9 +79,12 @@ export class Reformado implements Enemigo {
     this.sprite.setData('enemigo', this);
     this.sprite.setDepth(20);
 
+    // El dibujo es 44x40 pero el cuerpo fisico sigue siendo el de siempre
+    // (20x28, anclado abajo): la banda segura del zarpazo y el paso bajo el
+    // pedestal estan afinados sobre esas medidas, no sobre el dibujo.
     const cuerpo = this.cuerpo;
     cuerpo.setSize(20, 28);
-    cuerpo.setOffset(4, 4);
+    cuerpo.setOffset(12, 12);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setCollideWorldBounds(true);
 
@@ -78,11 +94,77 @@ export class Reformado implements Enemigo {
     cuerpoHitbox.setAllowGravity(false);
     cuerpoHitbox.enable = false;
 
+    this.sueloY = y;
+    this.sombra = escena.add.ellipse(x, y + 1, 44, 8, 0x000000, 0.4);
+    this.sombra.setDepth(19);
+
+    this.latido = escena.add.image(x, y - 18, 'brillo-placeholder');
+    this.latido.setDepth(21);
+    this.latido.setBlendMode(Phaser.BlendModes.ADD);
+    this.latido.setTint(0xc03a3a);
+    this.latido.setScale(0.5);
+    this.latido.setAlpha(0.18);
+    this.ajustarLatido(2200);
+
+    this.goteo = escena.add.particles(0, 0, 'chispa-placeholder', {
+      lifespan: { min: 380, max: 620 },
+      speedY: { min: 40, max: 90 },
+      speedX: { min: -8, max: 8 },
+      gravityY: 400,
+      scale: { start: 0.9, end: 0.4 },
+      alpha: { start: 0.9, end: 0 },
+      tint: [0x8c2f2f, 0x5c1f27],
+      frequency: 420,
+      emitting: false,
+    });
+    this.goteo.setDepth(19);
+    this.goteo.startFollow(this.sprite, 0, -10);
+
+    // Respira: dos cuadros, despacio. Dormido no respira: se lee como un bulto
+    // mas del quirofano hasta que el Cirujano se acerca.
+    if (!escena.anims.exists('reformado-respira')) {
+      escena.anims.create({
+        key: 'reformado-respira',
+        frames: [{ key: 'reformado-placeholder' }, { key: 'reformado-2-placeholder' }],
+        frameRate: 1.4,
+        repeat: -1,
+      });
+    }
+
     this.vitalidad.on('muerte', () => this.morir());
     this.vitalidad.on('cambio', (puntos: number) => {
       this.eventos.emit('vida', puntos, REFORMADO.vida);
       this.revisarFase(puntos);
     });
+  }
+
+  /** El latido del pecho: un pulso de luz cuyo ritmo dice la fase. */
+  private ajustarLatido(periodoMs: number): void {
+    this.tweenLatido?.remove();
+    this.tweenLatido = this.escena.tweens.add({
+      targets: this.latido,
+      alpha: { from: 0.18, to: 0.62 },
+      scale: { from: 0.46, to: 0.62 },
+      duration: periodoMs * 0.35,
+      hold: 0,
+      yoyo: true,
+      repeat: -1,
+      repeatDelay: periodoMs * 0.3,
+      ease: 'Quad.easeOut',
+    });
+  }
+
+  /** Luz, sombra y goteo siguen al cuerpo; se llama cada frame, este como este. */
+  private seguirPresencia(): void {
+    const direccion = this.mirandoDerecha ? 1 : -1;
+    this.latido.setPosition(this.sprite.x + direccion * 8, this.sprite.y - 18);
+
+    // La sombra se queda en el suelo y se encoge cuando el jefe salta: es lo
+    // que hace que el salto se lea como altura y no como un cambio de escala.
+    const altura = Phaser.Math.Clamp((this.sueloY - this.sprite.y) / 120, 0, 1);
+    this.sombra.setPosition(this.sprite.x, this.sueloY + 1);
+    this.sombra.setScale(1 - altura * 0.5, 1);
+    this.sombra.setAlpha(0.4 * (1 - altura * 0.7));
   }
 
   get cuerpo(): Phaser.Physics.Arcade.Body {
@@ -113,10 +195,23 @@ export class Reformado implements Enemigo {
 
     this.estado = 'acecho';
     this.finEnfriamiento = this.escena.time.now + 700;
+
+    // Se yergue: la masa se incorpora y la carne empieza a gotear.
+    this.sprite.play('reformado-respira');
+    this.escena.tweens.add({
+      targets: this.sprite,
+      scaleY: { from: 0.86, to: 1 },
+      duration: 520,
+      ease: 'Back.easeOut',
+    });
+    this.ajustarLatido(1400);
+    this.goteo.start();
+
     this.eventos.emit('despierta');
   }
 
   actualizar(objetivoX: number, objetivoY: number): void {
+    this.seguirPresencia();
     if (this.estado === 'dormido' || this.estado === 'muerto') return;
 
     const ahora = this.escena.time.now;
@@ -160,6 +255,10 @@ export class Reformado implements Enemigo {
     if (nuevaFase === this.fase) return;
 
     this.fase = nuevaFase;
+    // El corazon se acelera y gotea mas: la fase se ve en el cuerpo, no solo
+    // en el cartel.
+    this.ajustarLatido(this.fase >= 3 ? 620 : 950);
+    this.goteo.setFrequency(this.fase >= 3 ? 180 : 280);
     this.eventos.emit('fase', this.fase);
   }
 
@@ -446,7 +545,17 @@ export class Reformado implements Enemigo {
 
     this.eventos.emit('muerte');
 
-    // Se desploma despacio. Sin fanfarria: era una persona.
+    // Se desploma despacio. Sin fanfarria: era una persona. El latido se
+    // apaga con el, y deja de respirar.
+    this.sprite.stop();
+    this.goteo.stop();
+    this.tweenLatido?.remove();
+    this.escena.tweens.add({
+      targets: this.latido,
+      alpha: 0,
+      duration: 900,
+      ease: 'Quad.easeIn',
+    });
     this.escena.tweens.add({
       targets: this.sprite,
       alpha: 0.15,
@@ -459,6 +568,13 @@ export class Reformado implements Enemigo {
 
   destruir(): void {
     this.eventos.removeAllListeners();
+    this.tweenLatido?.remove();
+    this.tweenTelegrafia?.remove();
+    this.escena.tweens.killTweensOf(this.sprite);
+    this.escena.tweens.killTweensOf(this.latido);
+    this.latido.destroy();
+    this.sombra.destroy();
+    this.goteo.destroy();
     this.hitbox.destroy();
     this.sprite.destroy();
   }
