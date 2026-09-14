@@ -564,6 +564,24 @@ const REJA: Figura = {
   ],
 };
 
+// Carne del diezmo: lo que deja un Devoto al caer. Un pedazo, sin mas.
+const CARNE: Figura = {
+  paleta: {
+    c: 0x8c2f2f,
+    C: 0xb85454,
+    o: 0x5c1f24,
+  },
+  // prettier-ignore
+  filas: [
+    '..cCc..',
+    '.cCCCc.',
+    'cCCCCcc',
+    'cCCccco',
+    '.ccooo.',
+    '..ooo..',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -583,6 +601,7 @@ const FIGURAS: Record<string, Figura> = {
   placa: PLACA,
   durmiente: DURMIENTE,
   reja: REJA,
+  carne: CARNE,
 };
 
 /**

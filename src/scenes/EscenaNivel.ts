@@ -8,8 +8,9 @@ import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
+import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
-import { CAIDA, DEVOTO, REFORMADO, RESOLUCION } from '../config/Sacramento';
+import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { musica, type Pista } from '../systems/Musica';
@@ -163,6 +164,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private altares: Altar[] = [];
   private fragmentos: FragmentoCodice[] = [];
   private reliquias: Reliquia[] = [];
+  private ofrendas: Ofrenda[] = [];
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
@@ -281,6 +283,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.altares = [];
     this.fragmentos = [];
     this.reliquias = [];
+    this.ofrendas = [];
     this.placas = [];
     this.grupoEnemigos = undefined;
     this.tilesSolidos = new Set();
@@ -815,6 +818,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     if (enemigo.estaMuerto) {
       this.impacto.muerteEnemigo(puntoX, puntoY, enemigo.clase);
+      this.soltarOfrenda(puntoX, puntoY, enemigo.clase);
     } else {
       this.impacto.golpeAsestado(
         puntoX,
@@ -824,6 +828,43 @@ export abstract class EscenaNivel extends Phaser.Scene {
         enemigo.clase,
       );
     }
+  }
+
+  // -- Ofrendas ------------------------------------------------------------
+
+  /** Un enemigo cae y deja algo, segun su clase y la suerte. */
+  private soltarOfrenda(x: number, y: number, clase: 'devoto' | 'vestal' | 'reformado'): void {
+    const tipo = Ofrenda.sortear(clase);
+    if (!tipo) return;
+
+    const ofrenda = new Ofrenda(this, x, y, tipo);
+    this.ofrendas.push(ofrenda);
+
+    this.physics.add.collider(ofrenda.sprite, this.suelos);
+    this.physics.add.overlap(this.cirujano.sprite, ofrenda.sprite, () =>
+      this.resolverRecogidaDeOfrenda(ofrenda),
+    );
+  }
+
+  private resolverRecogidaDeOfrenda(ofrenda: Ofrenda): void {
+    if (this.cirujano.estaMuerto || !ofrenda.recoger()) return;
+
+    sonido.ofrenda(ofrenda.tipo);
+
+    if (ofrenda.tipo === 'carne') {
+      this.cirujano.vitalidad.curar(OFRENDA.curacionCarne);
+      this.game.events.emit(
+        EVENTOS_HUD.aviso,
+        `${ofrenda.nombre}  ·  +${OFRENDA.curacionCarne} vida`,
+      );
+      return;
+    }
+
+    this.cirujano.fervor.ganar(OFRENDA.fervorSello);
+    this.game.events.emit(
+      EVENTOS_HUD.aviso,
+      `${ofrenda.nombre}  ·  +${OFRENDA.fervorSello} Fervor`,
+    );
   }
 
   // -- Sellos del diezmo ---------------------------------------------------
@@ -878,6 +919,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     enemigo.recibirDano(sello.dano, sello.sprite.x);
     this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, true, enemigo.clase);
+    if (enemigo.estaMuerto)
+      this.soltarOfrenda(enemigo.sprite.x, enemigo.sprite.y - 12, enemigo.clase);
     sello.destruir();
   }
 
@@ -1116,6 +1159,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.devotos = this.devotos.filter((devoto) => !devoto.estaMuerto);
     this.vestales = this.vestales.filter((vestal) => !vestal.estaMuerto);
     this.sellos = this.sellos.filter((sello) => sello.estaVivo);
+    this.ofrendas = this.ofrendas.filter((ofrenda) => ofrenda.estaViva);
   }
 
   // -- Presentacion --------------------------------------------------------
@@ -1150,8 +1194,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * H o TAB la traen de vuelta en cualquier momento.
    */
   private crearAyudaControles(visibleAlEmpezar: boolean): void {
-    const ancho = 292;
-    const alto = 140;
+    // Dos columnas de 220 px: cabe una linea de ANCHO_MAXIMO caracteres en cada una
+    // sin pisar a la otra. Antes median 142 px y se solapaban (issue #30).
+    const ancho = 464;
+    const alto = 128;
     const x = (RESOLUCION.ancho - ancho) / 2;
     const y = RESOLUCION.alto - alto - 14;
 
@@ -1169,9 +1215,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     };
     const estiloTenue = { ...estilo, color: '#8a7d70' };
 
-    const movimiento = this.add.text(10, 10, CONTROLES_MOVIMIENTO.join('\n'), estilo);
+    const movimiento = this.add.text(12, 10, CONTROLES_MOVIMIENTO.join('\n'), estilo);
 
-    const combate = this.add.text(152, 10, CONTROLES_COMBATE.join('\n'), estilo);
+    const combate = this.add.text(236, 10, CONTROLES_COMBATE.join('\n'), estilo);
 
     const pie = this.add.text(
       10,

@@ -75,6 +75,7 @@ src/
     Altar.ts                     Punto de guardado
     FragmentoCodice.ts           Coleccionable de lore
     Reliquia.ts                  Mejora permanente escondida (vida o pociones)
+    Ofrenda.ts                   Lo que suelta un enemigo al caer: carne o sello
     Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
     Sonido.ts                    Efectos sintetizados con la Web Audio API
     Musica.ts                    Banda sonora: pistas por zona con fundido cruzado
@@ -258,6 +259,8 @@ posición, para que las colisiones no se enteren.
 - [x] Alcance del golpe ampliado: banda segura frente al zarpazo del jefe
 - [x] Reliquias que también curan al recogerse, y el HUD enseña la tecla de la Poción
 - [x] Campanario del Atrio sin voladizo: la primera reliquia se alcanza con doble salto
+- [x] Ofrendas: los enemigos sueltan carne (+1 vida) o sellos (+20 Fervor) al caer
+- [x] Panel de controles a todo el ancho, con líneas acotadas para que no se pisen
 - [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
@@ -303,6 +306,13 @@ error**. Ninguno pide reflejos; todos piden leer.
 te acercas, así que el problema no es matarlo sino llegar hasta él. Su sello
 **no se destruye con el parry**, cambia de dueño y sale rebotado más rápido y
 con 3 de daño en vez de 1. Es la razón de que exista como enemigo.
+
+**Ofrendas.** Un enemigo derrotado suelta algo con cierta probabilidad
+(`OFRENDA` en `Sacramento.ts`): carne del diezmo (+1 vida) o un sello (+20
+Fervor). Los Vestales siempre sueltan sello. Cura poco a propósito: pelear tiene
+que compensar frente a rodear, pero matar enemigos no puede sustituir a los
+Altares como forma de curarse. El jefe no suelta nada: su recompensa es la
+salida que se abre.
 
 **El Reformado** usa el mismo repertorio en sus tres fases y acelera (×0,85 y
 ×0,7), pero a partir de la fase 2 **deja de ser predecible**: a distancia

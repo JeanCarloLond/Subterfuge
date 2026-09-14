@@ -466,6 +466,16 @@ class Sonido {
     this.tono({ desde: 990, onda: 'sine', duracion: 0.22, volumen: 0.12, retardo: 0.11 });
   }
 
+  /** Recoger una ofrenda del suelo: corto, humedo si es carne, tintineo si es sello. */
+  ofrenda(tipo: 'carne' | 'sello'): void {
+    if (tipo === 'sello') {
+      this.tono({ desde: 1320, hasta: 1760, onda: 'triangle', duracion: 0.12, volumen: 0.16 });
+      return;
+    }
+    this.ruido({ duracion: 0.08, frecuencia: 700, barridoHasta: 200, volumen: 0.2 });
+    this.tono({ desde: 260, hasta: 180, onda: 'sine', duracion: 0.1, volumen: 0.18 });
+  }
+
   /** Reliquia recogida: un acorde de campanas, mas que un fragmento. */
   reliquia(): void {
     this.tono({ desde: 440, onda: 'sine', duracion: 0.9, volumen: 0.2 });

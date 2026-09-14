@@ -219,6 +219,25 @@ export const CONTACTO = {
 } as const;
 
 /**
+ * Ofrendas: lo que deja un enemigo al caer. La recompensa por pelear.
+ *
+ * La carne cura poco (1) y el sello da Fervor (20): suficiente para que
+ * enfrentarse a un Devoto compense frente a rodearlo, sin que matar enemigos
+ * sustituya a los Altares como forma de curarse.
+ */
+export const OFRENDA = {
+  curacionCarne: 1,
+  fervorSello: 20,
+  /** Probabilidades por clase. Lo que no suma 1 es "no suelta nada". */
+  devotoCarne: 0.45,
+  devotoSello: 0.35,
+  vestalCarne: 0.25,
+  /** Cuanto dura en el suelo antes de desvanecerse (ms), y cuanto parpadea antes. */
+  vidaMs: 11000,
+  parpadeoMs: 2400,
+} as const;
+
+/**
  * Reliquias: mejoras permanentes escondidas por el Vientre.
  * Son el incentivo de explorar: una ruta opcional siempre guarda algo.
  */

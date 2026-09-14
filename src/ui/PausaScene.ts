@@ -126,8 +126,8 @@ export class PausaScene extends Phaser.Scene {
   }
 
   private crearControles(): Phaser.GameObjects.Container {
-    const ancho = 300;
-    const alto = 176;
+    const ancho = 464;
+    const alto = 172;
     const x = (RESOLUCION.ancho - ancho) / 2;
     const y = (RESOLUCION.alto - alto) / 2;
 
@@ -145,9 +145,9 @@ export class PausaScene extends Phaser.Scene {
       fontSize: '9px',
       color: COLOR.activo,
     });
-    const movimiento = this.add.text(10, 26, CONTROLES_MOVIMIENTO.join('\n'), estilo);
-    const combate = this.add.text(150, 26, CONTROLES_COMBATE.join('\n'), estilo);
-    const sistema = this.add.text(10, 122, CONTROLES_SISTEMA.join('\n'), estiloTenue);
+    const movimiento = this.add.text(12, 26, CONTROLES_MOVIMIENTO.join('\n'), estilo);
+    const combate = this.add.text(236, 26, CONTROLES_COMBATE.join('\n'), estilo);
+    const sistema = this.add.text(12, 118, CONTROLES_SISTEMA.join('\n'), estiloTenue);
     const pie = this.add.text(10, alto - 16, 'ESC  volver', estiloTenue);
 
     return this.add.container(x, y, [fondo, titulo, movimiento, combate, sistema, pie]);
