@@ -12,6 +12,7 @@ import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
 import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
+import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -305,6 +306,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!this.scene.isActive('Hud')) this.scene.launch('Hud');
     this.emitirEstadoInicial();
 
+    this.catalogarZona();
     this.crearAyudaControles(this.definicion.mostrarAyuda === true);
   }
 
@@ -325,6 +327,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     for (const vestal of this.vestales) {
       vestal.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
     }
+
+    this.catalogarLoQueSeVe();
 
     this.actualizarJefe();
 
@@ -949,6 +953,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
 
     jefe.eventos.on('despierta', () => {
+      this.anotar('reformado');
       this.game.events.emit(EVENTOS_HUD.jefe, REFORMADO.vida, REFORMADO.vida);
       this.game.events.emit(
         EVENTOS_HUD.presentacion,
@@ -1237,6 +1242,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // El parry no rompe el sello: se lo queda el Cirujano y sale rebotado.
     if (this.cirujano.estaParando) {
       sello.devolver();
+      this.anotar('sello');
       this.cirujano.premiarParry();
       this.impacto.parryLogrado(sello.sprite.x, sello.sprite.y);
       sonido.selloDevuelto();
@@ -1300,6 +1306,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverRecogidaDeReliquia(reliquia: Reliquia): void {
     if (!reliquia.recoger()) return;
+    this.anotar('reliquia');
     if (!progreso.recogerReliquia(reliquia.id, reliquia.tipo)) return;
 
     this.cirujano.aplicarReliquia(reliquia.tipo);
@@ -1320,6 +1327,55 @@ export abstract class EscenaNivel extends Phaser.Scene {
     musica.atenuar(true);
     this.scene.pause();
     this.scene.launch('Pausa', { escenaJuego: this.scene.key });
+  }
+
+  /**
+   * Apunta a un fiel en el Registro cuando el Cirujano lo tiene lo bastante
+   * cerca como para haberlo visto de verdad. No basta con que exista en el
+   * nivel: catalogar algo que no has visto no es descubrirlo.
+   */
+  private catalogarLoQueSeVe(): void {
+    const RADIO_VISTA = 170;
+    const x = this.cirujano.sprite.x;
+    const y = this.cirujano.sprite.y;
+
+    for (const devoto of this.devotos) {
+      if (Phaser.Math.Distance.Between(x, y, devoto.sprite.x, devoto.sprite.y) < RADIO_VISTA) {
+        this.anotar('devoto');
+        break;
+      }
+    }
+
+    for (const vestal of this.vestales) {
+      if (Phaser.Math.Distance.Between(x, y, vestal.sprite.x, vestal.sprite.y) < RADIO_VISTA) {
+        this.anotar('vestal');
+        break;
+      }
+    }
+  }
+
+  /**
+   * Apunta en el Registro lo que esta zona contiene.
+   *
+   * La capa y el decorado se dan por vistos al entrar: son el sitio, y el
+   * jugador va a pasar por delante. Los fieles y los objetos NO se apuntan
+   * aqui — esos se descubren encontrandoselos, que es lo que hace que el libro
+   * crezca mientras juegas y no de golpe al cargar el nivel.
+   */
+  private catalogarZona(): void {
+    progreso.pisarCapa(this.scene.key);
+    progreso.descubrir('cirujano');
+
+    for (const [, , tipo] of this.definicion.decorado ?? []) {
+      if (fichaPorId(tipo)) progreso.descubrir(tipo);
+    }
+  }
+
+  /** Aviso discreto la primera vez que algo entra en el Registro. */
+  private anotar(id: string): void {
+    if (!progreso.descubrir(id)) return;
+    const ficha = fichaPorId(id);
+    if (ficha) this.game.events.emit(EVENTOS_HUD.aviso, `Registro: ${ficha.nombre}`);
   }
 
   /**
@@ -1417,6 +1473,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * y sonido, y el aviso dice con palabras que ES el punto de guardado.
    */
   private rezarEn(altar: Altar): void {
+    this.anotar('altar');
     const DURACION_REZO_MS = 1100;
 
     altar.rezar();

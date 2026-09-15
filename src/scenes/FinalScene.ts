@@ -144,7 +144,10 @@ export class FinalScene extends Phaser.Scene {
         : `${this.fragmentos} de ${total} fragmentos del Codice`;
     const relicario =
       reliquias === 0 ? '' : `   ·   ${reliquias} de ${progreso.reliquiasTotales} reliquias`;
-    return codice + relicario;
+    // El Registro tambien cuenta: es la mitad del libro, y catalogarlo entero
+    // exige haberse cruzado con todo lo que el Vientre tiene dentro.
+    const registro = `   ·   ${progreso.fichasDescubiertas} de ${progreso.fichasTotales} fichas`;
+    return codice + relicario + registro;
   }
 
   private aparecer(objeto: Phaser.GameObjects.Text, retardoMs: number): void {
