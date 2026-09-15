@@ -407,6 +407,32 @@ de profundidad narrativa: el sistema se cuenta a sí mismo en sus carteles.
 Rejugabilidad: el cierre cuenta fragmentos y reliquias, y **con el Códice
 completo aparece una última línea al margen** que no se ve de otra forma.
 
+## El folio del Códice
+
+La lectura (`L`) no es un panel: es una **hoja del Códice tal como existe en el
+mundo** (issues #34 y #35). El world bible lo describe como escritura sagrada
+reescrita sobre los manuales técnicos de Genesis Vestal, con "anotaciones al
+margen hechas por alguien que intentó advertir algo", y el folio tiene esas
+tres capas:
+
+1. **Debajo**, casi invisible, el manual: una cabecera técnica ("GENESIS VESTAL
+   · PROTOCOLO") y una rejilla de formulario que asoman a través del pergamino.
+   Es para quien mira dos veces, como el resto del universo.
+2. **Encima**, la escritura: rúbrica en rojo, inicial versal, versículos
+   numerados, filete doble de oro, cabecera con capítulo y folio en romanos. Lo
+   que la Diócesis enseña, en tinta.
+3. **Al margen**, a lápiz: la otra mano. Gris (nada oficial en el Códice es
+   gris), en cursiva, inclinada dos grados, con su corchete y la etiqueta _"al
+   margen, a lápiz:"_. Llega medio segundo **después** del versículo, para que
+   primero se lea lo oficial y luego la duda. Antes las dos voces compartían
+   panel y tipografía y se leían como un solo texto.
+
+Y la materia del mundo sobre el papel: cera de vela en el borde, una huella de
+sangre abajo a la derecha, los filos rotos y los bordes oscurecidos por el uso.
+Paleta del bible: carne, sangre, oro litúrgico, hueso. Todo con `Graphics`; no
+hace falta arte nuevo, aunque una textura de pergamino de la artista lo
+mejoraría. Las hojas que faltan aparecen como _arrancadas_ en el índice.
+
 ## Rezar en un Altar
 
 Rezar es el punto de guardado, y tiene que **parecerlo**. Tres cosas ocurren a
