@@ -1325,8 +1325,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     sonido.interfazAbrir();
     musica.atenuar(true);
-    this.scene.pause();
-    this.scene.launch('Pausa', { escenaJuego: this.scene.key });
+    this.abrirEncima('Pausa', { escenaJuego: this.scene.key });
   }
 
   /**
@@ -1404,16 +1403,39 @@ export abstract class EscenaNivel extends Phaser.Scene {
       }
     });
 
-    this.scene.pause();
-    this.scene.launch('Dialogo', { escenaJuego: this.scene.key, clave });
+    this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, clave });
   }
 
   /**
    * Abre la lectura del Codice sobre el juego en pausa.
    * Si no hay nada recogido, solo lo dice: no merece una pantalla entera.
    */
+  /**
+   * Abre una pantalla encima del nivel (el libro, la pausa, el dialogo).
+   *
+   * Pausa el nivel y lanza la otra escena, pero ademas deja puesta una RED DE
+   * SEGURIDAD: cuando la de encima se apaga, por el motivo que sea, el nivel
+   * vuelve. Sin esto, cualquier excepcion dentro de esas escenas dejaba el
+   * juego pausado para siempre y solo quedaba recargar — que es exactamente lo
+   * que pasaba al abrir el libro por segunda vez.
+   */
+  private abrirEncima(clave: string, datos: object): void {
+    this.scene.pause();
+    this.scene.launch(clave, datos);
+
+    this.scene.get(clave).events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      if (this.scene.isPaused()) this.scene.resume();
+    });
+  }
+
   private abrirCodice(): void {
     if (this.cirujano.estaMuerto || this.descendiendo) return;
+
+    // Nada de abrir dos cosas a la vez, ni de reabrir el libro mientras la
+    // escena anterior aun se esta apagando: ahi es donde se colaba la carrera
+    // que dejaba el nivel pausado sin nada delante.
+    if (this.scene.isActive('Codice')) return;
+    if (this.scene.isActive('Pausa') || this.scene.isActive('Dialogo')) return;
 
     // El libro se abre SIEMPRE. Antes hacia falta un fragmento del Codice,
     // porque el libro era solo el Codice; ahora el Registro y el corte del
@@ -1421,8 +1443,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // negar el libro entero por no haber encontrado una hoja no tenia sentido.
     sonido.interfazAbrir();
     musica.atenuar(true);
-    this.scene.pause();
-    this.scene.launch('Codice', { escenaJuego: this.scene.key });
+    this.abrirEncima('Codice', { escenaJuego: this.scene.key });
   }
 
   // -- Altares, umbral, muerte ---------------------------------------------

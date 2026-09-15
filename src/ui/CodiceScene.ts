@@ -124,6 +124,7 @@ export class CodiceScene extends Phaser.Scene {
   private indiceTextos: Phaser.GameObjects.Text[] = [];
   private rotuloIndice!: Phaser.GameObjects.Text;
 
+  private cerrando = false;
   private lecturaX = 0;
   private lecturaAncho = 0;
 
@@ -133,7 +134,19 @@ export class CodiceScene extends Phaser.Scene {
 
   create(datos: DatosCodice): void {
     this.escenaJuego = datos.escenaJuego;
+    this.cerrando = false;
     this.ids = progreso.idsRecogidosEnOrden;
+
+    // Phaser REUTILIZA la instancia de la escena: al abrir el libro por
+    // segunda vez, `create()` vuelve a correr sobre el mismo objeto y todo lo
+    // que quedo guardado en campos sigue apuntando a objetos ya destruidos.
+    // Las pestanas se acumulaban de apertura en apertura, y a la segunda
+    // `irASeccion` les pedia setColor a cuatro textos muertos: el render
+    // reventaba con `frame.source is null`, la escena moria a medias y el
+    // nivel se quedaba pausado para siempre. Eso era el cuelgue al pulsar L.
+    this.pestanas = [];
+    this.numerosTextos = [];
+    this.indiceTextos = [];
     this.indice = this.primerSinLeer();
 
     const { ancho, alto } = RESOLUCION;
@@ -623,7 +636,14 @@ export class CodiceScene extends Phaser.Scene {
 
     if (!lamina) return;
     if (abierta && e.textura && this.textures.exists(e.textura)) {
-      lamina.setTexture(e.textura, e.fotograma ?? 0);
+      // OJO con el fotograma: casi todas estas texturas las genera
+      // ArteProvisional con generateTexture y su unico frame se llama
+      // "__BASE". Pedirles el 0 devuelve un frame sin origen, y al pintarlo
+      // Phaser revienta con `frame.source is null`. Eso mataba la escena del
+      // libro a medias y dejaba el nivel pausado para siempre: el juego se
+      // quedaba colgado al pulsar L. Solo se pide fotograma a quien lo tiene.
+      if (e.fotograma === undefined) lamina.setTexture(e.textura);
+      else lamina.setTexture(e.textura, e.fotograma);
       lamina.setVisible(true);
       // Encajada en su hueco sin deformarse: las laminas son de tamanos muy
       // distintos, desde un sello de 8 px hasta el jefe de 44.
@@ -787,6 +807,9 @@ export class CodiceScene extends Phaser.Scene {
   }
 
   private cerrar(): void {
+    if (this.cerrando) return;
+    this.cerrando = true;
+
     this.input.keyboard?.removeAllListeners();
     sonido.interfazCerrar();
     musica.atenuar(false);
