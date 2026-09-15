@@ -109,12 +109,37 @@ export class CriptasScene extends EscenaNivel {
       // de parecer una imagen y pasa a ser un inventario. Ninguna vela: aqui
       // no se reza, se espera.
       decorado: [
+        // Sangre y carne por todas partes: esto lleva generaciones
+        // cobrando cuerpo y no lo limpia nadie.
+        [403, 880, 'charco'],
+        [218, 240, 'charco'],
+        [281, 400, 'charco'],
+        [386, 480, 'charco'],
+        [692, 880, 'charco'],
+        [612, 880, 'charco'],
+        [63, 400, 'pila-carne'],
+        [562, 320, 'pila-carne'],
+        [409, 480, 'pila-carne'],
+        [192, 240, 'pila-carne'],
+        [663, 536, 'pila-carne'],
+        [299, 560, 'bandeja'],
+        [383, 480, 'bandeja'],
+        [294, 880, 'cadaver'],
+        [181, 240, 'cadaver'],
+        [381, 320, 'cadaver'],
+        [631, 536, 'tanque'],
+        [305, 560, 'tanque'],
+        [56, 880, 'tanque'],
+        [90, 176, 'goteo'],
+        [238, 416, 'goteo'],
+        [560, 336, 'goteo'],
+        [316, 736, 'goteo'],
         // Lo que se acumula donde se espera turno.
         [300, 880, 'cadaver'],
         [620, 880, 'pila-carne'],
         [240, 560, 'pila-carne'],
-        [420, 320, 'luz-hospital'],
-        [240, 720, 'luz-hospital'],
+        [409, 816, 'luz-hospital'],
+        [615, 336, 'luz-hospital'],
         [8, 400, 'radiografia'],
         // Lo que mantiene dormidos a los inscritos baja por estos conductos.
         [8, 560, 'conducto'],
@@ -162,20 +187,20 @@ export class CriptasScene extends EscenaNivel {
       // oscuridad. Polvo gris: aqui nada esta vivo salvo lo que espera.
       polvo: 0x8a8f9c,
       fondo: [
-        [120, 200, 'cadena'],
-        [360, 200, 'cadena'],
-        [600, 200, 'cadena'],
+        [604, 552, 'cadena'],
+        [267, 736, 'cadena'],
+        [343, 736, 'cadena'],
         [80, 380, 'reja'],
         [640, 380, 'reja'],
-        [240, 460, 'cadena'],
-        [480, 460, 'cadena'],
+        [228, 576, 'cadena'],
+        [431, 816, 'cadena'],
         [100, 640, 'reja'],
         [620, 640, 'reja'],
-        [340, 700, 'cadena'],
+        [654, 552, 'cadena'],
         [200, 900, 'columna'],
         [520, 900, 'columna'],
-        [60, 760, 'cadena'],
-        [660, 760, 'cadena'],
+        [204, 416, 'cadena'],
+        [75, 416, 'cadena'],
       ],
 
       // Placas del Registro. Burocracia hasta aqui abajo.

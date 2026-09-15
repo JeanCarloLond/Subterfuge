@@ -1333,6 +1333,119 @@ const LUZ_HOSPITAL: Figura = {
   ],
 };
 
+// -- Lo que lleva siglos aqui abajo ------------------------------------------
+//
+// El bible insiste en que el Vientre es "un futuro sedimentado": la maquina no
+// esta limpia, lleva generaciones funcionando sin que nadie sepa repararla. De
+// ahi el oxido, que es lo que separa esto de una nave espacial.
+
+// Tanque de cultivo de Genesis Vestal. El fluido sigue corriendo y dentro hay
+// algo que no termina de morirse, que es exactamente lo que le paso a los Mil.
+// El marco esta comido de oxido: funciona, pero nadie lo ha tocado en siglos.
+const TANQUE: Figura = {
+  paleta: {
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '...MMMMMMMMMM...',
+    '..MooooooooooM..',
+    '..MoSSSSSSSSoM..',
+    '..MoSttttttSoM..',
+    '..MoStTTTTtSoM..',
+    '..MoSttttttSoM..',
+    '..MoSttccttSoM..',
+    '..MoStcCCCctSoM.',
+    '..MoStcCRRCctSM.',
+    '..MoStcCRRCctSM.',
+    '..MoStcCCCCctSM.',
+    '..MoSttcCCcttSM.',
+    '..MoSttccccttSM.',
+    '..MoSttttttttSM.',
+    '..MoStTttttTtSM.',
+    '..MoSttttttttSM.',
+    '..MoSSSSSSSSSSM.',
+    '..MooooooooooM..',
+    '...MMMMMMMMMM...',
+    '...ooMMMMMMoo...',
+    '...oo......oo...',
+    '...oo......oo...',
+    '..ooo......ooo..',
+    '..nnn......nnn..',
+  ],
+};
+
+// Bandeja de instrumental. Lo que se usa todos los dias y nadie afila desde
+// hace generaciones.
+const BANDEJA: Figura = {
+  paleta: {
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '..M.M..M...M....',
+    '..M.M..M...M....',
+    '.MMMMMMMMMMMM...',
+    'MooooooooooooM..',
+    'MSSSSSSSSSSSSM..',
+    'MMMMMMMMMMMMMM..',
+    '.o..........o...',
+    '.o..........o...',
+    'ooo........ooo..',
+  ],
+};
+
+// La sangre que cae de lo que hay arriba. Ya hizo costra en la pared, asi que
+// lleva cayendo mucho tiempo por el mismo sitio.
+const GOTEO: Figura = {
+  paleta: {
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    'cCc...',
+    'cRc...',
+    'cRc...',
+    '.Rc...',
+    '.Rc...',
+    '.R....',
+    '.R....',
+    '.c....',
+    '.c....',
+    '.c....',
+    '.R....',
+    '.c....',
+    '......',
+    '.c....',
+    '......',
+    '..c...',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -1368,6 +1481,9 @@ const FIGURAS: Record<string, Figura> = {
   holograma: HOLOGRAMA,
   radiografia: RADIOGRAFIA,
   'luz-hospital': LUZ_HOSPITAL,
+  tanque: TANQUE,
+  bandeja: BANDEJA,
+  goteo: GOTEO,
   carne: CARNE,
   ventana: VENTANA,
   cadena: CADENA,

@@ -69,7 +69,10 @@ export type TipoDecorado =
   | 'pila-carne'
   | 'holograma'
   | 'radiografia'
-  | 'luz-hospital';
+  | 'luz-hospital'
+  | 'tanque'
+  | 'bandeja'
+  | 'goteo';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -539,7 +542,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private crearDecorado(): void {
     for (const [x, y, tipo] of this.definicion.decorado ?? []) {
       const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
-      pieza.setOrigin(0.5, tipo === 'exvoto' || tipo === 'luz-hospital' ? 0 : 1);
+      const cuelga = tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo';
+      pieza.setOrigin(0.5, cuelga ? 0 : 1);
       pieza.setDepth(-5);
 
       if (tipo === 'vela') {
@@ -597,6 +601,19 @@ export abstract class EscenaNivel extends Phaser.Scene {
           repeat: -1,
           ease: 'Sine.easeInOut',
         });
+      } else if (tipo === 'tanque') {
+        // El fluido sigue moviendose. Muy despacio: lleva siglos asi.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.86, to: 1 },
+          duration: Phaser.Math.Between(2400, 3400),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'goteo' || tipo === 'bandeja') {
+        pieza.setDepth(-5);
       } else if (tipo === 'radiografia') {
         pieza.setDepth(-6);
         this.tweens.add({

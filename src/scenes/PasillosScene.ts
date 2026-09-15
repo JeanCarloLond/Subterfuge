@@ -122,6 +122,23 @@ export class PasillosScene extends EscenaNivel {
       // Burocracia: columnas como estanterias, cera de archivo, exvotos que
       // cuelgan del techo bajo, y la primera sangre en el suelo del fondo.
       decorado: [
+        // Sangre y carne por todas partes: esto lleva generaciones
+        // cobrando cuerpo y no lo limpia nadie.
+        [652, 160, 'charco'],
+        [446, 432, 'charco'],
+        [805, 520, 'charco'],
+        [1048, 440, 'charco'],
+        [434, 108, 'charco'],
+        [1004, 440, 'pila-carne'],
+        [136, 160, 'pila-carne'],
+        [334, 64, 'pila-carne'],
+        [909, 64, 'bandeja'],
+        [834, 168, 'bandeja'],
+        [752, 160, 'cadaver'],
+        [447, 160, 'tanque'],
+        [959, 176, 'goteo'],
+        [408, 80, 'goteo'],
+        [736, 176, 'goteo'],
         // El archivo medico de la Diocesis: placas puestas y un manual que
         // sigue proyectandose para nadie.
         [560, 344, 'radiografia'],
@@ -180,7 +197,7 @@ export class PasillosScene extends EscenaNivel {
         [900, 360, 'columna'],
         [300, 264, 'cadena'],
         [560, 264, 'cadena'],
-        [820, 264, 'cadena'],
+        [674, 80, 'cadena'],
         [200, 540, 'columna'],
         [700, 540, 'columna'],
       ],

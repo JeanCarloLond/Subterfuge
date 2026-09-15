@@ -143,15 +143,15 @@ function verificar(nombre, archivo) {
  * Se apoyan las que descansan en el suelo; las que cuelgan del techo o van
  * embutidas en el muro se excluyen a propósito.
  */
-const COLGANTES = new Set([
-  'exvoto',
-  'cadena',
-  'reja',
-  'ventana',
-  'durmiente',
-  'luz-hospital',
-  'radiografia',
-]);
+/** Se apoyan en el muro, no en el suelo: no se les pide ni techo ni piso. */
+const EN_MURO = new Set(['reja', 'ventana', 'durmiente', 'radiografia']);
+
+/**
+ * Cuelgan hacia abajo, asi que necesitan algo ARRIBA de donde colgar. Una
+ * lampara de quirofano flotando en mitad del aire canta tanto como una
+ * terminal levitando, y el primer comprobador no las miraba.
+ */
+const COLGANTES = new Set(['exvoto', 'cadena', 'luz-hospital', 'goteo']);
 
 function leerTuplas(src, nombre, patron) {
   const bloque = src.match(new RegExp(`${nombre}: \\[([\\s\\S]*?)\\n {6}\\],`));
@@ -177,7 +177,14 @@ function verificarDecorado(nombre, archivo) {
   }
 
   const sueltas = decorado.filter((d) => {
-    if (COLGANTES.has(d.tipo)) return false;
+    if (EN_MURO.has(d.tipo)) return false;
+
+    // Lo que cuelga necesita techo justo encima: el borde inferior de una
+    // plataforma esta a su y + TILE.
+    if (COLGANTES.has(d.tipo)) {
+      return !plataformas.some((p) => d.y === p.y + TILE && d.x >= p.x && d.x < p.x + p.ancho);
+    }
+
     const enSuelo = plataformas.some((p) => d.y === p.y && d.x >= p.x && d.x < p.x + p.ancho);
     const enMuro = paredes.some(
       (p) => d.x >= p.x - 8 && d.x <= p.x + TILE + 8 && d.y > p.y0 && d.y <= p.y1,
@@ -192,7 +199,10 @@ function verificarDecorado(nombre, archivo) {
 
   console.log(`${nombre}: FALLO — decorado flotando en el aire`);
   for (const d of sueltas) {
-    console.log(`  "${d.tipo}" en x=${d.x} y=${d.y}: no hay suelo ni muro ahí`);
+    const queFalta = COLGANTES.has(d.tipo)
+      ? 'no hay techo del que colgar'
+      : 'no hay suelo ni muro ahí';
+    console.log(`  "${d.tipo}" en x=${d.x} y=${d.y}: ${queFalta}`);
   }
   return false;
 }

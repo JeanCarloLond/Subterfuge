@@ -113,9 +113,29 @@ export class SalasScene extends EscenaNivel {
       // Arena: el quirofano-altar, la camilla en el centro y la sangre de los
       // sacramentos anteriores. Nada de exvotos aqui: nadie da las gracias.
       decorado: [
+        // Sangre y carne por todas partes: esto lleva generaciones
+        // cobrando cuerpo y no lo limpia nadie.
+        [798, 96, 'charco'],
+        [663, 232, 'charco'],
+        [833, 288, 'charco'],
+        [1009, 96, 'charco'],
+        [647, 288, 'charco'],
+        [928, 288, 'pila-carne'],
+        [284, 152, 'pila-carne'],
+        [208, 288, 'pila-carne'],
+        [828, 208, 'pila-carne'],
+        [456, 288, 'bandeja'],
+        [983, 96, 'bandeja'],
+        [631, 232, 'cadaver'],
+        [837, 208, 'cadaver'],
+        [448, 208, 'tanque'],
+        [992, 288, 'tanque'],
+        [802, 224, 'goteo'],
+        [457, 224, 'goteo'],
+        [288, 168, 'goteo'],
         // El quirofano: la vela y la lampara sobre la misma camilla.
-        [400, 152, 'luz-hospital'],
-        [216, 208, 'luz-hospital'],
+        [301, 168, 'luz-hospital'],
+        [845, 224, 'luz-hospital'],
         [520, 288, 'cadaver'],
         [180, 288, 'pila-carne'],
         [620, 232, 'holograma'],
