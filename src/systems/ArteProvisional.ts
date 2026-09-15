@@ -26,139 +26,128 @@ interface Figura {
 
 // -- Cirujano-Sacerdote ------------------------------------------------------
 //
-// EL HOMBRE DE LA MASCARA DORADA, segun las referencias del world bible
-// (docs/Subterfuge-world-bible.docx, laminas del Taller #2): mascara de pico
-// en oro con filigrana, mitra rematada en cruz, habito oscuro con estola roja
-// y orillas doradas. El capirote conico que hubo aqui antes queda atras: no
-// era lo que el equipo definio.
+// EL MEDICO DE LA PESTE DE LA DIOCESIS, segun el diseno del equipo: capucha y
+// mozeta moradas, mascara de pico en oro con la cuenca en negro, y sobretodo
+// azul noche con botones y hebilla de oro. La paleta sale del propio boceto,
+// no esta inventada.
 //
 // Tres cosas que no se pueden perder al pasarlo a Aseprite:
 //
-//   1. El PICO. Es la silueta. Se tiene que reconocer de un vistazo y a
-//      contraluz, que es como se le vera la mitad del tiempo.
-//   2. Las MANOS palidas asoman a los lados. Son su oficio y su condena.
-//   3. El oro es su color identitario, y lo unico limpio que lleva encima.
+//   1. El PICO dorado. Es la silueta, y lo unico brillante que lleva encima.
+//      Se tiene que reconocer a contraluz, que es como se le vera media
+//      partida.
+//   2. El morado contra el azul noche. La mozeta es lo que le da volumen de
+//      hombros sin darle hombros de heroe: sigue siendo un tecnico.
+//   3. La cuenca negra del ojo. En la Diocesis mirar es preguntar, y el habito
+//      clerical lo tapa.
 //
-// El filo del bisturi va en turquesa a proposito: es el unico resto de
-// tecnologia de Genesis Vestal que el Cirujano toca todos los dias, y el unico
-// sitio de su figura donde el futuro asoma por debajo de lo medieval.
-//
-// Es un tecnico, no un guerrero: postura recta y estrecha, sin hombros de
-// heroe. Mira a la derecha; el codigo voltea la textura.
+// Mira a la derecha; el codigo voltea la textura.
 
 const CIRUJANO: Figura = {
   paleta: {
-    K: 0xe7ce9f, // oro claro, el reflejo
-    k: 0xcda058, // oro de la mascara y la mitra
-    j: 0xad8b5b, // oro medio, orillas del habito
-    h: 0x8f6135, // oro en sombra
-    n: 0x1e1611, // hueco: cuencas de la mascara y negro del habito
-    d: 0x2a1f18, // habito en sombra
-    b: 0x4e3222, // habito
-    B: 0x664a30, // habito iluminado
-    r: 0x912927, // estola
-    R: 0xb03a34, // estola, luz
-    m: 0xc9bda8, // manos
-    M: 0xe2d8c6, // manos, luz
-    t: 0x609d94, // filo del bisturi: tecnologia de Genesis Vestal
-    T: 0xc9dcc8, // brillo del filo
+    n: 0x0c081f, // negro del hueco de la capucha y el contorno
+    N: 0x211746, // sobretodo, azul noche
+    q: 0x3a2a55, // morado en sombra
+    p: 0x51356a, // morado de la capucha y la mozeta
+    P: 0x775d91, // morado iluminado
+    L: 0x846d96, // morado, luz alta
+    k: 0xe3a940, // oro medio
+    K: 0xfcd038, // oro del pico
+    Y: 0xf4ed93, // oro palido, reflejo
+    j: 0xcb6e2f, // ambar: el pico en sombra
+    m: 0x5d3927, // la barbilla que asoma bajo la mascara
   },
   // prettier-ignore
   filas: [
-    '..........nn............',
-    '.........nKKn...........',
-    '.......nnnKKnnn.........',
-    '.........nKKn...........',
-    '.....hkkkkkkkkh.........',
-    '....hkKKkkkkKKkh........',
-    '....hkkkkkkkkkkh........',
-    '....hjjjjjjjjjjh........',
-    '.....kKKkkkkKKk.........',
-    '....hkKKkkkkKKkh........',
-    '....hknnkkkknnkh........',
-    '....hknnkkkknnkhh.......',
-    '....hkkkkkkkkkkkkh......',
-    '.....hkkkkkkkkkkkkkh....',
-    '......hkkkkkkkkkkkkkkh..',
-    '.......hhkkkkkkkkkkkkh..',
-    '.........hhhkkkkkkkhh...',
-    '............hhhhhhh.....',
-    '.....jjjjjjjjjj.........',
-    '...jbbBBBBBBBBBBbbj.....',
-    '..jbbbBBBBBBBBBBBBbbj...',
-    '.jmbbdkjrrrrrrjkdbbbmj..',
-    '.MmbbdkjrrRRRRrjkdbbbmM.',
-    '.MmbbdkjrrRRRRrjkdbbbmT.',
-    '.mmbbdkjrrrrrrjkdbbbbmT.',
-    '.jmbbdkjrrrrrrjkdbbbmmt.',
-    '..jbbdkjrrrrrrjkdbbbbj..',
-    '..jbbdkjjrrrrjjkdbbbbj..',
-    '..jbbddkjrrrrjkddbbbbj..',
-    '..jbbddkjrrrrjkddbbbbj..',
-    '..jbbdddjrrrrjdddbbbbj..',
-    '..jbbddddrrrrddddbbbbj..',
-    '..jbbdddddddddddbbbbbj..',
-    '..jbbbdddddddddddbbbbj..',
-    '..jbbbbdddddddddbbbbbj..',
-    '.jbbbbbdddddddddbbbbbbj.',
-    '.jbbbbdddddddddddbbbbbj.',
-    '.jnnnddddddddddddnnnnnj.',
-    '..nnnn..........nnnnn...',
-    '.nnnnn..........nnnnnn..',
+    '......qppppppq..........',
+    '....qppPPPPPPppq........',
+    '...qppPPPPPPPPppq.......',
+    '..qppPPPPPPPPPPppq......',
+    '..qppPPPnnnnnPPppq......',
+    '..qppPPnkkkkknPppq......',
+    '..qppPPnkKKKKkkjq.......',
+    '..qppPPnkKYnKKkkjj......',
+    '..qppPPnkKKnKKkkkjj.....',
+    '..qppPPnkkKKkkkkjjj.....',
+    '..qppPPnnkkkkkjjjj......',
+    '..qppPPnnmkkkjjj........',
+    '..qppPPqnmmkjj..........',
+    '..qppPPq.mmjj...........',
+    '.qppppppppq.............',
+    'qppPPPPPPPPppq..........',
+    'qppPPPPPPPPPPPppq.......',
+    '.qppPPPPPPPPPPppq.......',
+    '..qppppppppppppq........',
+    '...qppPPPPPPPPpq........',
+    '..qppPPPPPPPPPPpq.......',
+    '..qpppppppppppppq.......',
+    '....NNNNNNKNNNNN........',
+    '....NNNNNNnNNNNN........',
+    '....NNNNNNKNNNNN........',
+    '....NNNNNNnNNNNN........',
+    '....NNNNNNKNNNNN........',
+    '...NpppppppppppN........',
+    '...NpkKYKkppppppN.......',
+    '...NpppppppppppN........',
+    '...NNNNNNNNNNNNN........',
+    '...NNNNNNNNNNNNN........',
+    '...NNNNNnNNNNNNN........',
+    '...NNNNNnnNNNNNN........',
+    '..NNNNNnnnNNNNNNN.......',
+    '..NNNNnnnnnNNNNNN.......',
+    '..NNNNnnnnnNNNNNN.......',
+    '..NNNnnn...nnnNNNN......',
+    '..nnnnn.....nnnnnn......',
+    '..nnnn.......nnnnn......',
   ],
 };
 
 // -- Devoto ------------------------------------------------------------------
 //
-// Fiel de abajo. El ethos del bible manda aqui: "el estatus social se mide por
-// cuanto te pareces fisicamente a un dios-carne". El Devoto esta en la base, asi
-// que conserva el cuerpo CASI entero — y eso es justo lo que da miedo: sigue
-// siendo una persona, y ahi esta el horror.
+// Fiel de abajo. El ethos del bible manda: "el estatus social se mide por
+// cuanto te pareces fisicamente a un dios-carne". El Devoto esta en la base,
+// asi que conserva casi todo su cuerpo — y eso es lo que da miedo: sigue
+// siendo una persona debajo de lo que le han puesto.
 //
-// Lo que cuenta su figura:
+// Pero lo que le han puesto se VE, que es lo que faltaba: el brazo derecho es
+// una protesis de Genesis Vestal con fluido turquesa, lleva una placa
+// atornillada en la sien y un tubo entrando al cuello. Carne y maquina a
+// partes desiguales, como en las laminas del bible.
 //
-//   - La venda sobre los ojos. En la Diocesis mirar no da estatus; el fiel baja
-//     la mirada y ofrece las manos.
-//   - El brazo derecho INJERTADO: es el diezmo que ya pago. Carne que no es
-//     suya, cosida de mala manera.
-//   - La canula turquesa en la juntura. Tecnologia de Genesis Vestal reutilizada
-//     sin entenderla, que es como funciona todo aqui abajo.
-//
-// Encorvado hacia delante. Mira a la derecha; el codigo voltea la textura.
+// La venda sobre los ojos: aqui mirar no da estatus.
 
 const DEVOTO: Figura = {
   paleta: {
     h: 0x9a7f66, // piel
-    H: 0xb39a80, // piel, luz
     v: 0xd8cdbe, // vendas
-    V: 0xe2d8c6, // vendas, luz
     g: 0x5c4636, // sayo
     G: 0x715847, // sayo iluminado
     d: 0x2e231b, // sombra y contorno
-    c: 0x8c4f4f, // carne injertada
-    t: 0x7fc9bd, // canula: resto de Genesis Vestal
-    n: 0x1e1611, // pies, negro
+    c: 0x8c4f4f, // carne viva
+    t: 0x7fc9bd, // fluido de la protesis
+    M: 0x9ca193, // metal
+    S: 0x5b5c57, // metal en sombra
+    n: 0x1e1611, // negro
   },
   // prettier-ignore
   filas: [
-    '........dddd..........',
-    '.......dhhhhd.........',
+    '.......dddddd.........',
     '......dhhhhhhd........',
-    '......dvvvvvvd........',
-    '......dvvvvvvd........',
-    '......dhhhhhhd........',
-    '.......dhhhhd.........',
-    '........dhhd..........',
-    '......ddgggggd........',
-    '.....dggGGGGggd.......',
-    '....dggGGGGGGggd......',
-    '...vdgGGGGGGGggd......',
-    '..vvdgGGGGGGGggcd.....',
-    '..vvdggGGGGGggccc.....',
-    '...vdgggGGGgggcccd....',
-    '...ddgggggggggcctd....',
-    '...dgggggggggggcd.....',
-    '...dggggggggggcd......',
+    '.....dhhhhhhhhd.......',
+    '.....dvvvvvvMMd.......',
+    '.....dvvvvvvMSd.......',
+    '.....dhhhhhhMSd.......',
+    '......dhhhhdtSd.......',
+    '.......dhhdttSd.......',
+    '.....ddgggggtSd.......',
+    '....dggGGGGgSSMd......',
+    '...dggGGGGGGgMMMd.....',
+    '...dgGGGGGGGgMttMd....',
+    '..vdgGGGGGGGMMttMMd...',
+    '..vdggGGGGGMttttMMd...',
+    '...dgggGGGGMMttMMd....',
+    '...dggggGGGgMMMMd.....',
+    '...dgggggggggMMd......',
     '...dgggggggggdd.......',
     '...dggggdggggd........',
     '...ddgggddgggd........',
@@ -169,12 +158,13 @@ const DEVOTO: Figura = {
     '..dgdd....ddgd........',
     '..dggd....dggd........',
     '..dggd....dggd........',
-    '..dggd....dggd........',
-    '..dggd....dggd........',
-    '.ddggd....dggdd.......',
-    '.nnggd....dggnn.......',
+    '..dggd....dSSd........',
+    '..dggd....dSSd........',
+    '.ddggd....dSSdd.......',
+    '.nnggd....dSSnn.......',
     '.nnnn......nnnn.......',
     '..nn........nn........',
+    '......................',
   ],
 };
 
@@ -262,18 +252,14 @@ const UMBRAL: Figura = {
 
 // -- Vestal ------------------------------------------------------------------
 //
-// Alto clero. Por el mismo ethos que achica al Devoto, el Vestal va MAS
-// transformado: esta mas arriba, y aqui subir significa parecerse mas a un
-// dios-carne. Por eso de cintura para abajo ya no le quedan piernas, sino una
-// base de carne fundida que se agarra al suelo.
+// Alto clero, y por tanto MAS maquina: por el mismo ethos que deja al Devoto
+// casi entero, subir en la Diocesis significa parecerse mas a un dios-carne y
+// conservar menos cuerpo propio.
 //
-// Lo que cuenta su figura:
-//
-//   - El sello del diezmo en el pecho, en oro con la impronta oscura. Es su
-//     cargo: el que sella lo que se cobra.
-//   - La cara en sombra bajo el tocado. No administra con la mirada.
-//   - La cruz dorada por encima del tocado, y el collar: lo unico limpio.
-//   - La base de carne, con una vena turquesa: lo que le queda de la maquina.
+// De ahi su figura: un aparato de metal le cubre la cara entera, con una lente
+// turquesa por unico rasgo y tubos saliendo de la nuca. De cintura para abajo
+// ya no le quedan piernas, sino una base de carne fundida con costillas de
+// metal entre la masa. El sello del diezmo en el pecho, en oro, es su cargo.
 //
 // Erguido, nunca encorvado. El Devoto se dobla; el Vestal administra.
 
@@ -281,55 +267,57 @@ const VESTAL: Figura = {
   paleta: {
     o: 0xcda058, // oro del sello y el collar
     O: 0xe7ce9f, // oro, reflejo
-    m: 0xd8cdbe, // tocado
     r: 0x5d5466, // tunica clerical
     R: 0x7d7389, // tunica iluminada
-    s: 0x342f3e, // sombra de la tunica y de la cara
+    s: 0x342f3e, // sombra
     p: 0x9a8878, // piel
-    c: 0x8c4f4f, // carne fundida de la base
-    t: 0x7fc9bd, // vena turquesa
+    c: 0x8c4f4f, // carne fundida
+    t: 0x7fc9bd, // lente y fluido
+    T: 0xc9dcc8, // brillo de la lente
     n: 0x1e1611, // impronta del sello
+    M: 0x9ca193, // metal
+    S: 0x3f4a4e, // metal en sombra
   },
   // prettier-ignore
   filas: [
-    '..........oo..........',
-    '.........oOOo.........',
-    '........oOooOo........',
-    '.........oOOo.........',
-    '..........oo..........',
-    '........mmmmmm........',
-    '.......mmmmmmmm.......',
-    '......mmmmmmmmmm......',
-    '......moooooooom......',
-    '......mssssssssm......',
-    '......mssppppssm......',
-    '......mssppppssm......',
-    '.......msppppsm.......',
-    '.......mmppppmm.......',
-    '......oooooooooo......',
-    '.....rrrrrrrrrrrr.....',
-    '....rrrRRRRRRRRrrr....',
-    '...prrRRRRRRRRRRrrp...',
-    '...prrRRRoooooRRrrp...',
-    '...prrRRoOnnOoRRrrp...',
-    '...prrRRoOnnOoRRrrp...',
-    '...prrRRRoooooRRrrp...',
-    '....rrRRRRRRRRRRrr....',
-    '....rrrRRRRRRRRrrr....',
-    '....orrrrRRRRrrrro....',
-    '.....rrrrrrrrrrrr.....',
-    '.....rrrrsssrrrrr.....',
-    '.....rrrsssssrrrr.....',
-    '.....rrssssssrrrr.....',
-    '....rrrsssssssssr.....',
-    '....rrsssssssssssr....',
-    '....rsssssccccssssr...',
-    '....rssscctccccssr....',
-    '....rssscccccccssr....',
-    '.....rsccccccccsr.....',
-    '.....cccccccccccc.....',
-    '....ccc.ccccc.ccc.....',
-    '...ccc...ccc...ccc....',
+    '.........oo...........',
+    '........oOOo..........',
+    '........oOOo..........',
+    '.........oo...........',
+    '.......MMMMMM.........',
+    '......MMSSSSMM........',
+    '.....MMSSSSSSMM.......',
+    '.....MSSttttSSM.......',
+    '.....MSTtTTtTSSM......',
+    '.....MSSttttSSMt......',
+    '.....MMSSSSSSMtt......',
+    '......MMSSSSMMt.......',
+    '......ooMMMMoot.......',
+    '.....oooooooooo.......',
+    '....rrrrrrrrrrrr......',
+    '...rrrRRRRRRRRrrr.....',
+    '..prrRRRRRRRRRRrrp....',
+    '..prrRRRoooooRRrrp....',
+    '..prrRRoOnnOoRRrrp....',
+    '..prrRRoOnnOoRRrrp....',
+    '..prrRRRoooooRRrrp....',
+    '...rrRRRRRRRRRRrr.....',
+    '...rrrRRRRRRRRrrr.....',
+    '...orrrrRRRRrrrro.....',
+    '....rrrrrrrrrrrr......',
+    '....rrrrMssMrrrr......',
+    '....rrrMssssMrrr......',
+    '...rrrMsscssMrrr......',
+    '...rrMssccccsMrr......',
+    '...rMsscccccssMr......',
+    '...rMsccctcccsMr......',
+    '...rMscccccccsMr......',
+    '....MsccccccccM.......',
+    '....MccccccccM........',
+    '....cMccccccMc........',
+    '...cccMccccMccc.......',
+    '..ccc.Mcccc.Mcc.......',
+    '.ccc...MccM...ccc.....',
   ],
 };
 
