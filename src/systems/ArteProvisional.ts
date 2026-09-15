@@ -1446,6 +1446,166 @@ const GOTEO: Figura = {
   ],
 };
 
+// -- Injerto de metal --------------------------------------------------------
+//
+// La protesis que el Sacramento le encajo a un fiel, arrancada del cuerpo que
+// la llevaba. Sirve de dos cosas y por eso tiene que leerse en las dos: tirada
+// en el suelo es munición que recoger, y volando es el proyectil de la
+// Injertadora.
+//
+// Lo que cuenta la pieza: metal viejo con oxido POR UN LADO y carne agarrada
+// POR EL OTRO. Ese extremo rojo no es adorno — es lo que dice que esto salio
+// de alguien, y lo que impide que se lea como un tornillo cualquiera.
+//
+// Apunta a la derecha; el codigo voltea la textura.
+
+const INJERTO: Figura = {
+  paleta: {
+    n: 0x14100f, // negro del contorno
+    R: 0xd4564a, // carne al rojo, el extremo arrancado
+    c: 0x8c2f2f, // carne en sombra
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra: el vientre de la pieza
+    o: 0x8a4a22, // oxido
+  },
+  // prettier-ignore
+  filas: [
+    '..nnnn.....',
+    '.nRcnMMn...',
+    'nRRccMoMMn.',
+    'nRccMMoMMMM',
+    'nRRccSoSSn.',
+    '.nRcnSSn...',
+    '..nnnn.....',
+  ],
+};
+
+// -- La Injertadora ----------------------------------------------------------
+//
+// El arma. No tiene sprite en el juego — el Cirujano la lleva encima y no se
+// ve —, pero SI tiene lamina en el Registro, y una ficha que se titula
+// "Injertadora" y enseña un proyectil es una ficha mal hecha.
+//
+// Lo que tiene que contar el dibujo: esto no se fabrico para matar. Es un
+// aparato medico pesado, de camara a presion, con la esfera de oro liturgico
+// que la Diocesis le pone a todo lo que toca un sacramento. Y en la boca,
+// carne seca: por ahi han pasado protesis y por ahi han pasado cuerpos.
+
+const INJERTADORA: Figura = {
+  paleta: {
+    n: 0x14100f, // contorno
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido en la camara
+    k: 0xe3a940, // oro medio: el aro de la esfera
+    K: 0xfcd038, // oro de la esfera
+    Y: 0xf4ed93, // reflejo
+    c: 0x8c2f2f, // carne seca en la boca
+    R: 0xd4564a, // carne al rojo
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnnnn........',
+    '...nMMMMMMn.......',
+    '...nMoMMMoMn......',
+    '..nMMMMMMMMMn.....',
+    '.nMMMMMMMMMMMn....',
+    'nMkKkMMMMMMMMMn...',
+    'nMkKYkMMMMMMMMMnn.',
+    'nMkKkMMMMMMMMSScRn',
+    'nMMMMMMMMMMMSScRn.',
+    '.nSSSSSSSSSSSSn...',
+    '..nMMn.nnnnnnn....',
+    '..nMMn............',
+    '...nn.............',
+  ],
+};
+
+// -- El cursor ---------------------------------------------------------------
+//
+// EL BISTURI CEREMONIAL, en la mano del jugador. No es decoracion: el raton ES
+// un arma aqui (clic izquierdo corta, derecho para), asi que la flecha del
+// navegador estaba diciendo "esto es una pagina web" justo encima de la unica
+// pieza dorada del juego.
+//
+// Tres cosas que no se pueden perder al pasarlo a Aseprite:
+//
+//   1. La PUNTA en (0,0). Es el punto caliente del cursor: donde el sistema
+//      cree que esta el raton tiene que ser exactamente donde se ve el filo, o
+//      el jugador apunta a un sitio y clica en otro.
+//   2. El CONTORNO oscuro alrededor de todo. El Vientre es casi negro, pero
+//      hay velas, hologramas y sangre al rojo: sin contorno el cursor
+//      desaparece encima de lo brillante.
+//   3. El ORO del filo contra el ACERO VIEJO del mango. Es el mismo oro del
+//      tajo y del pico de la mascara; si se pinta de otro color deja de ser
+//      SU instrumento y vuelve a ser un puntero cualquiera.
+
+const CURSOR: Figura = {
+  paleta: {
+    n: 0x140d10, // contorno, casi negro
+    Y: 0xfffbe0, // el canto: lo que lo lee como metal y no como luz
+    K: 0xfcd038, // oro del bisturi
+    k: 0xe3a940, // oro medio
+    j: 0xcb6e2f, // ambar: el oro en sombra
+    h: 0x6b5f6e, // mango, acero viejo
+    H: 0x9a8c9c, // brillo del mango
+  },
+  // prettier-ignore
+  filas: [
+    'Yn............',
+    'nKn...........',
+    'nKKn..........',
+    '.nKKn.........',
+    '.nYKKn........',
+    '..nKKKn.......',
+    '..nKKkn.......',
+    '...nKkkn......',
+    '...njjkn......',
+    '....nHHhn.....',
+    '.....nHhhn....',
+    '......nHhhn...',
+    '.......nhhn...',
+    '........nn....',
+  ],
+};
+
+// El mismo bisturi con el filo encendido: es lo que se ve al pasar por encima
+// de algo que se puede pulsar. Hace falta una version aparte porque Phaser le
+// devuelve al navegador la manita del sistema en cuanto un objeto es
+// interactivo, y esa manita es exactamente lo que rompia la inmersion.
+//
+// MISMA SILUETA que CURSOR, pixel por pixel: si cambia una, cambia la otra o
+// el cursor "salta" al pasar por encima de un boton. Solo cambia la paleta.
+
+const CURSOR_ACTIVO: Figura = {
+  paleta: {
+    n: 0x140d10, // contorno, casi negro
+    Y: 0xffffff, // el filo, ahora blanco
+    K: 0xfff3a8, // oro encendido
+    k: 0xfcd038, // oro
+    j: 0xe3a940, // oro medio
+    h: 0x9a8c9c, // mango, un tono por encima
+    H: 0xc9bcc9, // brillo del mango
+  },
+  // prettier-ignore
+  filas: [
+    'Yn............',
+    'nKn...........',
+    'nKKn..........',
+    '.nKKn.........',
+    '.nYKKn........',
+    '..nKKKn.......',
+    '..nKKkn.......',
+    '...nKkkn......',
+    '...njjkn......',
+    '....nHHhn.....',
+    '.....nHhhn....',
+    '......nHhhn...',
+    '.......nhhn...',
+    '........nn....',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -1487,6 +1647,10 @@ const FIGURAS: Record<string, Figura> = {
   carne: CARNE,
   ventana: VENTANA,
   cadena: CADENA,
+  injerto: INJERTO,
+  injertadora: INJERTADORA,
+  cursor: CURSOR,
+  'cursor-activo': CURSOR_ACTIVO,
 };
 
 /**

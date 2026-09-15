@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CAIDA, FERVOR, POCION, VITALIDAD } from '../config/Sacramento';
+import { CAIDA, FERVOR, INJERTADORA, POCION, VITALIDAD } from '../config/Sacramento';
 import { CODICE } from '../lore/Codice';
 import { sonido } from '../systems/Sonido';
 
@@ -8,6 +8,8 @@ export const EVENTOS_HUD = {
   vitalidad: 'hud-vitalidad',
   fervor: 'hud-fervor',
   pociones: 'hud-pociones',
+  /** Carga de la Injertadora: (injertos, maximo). */
+  injertos: 'hud-injertos',
   codice: 'hud-codice',
   aviso: 'hud-aviso',
   /** Vida del jefe: (puntos, maximo). Con puntos < 0 la barra se oculta. */
@@ -27,6 +29,8 @@ const COLOR = {
   fervorVacio: 0x2f2c24,
   frasco: 0xa8563f,
   frascoVacio: 0x2e2220,
+  injerto: 0x9ca193,
+  injertoVacio: 0x2b2e2c,
   borde: 0x0b090b,
 } as const;
 
@@ -44,6 +48,7 @@ export class HudScene extends Phaser.Scene {
   private grafico!: Phaser.GameObjects.Graphics;
   private textoCodice!: Phaser.GameObjects.Text;
   private textoPocion!: Phaser.GameObjects.Text;
+  private textoInjertos!: Phaser.GameObjects.Text;
   private textoAviso!: Phaser.GameObjects.Text;
   private textoInscripcion!: Phaser.GameObjects.Text;
   private avisoAudio!: Phaser.GameObjects.Text;
@@ -56,6 +61,16 @@ export class HudScene extends Phaser.Scene {
   private fervorActual: number = FERVOR.inicial;
   private pocionesActuales: number = POCION.cargasMaximas;
   private pocionesMaximas: number = POCION.cargasMaximas;
+  private injertosActuales: number = INJERTADORA.cargaInicial;
+  private injertosMaximos: number = INJERTADORA.cargaMaxima;
+  /**
+   * La Injertadora no se enseña hasta que cae el primer injerto.
+   *
+   * Un indicador a cero desde el primer segundo solo dice "te falta algo" sin
+   * decir que; en cuanto cae la primera pieza, el hueco tiene sentido y
+   * enseña cuanto cabe.
+   */
+  private injertadoraDescubierta = false;
   private fragmentos = 0;
   /** Negativo mientras no hay jefe en escena: la barra no se dibuja. */
   private jefeVida = -1;
@@ -75,7 +90,15 @@ export class HudScene extends Phaser.Scene {
       color: '#8a7d70',
     });
 
-    this.textoCodice = this.add.text(8, 44, '', {
+    // La Injertadora, debajo de los frascos. Solo aparece cuando hay algo que
+    // enseñar: antes del primer injerto el arma no existe para el jugador.
+    this.textoInjertos = this.add.text(8, 41, '', {
+      fontFamily: 'monospace',
+      fontSize: '7px',
+      color: '#8a7d70',
+    });
+
+    this.textoCodice = this.add.text(8, 54, '', {
       fontFamily: 'monospace',
       fontSize: '8px',
       color: '#6b5f55',
@@ -227,6 +250,15 @@ export class HudScene extends Phaser.Scene {
       if (maximo !== undefined) this.pocionesMaximas = maximo;
       this.redibujar();
     };
+
+    const alInjertos = (cargas: number, maximo?: number) => {
+      this.injertosActuales = cargas;
+      if (maximo !== undefined) this.injertosMaximos = maximo;
+      // Basta con haber tenido uno: a partir de ahi el indicador se queda,
+      // tambien vacio, porque ya significa algo.
+      if (cargas > 0) this.injertadoraDescubierta = true;
+      this.redibujar();
+    };
     const alCodice = (total: number) => {
       this.fragmentos = total;
       this.redibujar();
@@ -245,6 +277,7 @@ export class HudScene extends Phaser.Scene {
     bus.on(EVENTOS_HUD.vitalidad, alVitalidad);
     bus.on(EVENTOS_HUD.fervor, alFervor);
     bus.on(EVENTOS_HUD.pociones, alPociones);
+    bus.on(EVENTOS_HUD.injertos, alInjertos);
     bus.on(EVENTOS_HUD.codice, alCodice);
     bus.on(EVENTOS_HUD.aviso, alAviso);
     bus.on(EVENTOS_HUD.jefe, alJefe);
@@ -258,6 +291,7 @@ export class HudScene extends Phaser.Scene {
       bus.off(EVENTOS_HUD.vitalidad, alVitalidad);
       bus.off(EVENTOS_HUD.fervor, alFervor);
       bus.off(EVENTOS_HUD.pociones, alPociones);
+      bus.off(EVENTOS_HUD.injertos, alInjertos);
       bus.off(EVENTOS_HUD.codice, alCodice);
       bus.off(EVENTOS_HUD.aviso, alAviso);
       bus.off(EVENTOS_HUD.jefe, alJefe);
@@ -276,6 +310,14 @@ export class HudScene extends Phaser.Scene {
     // A la derecha del ultimo frasco, con el nombre del recurso y su tecla.
     this.textoPocion.setX(8 + this.pocionesMaximas * 8 + 4);
     this.textoPocion.setText(this.pocionesActuales > 0 ? 'Q  Pocion de Carne' : 'sin Pocion');
+
+    if (this.injertadoraDescubierta) {
+      this.dibujarInjertos(8, 41);
+      this.textoInjertos.setX(8 + this.injertosMaximos * 6 + 4);
+      this.textoInjertos.setText(this.injertosActuales > 0 ? 'F  Injertadora' : 'sin injertos');
+    } else {
+      this.textoInjertos.setText('');
+    }
     if (this.jefeVida >= 0) this.dibujarJefe();
 
     this.textoCodice.setText(
@@ -338,6 +380,31 @@ export class HudScene extends Phaser.Scene {
         this.grafico.fillRect(px, y, lado, lado);
         this.grafico.lineStyle(1, COLOR.frasco, 1);
         this.grafico.strokeRect(px, y, lado, lado);
+      }
+    }
+  }
+
+  /**
+   * Injertos: barritas verticales, no cuadrados.
+   *
+   * La forma importa tanto como el color — los frascos justo encima son
+   * cuadrados, y con daltonismo el color no separa el metal de la sangre.
+   */
+  private dibujarInjertos(x: number, y: number): void {
+    const ancho = 2;
+    const alto = 6;
+    const separacion = 4;
+
+    for (let i = 0; i < this.injertosMaximos; i += 1) {
+      const cargado = i < this.injertosActuales;
+      const px = x + i * (ancho + separacion);
+
+      this.grafico.fillStyle(cargado ? COLOR.injerto : COLOR.injertoVacio, 1);
+      this.grafico.fillRect(px, y, ancho, alto);
+
+      if (!cargado) {
+        this.grafico.lineStyle(1, COLOR.injerto, 0.5);
+        this.grafico.strokeRect(px, y, ancho, alto);
       }
     }
   }

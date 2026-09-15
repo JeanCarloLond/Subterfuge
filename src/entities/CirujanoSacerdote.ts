@@ -7,6 +7,7 @@ import {
   DANO_POR_CAIDA,
   DASH,
   FERVOR,
+  INJERTADORA,
   MOVIMIENTO,
   POCION,
   RELIQUIA,
@@ -57,7 +58,12 @@ export class CirujanoSacerdote {
   readonly hitbox: Phaser.GameObjects.Zone;
   readonly vitalidad: Vitalidad;
   readonly fervor: Fervor;
-  /** Emite 'pociones' (cargas restantes) cuando el frasco cambia. */
+  /**
+   * Emite 'pociones' (cargas restantes) cuando el frasco cambia, 'injertos'
+   * cuando cambia la carga de la Injertadora, y 'disparo' (x, y, direccion)
+   * cuando hay que soltar un injerto: el proyectil lo crea la escena, que es
+   * la que tiene los grupos y las colisiones.
+   */
   readonly eventos = new Phaser.Events.EventEmitter();
 
   private estado: EstadoCirujano = 'aire';
@@ -78,6 +84,7 @@ export class CirujanoSacerdote {
   private finAccion = -Infinity;
   private finEnfriamientoAtaque = -Infinity;
   private finEnfriamientoParry = -Infinity;
+  private finEnfriamientoInjertadora = -Infinity;
   private finVentanaParry = -Infinity;
   private inicioHitbox = -Infinity;
   private inicioCargaAtaque = -Infinity;
@@ -161,6 +168,24 @@ export class CirujanoSacerdote {
 
   get pocionesMaximas(): number {
     return this.cargasPocionMax;
+  }
+
+  get injertos(): number {
+    return progreso.injertos;
+  }
+
+  get injertosMaximos(): number {
+    return progreso.injertosMaximos;
+  }
+
+  /**
+   * Mete un injerto recogido en la Injertadora.
+   * @returns false si ya estaba llena, para que la escena lo diga.
+   */
+  cargarInjerto(cantidad: number): boolean {
+    if (!progreso.cargarInjerto(cantidad)) return false;
+    this.eventos.emit('injertos', progreso.injertos, progreso.injertosMaximos);
+    return true;
   }
 
   /**
@@ -301,6 +326,11 @@ export class CirujanoSacerdote {
       return;
     }
 
+    if (this.controles.injertadoraPresionada && ahora >= this.finEnfriamientoInjertadora) {
+      this.dispararInjertadora(ahora);
+      return;
+    }
+
     if (ahora < this.finEnfriamientoAtaque) return;
 
     // El golpe sale AL PULSAR, no al soltar: la respuesta tiene que ser
@@ -356,6 +386,36 @@ export class CirujanoSacerdote {
     this.finVentanaParry = ahora + COMBATE.parry.ventanaMs;
     this.finAccion = this.finVentanaParry;
     this.finEnfriamientoParry = this.finVentanaParry + COMBATE.parry.enfriamientoMs;
+  }
+
+  /**
+   * Lanza un injerto.
+   *
+   * No bloquea al Cirujano ni consume Fervor: lo que lo limita es la munición
+   * y su propio enfriamiento. El retroceso se SUMA a la velocidad que lleve en
+   * vez de sustituirla, para que el empujon se note sin arrancarle el control
+   * del personaje de las manos.
+   */
+  private dispararInjertadora(ahora: number): void {
+    if (!progreso.gastarInjerto()) {
+      // Que se OIGA y se LEA. Un boton que no hace nada visible se interpreta
+      // como un boton roto, no como un arma vacia.
+      sonido.injertadoraVacia();
+      this.eventos.emit('sin-injertos');
+      this.finEnfriamientoInjertadora = ahora + INJERTADORA.enfriamientoMs;
+      return;
+    }
+
+    const direccion = this.mirandoDerecha ? 1 : -1;
+    this.finEnfriamientoInjertadora = ahora + INJERTADORA.enfriamientoMs;
+
+    sonido.injertadora();
+    this.cuerpo.setVelocityX(this.cuerpo.velocity.x - direccion * INJERTADORA.retroceso);
+
+    // A la altura del pecho y por delante del cuerpo, para que no salga de los
+    // pies ni se solape con el propio sprite al dispararlo pegado a una pared.
+    this.eventos.emit('disparo', this.sprite.x + direccion * 10, this.sprite.y - 22, direccion);
+    this.eventos.emit('injertos', progreso.injertos, progreso.injertosMaximos);
   }
 
   private beberPocion(ahora: number): void {

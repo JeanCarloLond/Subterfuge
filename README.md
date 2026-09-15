@@ -84,6 +84,7 @@ pararlo, `Ctrl + C` en la terminal.
 | Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
 | Ataque cargado        | mantener y soltar (30 Fervor) |
 | Parry                 | `K`, `V` o clic derecho       |
+| Lanzar un injerto     | `F` o `R`                     |
 | Poción de Carne       | `Q`                           |
 | Rezar / descender     | `E`                           |
 | Leer el Códice        | `L`                           |

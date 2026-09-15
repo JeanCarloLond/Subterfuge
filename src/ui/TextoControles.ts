@@ -27,6 +27,7 @@ export const CONTROLES_COMBATE: readonly string[] = [
   '          abajo y acertar: rebotas',
   'CARGADO   mantener J  (30 Fervor)',
   'PARRY     K  o clic derecho',
+  'INJERTAR  F  lanzar un injerto',
   'POCION    Q  (+3 vida)',
   'REZAR     E  junto a un Altar',
   'CODICE    L  leer lo recogido',

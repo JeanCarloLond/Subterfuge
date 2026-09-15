@@ -285,6 +285,7 @@ posición, para que las colisiones no se enteren.
 | Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
 | Ataque cargado        | mantener y soltar (30 Fervor) |
 | Parry                 | `K`, `V` o clic derecho       |
+| Lanzar un injerto     | `F` o `R`                     |
 | Poción de Carne       | `Q`                           |
 | Silenciar el audio    | `M`                           |
 | Ayuda de controles    | `H` o `Tab`                   |
@@ -293,6 +294,41 @@ posición, para que las colisiones no se enteren.
 | Leer el Códice        | `L`                           |
 | Trepar (colgado)      | `W` / flecha arriba           |
 | Soltarse (colgado)    | `S` / flecha abajo            |
+
+### El cursor es el bisturí
+
+El ratón no es un accesorio aquí: el clic izquierdo corta y el derecho para. La
+flecha del navegador encima de eso decía "esto es una página web", así que
+`src/ui/Cursor.ts` la sustituye por el bisturí dorado del Cirujano, con la punta
+del filo como punto caliente.
+
+Es un cursor de **CSS**, no un sprite que persigue al puntero: un sprite va
+siempre un fotograma por detrás del ratón de verdad, y eso se nota cuando el
+ratón es un arma. A cambio, el navegador no sabe nada del zoom del juego, así
+que el dibujo se reescala a mano contra el tamaño del lienzo y se rehace cuando
+cambia la ventana.
+
+**No uses `useHandCursor: true`.** Devuelve la manita del sistema justo encima
+de los menús, que es el problema que esto vino a resolver. Para lo que se pueda
+pulsar:
+
+```ts
+texto.setInteractive({ cursor: cursorActivo() });
+```
+
+`cursorActivo()` es el mismo bisturí con el filo encendido: misma silueta, para
+que no dé un salto al pasar por encima de un botón.
+
+Lo que devuelve **no es el dibujo, es `var(--cursor-diocesis-activo)`**. Los
+objetos interactivos de Phaser se quedan con la cadena que se les dio al
+crearlos, así que una cadena literal se congelaría: al cambiar de escala, o al
+apagar el cursor desde el menú, el libro seguiría enseñando el cursor viejo
+hasta que su escena se reconstruyera. Apuntando a una variable de CSS basta con
+cambiarla en la raíz y cambia hasta el último.
+
+Se puede **apagar desde el menú de pausa**, y la preferencia se guarda en
+`localStorage`. Quien juega con teclado no mira el ratón en toda la partida:
+para esa persona el bisturí solo es un dibujo que estorba.
 
 ## Diseño de los enemigos
 
@@ -365,6 +401,45 @@ una decisión. El drone de ambiente sube de tono con cada fase.
 
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
+
+## La Injertadora: un arma a distancia que no se come al bisturí
+
+El mecanismo con el que se encajaban las prótesis a presión, en pocos
+instantes, sin que al ofrendado le diera tiempo a moverse. Sigue funcionando;
+lo único que ha cambiado es hacia dónde apunta. Se carga con los **injertos de
+metal** que sueltan algunos fieles al caer: el Cirujano le saca la pieza a un
+cuerpo y se la mete a otro.
+
+El riesgo de meter un arma a distancia en un juego cuyo combate se sostiene en
+acercarse es que la distancia se vuelva la respuesta a todo. Tres reglas lo
+impiden, y están en `INJERTADORA` y `OFRENDA` (`src/config/Sacramento.ts`):
+
+1. **La munición solo cae peleando de cerca.** Para disparar hay que haber
+   cortado antes. No hay Altar que la reponga: el metal no se fabrica, se
+   hereda.
+2. **No da Fervor al acertar.** El Fervor se gana con el cuerpo, así que el
+   golpe cargado y las Pociones siguen dependiendo de entrar a rango. Si el
+   injerto diera Fervor, dispararlo sería la forma óptima de cargar el golpe
+   cuerpo a cuerpo, que es justo lo contrario de lo que se quiere.
+3. **El enfriamiento no deja vaciar la carga de golpe.**
+
+Daño 3: entre el golpe normal (2) y el cargado (6). Útil, no resolutivo. Es
+para lo que el bisturí no alcanza — un Vestal en una repisa —, no para
+sustituirlo.
+
+La carga vive en `Progreso`, no en el Cirujano: cada zona construye un Cirujano
+nuevo, y si viviera en la entidad, bajar un piso vaciaría el arma y la munición
+que costó pelear se perdería en la puerta.
+
+Se empieza con **un injerto cargado**, y no con cero. Cero era la idea original
+—que el jugador descubriera de dónde sale la munición en el momento en que le
+importa—, pero escondía el arma entera: pulsabas `F` y no pasaba nada, el
+indicador del HUD no aparecía, y la Injertadora solo existía si tenías la
+suerte de que un Devoto soltara metal. Con uno cargado se ve y se prueba en el
+primer minuto, y a partir de ahí ya es escasa de verdad.
+
+Pulsar `F` sin munición **suena y lo dice en el HUD**. Un botón que no hace
+nada visible se lee como un botón roto, no como un arma vacía.
 
 ## Diseño de niveles: por qué hay desvíos
 

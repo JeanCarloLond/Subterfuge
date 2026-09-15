@@ -1,7 +1,7 @@
 import { CODICE } from '../lore/Codice';
 import { REGISTRO } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
-import { RELIQUIA } from '../config/Sacramento';
+import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
 
 /** Tipos de reliquia. Cada una mejora algo del Cirujano de forma permanente. */
 export type TipoReliquia = 'relicario' | 'frasco';
@@ -9,8 +9,9 @@ export type TipoReliquia = 'relicario' | 'frasco';
 /**
  * Estado de la partida que sobrevive a los cambios de escena.
  *
- * Hoy solo guarda los fragmentos del Codice; el resto (vida, Fervor, pociones)
- * se reinicia por diseno al bajar de zona. Vive fuera de las escenas para que
+ * Guarda lo que se gana y se conserva: fragmentos, reliquias, lo catalogado y
+ * la carga de la Injertadora. El resto (vida, Fervor, pociones) se reinicia por
+ * diseno al bajar de zona. Vive fuera de las escenas para que
  * ninguna tenga que ir pasando el estado a la siguiente por parametros.
  */
 class Progreso {
@@ -21,6 +22,14 @@ class Progreso {
   private fichas = new Set<string>();
   /** Capas del Vientre que el Cirujano ha pisado. */
   private capas = new Set<string>();
+  /**
+   * Injertos cargados en la Injertadora.
+   *
+   * Vive aqui y no en el Cirujano porque cada zona construye un Cirujano
+   * nuevo: si la carga viviera en la entidad, bajar un piso vaciaria el arma y
+   * la munición que costo pelear se perderia en la puerta.
+   */
+  private cargaInjertadora: number = INJERTADORA.cargaInicial;
 
   /** @returns true si es la primera vez que se recoge este fragmento. */
   recogerFragmento(id: string): boolean {
@@ -106,6 +115,30 @@ class Progreso {
     return VIENTRE.length;
   }
 
+  // -- La Injertadora ------------------------------------------------------
+
+  get injertos(): number {
+    return this.cargaInjertadora;
+  }
+
+  get injertosMaximos(): number {
+    return INJERTADORA.cargaMaxima;
+  }
+
+  /** @returns true si el injerto entro; false si el arma ya estaba llena. */
+  cargarInjerto(cantidad: number): boolean {
+    if (this.cargaInjertadora >= INJERTADORA.cargaMaxima) return false;
+    this.cargaInjertadora = Math.min(INJERTADORA.cargaMaxima, this.cargaInjertadora + cantidad);
+    return true;
+  }
+
+  /** @returns true si habia con que disparar. */
+  gastarInjerto(): boolean {
+    if (this.cargaInjertadora <= 0) return false;
+    this.cargaInjertadora -= 1;
+    return true;
+  }
+
   // -- Reliquias -----------------------------------------------------------
 
   /** @returns true si es la primera vez que se recoge esta reliquia. */
@@ -152,6 +185,7 @@ class Progreso {
     this.reliquias.clear();
     this.fichas.clear();
     this.capas.clear();
+    this.cargaInjertadora = INJERTADORA.cargaInicial;
   }
 }
 

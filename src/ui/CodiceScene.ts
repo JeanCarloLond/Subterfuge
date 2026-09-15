@@ -7,6 +7,7 @@ import { JERARQUIA } from '../lore/Jerarquia';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
+import { cursorActivo } from './Cursor';
 
 /** Datos con los que se lanza: que escena de juego hay que reanudar al cerrar. */
 interface DatosCodice {
@@ -232,7 +233,7 @@ export class CodiceScene extends Phaser.Scene {
         color: COLOR.tenue,
       })
       .setOrigin(1, 0)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ cursor: cursorActivo() });
     cerrar.on('pointerover', () => cerrar.setColor(COLOR.rubrica));
     cerrar.on('pointerout', () => cerrar.setColor(COLOR.tenue));
     cerrar.on('pointerdown', () => this.cerrar());
@@ -435,7 +436,7 @@ export class CodiceScene extends Phaser.Scene {
 
       // Raton: cada entrada recogida se puede elegir con clic (issue #29).
       if (recogido) {
-        texto.setInteractive({ useHandCursor: true });
+        texto.setInteractive({ cursor: cursorActivo() });
         texto.on('pointerdown', () => {
           const indice = this.ids.indexOf(fragmento.id);
           if (indice >= 0 && indice !== this.indice) {
@@ -576,7 +577,7 @@ export class CodiceScene extends Phaser.Scene {
           fontSize: '7px',
           color: COLOR.tenue,
         })
-        .setInteractive({ useHandCursor: true });
+        .setInteractive({ cursor: cursorActivo() });
       t.on('pointerdown', () => this.irASeccion(clave));
       this.pestanas.push(t);
       despl += t.width + 12;
