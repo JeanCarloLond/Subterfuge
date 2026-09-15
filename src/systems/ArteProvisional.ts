@@ -1446,6 +1446,91 @@ const GOTEO: Figura = {
   ],
 };
 
+// -- El cursor ---------------------------------------------------------------
+//
+// EL BISTURI CEREMONIAL, en la mano del jugador. No es decoracion: el raton ES
+// un arma aqui (clic izquierdo corta, derecho para), asi que la flecha del
+// navegador estaba diciendo "esto es una pagina web" justo encima de la unica
+// pieza dorada del juego.
+//
+// Tres cosas que no se pueden perder al pasarlo a Aseprite:
+//
+//   1. La PUNTA en (0,0). Es el punto caliente del cursor: donde el sistema
+//      cree que esta el raton tiene que ser exactamente donde se ve el filo, o
+//      el jugador apunta a un sitio y clica en otro.
+//   2. El CONTORNO oscuro alrededor de todo. El Vientre es casi negro, pero
+//      hay velas, hologramas y sangre al rojo: sin contorno el cursor
+//      desaparece encima de lo brillante.
+//   3. El ORO del filo contra el ACERO VIEJO del mango. Es el mismo oro del
+//      tajo y del pico de la mascara; si se pinta de otro color deja de ser
+//      SU instrumento y vuelve a ser un puntero cualquiera.
+
+const CURSOR: Figura = {
+  paleta: {
+    n: 0x140d10, // contorno, casi negro
+    Y: 0xfffbe0, // el canto: lo que lo lee como metal y no como luz
+    K: 0xfcd038, // oro del bisturi
+    k: 0xe3a940, // oro medio
+    j: 0xcb6e2f, // ambar: el oro en sombra
+    h: 0x6b5f6e, // mango, acero viejo
+    H: 0x9a8c9c, // brillo del mango
+  },
+  // prettier-ignore
+  filas: [
+    'Yn............',
+    'nKn...........',
+    'nKKn..........',
+    '.nKKn.........',
+    '.nYKKn........',
+    '..nKKKn.......',
+    '..nKKkn.......',
+    '...nKkkn......',
+    '...njjkn......',
+    '....nHHhn.....',
+    '.....nHhhn....',
+    '......nHhhn...',
+    '.......nhhn...',
+    '........nn....',
+  ],
+};
+
+// El mismo bisturi con el filo encendido: es lo que se ve al pasar por encima
+// de algo que se puede pulsar. Hace falta una version aparte porque Phaser le
+// devuelve al navegador la manita del sistema en cuanto un objeto es
+// interactivo, y esa manita es exactamente lo que rompia la inmersion.
+//
+// MISMA SILUETA que CURSOR, pixel por pixel: si cambia una, cambia la otra o
+// el cursor "salta" al pasar por encima de un boton. Solo cambia la paleta.
+
+const CURSOR_ACTIVO: Figura = {
+  paleta: {
+    n: 0x140d10, // contorno, casi negro
+    Y: 0xffffff, // el filo, ahora blanco
+    K: 0xfff3a8, // oro encendido
+    k: 0xfcd038, // oro
+    j: 0xe3a940, // oro medio
+    h: 0x9a8c9c, // mango, un tono por encima
+    H: 0xc9bcc9, // brillo del mango
+  },
+  // prettier-ignore
+  filas: [
+    'Yn............',
+    'nKn...........',
+    'nKKn..........',
+    '.nKKn.........',
+    '.nYKKn........',
+    '..nKKKn.......',
+    '..nKKkn.......',
+    '...nKkkn......',
+    '...njjkn......',
+    '....nHHhn.....',
+    '.....nHhhn....',
+    '......nHhhn...',
+    '.......nhhn...',
+    '........nn....',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -1487,6 +1572,8 @@ const FIGURAS: Record<string, Figura> = {
   carne: CARNE,
   ventana: VENTANA,
   cadena: CADENA,
+  cursor: CURSOR,
+  'cursor-activo': CURSOR_ACTIVO,
 };
 
 /**

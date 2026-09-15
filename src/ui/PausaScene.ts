@@ -4,13 +4,14 @@ import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO, CONTROLES_SISTEMA } from './TextoControles';
+import { alternarCursor, cursorActivo, cursorEncendido } from './Cursor';
 
 /** Datos con los que se lanza: que escena de juego hay que reanudar. */
 interface DatosPausa {
   escenaJuego: string;
 }
 
-type Opcion = 'continuar' | 'controles' | 'sonido' | 'atrio';
+type Opcion = 'continuar' | 'controles' | 'sonido' | 'cursor' | 'atrio';
 
 const COLOR = {
   velo: 0x0b090b,
@@ -26,9 +27,13 @@ const COLOR = {
  * Menu de pausa.
  *
  * Se abre con ESC o P sobre la escena de juego, que queda en pausa debajo
- * (fisica, temporizadores y entrada incluidos). Cuatro opciones, las justas:
- * continuar, ver los controles, sonido, y volver al Atrio para empezar de
- * nuevo. No hay "salir": es un juego de navegador.
+ * (fisica, temporizadores y entrada incluidos). Cinco opciones, las justas:
+ * continuar, ver los controles, sonido, cursor, y volver al Atrio para empezar
+ * de nuevo. No hay "salir": es un juego de navegador.
+ *
+ * El cursor esta aqui y no escondido en ningun sitio porque quien juega con
+ * teclado no mira el raton en toda la partida: para esa persona el bisturi
+ * solo es un dibujo que estorba, y tiene que poder quitarlo.
  *
  * Se navega con W/S o flechas y se confirma con E, ENTER o ESPACIO. ESC o P
  * cierran, salvo dentro de los controles, donde vuelven al menu.
@@ -46,6 +51,7 @@ export class PausaScene extends Phaser.Scene {
     'continuar',
     'controles',
     'sonido',
+    'cursor',
     'atrio',
   ];
 
@@ -87,7 +93,9 @@ export class PausaScene extends Phaser.Scene {
 
   private crearMenu(): Phaser.GameObjects.Container {
     const ancho = 200;
-    const alto = 150;
+    // Alto calculado y no a ojo: si se anade una opcion mas, el pie no se
+    // sube encima de ella sola.
+    const alto = 46 + PausaScene.OPCIONES.length * 20 + 24;
     const x = (RESOLUCION.ancho - ancho) / 2;
     const y = (RESOLUCION.alto - alto) / 2;
 
@@ -115,7 +123,7 @@ export class PausaScene extends Phaser.Scene {
 
       // Raton: pasar por encima selecciona, el clic confirma (issue #29). El
       // area sensible es mas alta que el texto para que no haya que apuntar.
-      texto.setInteractive({ useHandCursor: true });
+      texto.setInteractive({ cursor: cursorActivo() });
       texto.on('pointerover', () => {
         if (this.mostrandoControles || this.indice === i) return;
         this.indice = i;
@@ -188,6 +196,8 @@ export class PausaScene extends Phaser.Scene {
         return 'Controles';
       case 'sonido':
         return sonido.estaSilenciado ? 'Sonido: apagado' : 'Sonido: encendido';
+      case 'cursor':
+        return cursorEncendido() ? 'Cursor: bisturi' : 'Cursor: del sistema';
       default:
         return 'Volver al Atrio';
     }
@@ -228,6 +238,11 @@ export class PausaScene extends Phaser.Scene {
         break;
       case 'sonido':
         sonido.alternarSilencio();
+        this.refrescar();
+        break;
+      case 'cursor':
+        alternarCursor();
+        sonido.interfazMover();
         this.refrescar();
         break;
       case 'atrio':

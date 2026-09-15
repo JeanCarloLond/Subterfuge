@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { generarArteProvisional } from '../systems/ArteProvisional';
+import { ponerCursor } from '../ui/Cursor';
 import { PISTAS } from '../systems/Musica';
 
 /**
@@ -64,6 +65,11 @@ export class PreloadScene extends Phaser.Scene {
 
   create(): void {
     this.generarPlaceholders();
+
+    // Despues de generar el arte: el cursor se dibuja a partir de una textura,
+    // y antes de esta linea todavia no existe.
+    ponerCursor(this);
+
     this.scene.start('Atrio');
   }
 
