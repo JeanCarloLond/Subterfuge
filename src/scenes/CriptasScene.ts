@@ -110,8 +110,8 @@ export class CriptasScene extends EscenaNivel {
       // no se reza, se espera.
       decorado: [
         // Lo que mantiene dormidos a los inscritos baja por estos conductos.
-        [16, 560, 'conducto'],
-        [704, 640, 'conducto'],
+        [8, 560, 'conducto'],
+        [712, 640, 'conducto'],
         [330, 880, 'pantalla'],
         [100, 160, 'columna'],
         [16, 240, 'reja'],

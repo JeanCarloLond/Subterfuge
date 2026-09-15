@@ -123,7 +123,7 @@ export class PasillosScene extends EscenaNivel {
       // cuelgan del techo bajo, y la primera sangre en el suelo del fondo.
       decorado: [
         // Zona administrativa: aqui es donde quedaron las terminales.
-        [250, 160, 'pantalla'],
+        [300, 160, 'pantalla'],
         [780, 344, 'pantalla'],
         [1088, 344, 'conducto'],
         [16, 520, 'conducto'],
