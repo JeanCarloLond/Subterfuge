@@ -424,7 +424,11 @@ export class CirujanoSacerdote {
    */
   private dibujarTajo(alcance: number, alto: number, direccion: number): void {
     const cargado = this.ataqueEnCurso === 'cargado';
-    const color = cargado ? 0xc94f4f : 0xe8e0d0;
+    // ORO, no blanco hueso. El arco ES el bisturi ceremonial: si se dibuja de
+    // cualquier otro color, el jugador ve un tajo generico y no llega a
+    // asociarlo con la herramienta dorada que el Cirujano lleva en la mano.
+    // El cargado va mas claro, al filo de blanco: mismo metal, mas caliente.
+    const color = cargado ? 0xf4ed93 : 0xfcd038;
     const radio = alcance + (cargado ? 6 : 2);
     const duracion = cargado ? 200 : 140;
 
@@ -503,6 +507,31 @@ export class CirujanoSacerdote {
     grafico.lineStyle(grosor, color, 1);
     grafico.beginPath();
     grafico.arc(0, 0, radio, inicio, fin, false);
+    grafico.strokePath();
+
+    // LA HOJA. Sin esto solo hay un resplandor con forma de luna, y el jugador
+    // no llega a ver la pieza con la que esta golpeando: un tajo generico y
+    // dorado sigue siendo un tajo generico. Es una cuna solida que sale del
+    // puno y va al filo del arco, y como se dibuja DENTRO del mismo objeto,
+    // hereda el barrido y el giro sin cuadrar dos animaciones a mano.
+    const dentro = radio * 0.3;
+    const fuera = radio * 1.04;
+    const grueso = Math.max(2, grosor + 1);
+
+    grafico.fillStyle(color, 1);
+    grafico.beginPath();
+    grafico.moveTo(dentro, -grueso / 2);
+    grafico.lineTo(fuera, -1);
+    grafico.lineTo(fuera, 1);
+    grafico.lineTo(dentro, grueso / 2);
+    grafico.closePath();
+    grafico.fillPath();
+
+    // El canto, un tono por encima: es lo que la lee como metal y no como luz.
+    grafico.lineStyle(1, 0xfffbe0, 0.9);
+    grafico.beginPath();
+    grafico.moveTo(dentro, -grueso / 2);
+    grafico.lineTo(fuera, -1);
     grafico.strokePath();
 
     return grafico;
