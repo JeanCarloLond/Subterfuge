@@ -33,6 +33,8 @@ export class CriptasScene extends EscenaNivel {
       musica: 'criptas',
       inicio: { x: 60, y: 120 },
 
+      llegada: 'criptas',
+
       // Penumbra sedada: la piedra pierde el rojo y se queda casi monocroma.
       // Y no crece ni una brizna: a esta profundidad ya no llega nada vivo.
       tinte: 0x9aa0ac,

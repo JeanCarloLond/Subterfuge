@@ -15,6 +15,7 @@ import { Impacto } from '../systems/Impacto';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
+import type { ClavePensamiento } from '../lore/Pensamientos';
 import { EVENTOS_HUD } from '../ui/HudScene';
 import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO } from '../ui/TextoControles';
 
@@ -38,10 +39,13 @@ export interface RondaDevoto {
  */
 export interface Jefe extends RondaDevoto {
   presentacion: { titulo: string; subtitulo: string };
-  /** Pensamiento del Cirujano cuando despierta. */
+  /** Pensamiento del Cirujano cuando despierta. Una linea, en la esquina. */
   alDespertar?: string;
-  /** Pensamiento del Cirujano cuando cae. */
-  alCaer?: string;
+  /**
+   * Lo que el Cirujano se para a pensar cuando el jefe cae. Secuencia de
+   * `src/lore/Pensamientos.ts`: aqui se acaba algo y una linea no llega.
+   */
+  alCaer?: ClavePensamiento;
 }
 
 /** Pieza de escenografia sin colision: [x, y, tipo]. y es la base. */
@@ -125,8 +129,13 @@ export interface DefinicionNivel {
    * reintenta desde el principio, no desde donde se dejo.
    */
   reja?: { x: number; yInicio: number; yFin: number };
-  /** Lo que el Cirujano piensa al entrar en la zona. Una linea, en la esquina. */
-  llegada?: string;
+  /**
+   * Lo que el Cirujano se para a pensar al entrar en la zona.
+   *
+   * Es una secuencia de `src/lore/Pensamientos.ts`, no una cadena suelta: una
+   * linea en la esquina sirve para un detalle, no para contar una historia.
+   */
+  llegada?: ClavePensamiento;
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
   /** Pista de fondo de la zona. Ver Musica.ts. */
@@ -909,8 +918,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
       sonido.victoria();
       if (this.definicion.musica) musica.poner(this.definicion.musica);
       if (datos.alCaer) {
-        const pensamiento = datos.alCaer;
-        this.time.delayedCall(1600, () => this.game.events.emit(EVENTOS_HUD.aviso, pensamiento));
+        const clave = datos.alCaer;
+        // Deja que suenen las campanas y que el cuerpo acabe de caer.
+        this.time.delayedCall(1800, () => this.hablar(clave));
       }
     });
   }
@@ -1240,6 +1250,36 @@ export abstract class EscenaNivel extends Phaser.Scene {
   }
 
   /**
+   * El Cirujano se para a pensar en voz alta, sobre el juego en pausa.
+   *
+   * No se abre si hay algo mas abierto encima (el Codice, la pausa) ni si el
+   * Cirujano esta muerto o descendiendo: dos cuadros de texto pisandose seria
+   * peor que no tener ninguno.
+   */
+  private hablar(clave: ClavePensamiento): void {
+    if (this.cirujano.estaMuerto || this.descendiendo) return;
+    if (this.scene.isActive('Codice') || this.scene.isActive('Pausa')) return;
+    if (this.scene.isActive('Dialogo')) return;
+
+    // El panel de ayuda ocupa la mitad baja de la pantalla, justo donde va la
+    // banda del dialogo: juntos son ilegibles. Se retira mientras habla y
+    // vuelve al terminar, que ademas es mejor orden — primero quien eres, y
+    // luego con que teclas.
+    const ayudaPuesta = this.panelAyuda?.visible === true;
+    if (ayudaPuesta) this.panelAyuda?.setVisible(false);
+
+    this.events.once(Phaser.Scenes.Events.RESUME, () => {
+      if (ayudaPuesta && this.panelAyuda) {
+        this.panelAyuda.setAlpha(1);
+        this.panelAyuda.setVisible(true);
+      }
+    });
+
+    this.scene.pause();
+    this.scene.launch('Dialogo', { escenaJuego: this.scene.key, clave });
+  }
+
+  /**
    * Abre la lectura del Codice sobre el juego en pausa.
    * Si no hay nada recogido, solo lo dice: no merece una pantalla entera.
    */
@@ -1493,9 +1533,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
 
     if (this.definicion.llegada) {
-      const pensamiento = this.definicion.llegada;
-      this.time.delayedCall(900, () => {
-        if (!this.cirujano.estaMuerto) this.game.events.emit(EVENTOS_HUD.aviso, pensamiento);
+      const clave = this.definicion.llegada;
+      // Tras el fundido de entrada: primero se ve donde estas, luego se habla.
+      this.time.delayedCall(700, () => {
+        if (!this.cirujano.estaMuerto) this.hablar(clave);
       });
     }
   }
