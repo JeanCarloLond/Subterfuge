@@ -10,6 +10,7 @@ import { SalasScene } from './scenes/SalasScene';
 import { FinalScene } from './scenes/FinalScene';
 import { HudScene } from './ui/HudScene';
 import { CodiceScene } from './ui/CodiceScene';
+import { DialogoScene } from './ui/DialogoScene';
 import { PausaScene } from './ui/PausaScene';
 
 /**
@@ -55,6 +56,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     HudScene,
     CodiceScene,
     PausaScene,
+    DialogoScene,
   ],
 };
 

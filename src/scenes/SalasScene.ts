@@ -33,7 +33,7 @@ export class SalasScene extends EscenaNivel {
       colorFondo: '#0c0a0c',
       musica: 'salas',
       inicio: { x: 70, y: 260 },
-      llegada: 'Sala 7. La mia. Alguien la ocupa.',
+      llegada: 'salas',
 
       // El unico sitio del descenso donde la piedra vuelve a tirar a rojo, y no
       // por luz: es la sala donde se hace el sacramento. Mas oscura que las
@@ -95,7 +95,7 @@ export class SalasScene extends EscenaNivel {
         derecha: 1000,
         presentacion: { titulo: 'MANOS DEL SACRAMENTO N.o 7', subtitulo: 'las anteriores' },
         alDespertar: 'reconozco esas manos: ensenaron a las mias',
-        alCaer: 'ya no hay manos anteriores. Solo las mias.',
+        alCaer: 'manos-anteriores',
       },
 
       // El Altar esta en la antesala, ANTES de la reja: es el punto de

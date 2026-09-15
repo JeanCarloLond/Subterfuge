@@ -35,6 +35,13 @@ export class FinalScene extends Phaser.Scene {
     sonido.ambienteApagado();
     musica.poner('final');
 
+    // El cierre de la historia va ANTES del recuento: primero se acaba lo que
+    // le pasa al Cirujano, y luego se cuenta lo que encontro el jugador. La
+    // escena queda en pausa mientras habla, asi que las entradas escalonadas
+    // de abajo esperan solas y entran al terminar.
+    this.scene.pause();
+    this.scene.launch('Dialogo', { escenaJuego: this.scene.key, clave: 'cierre' });
+
     const centroX = RESOLUCION.ancho / 2;
 
     // --- MARCADOR DE POSICION: sustituir por el gancho real del equipo ---
