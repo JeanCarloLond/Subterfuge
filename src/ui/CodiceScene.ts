@@ -77,7 +77,6 @@ export class CodiceScene extends Phaser.Scene {
   private versiculoTexto!: Phaser.GameObjects.Text;
   private numerosTextos: Phaser.GameObjects.Text[] = [];
   private margenTexto!: Phaser.GameObjects.Text;
-  private margenEtiqueta!: Phaser.GameObjects.Text;
   private margenCorchete!: Phaser.GameObjects.Graphics;
   private indiceTextos: Phaser.GameObjects.Text[] = [];
 
@@ -150,11 +149,6 @@ export class CodiceScene extends Phaser.Scene {
     });
 
     this.margenCorchete = this.add.graphics();
-    this.margenEtiqueta = this.add.text(this.lecturaX + 10, 0, 'al margen, a lapiz:', {
-      fontFamily: 'monospace',
-      fontSize: '7px',
-      color: COLOR.lapiz,
-    });
     this.margenTexto = this.add.text(this.lecturaX + 10, 0, '', {
       fontFamily: 'monospace',
       fontSize: '8px',
@@ -163,9 +157,10 @@ export class CodiceScene extends Phaser.Scene {
       lineSpacing: 3,
       wordWrap: { width: this.lecturaAncho - 16 },
     });
-    // Inclinada: es una mano, no una imprenta.
-    this.margenTexto.setAngle(-2);
-    this.margenEtiqueta.setAngle(-2);
+    // Inclinada: es una mano, no una imprenta. Sin ninguna etiqueta que lo
+    // diga, la inclinacion carga con parte del trabajo, asi que va algo mas
+    // marcada que el resto del folio.
+    this.margenTexto.setAngle(-3);
 
     this.add.text(
       folioX + 14,
@@ -421,14 +416,19 @@ export class CodiceScene extends Phaser.Scene {
 
     // El margen: mas abajo, a lapiz, con su corchete. Llega un instante
     // despues, para que primero se lea lo oficial y luego la duda.
+    //
+    // No lleva ninguna etiqueta que anuncie lo que es. Un folio del Vientre no
+    // se anota a si mismo; quien escribio esto lo hizo a escondidas y no iba a
+    // ponerle titulo. La otra mano se reconoce por el lapiz, la inclinacion, el
+    // corchete y el retraso, que es como se reconoce en un papel de verdad.
     const margenY = this.versiculoTexto.y + this.versiculoTexto.height + 16;
-    this.margenEtiqueta.setPosition(this.lecturaX + 10, margenY);
-    this.margenTexto.setPosition(this.lecturaX + 10, margenY + 10);
+    this.margenTexto.setPosition(this.lecturaX + 10, margenY);
     this.margenTexto.setText(fragmento.margen.join('\n'));
 
     this.margenCorchete.clear();
     this.margenCorchete.lineStyle(1, 0x3f3d47, 0.9);
-    const corcheteAlto = this.margenTexto.height + 12;
+    // Sin la etiqueta delante, el corchete abraza el texto de cerca.
+    const corcheteAlto = this.margenTexto.height + 4;
     const cx = this.lecturaX + 3;
     this.margenCorchete.lineBetween(cx, margenY, cx - 1, margenY + corcheteAlto);
     this.margenCorchete.lineBetween(cx, margenY, cx + 4, margenY - 1);
@@ -439,7 +439,7 @@ export class CodiceScene extends Phaser.Scene {
       margenY + corcheteAlto + 1,
     );
 
-    for (const objeto of [this.margenTexto, this.margenEtiqueta, this.margenCorchete]) {
+    for (const objeto of [this.margenTexto, this.margenCorchete]) {
       objeto.setAlpha(0);
       this.tweens.add({ targets: objeto, alpha: 1, delay: 380, duration: 260 });
     }
@@ -448,7 +448,7 @@ export class CodiceScene extends Phaser.Scene {
   }
 
   private limpiarLectura(): void {
-    this.tweens.killTweensOf([this.margenTexto, this.margenEtiqueta, this.margenCorchete]);
+    this.tweens.killTweensOf([this.margenTexto, this.margenCorchete]);
     for (const numero of this.numerosTextos) numero.destroy();
     this.numerosTextos = [];
     this.folioTexto.setText('');
@@ -456,7 +456,6 @@ export class CodiceScene extends Phaser.Scene {
     this.inicialTexto.setText('');
     this.versiculoTexto.setText('');
     this.margenTexto.setText('');
-    this.margenEtiqueta.setAlpha(0);
     this.margenCorchete.clear();
   }
 
