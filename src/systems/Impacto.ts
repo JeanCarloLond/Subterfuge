@@ -52,8 +52,11 @@ export class Impacto {
       cargado ? IMPACTO.sacudidaCargado : IMPACTO.sacudidaGolpe,
     );
 
-    this.chispas(x, y, direccion, cargado ? 14 : 8, cargado ? 0xc94f4f : 0xd6cfc4);
-    this.anillo(x, y, cargado ? 26 : 16, cargado ? 0xc94f4f : 0xd6cfc4, 220);
+    // Chispas y anillo en el oro del bisturi, no en blanco: lo que acaba de
+    // entrar en el enemigo es SU hoja, y el color es lo que lo dice.
+    const oro = cargado ? 0xf4ed93 : 0xfcd038;
+    this.chispas(x, y, direccion, cargado ? 14 : 8, oro);
+    this.anillo(x, y, cargado ? 26 : 16, oro, 220);
   }
 
   /** Parry logrado: el momento mas legible de todo el combate. */

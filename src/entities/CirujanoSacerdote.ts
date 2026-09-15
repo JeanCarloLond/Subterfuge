@@ -116,8 +116,12 @@ export class CirujanoSacerdote {
     // El sprite mide 16x32, pero el capirote NO colisiona: la caja empieza a la
     // altura de la mascara. Un cono de 10 px que choque con los techos volveria
     // el salto impredecible sin que el jugador entienda por que.
+    // El sprite mide 24x40 pero la caja sigue siendo la misma de siempre:
+    // 10x22 pegada al suelo y centrada. La mascara, la mitra y el pico NO
+    // colisionan — un pico de 8 px chocando con los techos volveria el salto
+    // impredecible sin que el jugador entienda por que.
     cuerpo.setSize(10, 22);
-    cuerpo.setOffset(3, 10);
+    cuerpo.setOffset((24 - 10) / 2, 40 - 22);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setMaxVelocity(MOVIMIENTO.velocidadCaminar, MOVIMIENTO.velocidadCaidaMax);
 
@@ -388,7 +392,7 @@ export class CirujanoSacerdote {
       ancho = perfil.alto;
       alto = perfil.alcance;
       x = this.sprite.x;
-      y = this.sprite.y - 32 - perfil.alcance / 2 + 4;
+      y = this.sprite.y - this.sprite.height - perfil.alcance / 2 + 4;
     } else if (this.direccionAtaque === 'abajo') {
       ancho = perfil.alto;
       alto = perfil.alcance;
@@ -420,7 +424,11 @@ export class CirujanoSacerdote {
    */
   private dibujarTajo(alcance: number, alto: number, direccion: number): void {
     const cargado = this.ataqueEnCurso === 'cargado';
-    const color = cargado ? 0xc94f4f : 0xe8e0d0;
+    // ORO, no blanco hueso. El arco ES el bisturi ceremonial: si se dibuja de
+    // cualquier otro color, el jugador ve un tajo generico y no llega a
+    // asociarlo con la herramienta dorada que el Cirujano lleva en la mano.
+    // El cargado va mas claro, al filo de blanco: mismo metal, mas caliente.
+    const color = cargado ? 0xf4ed93 : 0xfcd038;
     const radio = alcance + (cargado ? 6 : 2);
     const duracion = cargado ? 200 : 140;
 
@@ -432,7 +440,7 @@ export class CirujanoSacerdote {
     const origenX = vertical ? this.sprite.x : this.sprite.x + direccion * 2;
     const origenY = vertical
       ? this.direccionAtaque === 'arriba'
-        ? this.sprite.y - 30
+        ? this.sprite.y - this.sprite.height + 2
         : this.sprite.y - 2
       : this.hitbox.y;
     const espejo = vertical ? 1 : direccion;
@@ -499,6 +507,31 @@ export class CirujanoSacerdote {
     grafico.lineStyle(grosor, color, 1);
     grafico.beginPath();
     grafico.arc(0, 0, radio, inicio, fin, false);
+    grafico.strokePath();
+
+    // LA HOJA. Sin esto solo hay un resplandor con forma de luna, y el jugador
+    // no llega a ver la pieza con la que esta golpeando: un tajo generico y
+    // dorado sigue siendo un tajo generico. Es una cuna solida que sale del
+    // puno y va al filo del arco, y como se dibuja DENTRO del mismo objeto,
+    // hereda el barrido y el giro sin cuadrar dos animaciones a mano.
+    const dentro = radio * 0.3;
+    const fuera = radio * 1.04;
+    const grueso = Math.max(2, grosor + 1);
+
+    grafico.fillStyle(color, 1);
+    grafico.beginPath();
+    grafico.moveTo(dentro, -grueso / 2);
+    grafico.lineTo(fuera, -1);
+    grafico.lineTo(fuera, 1);
+    grafico.lineTo(dentro, grueso / 2);
+    grafico.closePath();
+    grafico.fillPath();
+
+    // El canto, un tono por encima: es lo que la lee como metal y no como luz.
+    grafico.lineStyle(1, 0xfffbe0, 0.9);
+    grafico.beginPath();
+    grafico.moveTo(dentro, -grueso / 2);
+    grafico.lineTo(fuera, -1);
     grafico.strokePath();
 
     return grafico;

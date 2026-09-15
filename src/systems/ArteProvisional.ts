@@ -26,112 +26,207 @@ interface Figura {
 
 // -- Cirujano-Sacerdote ------------------------------------------------------
 //
-// Silueta segun el boceto de la artista: el hombre de la MASCARA DORADA.
-// Capirote conico alto en oro, mascara sin ojos y tunica morada con estola
-// roja y hombreras doradas.
-//
-// Blasphemous es referente de TONO, no de diseno de personaje: sirve para el
-// horror gotico-religioso y el peso de la silueta, no para copiar al Penitente.
-// El Cirujano es oro y morado, no acero.
+// EL MEDICO DE LA PESTE DE LA DIOCESIS, segun el diseno del equipo: capucha y
+// mozeta moradas, mascara de pico en oro con la cuenca en negro, y sobretodo
+// azul noche con botones y hebilla de oro. La paleta sale del propio boceto,
+// no esta inventada.
 //
 // Tres cosas que no se pueden perder al pasarlo a Aseprite:
 //
-//   1. Las MANOS palidas asoman a los lados. Son su oficio y su condena, y hay
-//      que poder leerlas a 1x sin ampliar.
-//   2. El oro de la mascara es su color identitario. Es lo que lo separa de
-//      cualquier otra figura encapuchada del genero.
-//   3. La mascara no tiene ojos, solo una hendidura. En la Diocesis mirar no es
-//      lo que da estatus, y el habito clerical lo refleja.
+//   1. El PICO dorado. Es la silueta, y lo unico brillante que lleva encima.
+//      Se tiene que reconocer a contraluz, que es como se le vera media
+//      partida.
+//   2. El morado contra el azul noche. La mozeta es lo que le da volumen de
+//      hombros sin darle hombros de heroe: sigue siendo un tecnico.
+//   3. La cuenca negra del ojo. En la Diocesis mirar es preguntar, y el habito
+//      clerical lo tapa.
 //
-// Es un tecnico, no un guerrero: postura recta y estrecha, sin hombros de heroe.
+// Mira a la derecha; el codigo voltea la textura.
 
 const CIRUJANO: Figura = {
   paleta: {
-    K: 0xf2dc8c, // reflejo del oro
-    k: 0xc9a44c, // oro de la mascara y el capirote
-    j: 0x8a6a2a, // oro en sombra
-    n: 0x171319, // hendidura de la mascara
-    P: 0x63456f, // morado claro
-    p: 0x4a3358, // morado de la tunica
-    s: 0x2e1f38, // sombra de la tunica
-    r: 0x8c2f2f, // estola
-    m: 0xd8cdbe, // manos
-    g: 0x3a2c22, // botas y correas
+    n: 0x0c081f, // negro del hueco de la capucha y el contorno
+    N: 0x211746, // sobretodo, azul noche
+    q: 0x3a2a55, // morado en sombra
+    p: 0x51356a, // morado de la capucha y la mozeta
+    P: 0x775d91, // morado iluminado
+    L: 0x846d96, // morado, luz alta
+    k: 0xe3a940, // oro medio
+    K: 0xfcd038, // oro del pico
+    Y: 0xf4ed93, // oro palido, reflejo
+    j: 0xcb6e2f, // ambar: el pico en sombra
+    m: 0x5d3927, // la barbilla que asoma bajo la mascara
   },
   // prettier-ignore
   filas: [
-    '.......KK.......',
-    '.......Kk.......',
-    '......jKKk......',
-    '......jKKk......',
-    '......jKKk......',
-    '.....jjKKkk.....',
-    '.....jKKKkk.....',
-    '.....jKKKkk.....',
-    '....jjKKKKkk....',
-    '....jKKKKKkk....',
-    '...jjKKKKKkkk...',
-    '...jKKKKKKkkk...',
-    '...jjkkkkkkkj...',
-    '...jkkkkkkkkj...',
-    '...jknnnnnnkj...',
-    '...jkkkkkkkkj...',
-    '....kkkkkkkk....',
-    '...kppppppppk...',
-    '..kkppPPppppkk..',
-    '..pppPPrrPPpp...',
-    '.mppPPrrrrPPpm..',
-    '.mmppPPrrPPppm..',
-    '..mpppppppppm...',
-    '...pppppppppp...',
-    '...ppppspppp....',
-    '...pppssppp.....',
-    '...ppsssspp.....',
-    '..ppssssspp.....',
-    '..pssssssspp....',
-    '..pss....ssp....',
-    '..gss....ssg....',
-    '.gggg....gggg...',
+    '.......qppppq...........',
+    '.....qppPPPPppq.........',
+    '....qppPPPPPPppq........',
+    '....qppPPPPPPPppq.......',
+    '....qppPnnnnnPppq.......',
+    '....qppnkkkkknPpq.......',
+    '....qppnkKKKKkkjq.......',
+    '....qppnkKYnKKkkjj......',
+    '....qppnkKKnKKkkkjj.....',
+    '....qppnkkKKkkkkjjj.....',
+    '....qppnnkkkkkjjjj......',
+    '....qppnnmkkkjjj........',
+    '....qppqnmmkjj..........',
+    '....qppq.mmjj...........',
+    '...qpppppppq............',
+    '..qppPPPPPPPppq.........',
+    '..qppPPPPPPPPPppq.......',
+    '..qppPPPPPPPPPppq.......',
+    '...qppppppppppq.........',
+    '....qppPPPPPpq..........',
+    '...qppPPPPPPPpq.........',
+    '...qpppppppppppq........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNN.........',
+    '.....NNNNKNNNNNm........',
+    '.....NNNNnNNNNmmM.......',
+    '.....NNNNKNNNNmMj.......',
+    '....NpppppppppNjKj......',
+    '....NkKYKkppppNjKKj.....',
+    '....NpppppppppNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNnNNNNNN.jKKj....',
+    '....NNNnnNNNNNN.jKKj....',
+    '...NNNNnnnNNNNNN.jKj....',
+    '...NNNnnnnnNNNNN.jKj....',
+    '...NNNnnnnnNNNNN..jj....',
+    '...NNnnn...nnnNN........',
+    '...nnnn.....nnnn........',
+    '...nnn.......nnn........',
   ],
 };
 
 // -- Devoto ------------------------------------------------------------------
-// Encorvado y vendado. Es un fiel, no un monstruo: sigue siendo claramente una
-// persona, y ahi esta el horror.
+//
+// Fiel de abajo. El ethos del bible manda: "el estatus social se mide por
+// cuanto te pareces fisicamente a un dios-carne". El Devoto esta en la base,
+// asi que aun se le reconoce la persona debajo — y eso es lo que da miedo.
+//
+// Pero el diezmo que ya pago se VE: la carne le sale por donde el sacramento
+// no cerro, al rojo vivo, y lo que le faltaba se lo repusieron con aparato de
+// Genesis Vestal. Carne y maquina a partes desiguales, como en las laminas.
+//
+// DOS VARIANTES, y el motivo no es decorativo: con una sola, una ronda de
+// cuatro Devotos parecia el mismo hombre copiado cuatro veces. El sacramento
+// no falla dos veces igual, asi que a cada uno le falta otra cosa.
+//
+//   A: placa en la sien, brazo derecho de aparato, la carne le sube del pecho.
+//   B: mandibula de metal, pierna izquierda entera sustituida, la carne le
+//      revienta el costado derecho.
+//
+// La venda sobre los ojos en los dos: aqui mirar no da estatus.
 
 const DEVOTO: Figura = {
   paleta: {
     h: 0x9a7f66, // piel
-    v: 0xc9bda8, // vendas
-    g: 0x5c4636, // ropa
-    d: 0x3a2c22, // sombra
+    v: 0xd8cdbe, // vendas
+    g: 0x5c4636, // sayo
+    G: 0x715847, // sayo iluminado
+    d: 0x2e231b, // sombra y contorno
+    c: 0x8c2f2f, // carne
+    C: 0xb03a34, // carne viva
+    R: 0xd4564a, // carne al rojo, lo que ya no cierra
+    t: 0x7fc9bd, // fluido de Genesis Vestal
+    M: 0x9ca193, // metal
+    S: 0x5b5c57, // metal en sombra
+    n: 0x1e1611, // negro
   },
   // prettier-ignore
   filas: [
-    '.....hhhh.......',
-    '....hhhhhh......',
-    '....hvvvhh......',
-    '....hvvvhh......',
-    '.....hhhh.......',
-    '.....gggg.......',
-    '....gggggg......',
-    '...gggggggg.....',
-    '..vgggggggg.....',
-    '..vvgggggggv....',
-    '...vggggggvv....',
-    '...ggggggggv....',
-    '...gggggggg.....',
-    '...ggggdggg.....',
-    '...gggddgg......',
-    '...ggdddgg......',
-    '...gddddgg......',
-    '..gddddddg......',
-    '..gddddddg......',
-    '..gdd...ddg.....',
-    '..gdd...ddg.....',
-    '..ggd...dgg.....',
-    '..ggd...dgg.....',
-    '.gggg...gggg....',
+    '.......dddddd.........',
+    '......dhhhhhhd........',
+    '.....dhhhhhhhhd.......',
+    '.....dvvvvvvMMd.......',
+    '.....dvvvvvvMSd.......',
+    '.....dhhhhhhMSd.......',
+    '......dccccctSd.......',
+    '.....dcCCccctSd.......',
+    '....dcCCCccccSSd......',
+    '...dcCCRRCccccSMd.....',
+    '...dcCRRRRCcccMMMd....',
+    '...dcCRRRRCccMMttMd...',
+    '..vdcCRRRRCcMMttMMd...',
+    '..vdcCCRRCccMttttMd...',
+    '...dccCCCccccMMttMd...',
+    '...dgccCCcccccMMMd....',
+    '...dggcccccccgMMd.....',
+    '...dgggcccccggd.......',
+    '...dggggcgggggd.......',
+    '...ddgggcggggd........',
+    '..ddgggcccgggd........',
+    '..dggccccccggd........',
+    '..dgcc....ccgd........',
+    '..dgcc....ccgd........',
+    '..dgdd....ccgd........',
+    '..dggd....ccgd........',
+    '..dggd....cSSd........',
+    '..dggd....dSSd........',
+    '..dggd....dSSd........',
+    '.ddggd....dSSdd.......',
+    '.nnggd....dSSnn.......',
+    '.nnnn......nnnn.......',
+    '..nn........nn........',
+    '......................',
+  ],
+};
+
+const DEVOTO_B: Figura = {
+  paleta: {
+    h: 0x9a7f66, // piel
+    v: 0xd8cdbe, // vendas
+    g: 0x5c4636, // sayo
+    G: 0x715847, // sayo iluminado
+    d: 0x2e231b, // sombra y contorno
+    c: 0x8c2f2f, // carne
+    C: 0xb03a34, // carne viva
+    R: 0xd4564a, // carne al rojo, lo que ya no cierra
+    t: 0x7fc9bd, // fluido de Genesis Vestal
+    M: 0x9ca193, // metal
+    S: 0x5b5c57, // metal en sombra
+    n: 0x1e1611, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dhhhhhhd........',
+    '.....dhhhhhhhhd.......',
+    '.....dvvvvvvvhd.......',
+    '.....dvvvvvvvhd.......',
+    '.....dMMMMMMMSd.......',
+    '......dMSSSSMd........',
+    '.......dttSMd.........',
+    '.....ddgggggtd........',
+    '....dggGGGGggtd.......',
+    '...dggGGGGGGgcd.......',
+    '...dgGGGGGGgcCCd......',
+    '..vdgGGGGGGcCRRCd.....',
+    '..vdggGGGGcCRRRRCd....',
+    '...dgggGGGcCRRRRCd....',
+    '...dggggGGcCRRRCcd....',
+    '...dgggggggcCCCccd....',
+    '...dggggggggcccdd.....',
+    '...dggggdgggccd.......',
+    '...ddgggddggccd.......',
+    '..ddggdddddgccd.......',
+    '..dgddddddddgcd.......',
+    '..dMMd....ddgd........',
+    '..dMSd....ddgd........',
+    '..dMSd....ddgd........',
+    '..dMSd....dggd........',
+    '..dMSd....dggd........',
+    '..dMSd....dggd........',
+    '..dMSd....dggd........',
+    '.ddMSd....dggdd.......',
+    '.nnMSd....dggnn.......',
+    '.nnMMn.....nnnn.......',
+    '..nnn.......nn........',
+    '......................',
   ],
 };
 
@@ -218,45 +313,75 @@ const UMBRAL: Figura = {
 };
 
 // -- Vestal ------------------------------------------------------------------
-// Clero: erguido, tocado alto y tunica limpia. Se distingue del Devoto por la
-// postura, no solo por el color: el Vestal no se dobla, administra.
+//
+// Alto clero, y por tanto MAS carne y MAS maquina: por el mismo ethos que deja
+// al Devoto casi entero, subir en la Diocesis significa parecerse mas a un
+// dios-carne y conservar menos cuerpo propio.
+//
+// Aqui la carne ya no es una herida, es el cuerpo: le desborda el habito y se
+// derrama hasta el suelo, al rojo vivo. Del hombre queda un aparato de metal
+// que le cubre la cara entera, con una lente turquesa por unico rasgo, y una
+// costilla de metal con su respiradero en mitad de la masa.
+//
+// El sello del diezmo en el pecho, en oro, es su cargo: el que sella lo que se
+// cobra. Erguido, nunca encorvado. El Devoto se dobla; el Vestal administra.
 
 const VESTAL: Figura = {
   paleta: {
-    m: 0xd8cdbe, // tocado
-    r: 0x6b6070, // tunica clerical
-    s: 0x453d4d, // sombra
-    o: 0xe8d9a0, // oro del sello
+    o: 0xcda058, // oro del sello y el collar
+    O: 0xe7ce9f, // oro, reflejo
+    r: 0x5d5466, // lo que queda del habito
+    R: 0xd4564a, // carne al rojo
+    s: 0x342f3e, // sombra
     p: 0x9a8878, // piel
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    t: 0x7fc9bd, // lente y respiradero
+    T: 0xc9dcc8, // brillo de la lente
+    n: 0x1e1611, // impronta del sello
+    M: 0x9ca193, // metal
+    S: 0x3f4a4e, // metal en sombra
   },
   // prettier-ignore
   filas: [
-    '.......oo.......',
-    '......oooo......',
-    '......mmmm......',
-    '.....mmmmmm.....',
-    '.....mppppm.....',
-    '.....mppppm.....',
-    '......pppp......',
-    '.....rrrrrr.....',
-    '....rrrrrrrr....',
-    '....rrroorrr....',
-    '...prrroorrrp...',
-    '...prrrrrrrrp...',
-    '...prrrrrrrrp...',
-    '....rrrrrrrr....',
-    '....rrrsrrrr....',
-    '....rrsssrrr....',
-    '....rsssssrr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rrsssssrr....',
-    '...rrrsssrrr....',
-    '..rrrrrrrrrr....',
-    '..rrrrrrrrrr....',
+    '.........oo...........',
+    '........oOOo..........',
+    '........oOOo..........',
+    '.........oo...........',
+    '.......MMMMMM.........',
+    '......MMSSSSMM........',
+    '.....MMSSSSSSMM.......',
+    '.....MSSttttSSM.......',
+    '.....MSTtTTtTSSM......',
+    '.....MSSttttSSMt......',
+    '.....MMSSSSSSMtt......',
+    '......MMSSSSMMt.......',
+    '......oocccccot.......',
+    '.....oocCCCCCcoo......',
+    '....rrcCRRRRRCcrr.....',
+    '...rrrcCRRRRRCcrrr....',
+    '..prrRcCRRRRRCcRrrp...',
+    '..prrRRoooooooRRrrp...',
+    '..prrRRoOnnnOoRRrrp...',
+    '..prrRRoOnnnOoRRrrp...',
+    '..prrRRoooooooRRrrp...',
+    '...rrRcCRRRRRCcRrr....',
+    '...rrcCRRRRRRRCcrr....',
+    '...ocCRRRRRRRRRCco....',
+    '....cCRRRRRRRRRCc.....',
+    '....cCRRRRRRRRRCc.....',
+    '...cCRRRRRRRRRRRCc....',
+    '...cCRRRRRRRRRRRCc....',
+    '..cCRRRRRRRRRRRRRCc...',
+    '..cCRRRRRMMRRRRRRCc...',
+    '..cCRRRRMttMRRRRRCc...',
+    '..cCRRRRRMMRRRRRRCc...',
+    '..ccCRRRRRRRRRRRCcc...',
+    '...ccCRRRRRRRRRCcc....',
+    '....ccCCRRRRRCCcc.....',
+    '.....cccCCCCCccc......',
+    '...ccc.cccccc.ccc.....',
+    '..ccc....cccc....cc...',
   ],
 };
 
@@ -716,9 +841,621 @@ const CADENA: Figura = {
   ],
 };
 
+// -- La capa de debajo: Genesis Vestal ---------------------------------------
+//
+// El world bible describe el mundo como un "futuro sedimentado": "la maquinaria
+// avanzada sigue ahi, pero cubierta de siglos de cera, oxido, tela y hueso". El
+// juego era todo piedra, cera y oro — puro medievo, sin el otro lado.
+//
+// Estas tres piezas son ese otro lado asomando. Van en turquesa frio, el unico
+// color del juego que no es carne, sangre, oro ni piedra, y por eso se leen
+// como algo que NO pertenece a la Diocesis aunque la Diocesis viva encima.
+//
+// Cuanto mas abajo, mas maquina: en el Atrio apenas una terminal muerta; en el
+// Vientre Profundo la arquitectura ya seria esto.
+
+// Terminal de Genesis Vestal. Nadie sabe leerla desde hace generaciones.
+const PANTALLA: Figura = {
+  paleta: {
+    n: 0x1e1611, // contorno
+    M: 0x9ca193, // carcasa
+    a: 0x333e42, // cristal apagado
+    T: 0x7fc9bd, // lo que aun parpadea
+    d: 0x5b5c57, // soporte
+  },
+  // prettier-ignore
+  filas: [
+    'nnnnnnnnnnnnnnnn',
+    'nMMMMMMMMMMMMMMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMaTTaaaaTTTaaMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMaaTTTaaaaaTaMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMaTaaaTTaaaaaMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMMMMMMMMMMMMMMn',
+    'nnddddddddddddnn',
+    '..d..........d..',
+  ],
+};
+
+// Conducto. Lo que lleva por dentro ya no se distingue de una vena.
+const CONDUCTO: Figura = {
+  paleta: {
+    n: 0x1e1611,
+    M: 0x9ca193, // abrazaderas
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    d: 0x5b5c57,
+  },
+  // prettier-ignore
+  filas: [
+    'ndddddddn',
+    'dMMMMMMMd',
+    'dMttttttM',
+    'dMtTTttTM',
+    'dMttttttM',
+    'dMMMMMMMd',
+    'ndddddddn',
+    '.n.....n.',
+    'ndddddddn',
+    'dMMMMMMMd',
+    'dMttTtttM',
+    'dMttttTtM',
+    'dMttttttM',
+    'dMMMMMMMd',
+    'ndddddddn',
+  ],
+};
+
+// La maquina del sacramento: carcasa de Genesis Vestal fundida con la carne que
+// lleva siglos procesando. Es la lamina del world bible hecha sprite.
+const MAQUINA: Figura = {
+  paleta: {
+    n: 0x1e1611,
+    M: 0x9ca193, // carcasa
+    a: 0x333e42, // cristal
+    T: 0x7fc9bd, // senal
+    t: 0x487b84, // tubos
+    c: 0x8c4f4f, // carne
+    C: 0xb06a5c, // carne, luz
+  },
+  // prettier-ignore
+  filas: [
+    '......nnnnnnnn........',
+    '....nnMMMMMMMMnn......',
+    '...nMMMMMMMMMMMMn.....',
+    '..nMMaaaaaaaaMMMMn....',
+    '..nMMaTTaaaTaaMMMMn...',
+    '..nMMaaaaaaaaaMMMMn...',
+    '..nMMMMMMMMMMMMMMMn...',
+    '..nMMMMMMMMMMMMMMMn...',
+    '...nMMMMMMMMMMMMMn....',
+    '..t.nnMMMMMMMMnn.t....',
+    '..t..cccccccccc..t....',
+    '..tttcCccccccCcttt....',
+    '...ccccccccccccccc....',
+    '..ccCccccccccccCccc...',
+    '.ccccccccccccccccccc..',
+    'cccCcccccccccccccCccc.',
+    'ccccccccccccccccccccc.',
+    '.ccccccccccccccccccc..',
+    '..nccccccccccccccnn...',
+    '...nnnccccccccnnn.....',
+  ],
+};
+
+// -- La arquitectura del descenso --------------------------------------------
+//
+// La silleria del Atrio es arte del equipo (docs/arte/piezas). De ahi para
+// abajo el muro va cambiando de material, porque el bible dice que el Vientre
+// es "un futuro sedimentado" y que cada capa esta mas lejos de parecer
+// arquitectura: "Niveles Reformados: la arquitectura ya es carne".
+//
+// Antes las cuatro zonas eran el mismo ladrillo con un tinte distinto, y bajar
+// no se notaba en las paredes. Ahora se nota en el material:
+//
+//   Atrio     silleria. Todavia es un edificio.
+//   Pasillos  chapa remachada ENCIMA de la silleria. La burocracia parcheo.
+//   Criptas   la piedra sigue, pero la vena ya se abrio paso por las juntas.
+//   Salas     no queda piedra. Chapa de maquina y carne entre los paneles.
+//
+// Dos variantes por zona: con una sola, un suelo de treinta tiles se lee como
+// un patron y no como un muro.
+
+const MURO_PASILLOS_A: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jMMMMMMMMMMMMMMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmRmmmmmmmmRmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMMMMMMMMMMMMMMj',
+    'jjjjjjjjjjjjjjjj',
+    'jaaaaaaaabaaaaaj',
+    'jaaabaaaaaaabaaj',
+    'jaaaaaaaaabaaaaj',
+    'jbaaaaaabaaaaaaj',
+    'jaaaaaaaaaaabaaj',
+    'jaaabaaaaaaaaaaj',
+    'jaaaaaaaaaaaaaaj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+
+const MURO_PASILLOS_B: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jaaaaaaabaaaaaaj',
+    'jaaabaaaaaaabaaj',
+    'jaaaaaaaaabaaaaj',
+    'jbaaaaaabaaaaaaj',
+    'jaaaaaaaaaaabaaj',
+    'jaaabaaaaaaaaaaj',
+    'jjjjjjjjjjjjjjjj',
+    'jMMMMMMMMMMMMMMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmmmmmRRmmmmmMj',
+    'jMmmmmmRRmmmmmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMMMMMMMMMMMMMMj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+
+const MURO_CRIPTAS_A: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjcjjjjjjjjjj',
+    'jaaaaCaaabaaaaaj',
+    'jaaabCaaaaaabaaj',
+    'jaaaacCaaabaaaaj',
+    'jbaaaacCaaaaaaaj',
+    'jaaaaaacCaaabaaj',
+    'jaaabaaacCaaaaaj',
+    'jjjjjjjjcCjjjjjj',
+    'jbbbbbbbcCbbbbbj',
+    'jbbbcbbbbcCbbbbj',
+    'jbbbbbbbbbcCbbbj',
+    'jcbbbbbbcbbcCbbj',
+    'jbbbbbbbbbbbcCbj',
+    'jbbbcbbbbbbbbcCj',
+    'jbbbbbbbbbbbbbcj',
+    'jjjjjjjjjjjjjjcj',
+  ],
+};
+
+const MURO_CRIPTAS_B: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jaaaaaaabaaaaaaj',
+    'jaaCbaaaaaaabaaj',
+    'jaCCaaaaaabaaaaj',
+    'jbCaaaaabaaaaaaj',
+    'jaCaaaaaaaaaCbaj',
+    'jaCabaaaaaaCCaaj',
+    'jjCjjjjjjjjCjjjj',
+    'jbCbbbbbcbbCbbbj',
+    'jbCbcbbbbbbCcbbj',
+    'jbCbbbbbbbcCbbbj',
+    'jcCbbbbbcbbCbbbj',
+    'jbCbbbbbbbbCcbbj',
+    'jbCbcbbbbbbCbbbj',
+    'jbCbbbbbbbbCbbbj',
+    'jjCjjjjjjjjCjjjj',
+  ],
+};
+
+const MURO_SALAS_A: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'nnnnnnnnnnnnnnnn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSRSSSSSSSSRSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSttSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccccccccccccccn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSRSSSSSSSSRSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccccccccccccccn',
+  ],
+};
+
+const MURO_SALAS_B: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'nnnnnnnnnnnnnnnn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccCccccccccCccn',
+    'ncCCccccccccCCcn',
+    'nccccccccccccccn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSttSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccccccccccccccn',
+    'nnnnnnnnnnnnnnnn',
+  ],
+};
+
+// -- Lo que el sacramento deja ------------------------------------------------
+//
+// El bible describe el Vientre como "catedral, hospital y prision al mismo
+// tiempo". La catedral ya estaba; faltaba el hospital, y sobre todo faltaba lo
+// que un hospital que lleva generaciones cobrando carne acumula por los
+// rincones.
+//
+// Nada de esto se explica con un cartel: son bultos en el suelo y luces que
+// nadie apago. El horror lo pone el jugador al reconocer lo que ve.
+
+// Un Elegido que no completo el sacramento y al que ya nadie trasladara. Se le
+// reconoce la cabeza, y se le reconoce la pierna que le pusieron.
+const CADAVER: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.....ccc.................',
+    '...ccCCCcc.....cc........',
+    '..cCRRRRRCcccccCCCcc.....',
+    '.cCRRRRRRRCRRRRRRRRCcMM..',
+    '.cCRRRRRRRCRRRRRRRRCcMSM.',
+    '..cCRRRRRCcccccCCCcc.MSM.',
+    '...ccCCCcc.....cc....MMM.',
+    '....ccccc............nnn.',
+  ],
+};
+
+// El diezmo del dia, esperando turno. Pesado, registrado y apilado: para la
+// Diocesis esto es contabilidad, y por eso esta ahi tirado sin ceremonia.
+const PILA_CARNE: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.......cccc.........',
+    '.....ccCCCCcc.......',
+    '...ccCCRRRRCCcc.....',
+    '..cCCRRRRRRRRCCc....',
+    '.cCRRRRCCRRRRRRCc...',
+    'cCRRRRCCCCRRRRRRCc..',
+    'cCRRRRRCCRRRRRRRCc..',
+    'cCCRRRRRRRRRRRRCCc..',
+    '.cCCRRRRRRRRRRCCc...',
+    '..ccCCCCCCCCCCcc....',
+    '...cccccccccccc.....',
+  ],
+};
+
+// Proyeccion medica de Genesis Vestal girando sobre un emisor que nadie apago
+// en generaciones. La figura que dibuja es un cuerpo humano completo: el
+// manual sigue ahi, ensenando a quien ya no sabe leerlo.
+const HOLOGRAMA: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '......tt.......',
+    '.....tTTt......',
+    '.....tTTt......',
+    '....ttTTtt.....',
+    '...tt.TT.tt....',
+    '..tt..TT..tt...',
+    '..t...TT...t...',
+    '......TT.......',
+    '.....tTTt......',
+    '.....t..t......',
+    '....tt..tt.....',
+    '...tt....tt....',
+    '...............',
+    '..MMMMMMMMMMM..',
+    '..MSSSSTSSSSM..',
+    '..MMMMMMMMMMM..',
+  ],
+};
+
+// Negatoscopio en el muro con una placa puesta. Se distingue una caja toracica
+// y, en una esquina, la mancha que alguien marco hace mucho.
+const RADIOGRAFIA: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    'MMMMMMMMMMMMMM',
+    'MSSSSSSSSSSSSM',
+    'MStttttttttttM',
+    'MStTTtttTTtttM',
+    'MStTttttttTttM',
+    'MStTTTTTTTTttM',
+    'MStTttttttTttM',
+    'MStTTtttTTtttM',
+    'MStttTTTTtttcM',
+    'MSttttTTtttccM',
+    'MSttttttttcccM',
+    'MMMMMMMMMMMMMM',
+  ],
+};
+
+// Lampara de quirofano colgada del techo. Es la otra luz del Vientre: la vela
+// da calor y esta da frio, y en las Salas conviven sobre la misma camilla.
+const LUZ_HOSPITAL: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.......n.......',
+    '.......n.......',
+    '.......n.......',
+    '....MMMMMMM....',
+    '..MMMSSSSSMMM..',
+    '.MMSSTTTTTSSMM.',
+    '.MSTTTTTTTTTSM.',
+    '..STTTTTTTTTS..',
+    '...TTTTTTTTT...',
+    '....TTTTTTT....',
+    '.....TTTTT.....',
+  ],
+};
+
+// -- Lo que lleva siglos aqui abajo ------------------------------------------
+//
+// El bible insiste en que el Vientre es "un futuro sedimentado": la maquina no
+// esta limpia, lleva generaciones funcionando sin que nadie sepa repararla. De
+// ahi el oxido, que es lo que separa esto de una nave espacial.
+
+// Tanque de cultivo de Genesis Vestal. El fluido sigue corriendo y dentro hay
+// algo que no termina de morirse, que es exactamente lo que le paso a los Mil.
+// El marco esta comido de oxido: funciona, pero nadie lo ha tocado en siglos.
+const TANQUE: Figura = {
+  paleta: {
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '...MMMMMMMMMM...',
+    '..MooooooooooM..',
+    '..MoSSSSSSSSoM..',
+    '..MoSttttttSoM..',
+    '..MoStTTTTtSoM..',
+    '..MoSttttttSoM..',
+    '..MoSttccttSoM..',
+    '..MoStcCCCctSoM.',
+    '..MoStcCRRCctSM.',
+    '..MoStcCRRCctSM.',
+    '..MoStcCCCCctSM.',
+    '..MoSttcCCcttSM.',
+    '..MoSttccccttSM.',
+    '..MoSttttttttSM.',
+    '..MoStTttttTtSM.',
+    '..MoSttttttttSM.',
+    '..MoSSSSSSSSSSM.',
+    '..MooooooooooM..',
+    '...MMMMMMMMMM...',
+    '...ooMMMMMMoo...',
+    '...oo......oo...',
+    '...oo......oo...',
+    '..ooo......ooo..',
+    '..nnn......nnn..',
+  ],
+};
+
+// Bandeja de instrumental. Lo que se usa todos los dias y nadie afila desde
+// hace generaciones.
+const BANDEJA: Figura = {
+  paleta: {
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '..M.M..M...M....',
+    '..M.M..M...M....',
+    '.MMMMMMMMMMMM...',
+    'MooooooooooooM..',
+    'MSSSSSSSSSSSSM..',
+    'MMMMMMMMMMMMMM..',
+    '.o..........o...',
+    '.o..........o...',
+    'ooo........ooo..',
+  ],
+};
+
+// La sangre que cae de lo que hay arriba. Ya hizo costra en la pared, asi que
+// lleva cayendo mucho tiempo por el mismo sitio.
+const GOTEO: Figura = {
+  paleta: {
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    o: 0x8a4a22, // oxido
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    'cCc...',
+    'cRc...',
+    'cRc...',
+    '.Rc...',
+    '.Rc...',
+    '.R....',
+    '.R....',
+    '.c....',
+    '.c....',
+    '.c....',
+    '.R....',
+    '.c....',
+    '......',
+    '.c....',
+    '......',
+    '..c...',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
+  'devoto-b': DEVOTO_B,
+  'muro-pasillos-a': MURO_PASILLOS_A,
+  'muro-pasillos-b': MURO_PASILLOS_B,
+  'muro-criptas-a': MURO_CRIPTAS_A,
+  'muro-criptas-b': MURO_CRIPTAS_B,
+  'muro-salas-a': MURO_SALAS_A,
+  'muro-salas-b': MURO_SALAS_B,
   vestal: VESTAL,
   sello: SELLO,
   reformado: REFORMADO,
@@ -736,6 +1473,17 @@ const FIGURAS: Record<string, Figura> = {
   placa: PLACA,
   durmiente: DURMIENTE,
   reja: REJA,
+  pantalla: PANTALLA,
+  conducto: CONDUCTO,
+  maquina: MAQUINA,
+  cadaver: CADAVER,
+  'pila-carne': PILA_CARNE,
+  holograma: HOLOGRAMA,
+  radiografia: RADIOGRAFIA,
+  'luz-hospital': LUZ_HOSPITAL,
+  tanque: TANQUE,
+  bandeja: BANDEJA,
+  goteo: GOTEO,
   carne: CARNE,
   ventana: VENTANA,
   cadena: CADENA,

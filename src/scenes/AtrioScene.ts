@@ -126,6 +126,16 @@ export class AtrioScene extends EscenaNivel {
       // exvotos de sacramentos "exitosos" colgando. La carne solo asoma en los
       // charcos que dejan las rondas de los Devotos.
       decorado: [
+        // Sangre y carne por todas partes: esto lleva generaciones
+        // cobrando cuerpo y no lo limpia nadie.
+        [590, 528, 'charco'],
+        [799, 128, 'charco'],
+        [299, 448, 'charco'],
+        [24, 120, 'pila-carne'],
+        [206, 704, 'goteo'],
+        // La capa de Genesis Vestal apenas asoma aqui arriba: una terminal
+        // muerta que nadie sabe leer desde hace generaciones.
+        [232, 288, 'pantalla'],
         // Entrada: columnata y la cera del primer Altar.
         [40, 288, 'columna'],
         [200, 288, 'columna'],

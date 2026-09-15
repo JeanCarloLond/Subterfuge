@@ -129,16 +129,101 @@ function verificar(nombre, archivo) {
   return false;
 }
 
+// -- Decorado sin apoyo -------------------------------------------------------
+
+/**
+ * Comprueba que ninguna pieza de decorado quede flotando en el aire.
+ *
+ * Por qué existe: las piezas se colocan a mano por coordenadas, y basta
+ * equivocarse de 50 px para plantar una terminal en mitad del hueco entre dos
+ * plataformas. En el código no se ve —es una tupla más en una lista de treinta—
+ * y en pantalla canta muchísimo. Pasó con una `pantalla` de los Pasillos y dos
+ * `conducto` de las Criptas.
+ *
+ * Se apoyan las que descansan en el suelo; las que cuelgan del techo o van
+ * embutidas en el muro se excluyen a propósito.
+ */
+/** Se apoyan en el muro, no en el suelo: no se les pide ni techo ni piso. */
+const EN_MURO = new Set(['reja', 'ventana', 'durmiente', 'radiografia']);
+
+/**
+ * Cuelgan hacia abajo, asi que necesitan algo ARRIBA de donde colgar. Una
+ * lampara de quirofano flotando en mitad del aire canta tanto como una
+ * terminal levitando, y el primer comprobador no las miraba.
+ */
+const COLGANTES = new Set(['exvoto', 'cadena', 'luz-hospital', 'goteo']);
+
+function leerTuplas(src, nombre, patron) {
+  const bloque = src.match(new RegExp(`${nombre}: \\[([\\s\\S]*?)\\n {6}\\],`));
+  return bloque ? [...bloque[1].matchAll(patron)] : [];
+}
+
+function verificarDecorado(nombre, archivo) {
+  const src = readFileSync(join(raiz, archivo), 'utf8');
+
+  const plataformas = leerTuplas(src, 'plataformas', /\[\s*(-?\d+),\s*(-?\d+),\s*(\d+)\s*\]/g).map(
+    (m) => ({ x: Number(m[1]), y: Number(m[2]), ancho: Number(m[3]) * TILE }),
+  );
+  const paredes = leerTuplas(src, 'paredes', /\[\s*(-?\d+),\s*(-?\d+),\s*(-?\d+)\s*\]/g).map(
+    (m) => ({ x: Number(m[1]), y0: Number(m[2]), y1: Number(m[3]) }),
+  );
+  const decorado = leerTuplas(src, 'decorado', /\[\s*(-?\d+),\s*(-?\d+),\s*'([a-z-]+)'\s*\]/g).map(
+    (m) => ({ x: Number(m[1]), y: Number(m[2]), tipo: m[3] }),
+  );
+
+  if (decorado.length === 0) {
+    console.log(`${nombre}: sin decorado que verificar`);
+    return true;
+  }
+
+  const sueltas = decorado.filter((d) => {
+    if (EN_MURO.has(d.tipo)) return false;
+
+    // Lo que cuelga necesita techo justo encima: el borde inferior de una
+    // plataforma esta a su y + TILE.
+    if (COLGANTES.has(d.tipo)) {
+      return !plataformas.some((p) => d.y === p.y + TILE && d.x >= p.x && d.x < p.x + p.ancho);
+    }
+
+    const enSuelo = plataformas.some((p) => d.y === p.y && d.x >= p.x && d.x < p.x + p.ancho);
+    const enMuro = paredes.some(
+      (p) => d.x >= p.x - 8 && d.x <= p.x + TILE + 8 && d.y > p.y0 && d.y <= p.y1,
+    );
+    return !enSuelo && !enMuro;
+  });
+
+  if (sueltas.length === 0) {
+    console.log(`${nombre}: OK — las ${decorado.length} piezas de decorado se apoyan en algo`);
+    return true;
+  }
+
+  console.log(`${nombre}: FALLO — decorado flotando en el aire`);
+  for (const d of sueltas) {
+    const queFalta = COLGANTES.has(d.tipo)
+      ? 'no hay techo del que colgar'
+      : 'no hay suelo ni muro ahí';
+    console.log(`  "${d.tipo}" en x=${d.x} y=${d.y}: ${queFalta}`);
+  }
+  return false;
+}
+
 console.log(
   `salto simple ${alturaSalto.toFixed(0)}px · con doble ${alturaDoble.toFixed(0)}px · ` +
     `dash +${avanceDash.toFixed(0)}px`,
 );
 
-const resultados = [
-  verificar('Atrio', 'src/scenes/AtrioScene.ts'),
-  verificar('Pasillos', 'src/scenes/PasillosScene.ts'),
-  verificar('Criptas', 'src/scenes/CriptasScene.ts'),
-  verificar('Salas', 'src/scenes/SalasScene.ts'),
+const zonas = [
+  ['Atrio', 'src/scenes/AtrioScene.ts'],
+  ['Pasillos', 'src/scenes/PasillosScene.ts'],
+  ['Criptas', 'src/scenes/CriptasScene.ts'],
+  ['Salas', 'src/scenes/SalasScene.ts'],
 ];
+
+const resultados = zonas.map(([nombre, archivo]) => verificar(nombre, archivo));
+
+console.log('');
+for (const [nombre, archivo] of zonas) {
+  resultados.push(verificarDecorado(nombre, archivo));
+}
 
 process.exit(resultados.every(Boolean) ? 0 : 1);

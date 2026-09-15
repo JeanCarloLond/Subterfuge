@@ -47,14 +47,32 @@ export class Devoto implements Enemigo {
     this.patrulla = patrulla;
     this.vitalidad = new Vitalidad(DEVOTO.vida);
 
-    this.sprite = escena.physics.add.sprite(x, y, 'devoto-placeholder');
+    // Cual de las dos variantes le toca, por su sitio en el nivel y no al
+    // azar: el mismo Devoto tiene que salir igual en cada partida, porque el
+    // jugador se orienta por ellos igual que por el decorado. El sacramento no
+    // falla dos veces igual, asi que a cada uno le falta otra cosa.
+    //
+    // Ojo con el hash: mirar solo el bit bajo no vale. Todas las rondas del
+    // juego estan en coordenadas pares, asi que la paridad sale siempre la
+    // misma y salian cinco Devotos identicos. Hace falta mezclar de verdad.
+    let h = Math.imul(Math.round(x), 73856093) ^ Math.imul(Math.round(y), 19349663);
+    h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d);
+    h = Math.imul(h ^ (h >>> 12), 0x297a2d39);
+    const variante = ((h ^ (h >>> 15)) >>> 0) % 2;
+    this.sprite = escena.physics.add.sprite(
+      x,
+      y,
+      variante === 0 ? 'devoto-placeholder' : 'devoto-b-placeholder',
+    );
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setData('devoto', this);
     this.sprite.setData('enemigo', this);
 
     const cuerpo = this.cuerpo;
+    // El sprite crecio a 22x34, la caja sigue siendo la de siempre: 12x22
+    // pegada al suelo y centrada. La cabeza y el brazo injertado no colisionan.
     cuerpo.setSize(12, 22);
-    cuerpo.setOffset(2, 2);
+    cuerpo.setOffset((22 - 12) / 2, 34 - 22);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setCollideWorldBounds(true);
 

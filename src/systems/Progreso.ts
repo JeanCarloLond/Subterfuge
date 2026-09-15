@@ -1,4 +1,6 @@
 import { CODICE } from '../lore/Codice';
+import { REGISTRO } from '../lore/Registro';
+import { VIENTRE } from '../lore/Vientre';
 import { RELIQUIA } from '../config/Sacramento';
 
 /** Tipos de reliquia. Cada una mejora algo del Cirujano de forma permanente. */
@@ -15,6 +17,10 @@ class Progreso {
   private recogidos = new Set<string>();
   private leidos = new Set<string>();
   private reliquias = new Map<string, TipoReliquia>();
+  /** Fichas del Registro ya vistas o tocadas. */
+  private fichas = new Set<string>();
+  /** Capas del Vientre que el Cirujano ha pisado. */
+  private capas = new Set<string>();
 
   /** @returns true si es la primera vez que se recoge este fragmento. */
   recogerFragmento(id: string): boolean {
@@ -50,6 +56,54 @@ class Progreso {
   /** Ids recogidos en el orden canonico del Codice, no en el de recogida. */
   get idsRecogidosEnOrden(): string[] {
     return CODICE.map((f) => f.id).filter((id) => this.recogidos.has(id));
+  }
+
+  // -- El Registro ----------------------------------------------------------
+
+  /**
+   * Da por descubierta una ficha. Se llama en cuanto el jugador VE la cosa, no
+   * cuando la mata: el Registro es un catalogo de lo que existe, y ver a un
+   * Vestal desde lejos ya cuenta como haberlo encontrado.
+   *
+   * @returns true si es la primera vez, para que la escena avise.
+   */
+  descubrir(id: string): boolean {
+    if (this.fichas.has(id)) return false;
+    this.fichas.add(id);
+    return true;
+  }
+
+  estaDescubierto(id: string): boolean {
+    return this.fichas.has(id);
+  }
+
+  get fichasDescubiertas(): number {
+    return this.fichas.size;
+  }
+
+  get fichasTotales(): number {
+    return REGISTRO.length;
+  }
+
+  // -- El Vientre -----------------------------------------------------------
+
+  /** @returns true si es la primera vez que se pisa esta capa. */
+  pisarCapa(escena: string): boolean {
+    if (this.capas.has(escena)) return false;
+    this.capas.add(escena);
+    return true;
+  }
+
+  estaPisada(escena: string): boolean {
+    return this.capas.has(escena);
+  }
+
+  get capasPisadas(): number {
+    return this.capas.size;
+  }
+
+  get capasTotales(): number {
+    return VIENTRE.length;
   }
 
   // -- Reliquias -----------------------------------------------------------
@@ -96,6 +150,8 @@ class Progreso {
     this.recogidos.clear();
     this.leidos.clear();
     this.reliquias.clear();
+    this.fichas.clear();
+    this.capas.clear();
   }
 }
 

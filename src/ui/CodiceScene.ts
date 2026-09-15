@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { CODICE, fragmentoPorId } from '../lore/Codice';
+import { FAMILIAS, REGISTRO, type Familia } from '../lore/Registro';
+import { VIENTRE } from '../lore/Vientre';
+import { JERARQUIA } from '../lore/Jerarquia';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -66,10 +69,49 @@ function ruido(x: number, y: number): number {
  * Recoger un fragmento NO abre esta pantalla: el lore es opcional y no
  * interrumpe la accion. Se lee cuando el jugador quiere.
  */
+/** Una fila de cualquiera de las tres secciones nuevas. */
+interface EntradaPagina {
+  nombre: string;
+  descripcion: readonly string[];
+  /** Linea pequena bajo el titulo: como se encontro, o si no se llega. */
+  pie: string;
+  textura?: string;
+  fotograma?: number;
+  /** Si ya esta descubierta. Se consulta al dibujar, no al crear. */
+  abierta: () => boolean;
+  /** Separador de familia en el Registro: no se puede seleccionar. */
+  cabecera?: boolean;
+}
+
+/** Las cuatro secciones del libro, en el orden en que se pasan. */
+const SECCIONES = ['codice', 'registro', 'vientre', 'jerarquia'] as const;
+type Seccion = (typeof SECCIONES)[number];
+
+const ROTULOS: Readonly<Record<Seccion, string>> = {
+  codice: 'CODICE',
+  registro: 'REGISTRO',
+  vientre: 'EL VIENTRE',
+  jerarquia: 'JERARQUIA',
+};
+
+const TITULOS: Readonly<Record<Seccion, string>> = {
+  codice: 'EL CODICE DE LA CARNE',
+  registro: 'REGISTRO DE LA DIOCESIS',
+  vientre: 'CORTE DEL VIENTRE',
+  jerarquia: 'ORDEN DE LOS FIELES',
+};
+
 export class CodiceScene extends Phaser.Scene {
   private escenaJuego = 'Atrio';
   private indice = 0;
   private ids: string[] = [];
+
+  private seccion: Seccion = 'codice';
+  private paginas!: Record<Seccion, Phaser.GameObjects.Container>;
+  private pestanas: Phaser.GameObjects.Text[] = [];
+  private tituloLibro!: Phaser.GameObjects.Text;
+  /** Fila elegida dentro de cada seccion, para volver donde lo dejaste. */
+  private fila: Record<Seccion, number> = { codice: 0, registro: 0, vientre: 0, jerarquia: 0 };
 
   private folioTexto!: Phaser.GameObjects.Text;
   private tituloTexto!: Phaser.GameObjects.Text;
@@ -79,7 +121,9 @@ export class CodiceScene extends Phaser.Scene {
   private margenTexto!: Phaser.GameObjects.Text;
   private margenCorchete!: Phaser.GameObjects.Graphics;
   private indiceTextos: Phaser.GameObjects.Text[] = [];
+  private rotuloIndice!: Phaser.GameObjects.Text;
 
+  private cerrando = false;
   private lecturaX = 0;
   private lecturaAncho = 0;
 
@@ -89,7 +133,19 @@ export class CodiceScene extends Phaser.Scene {
 
   create(datos: DatosCodice): void {
     this.escenaJuego = datos.escenaJuego;
+    this.cerrando = false;
     this.ids = progreso.idsRecogidosEnOrden;
+
+    // Phaser REUTILIZA la instancia de la escena: al abrir el libro por
+    // segunda vez, `create()` vuelve a correr sobre el mismo objeto y todo lo
+    // que quedo guardado en campos sigue apuntando a objetos ya destruidos.
+    // Las pestanas se acumulaban de apertura en apertura, y a la segunda
+    // `irASeccion` les pedia setColor a cuatro textos muertos: el render
+    // reventaba con `frame.source is null`, la escena moria a medias y el
+    // nivel se quedaba pausado para siempre. Eso era el cuelgue al pulsar L.
+    this.pestanas = [];
+    this.numerosTextos = [];
+    this.indiceTextos = [];
     this.indice = this.primerSinLeer();
 
     const { ancho, alto } = RESOLUCION;
@@ -111,7 +167,7 @@ export class CodiceScene extends Phaser.Scene {
     filete.lineBetween(separadorX, folioY + 26, separadorX, folioY + folioAlto - 26);
 
     // Cabecera del folio: el libro, el capitulo y el numero de hoja.
-    this.add.text(folioX + 14, folioY + 10, 'EL CODICE DE LA CARNE', {
+    this.tituloLibro = this.add.text(folioX + 14, folioY + 10, TITULOS.codice, {
       fontFamily: 'monospace',
       fontSize: '9px',
       color: COLOR.oroTexto,
@@ -165,7 +221,7 @@ export class CodiceScene extends Phaser.Scene {
     this.add.text(
       folioX + 14,
       folioY + folioAlto - 16,
-      'W S  o  clic: pasar hoja        L  o  ESC: cerrar',
+      'A D  seccion     W S  pasar hoja     L  o  ESC: cerrar',
       { fontFamily: 'monospace', fontSize: '7px', color: COLOR.tenue },
     );
 
@@ -181,12 +237,54 @@ export class CodiceScene extends Phaser.Scene {
     cerrar.on('pointerout', () => cerrar.setColor(COLOR.tenue));
     cerrar.on('pointerdown', () => this.cerrar());
 
+    // Todo lo del Codice a un contenedor, para poder esconderlo de golpe al
+    // pasar de seccion. Se agrupa DESPUES de crearlo para no tocar una linea
+    // del folio, que ya estaba afinado.
+    this.paginas = {
+      codice: this.add.container(0, 0, [
+        filete,
+        this.rotuloIndice,
+        this.folioTexto,
+        this.tituloTexto,
+        this.inicialTexto,
+        this.versiculoTexto,
+        this.margenTexto,
+        this.margenCorchete,
+        ...this.indiceTextos,
+      ]),
+      registro: this.crearPaginaRegistro(folioX, folioY, folioAncho, folioAlto),
+      vientre: this.crearPaginaVientre(folioX, folioY, folioAncho, folioAlto),
+      jerarquia: this.crearPaginaJerarquia(folioX, folioY, folioAncho, folioAlto),
+    };
+
+    // La primera fila de cada seccion tiene que ser una ficha de verdad: las
+    // cabeceras de familia del Registro son separadores y no tienen nada que
+    // ensenar en la pagina derecha.
+    for (const clave of SECCIONES) {
+      if (clave === 'codice') continue;
+      const datos = this.paginas[clave].getData('entradas') as EntradaPagina[];
+      this.fila[clave] = Math.max(
+        0,
+        datos.findIndex((e) => !e.cabecera),
+      );
+    }
+
+    this.crearPestanas(folioX + 14, folioY + folioAlto - 30);
+    // Sin ningun fragmento recogido el Codice esta en blanco, asi que el libro
+    // abre por el Registro, que siempre tiene algo. Nada mas frustrante que
+    // abrir un libro y que la primera pagina este vacia.
+    this.irASeccion(this.ids.length > 0 ? 'codice' : 'registro');
+
     this.mostrar(this.indice);
     this.cameras.main.fadeIn(180, 11, 9, 11);
     sonido.codice();
 
     this.input.keyboard?.on('keydown-L', () => this.cerrar());
     this.input.keyboard?.on('keydown-ESC', () => this.cerrar());
+    this.input.keyboard?.on('keydown-A', () => this.cambiarSeccion(-1));
+    this.input.keyboard?.on('keydown-D', () => this.cambiarSeccion(1));
+    this.input.keyboard?.on('keydown-LEFT', () => this.cambiarSeccion(-1));
+    this.input.keyboard?.on('keydown-RIGHT', () => this.cambiarSeccion(1));
     this.input.keyboard?.on('keydown-UP', () => this.mover(-1));
     this.input.keyboard?.on('keydown-W', () => this.mover(-1));
     this.input.keyboard?.on('keydown-DOWN', () => this.mover(1));
@@ -321,7 +419,7 @@ export class CodiceScene extends Phaser.Scene {
   private crearIndice(x: number, y: number): void {
     this.indiceTextos = [];
 
-    this.add.text(x, y - 6, 'INDICE', {
+    this.rotuloIndice = this.add.text(x, y - 6, 'INDICE', {
       fontFamily: 'monospace',
       fontSize: '7px',
       color: COLOR.oroTexto,
@@ -411,6 +509,9 @@ export class CodiceScene extends Phaser.Scene {
         { fontFamily: 'monospace', fontSize: '7px', color: COLOR.rubrica },
       );
       this.numerosTextos.push(numero);
+      // Nacen aqui, asi que hay que meterlos en la pagina a mano: si no, se
+      // quedan pintados encima del Registro al cambiar de seccion.
+      this.paginas?.codice.add(numero);
       fila += this.versiculoTexto.getWrappedText(linea).length;
     });
 
@@ -459,7 +560,240 @@ export class CodiceScene extends Phaser.Scene {
     this.margenCorchete.clear();
   }
 
+  // -- Las cuatro secciones ---------------------------------------------------
+
+  /**
+   * Las pestanas del libro. Van abajo, junto a las teclas, y no arriba: el
+   * folio ya tiene alli su cabecera y su filete de oro, y meter pestanas
+   * encima lo convertiria en una ventana de programa.
+   */
+  private crearPestanas(x: number, y: number): void {
+    let despl = 0;
+    for (const clave of SECCIONES) {
+      const t = this.add
+        .text(x + despl, y, ROTULOS[clave], {
+          fontFamily: 'monospace',
+          fontSize: '7px',
+          color: COLOR.tenue,
+        })
+        .setInteractive({ useHandCursor: true });
+      t.on('pointerdown', () => this.irASeccion(clave));
+      this.pestanas.push(t);
+      despl += t.width + 12;
+    }
+  }
+
+  private cambiarSeccion(delta: number): void {
+    const i = SECCIONES.indexOf(this.seccion);
+    const siguiente = SECCIONES[(i + delta + SECCIONES.length) % SECCIONES.length];
+    if (siguiente === this.seccion) return;
+    sonido.interfazMover();
+    this.irASeccion(siguiente);
+  }
+
+  private irASeccion(clave: Seccion): void {
+    this.seccion = clave;
+    this.tituloLibro.setText(TITULOS[clave]);
+
+    for (const s of SECCIONES) this.paginas[s].setVisible(s === clave);
+    this.pestanas.forEach((t, i) => {
+      t.setColor(SECCIONES[i] === clave ? COLOR.rubrica : COLOR.tenue);
+    });
+
+    if (clave === 'codice') this.mostrar(this.indice);
+    else this.refrescarPagina();
+  }
+
+  /**
+   * Redibuja la seccion abierta. Las tres nuevas comparten forma: una columna
+   * de entradas a la izquierda y la ficha elegida a la derecha, igual que el
+   * Codice, para que el libro se lea como un solo libro.
+   */
+  private refrescarPagina(): void {
+    const pagina = this.paginas[this.seccion];
+    const fila = this.fila[this.seccion];
+    const datos = pagina.getData('entradas') as EntradaPagina[];
+    const lista = pagina.getData('lista') as Phaser.GameObjects.Text[];
+    const titulo = pagina.getData('titulo') as Phaser.GameObjects.Text;
+    const cuerpo = pagina.getData('cuerpo') as Phaser.GameObjects.Text;
+    const pie = pagina.getData('pie') as Phaser.GameObjects.Text;
+    const lamina = pagina.getData('lamina') as Phaser.GameObjects.Image | undefined;
+
+    datos.forEach((e, i) => {
+      const abierta = e.abierta();
+      lista[i].setText(`${i === fila ? '>' : ' '} ${abierta ? e.nombre : '- - - - -'}`);
+      lista[i].setColor(i === fila ? COLOR.rubrica : abierta ? COLOR.tinta : COLOR.tenue);
+    });
+
+    const e = datos[fila];
+    const abierta = e.abierta();
+    titulo.setText(abierta ? e.nombre.toUpperCase() : 'SIN CATALOGAR');
+    titulo.setColor(abierta ? COLOR.rubrica : COLOR.tenue);
+    cuerpo.setText(abierta ? e.descripcion.join('\n') : 'Nadie ha traido noticia de esto todavia.');
+    pie.setText(abierta ? e.pie : '');
+
+    if (!lamina) return;
+    if (abierta && e.textura && this.textures.exists(e.textura)) {
+      // OJO con el fotograma: casi todas estas texturas las genera
+      // ArteProvisional con generateTexture y su unico frame se llama
+      // "__BASE". Pedirles el 0 devuelve un frame sin origen, y al pintarlo
+      // Phaser revienta con `frame.source is null`. Eso mataba la escena del
+      // libro a medias y dejaba el nivel pausado para siempre: el juego se
+      // quedaba colgado al pulsar L. Solo se pide fotograma a quien lo tiene.
+      if (e.fotograma === undefined) lamina.setTexture(e.textura);
+      else lamina.setTexture(e.textura, e.fotograma);
+      lamina.setVisible(true);
+      // Encajada en su hueco sin deformarse: las laminas son de tamanos muy
+      // distintos, desde un sello de 8 px hasta el jefe de 44.
+      const escala = Math.min(46 / lamina.width, 46 / lamina.height, 2);
+      lamina.setScale(Math.max(1, Math.floor(escala)));
+    } else {
+      lamina.setVisible(false);
+    }
+  }
+
+  /** Armazon comun de las tres secciones nuevas. */
+  private crearPaginaLista(
+    folioX: number,
+    folioY: number,
+    folioAncho: number,
+    folioAlto: number,
+    entradas: EntradaPagina[],
+    conLamina: boolean,
+  ): Phaser.GameObjects.Container {
+    const separadorX = folioX + 126;
+    const lecturaX = separadorX + 22;
+    const ancho = folioX + folioAncho - 16 - lecturaX;
+
+    const filete = this.add.graphics();
+    filete.lineStyle(1, COLOR.oro, 0.7);
+    filete.lineBetween(separadorX, folioY + 26, separadorX, folioY + folioAlto - 36);
+
+    const lista = entradas.map((_, i) =>
+      this.add.text(folioX + 14, folioY + 34 + i * 12, '', {
+        fontFamily: 'monospace',
+        fontSize: '8px',
+        color: COLOR.tenue,
+      }),
+    );
+
+    const lamina = conLamina
+      ? this.add.image(lecturaX + 24, folioY + 62, 'chispa-placeholder').setOrigin(0.5, 0.5)
+      : undefined;
+
+    const titulo = this.add.text(conLamina ? lecturaX + 58 : lecturaX, folioY + 34, '', {
+      fontFamily: 'monospace',
+      fontSize: '10px',
+      color: COLOR.rubrica,
+    });
+    const pie = this.add.text(conLamina ? lecturaX + 58 : lecturaX, folioY + 48, '', {
+      fontFamily: 'monospace',
+      fontSize: '7px',
+      color: COLOR.tenue,
+    });
+    const cuerpo = this.add.text(lecturaX, folioY + 92, '', {
+      fontFamily: 'monospace',
+      fontSize: '8px',
+      color: COLOR.tinta,
+      lineSpacing: 4,
+      wordWrap: { width: ancho },
+    });
+
+    const hijos: Phaser.GameObjects.GameObject[] = [filete, ...lista, titulo, pie, cuerpo];
+    if (lamina) hijos.push(lamina);
+
+    const pagina = this.add.container(0, 0, hijos);
+    pagina.setData('entradas', entradas);
+    pagina.setData('lista', lista);
+    pagina.setData('titulo', titulo);
+    pagina.setData('cuerpo', cuerpo);
+    pagina.setData('pie', pie);
+    if (lamina) pagina.setData('lamina', lamina);
+    return pagina;
+  }
+
+  /** Criaturas, oficios y aparato. La lamina es el sprite del propio juego. */
+  private crearPaginaRegistro(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    let familia: Familia | null = null;
+    const entradas: EntradaPagina[] = [];
+
+    for (const ficha of REGISTRO) {
+      if (ficha.familia !== familia) {
+        familia = ficha.familia;
+        entradas.push({
+          nombre: FAMILIAS[familia],
+          descripcion: [],
+          pie: '',
+          abierta: () => true,
+          cabecera: true,
+        });
+      }
+      entradas.push({
+        nombre: ficha.nombre,
+        descripcion: ficha.descripcion,
+        pie: ficha.hallazgo,
+        textura: ficha.textura,
+        fotograma: ficha.fotograma,
+        abierta: () => progreso.estaDescubierto(ficha.id),
+      });
+    }
+
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, true);
+  }
+
+  /** Corte vertical de las seis capas. Las dos del fondo nunca se pisan. */
+  private crearPaginaVientre(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = VIENTRE.map((capa) => ({
+      nombre: capa.nombre,
+      descripcion: capa.descripcion,
+      pie: capa.escena ? 'pisada' : 'no se llega en el teaser',
+      abierta: () => (capa.escena ? progreso.estaPisada(capa.escena) : false),
+    }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /** Los rangos en orden de cuanto cuerpo les queda. Subir es dejar de serlo. */
+  private crearPaginaJerarquia(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = JERARQUIA.map((r) => ({
+      nombre: r.nombre,
+      descripcion: [...r.descripcion, '', `cuerpo propio: ${r.cuerpo}`],
+      pie: '',
+      abierta: () => (r.ficha ? progreso.estaDescubierto(r.ficha) : false),
+    }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
   private mover(delta: number): void {
+    if (this.seccion !== 'codice') {
+      const datos = this.paginas[this.seccion].getData('entradas') as EntradaPagina[];
+      let i = this.fila[this.seccion];
+      // Las cabeceras de familia del Registro no son entradas: se saltan.
+      do {
+        i = Phaser.Math.Clamp(i + delta, 0, datos.length - 1);
+      } while (datos[i].cabecera && i > 0 && i < datos.length - 1);
+      if (datos[i].cabecera) return;
+      if (i === this.fila[this.seccion]) return;
+      this.fila[this.seccion] = i;
+      sonido.interfazMover();
+      this.refrescarPagina();
+      return;
+    }
+
     if (this.ids.length === 0) return;
     sonido.interfazMover();
     this.mostrar(this.indice + delta);
@@ -471,6 +805,9 @@ export class CodiceScene extends Phaser.Scene {
   }
 
   private cerrar(): void {
+    if (this.cerrando) return;
+    this.cerrando = true;
+
     this.input.keyboard?.removeAllListeners();
     sonido.interfazCerrar();
     musica.atenuar(false);
