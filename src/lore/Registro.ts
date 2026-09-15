@@ -119,6 +119,32 @@ export const REGISTRO: readonly FichaRegistro[] = [
     ],
   },
   {
+    id: 'injertadora',
+    familia: 'oficio',
+    nombre: 'Injertadora',
+    textura: 'injertadora-placeholder',
+    hallazgo: 'cargada por primera vez',
+    descripcion: [
+      'Encajaba las protesis a presion, en pocos instantes, sin',
+      'que al ofrendado le diera tiempo a moverse. Esa prisa era',
+      'una piedad: cuanto menos dura, menos se recuerda.',
+      'Sigue funcionando. Solo ha cambiado hacia donde apunta.',
+    ],
+  },
+  {
+    id: 'injerto',
+    familia: 'oficio',
+    nombre: 'Injerto de metal',
+    textura: 'injerto-placeholder',
+    hallazgo: 'recogido de un cuerpo',
+    descripcion: [
+      'Lo que el Sacramento le puso a un fiel para reemplazar lo',
+      'que se llevo. Se le saca al cuerpo que lo llevaba y se le',
+      'mete al siguiente, que es como ha funcionado siempre.',
+      'En la Diocesis el metal no se fabrica: se hereda.',
+    ],
+  },
+  {
     id: 'reliquia',
     familia: 'oficio',
     nombre: 'Reliquia',

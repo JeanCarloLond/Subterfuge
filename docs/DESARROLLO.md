@@ -285,6 +285,7 @@ posición, para que las colisiones no se enteren.
 | Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
 | Ataque cargado        | mantener y soltar (30 Fervor) |
 | Parry                 | `K`, `V` o clic derecho       |
+| Lanzar un injerto     | `F` o `R`                     |
 | Poción de Carne       | `Q`                           |
 | Silenciar el audio    | `M`                           |
 | Ayuda de controles    | `H` o `Tab`                   |
@@ -400,6 +401,45 @@ una decisión. El drone de ambiente sube de tono con cada fase.
 
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
+
+## La Injertadora: un arma a distancia que no se come al bisturí
+
+El mecanismo con el que se encajaban las prótesis a presión, en pocos
+instantes, sin que al ofrendado le diera tiempo a moverse. Sigue funcionando;
+lo único que ha cambiado es hacia dónde apunta. Se carga con los **injertos de
+metal** que sueltan algunos fieles al caer: el Cirujano le saca la pieza a un
+cuerpo y se la mete a otro.
+
+El riesgo de meter un arma a distancia en un juego cuyo combate se sostiene en
+acercarse es que la distancia se vuelva la respuesta a todo. Tres reglas lo
+impiden, y están en `INJERTADORA` y `OFRENDA` (`src/config/Sacramento.ts`):
+
+1. **La munición solo cae peleando de cerca.** Para disparar hay que haber
+   cortado antes. No hay Altar que la reponga: el metal no se fabrica, se
+   hereda.
+2. **No da Fervor al acertar.** El Fervor se gana con el cuerpo, así que el
+   golpe cargado y las Pociones siguen dependiendo de entrar a rango. Si el
+   injerto diera Fervor, dispararlo sería la forma óptima de cargar el golpe
+   cuerpo a cuerpo, que es justo lo contrario de lo que se quiere.
+3. **El enfriamiento no deja vaciar la carga de golpe.**
+
+Daño 3: entre el golpe normal (2) y el cargado (6). Útil, no resolutivo. Es
+para lo que el bisturí no alcanza — un Vestal en una repisa —, no para
+sustituirlo.
+
+La carga vive en `Progreso`, no en el Cirujano: cada zona construye un Cirujano
+nuevo, y si viviera en la entidad, bajar un piso vaciaría el arma y la munición
+que costó pelear se perdería en la puerta.
+
+Se empieza con **un injerto cargado**, y no con cero. Cero era la idea original
+—que el jugador descubriera de dónde sale la munición en el momento en que le
+importa—, pero escondía el arma entera: pulsabas `F` y no pasaba nada, el
+indicador del HUD no aparecía, y la Injertadora solo existía si tenías la
+suerte de que un Devoto soltara metal. Con uno cargado se ve y se prueba en el
+primer minuto, y a partir de ahí ya es escasa de verdad.
+
+Pulsar `F` sin munición **suena y lo dice en el HUD**. Un botón que no hace
+nada visible se lee como un botón roto, no como un arma vacía.
 
 ## Diseño de niveles: por qué hay desvíos
 

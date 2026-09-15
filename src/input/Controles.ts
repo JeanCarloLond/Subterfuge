@@ -19,6 +19,7 @@ export class Controles {
   private readonly atacar: Phaser.Input.Keyboard.Key[];
   private readonly parry: Phaser.Input.Keyboard.Key[];
   private readonly pocion: Phaser.Input.Keyboard.Key[];
+  private readonly injertadora: Phaser.Input.Keyboard.Key[];
   private readonly interactuar: Phaser.Input.Keyboard.Key[];
   private readonly silenciar: Phaser.Input.Keyboard.Key[];
   private readonly ayuda: Phaser.Input.Keyboard.Key[];
@@ -49,6 +50,8 @@ export class Controles {
     this.atacar = [tecla(K.J), tecla(K.C)];
     this.parry = [tecla(K.K), tecla(K.V)];
     this.pocion = [tecla(K.Q)];
+    // F y R: las dos caen cerca de WASD sin pisar nada de lo que ya hay.
+    this.injertadora = [tecla(K.F), tecla(K.R)];
     this.interactuar = [tecla(K.E)];
     this.silenciar = [tecla(K.M)];
     this.ayuda = [tecla(K.H), tecla(K.TAB)];
@@ -127,6 +130,11 @@ export class Controles {
 
   get ayudaPresionada(): boolean {
     return this.algunaRecien(this.ayuda);
+  }
+
+  /** Lanzar un injerto con la Injertadora. */
+  get injertadoraPresionada(): boolean {
+    return this.algunaRecien(this.injertadora);
   }
 
   /** Abrir el Codice de la Carne para leer lo recogido. */

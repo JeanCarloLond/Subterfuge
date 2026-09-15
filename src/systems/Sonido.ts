@@ -420,6 +420,23 @@ class Sonido {
   }
 
   /** Sello del diezmo saliendo despedido. */
+  /**
+   * La Injertadora: un golpe de presion, no un disparo.
+   *
+   * Ruido corto y seco con un tono grave debajo — aire soltado de golpe y
+   * metal saliendo. Si sonara a arma de fuego, el arma dejaria de ser el
+   * instrumento del oficio y se convertiria en una pistola con otro nombre.
+   */
+  injertadora(): void {
+    this.ruido({ duracion: 0.07, frecuencia: 2400, barridoHasta: 600, volumen: 0.16 });
+    this.tono({ desde: 320, hasta: 120, onda: 'square', duracion: 0.09, volumen: 0.1 });
+  }
+
+  /** Sin munición: el mecanismo se arma y no sale nada. */
+  injertadoraVacia(): void {
+    this.tono({ desde: 190, hasta: 150, onda: 'square', duracion: 0.05, volumen: 0.07 });
+  }
+
   selloLanzado(): void {
     this.tono({ desde: 900, hasta: 1500, onda: 'triangle', duracion: 0.1, volumen: 0.14 });
   }
@@ -516,9 +533,22 @@ class Sonido {
   }
 
   /** Recoger una ofrenda del suelo: corto, humedo si es carne, tintineo si es sello. */
-  ofrenda(tipo: 'carne' | 'sello'): void {
+  ofrenda(tipo: 'carne' | 'sello' | 'injerto'): void {
     if (tipo === 'sello') {
       this.tono({ desde: 1320, hasta: 1760, onda: 'triangle', duracion: 0.12, volumen: 0.16 });
+      return;
+    }
+    if (tipo === 'injerto') {
+      // Metal contra metal: la pieza entra en la recamara.
+      this.tono({ desde: 980, hasta: 1240, onda: 'square', duracion: 0.05, volumen: 0.1 });
+      this.tono({
+        desde: 1600,
+        hasta: 1400,
+        onda: 'triangle',
+        duracion: 0.07,
+        volumen: 0.08,
+        retardo: 0.05,
+      });
       return;
     }
     this.ruido({ duracion: 0.08, frecuencia: 700, barridoHasta: 200, volumen: 0.2 });

@@ -214,6 +214,58 @@ export const COMBATE = {
 } as const;
 
 /**
+ * La Injertadora: el arma a distancia.
+ *
+ * QUE ES. El mecanismo con el que se encajaban las protesis a presion, en
+ * pocos instantes, sin que al ofrendado le diera tiempo a moverse. Sigue
+ * funcionando. Lo unico que ha cambiado es hacia donde apunta.
+ *
+ * Se carga con los injertos de metal que sueltan algunos fieles al caer: el
+ * Cirujano le saca la pieza a un cuerpo y se la mete a otro. No hay munición
+ * que comprar ni Altar que la reponga, porque en la Diocesis el metal no se
+ * fabrica, se hereda.
+ *
+ * POR QUE NO CANIBALIZA AL BISTURI, que es el riesgo de meter un arma a
+ * distancia en un juego cuyo combate se sostiene en acercarse:
+ *
+ *   1. La munición es escasa y solo cae peleando de cerca. Para disparar hay
+ *      que haber cortado antes.
+ *   2. NO da Fervor al acertar. El Fervor se gana con el cuerpo; el golpe
+ *      cargado y las Pociones siguen dependiendo de entrar a rango.
+ *   3. El enfriamiento no deja vaciar la carga de golpe.
+ *
+ * Es para resolver lo que el bisturi no alcanza — un Vestal en una repisa —,
+ * no para sustituirlo.
+ */
+export const INJERTADORA = {
+  /** Injertos que caben encima. Cuatro: se acaban rapido y se notan. */
+  cargaMaxima: 4,
+  /**
+   * Con cuantos empieza la partida.
+   *
+   * UNO, y no cero. Empezaba a cero para que el jugador aprendiera de donde
+   * sale la munición en el momento en que le importa, pero en la practica eso
+   * escondia el arma entera: pulsabas F y no pasaba nada, el indicador del HUD
+   * no aparecia, y la Injertadora solo existia si tenias la suerte de que un
+   * Devoto soltara metal. Con uno cargado, el arma se ve y se prueba en el
+   * primer minuto, y a partir de ahi ya es escasa de verdad.
+   *
+   * Tambien encaja mejor: las Manos no salen de la Sala 7 con el instrumento
+   * descargado.
+   */
+  cargaInicial: 1,
+  /** Entre el golpe normal (2) y el cargado (6): util, no resolutivo. */
+  dano: 3,
+  /** Sale a presion: casi el doble que el sello del Vestal. */
+  velocidad: 340,
+  /** Se apaga solo si no toca nada, para no dejar metal volando (ms). */
+  vidaMs: 1400,
+  enfriamientoMs: 420,
+  /** La presion tambien empuja a quien dispara (px/s). */
+  retroceso: 90,
+} as const;
+
+/**
  * Dano por caida, proporcional a la altura.
  *
  * Se mide desde el punto MAS ALTO de la trayectoria hasta el suelo, no desde
@@ -258,10 +310,21 @@ export const CONTACTO = {
 export const OFRENDA = {
   curacionCarne: 1,
   fervorSello: 20,
-  /** Probabilidades por clase. Lo que no suma 1 es "no suelta nada". */
-  devotoCarne: 0.45,
-  devotoSello: 0.35,
-  vestalCarne: 0.25,
+  /** Injertos que repone un injerto recogido. */
+  cargaInjerto: 1,
+  /**
+   * Probabilidades por clase. Lo que no suma 1 es "no suelta nada".
+   *
+   * El injerto cae poco y solo de quien lleva metal encima: el Devoto lo lleva
+   * porque el Sacramento le repuso lo que le falta, y el Vestal porque de
+   * cintura para abajo ya es todo protesis. Si cayera a menudo, la Injertadora
+   * dejaria de ser un recurso y pasaria a ser el arma principal.
+   */
+  devotoCarne: 0.4,
+  devotoSello: 0.3,
+  devotoInjerto: 0.16,
+  vestalCarne: 0.2,
+  vestalInjerto: 0.22,
   /** Cuanto dura en el suelo antes de desvanecerse (ms), y cuanto parpadea antes. */
   vidaMs: 11000,
   parpadeoMs: 2400,

@@ -3,19 +3,21 @@ import { OFRENDA } from '../config/Sacramento';
 import type { ClaseEnemigo } from '../systems/Sonido';
 
 /** Lo que deja un enemigo al caer. */
-export type TipoOfrenda = 'carne' | 'sello';
+export type TipoOfrenda = 'carne' | 'sello' | 'injerto';
 
 export const OFRENDAS: Record<TipoOfrenda, { nombre: string; textura: string }> = {
   carne: { nombre: 'carne del diezmo', textura: 'carne-placeholder' },
   sello: { nombre: 'sello del diezmo', textura: 'sello-placeholder' },
+  injerto: { nombre: 'injerto de metal', textura: 'injerto-placeholder' },
 };
 
 /**
  * Ofrenda: la recompensa por derrotar a un enemigo.
  *
  * Cae del cuerpo, rebota una vez y se queda en el suelo unos segundos. La
- * carne cura un punto; el sello da Fervor. Es lo que en la Diocesis se le
- * saca a un cuerpo, asi que tiene sentido que sea lo que deja un Devoto.
+ * carne cura un punto, el sello da Fervor y el injerto de metal carga la
+ * Injertadora. Es lo que en la Diocesis se le saca a un cuerpo, asi que tiene
+ * sentido que sea lo que deja un Devoto.
  *
  * Sin esto los enemigos eran solo obstaculos: pelear no daba nada que no
  * diera rodearlos (issue #27).
@@ -91,17 +93,27 @@ export class Ofrenda {
     this.sprite.destroy();
   }
 
-  /** Que ofrenda deja cada clase de enemigo, si deja alguna. */
+  /**
+   * Que ofrenda deja cada clase de enemigo, si deja alguna.
+   *
+   * El injerto solo cae de quien lleva metal puesto, que son los dos: al
+   * Devoto el Sacramento le repuso lo que le faltaba, y a la Vestal de cintura
+   * para abajo ya no le queda otra cosa.
+   */
   static sortear(clase: ClaseEnemigo): TipoOfrenda | null {
     const tirada = Math.random();
 
     switch (clase) {
       case 'vestal':
         // El clero siempre lleva sellos encima; de vez en cuando, algo mas.
-        return tirada < OFRENDA.vestalCarne ? 'carne' : 'sello';
+        if (tirada < OFRENDA.vestalCarne) return 'carne';
+        if (tirada < OFRENDA.vestalCarne + OFRENDA.vestalInjerto) return 'injerto';
+        return 'sello';
       case 'devoto':
         if (tirada < OFRENDA.devotoCarne) return 'carne';
         if (tirada < OFRENDA.devotoCarne + OFRENDA.devotoSello) return 'sello';
+        if (tirada < OFRENDA.devotoCarne + OFRENDA.devotoSello + OFRENDA.devotoInjerto)
+          return 'injerto';
         return null;
       default:
         // El jefe no suelta nada: su recompensa es la salida que se abre.

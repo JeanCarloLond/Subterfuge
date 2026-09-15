@@ -8,6 +8,7 @@ import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
+import { Injerto } from '../entities/Injerto';
 import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
 import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
@@ -234,6 +235,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private devotos: Devoto[] = [];
   private vestales: Vestal[] = [];
   private sellos: Sello[] = [];
+  private injertos: Injerto[] = [];
   private jefe?: Reformado;
   private jefeDerrotado = false;
   /** Colisiones y temporizadores del jefe: se retiran al reiniciar el combate. */
@@ -368,6 +370,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.devotos = [];
     this.vestales = [];
     this.sellos = [];
+    this.injertos = [];
     this.jefe = undefined;
     this.jefeDerrotado = false;
     this.ligadurasDeJefe = [];
@@ -744,6 +747,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
     this.cirujano.eventos.on('pociones', (cargas: number, maximo: number) => {
       this.game.events.emit(EVENTOS_HUD.pociones, cargas, maximo);
+    });
+    this.cirujano.eventos.on('injertos', (cargas: number, maximo: number) => {
+      this.game.events.emit(EVENTOS_HUD.injertos, cargas, maximo);
+    });
+    this.cirujano.eventos.on('disparo', (x: number, y: number, direccion: number) => {
+      this.lanzarInjerto(x, y, direccion);
+    });
+    this.cirujano.eventos.on('sin-injertos', () => {
+      this.game.events.emit(EVENTOS_HUD.aviso, 'sin injertos  ·  los sueltan los fieles');
     });
     this.cirujano.eventos.on('caida', (dano: number) => {
       this.impacto.danoPorCaida(dano);
@@ -1210,11 +1222,69 @@ export abstract class EscenaNivel extends Phaser.Scene {
       return;
     }
 
+    if (ofrenda.tipo === 'injerto') {
+      this.anotar('injerto');
+      if (!this.cirujano.cargarInjerto(OFRENDA.cargaInjerto)) {
+        this.game.events.emit(EVENTOS_HUD.aviso, 'la Injertadora esta llena');
+        return;
+      }
+
+      // La primera vez se dice la tecla. Sin esto el jugador recoge un trozo
+      // de metal, ve aparecer una barrita nueva en el HUD y no sabe que hacer
+      // con ninguna de las dos cosas.
+      if (!progreso.estaDescubierto('injertadora')) {
+        this.anotar('injertadora');
+        this.game.events.emit(EVENTOS_HUD.aviso, 'F  lanzar injerto');
+        return;
+      }
+
+      this.game.events.emit(EVENTOS_HUD.aviso, `${ofrenda.nombre}  ·  Injertadora +1`);
+      return;
+    }
+
     this.cirujano.fervor.ganar(OFRENDA.fervorSello);
     this.game.events.emit(
       EVENTOS_HUD.aviso,
       `${ofrenda.nombre}  ·  +${OFRENDA.fervorSello} Fervor`,
     );
+  }
+
+  // -- La Injertadora ------------------------------------------------------
+
+  private lanzarInjerto(x: number, y: number, direccion: number): void {
+    const injerto = new Injerto(this, x, y, direccion);
+    this.injertos.push(injerto);
+
+    // Contra la piedra se clava y se queda a la vista un momento.
+    this.physics.add.collider(injerto.sprite, this.suelos, () => injerto.clavar());
+
+    this.physics.add.overlap(injerto.sprite, this.obtenerGrupoEnemigos(), (_i, spriteEnemigo) =>
+      this.resolverInjertoContraEnemigo(injerto, spriteEnemigo as Phaser.GameObjects.GameObject),
+    );
+  }
+
+  /**
+   * El injerto hiere y se gasta.
+   *
+   * NO da Fervor: el Fervor se gana con el cuerpo, y regalarlo a distancia
+   * convertiria la Injertadora en la forma optima de cargar el golpe cargado,
+   * que es justo lo contrario de lo que se quiere.
+   */
+  private resolverInjertoContraEnemigo(
+    injerto: Injerto,
+    spriteEnemigo: Phaser.GameObjects.GameObject,
+  ): void {
+    if (!injerto.estaVivo) return;
+
+    const enemigo = enemigoDe(spriteEnemigo);
+    if (!enemigo || enemigo.estaMuerto) return;
+    if (!injerto.consumir()) return;
+
+    enemigo.recibirDano(injerto.dano, injerto.sprite.x);
+    this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, false, enemigo.clase);
+    if (enemigo.estaMuerto)
+      this.soltarOfrenda(enemigo.sprite.x, enemigo.sprite.y - 12, enemigo.clase);
+    injerto.destruir();
   }
 
   // -- Sellos del diezmo ---------------------------------------------------
@@ -1677,6 +1747,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.cirujano.pociones,
         this.cirujano.pocionesMaximas,
       );
+      this.game.events.emit(
+        EVENTOS_HUD.injertos,
+        this.cirujano.injertos,
+        this.cirujano.injertosMaximos,
+      );
       this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
       // Por si la zona anterior se dejo el cartel de la caida puesto (#37).
       this.game.events.emit(EVENTOS_HUD.caida, false);
@@ -1706,15 +1781,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Dos columnas de 220 px: cabe una linea de ANCHO_MAXIMO caracteres en cada una
     // sin pisar a la otra. Antes median 142 px y se solapaban (issue #30).
     const ancho = 464;
-    const alto = 128;
-    const x = (RESOLUCION.ancho - ancho) / 2;
-    const y = RESOLUCION.alto - alto - 14;
-
-    const fondo = this.add.graphics();
-    fondo.fillStyle(0x0b090b, 0.86);
-    fondo.fillRect(0, 0, ancho, alto);
-    fondo.lineStyle(1, 0x4a4038, 1);
-    fondo.strokeRect(0, 0, ancho, alto);
+    const margen = 10;
 
     const estilo = {
       fontFamily: 'monospace',
@@ -1724,9 +1791,23 @@ export abstract class EscenaNivel extends Phaser.Scene {
     };
     const estiloTenue = { ...estilo, color: '#8a7d70' };
 
-    const movimiento = this.add.text(12, 10, CONTROLES_MOVIMIENTO.join('\n'), estilo);
+    // Los textos PRIMERO y el panel despues, a la medida de lo que hay dentro.
+    // Con el alto a mano, anadir una linea a la ayuda la sacaba del panel sin
+    // que nada se quejara: paso al meter la Injertadora, y la columna de
+    // combate acabo 14 px por debajo del borde, encima del pie.
+    const movimiento = this.add.text(12, margen, CONTROLES_MOVIMIENTO.join('\n'), estilo);
+    const combate = this.add.text(236, margen, CONTROLES_COMBATE.join('\n'), estilo);
 
-    const combate = this.add.text(236, 10, CONTROLES_COMBATE.join('\n'), estilo);
+    const columnas = Math.max(movimiento.height, combate.height);
+    const alto = Math.ceil(margen + columnas + 26);
+    const x = (RESOLUCION.ancho - ancho) / 2;
+    const y = RESOLUCION.alto - alto - 14;
+
+    const fondo = this.add.graphics();
+    fondo.fillStyle(0x0b090b, 0.86);
+    fondo.fillRect(0, 0, ancho, alto);
+    fondo.lineStyle(1, 0x4a4038, 1);
+    fondo.strokeRect(0, 0, ancho, alto);
 
     const pie = this.add.text(
       10,
