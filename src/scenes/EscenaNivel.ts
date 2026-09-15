@@ -1415,11 +1415,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private abrirCodice(): void {
     if (this.cirujano.estaMuerto || this.descendiendo) return;
 
-    if (progreso.fragmentosRecogidos === 0) {
-      this.game.events.emit(EVENTOS_HUD.aviso, 'aun no tienes fragmentos del Codice');
-      return;
-    }
-
+    // El libro se abre SIEMPRE. Antes hacia falta un fragmento del Codice,
+    // porque el libro era solo el Codice; ahora el Registro y el corte del
+    // Vientre tienen contenido desde el primer segundo de partida, asi que
+    // negar el libro entero por no haber encontrado una hoja no tenia sentido.
     sonido.interfazAbrir();
     musica.atenuar(true);
     this.scene.pause();

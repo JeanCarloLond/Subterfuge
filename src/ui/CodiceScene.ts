@@ -250,8 +250,23 @@ export class CodiceScene extends Phaser.Scene {
       jerarquia: this.crearPaginaJerarquia(folioX, folioY, folioAncho, folioAlto),
     };
 
+    // La primera fila de cada seccion tiene que ser una ficha de verdad: las
+    // cabeceras de familia del Registro son separadores y no tienen nada que
+    // ensenar en la pagina derecha.
+    for (const clave of SECCIONES) {
+      if (clave === 'codice') continue;
+      const datos = this.paginas[clave].getData('entradas') as EntradaPagina[];
+      this.fila[clave] = Math.max(
+        0,
+        datos.findIndex((e) => !e.cabecera),
+      );
+    }
+
     this.crearPestanas(folioX + 14, folioY + folioAlto - 30);
-    this.irASeccion('codice');
+    // Sin ningun fragmento recogido el Codice esta en blanco, asi que el libro
+    // abre por el Registro, que siempre tiene algo. Nada mas frustrante que
+    // abrir un libro y que la primera pagina este vacia.
+    this.irASeccion(this.ids.length > 0 ? 'codice' : 'registro');
 
     this.mostrar(this.indice);
     this.cameras.main.fadeIn(180, 11, 9, 11);
