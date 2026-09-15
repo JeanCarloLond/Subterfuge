@@ -30,6 +30,8 @@ export class AtrioScene extends EscenaNivel {
       colorFondo: '#141014',
       musica: 'atrio',
       inicio: { x: 80, y: 200 },
+
+      llegada: 'atrio',
       mostrarAyuda: true,
 
       // La zona mas alta y la unica que todavia parece arquitectura: la piedra
