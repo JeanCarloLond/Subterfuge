@@ -143,7 +143,15 @@ function verificar(nombre, archivo) {
  * Se apoyan las que descansan en el suelo; las que cuelgan del techo o van
  * embutidas en el muro se excluyen a propósito.
  */
-const COLGANTES = new Set(['exvoto', 'cadena', 'reja', 'ventana', 'durmiente']);
+const COLGANTES = new Set([
+  'exvoto',
+  'cadena',
+  'reja',
+  'ventana',
+  'durmiente',
+  'luz-hospital',
+  'radiografia',
+]);
 
 function leerTuplas(src, nombre, patron) {
   const bloque = src.match(new RegExp(`${nombre}: \\[([\\s\\S]*?)\\n {6}\\],`));
@@ -159,7 +167,7 @@ function verificarDecorado(nombre, archivo) {
   const paredes = leerTuplas(src, 'paredes', /\[\s*(-?\d+),\s*(-?\d+),\s*(-?\d+)\s*\]/g).map(
     (m) => ({ x: Number(m[1]), y0: Number(m[2]), y1: Number(m[3]) }),
   );
-  const decorado = leerTuplas(src, 'decorado', /\[\s*(-?\d+),\s*(-?\d+),\s*'([a-z]+)'\s*\]/g).map(
+  const decorado = leerTuplas(src, 'decorado', /\[\s*(-?\d+),\s*(-?\d+),\s*'([a-z-]+)'\s*\]/g).map(
     (m) => ({ x: Number(m[1]), y: Number(m[2]), tipo: m[3] }),
   );
 

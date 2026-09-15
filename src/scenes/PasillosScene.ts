@@ -122,6 +122,12 @@ export class PasillosScene extends EscenaNivel {
       // Burocracia: columnas como estanterias, cera de archivo, exvotos que
       // cuelgan del techo bajo, y la primera sangre en el suelo del fondo.
       decorado: [
+        // El archivo medico de la Diocesis: placas puestas y un manual que
+        // sigue proyectandose para nadie.
+        [560, 344, 'radiografia'],
+        [1040, 160, 'radiografia'],
+        [420, 344, 'holograma'],
+        [660, 520, 'pila-carne'],
         // Zona administrativa: aqui es donde quedaron las terminales.
         [300, 160, 'pantalla'],
         [780, 344, 'pantalla'],

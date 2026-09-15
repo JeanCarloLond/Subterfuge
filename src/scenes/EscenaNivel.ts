@@ -63,7 +63,13 @@ export type TipoDecorado =
   // La capa de Genesis Vestal asomando por debajo de la Diocesis.
   | 'pantalla'
   | 'conducto'
-  | 'maquina';
+  | 'maquina'
+  // El hospital: lo que un sitio que lleva generaciones cobrando carne acumula.
+  | 'cadaver'
+  | 'pila-carne'
+  | 'holograma'
+  | 'radiografia'
+  | 'luz-hospital';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -533,7 +539,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private crearDecorado(): void {
     for (const [x, y, tipo] of this.definicion.decorado ?? []) {
       const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
-      pieza.setOrigin(0.5, tipo === 'exvoto' ? 0 : 1);
+      pieza.setOrigin(0.5, tipo === 'exvoto' || tipo === 'luz-hospital' ? 0 : 1);
       pieza.setDepth(-5);
 
       if (tipo === 'vela') {
@@ -577,6 +583,41 @@ export abstract class EscenaNivel extends Phaser.Scene {
       } else if (tipo === 'conducto') {
         pieza.setAlpha(0.85);
         pieza.setDepth(-6);
+      } else if (tipo === 'holograma') {
+        // Gira, o lo intenta: la proyeccion lleva generaciones repitiendose y
+        // ya no se sostiene entera. Por eso parpadea y se estrecha, en vez de
+        // girar limpio.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          scaleX: { from: 1, to: 0.25 },
+          alpha: { from: 0.9, to: 0.55 },
+          duration: 1400,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'radiografia') {
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.7, to: 1 },
+          duration: Phaser.Math.Between(1800, 2600),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'luz-hospital') {
+        // Cuelga del techo, como el exvoto, pero no se balancea: esta atornillada.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.8, to: 1 },
+          duration: Phaser.Math.Between(2200, 3200),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
       }
     }
   }

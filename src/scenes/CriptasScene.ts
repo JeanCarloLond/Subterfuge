@@ -109,6 +109,13 @@ export class CriptasScene extends EscenaNivel {
       // de parecer una imagen y pasa a ser un inventario. Ninguna vela: aqui
       // no se reza, se espera.
       decorado: [
+        // Lo que se acumula donde se espera turno.
+        [300, 880, 'cadaver'],
+        [620, 880, 'pila-carne'],
+        [240, 560, 'pila-carne'],
+        [420, 320, 'luz-hospital'],
+        [240, 720, 'luz-hospital'],
+        [8, 400, 'radiografia'],
         // Lo que mantiene dormidos a los inscritos baja por estos conductos.
         [8, 560, 'conducto'],
         [712, 640, 'conducto'],

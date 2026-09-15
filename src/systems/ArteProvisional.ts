@@ -59,46 +59,46 @@ const CIRUJANO: Figura = {
   },
   // prettier-ignore
   filas: [
-    '......qppppppq..........',
+    '.......qppppq...........',
+    '.....qppPPPPppq.........',
     '....qppPPPPPPppq........',
-    '...qppPPPPPPPPppq.......',
-    '..qppPPPPPPPPPPppq......',
-    '..qppPPPnnnnnPPppq......',
-    '..qppPPnkkkkknPppq......',
-    '..qppPPnkKKKKkkjq.......',
-    '..qppPPnkKYnKKkkjj......',
-    '..qppPPnkKKnKKkkkjj.....',
-    '..qppPPnkkKKkkkkjjj.....',
-    '..qppPPnnkkkkkjjjj......',
-    '..qppPPnnmkkkjjj........',
-    '..qppPPqnmmkjj..........',
-    '..qppPPq.mmjj...........',
-    '.qppppppppq.............',
-    'qppPPPPPPPPppq..........',
-    'qppPPPPPPPPPPPppq.......',
-    '.qppPPPPPPPPPPppq.......',
-    '..qppppppppppppq........',
-    '...qppPPPPPPPPpq........',
-    '..qppPPPPPPPPPPpq.......',
-    '..qpppppppppppppq.......',
-    '....NNNNNNKNNNNN........',
-    '....NNNNNNnNNNNN........',
-    '....NNNNNNKNNNNN........',
-    '....NNNNNNnNNNNN........',
-    '....NNNNNNKNNNNN........',
-    '...NpppppppppppN........',
-    '...NpkKYKkppppppN.......',
-    '...NpppppppppppN........',
-    '...NNNNNNNNNNNNN........',
-    '...NNNNNNNNNNNNN........',
-    '...NNNNNnNNNNNNN........',
-    '...NNNNNnnNNNNNN........',
-    '..NNNNNnnnNNNNNNN.......',
-    '..NNNNnnnnnNNNNNN.......',
-    '..NNNNnnnnnNNNNNN.......',
-    '..NNNnnn...nnnNNNN......',
-    '..nnnnn.....nnnnnn......',
-    '..nnnn.......nnnnn......',
+    '....qppPPPPPPPppq.......',
+    '....qppPnnnnnPppq.......',
+    '....qppnkkkkknPpq.......',
+    '....qppnkKKKKkkjq.......',
+    '....qppnkKYnKKkkjj......',
+    '....qppnkKKnKKkkkjj.....',
+    '....qppnkkKKkkkkjjj.....',
+    '....qppnnkkkkkjjjj......',
+    '....qppnnmkkkjjj........',
+    '....qppqnmmkjj..........',
+    '....qppq.mmjj...........',
+    '...qpppppppq............',
+    '..qppPPPPPPPppq.........',
+    '..qppPPPPPPPPPppq.......',
+    '..qppPPPPPPPPPppq.......',
+    '...qppppppppppq.........',
+    '....qppPPPPPpq..........',
+    '...qppPPPPPPPpq.........',
+    '...qpppppppppppq........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNN.........',
+    '.....NNNNKNNNNNm........',
+    '.....NNNNnNNNNmmM.......',
+    '.....NNNNKNNNNmMj.......',
+    '....NpppppppppNjKj......',
+    '....NkKYKkppppNjKKj.....',
+    '....NpppppppppNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNnNNNNNN.jKKj....',
+    '....NNNnnNNNNNN.jKKj....',
+    '...NNNNnnnNNNNNN.jKj....',
+    '...NNNnnnnnNNNNN.jKj....',
+    '...NNNnnnnnNNNNN..jj....',
+    '...NNnnn...nnnNN........',
+    '...nnnn.....nnnn........',
+    '...nnn.......nnn........',
   ],
 };
 
@@ -1174,6 +1174,165 @@ const MURO_SALAS_B: Figura = {
   ],
 };
 
+// -- Lo que el sacramento deja ------------------------------------------------
+//
+// El bible describe el Vientre como "catedral, hospital y prision al mismo
+// tiempo". La catedral ya estaba; faltaba el hospital, y sobre todo faltaba lo
+// que un hospital que lleva generaciones cobrando carne acumula por los
+// rincones.
+//
+// Nada de esto se explica con un cartel: son bultos en el suelo y luces que
+// nadie apago. El horror lo pone el jugador al reconocer lo que ve.
+
+// Un Elegido que no completo el sacramento y al que ya nadie trasladara. Se le
+// reconoce la cabeza, y se le reconoce la pierna que le pusieron.
+const CADAVER: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.....ccc.................',
+    '...ccCCCcc.....cc........',
+    '..cCRRRRRCcccccCCCcc.....',
+    '.cCRRRRRRRCRRRRRRRRCcMM..',
+    '.cCRRRRRRRCRRRRRRRRCcMSM.',
+    '..cCRRRRRCcccccCCCcc.MSM.',
+    '...ccCCCcc.....cc....MMM.',
+    '....ccccc............nnn.',
+  ],
+};
+
+// El diezmo del dia, esperando turno. Pesado, registrado y apilado: para la
+// Diocesis esto es contabilidad, y por eso esta ahi tirado sin ceremonia.
+const PILA_CARNE: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.......cccc.........',
+    '.....ccCCCCcc.......',
+    '...ccCCRRRRCCcc.....',
+    '..cCCRRRRRRRRCCc....',
+    '.cCRRRRCCRRRRRRCc...',
+    'cCRRRRCCCCRRRRRRCc..',
+    'cCRRRRRCCRRRRRRRCc..',
+    'cCCRRRRRRRRRRRRCCc..',
+    '.cCCRRRRRRRRRRCCc...',
+    '..ccCCCCCCCCCCcc....',
+    '...cccccccccccc.....',
+  ],
+};
+
+// Proyeccion medica de Genesis Vestal girando sobre un emisor que nadie apago
+// en generaciones. La figura que dibuja es un cuerpo humano completo: el
+// manual sigue ahi, ensenando a quien ya no sabe leerlo.
+const HOLOGRAMA: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '......tt.......',
+    '.....tTTt......',
+    '.....tTTt......',
+    '....ttTTtt.....',
+    '...tt.TT.tt....',
+    '..tt..TT..tt...',
+    '..t...TT...t...',
+    '......TT.......',
+    '.....tTTt......',
+    '.....t..t......',
+    '....tt..tt.....',
+    '...tt....tt....',
+    '...............',
+    '..MMMMMMMMMMM..',
+    '..MSSSSTSSSSM..',
+    '..MMMMMMMMMMM..',
+  ],
+};
+
+// Negatoscopio en el muro con una placa puesta. Se distingue una caja toracica
+// y, en una esquina, la mancha que alguien marco hace mucho.
+const RADIOGRAFIA: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    'MMMMMMMMMMMMMM',
+    'MSSSSSSSSSSSSM',
+    'MStttttttttttM',
+    'MStTTtttTTtttM',
+    'MStTttttttTttM',
+    'MStTTTTTTTTttM',
+    'MStTttttttTttM',
+    'MStTTtttTTtttM',
+    'MStttTTTTtttcM',
+    'MSttttTTtttccM',
+    'MSttttttttcccM',
+    'MMMMMMMMMMMMMM',
+  ],
+};
+
+// Lampara de quirofano colgada del techo. Es la otra luz del Vientre: la vela
+// da calor y esta da frio, y en las Salas conviven sobre la misma camilla.
+const LUZ_HOSPITAL: Figura = {
+  paleta: {
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    R: 0xd4564a, // carne al rojo
+    M: 0x9ca193, // metal
+    S: 0x4a5450, // metal en sombra
+    t: 0x487b84, // luz de la maquina
+    T: 0x7fc9bd, // luz, brillo
+    n: 0x14100f, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.......n.......',
+    '.......n.......',
+    '.......n.......',
+    '....MMMMMMM....',
+    '..MMMSSSSSMMM..',
+    '.MMSSTTTTTSSMM.',
+    '.MSTTTTTTTTTSM.',
+    '..STTTTTTTTTS..',
+    '...TTTTTTTTT...',
+    '....TTTTTTT....',
+    '.....TTTTT.....',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -1204,6 +1363,11 @@ const FIGURAS: Record<string, Figura> = {
   pantalla: PANTALLA,
   conducto: CONDUCTO,
   maquina: MAQUINA,
+  cadaver: CADAVER,
+  'pila-carne': PILA_CARNE,
+  holograma: HOLOGRAMA,
+  radiografia: RADIOGRAFIA,
+  'luz-hospital': LUZ_HOSPITAL,
   carne: CARNE,
   ventana: VENTANA,
   cadena: CADENA,
