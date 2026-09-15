@@ -55,7 +55,11 @@ export type TipoDecorado =
   | 'durmiente'
   | 'reja'
   | 'ventana'
-  | 'cadena';
+  | 'cadena'
+  // La capa de Genesis Vestal asomando por debajo de la Diocesis.
+  | 'pantalla'
+  | 'conducto'
+  | 'maquina';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -537,6 +541,23 @@ export abstract class EscenaNivel extends Phaser.Scene {
         if (this.definicion.tinte !== undefined) pieza.setTint(this.definicion.tinte);
       } else if (tipo === 'reja') {
         pieza.setAlpha(0.9);
+      } else if (tipo === 'pantalla' || tipo === 'maquina') {
+        // Parpadeo irregular: una senal que lleva generaciones sin que nadie
+        // la lea, no un piloto de encendido. Va detras de la piedra pero por
+        // delante del telon, y NO se tine con la zona — es lo unico del
+        // Vientre que no pertenece a la Diocesis.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.55, to: 1 },
+          duration: Phaser.Math.Between(900, 1700),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'conducto') {
+        pieza.setAlpha(0.85);
+        pieza.setDepth(-6);
       }
     }
   }

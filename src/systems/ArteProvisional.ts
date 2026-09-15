@@ -789,6 +789,111 @@ const CADENA: Figura = {
   ],
 };
 
+// -- La capa de debajo: Genesis Vestal ---------------------------------------
+//
+// El world bible describe el mundo como un "futuro sedimentado": "la maquinaria
+// avanzada sigue ahi, pero cubierta de siglos de cera, oxido, tela y hueso". El
+// juego era todo piedra, cera y oro — puro medievo, sin el otro lado.
+//
+// Estas tres piezas son ese otro lado asomando. Van en turquesa frio, el unico
+// color del juego que no es carne, sangre, oro ni piedra, y por eso se leen
+// como algo que NO pertenece a la Diocesis aunque la Diocesis viva encima.
+//
+// Cuanto mas abajo, mas maquina: en el Atrio apenas una terminal muerta; en el
+// Vientre Profundo la arquitectura ya seria esto.
+
+// Terminal de Genesis Vestal. Nadie sabe leerla desde hace generaciones.
+const PANTALLA: Figura = {
+  paleta: {
+    n: 0x1e1611, // contorno
+    M: 0x9ca193, // carcasa
+    a: 0x333e42, // cristal apagado
+    T: 0x7fc9bd, // lo que aun parpadea
+    d: 0x5b5c57, // soporte
+  },
+  // prettier-ignore
+  filas: [
+    'nnnnnnnnnnnnnnnn',
+    'nMMMMMMMMMMMMMMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMaTTaaaaTTTaaMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMaaTTTaaaaaTaMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMaTaaaTTaaaaaMn',
+    'nMaaaaaaaaaaaaMn',
+    'nMMMMMMMMMMMMMMn',
+    'nnddddddddddddnn',
+    '..d..........d..',
+  ],
+};
+
+// Conducto. Lo que lleva por dentro ya no se distingue de una vena.
+const CONDUCTO: Figura = {
+  paleta: {
+    n: 0x1e1611,
+    M: 0x9ca193, // abrazaderas
+    t: 0x487b84, // fluido
+    T: 0x7fc9bd, // fluido, brillo
+    d: 0x5b5c57,
+  },
+  // prettier-ignore
+  filas: [
+    'ndddddddn',
+    'dMMMMMMMd',
+    'dMttttttM',
+    'dMtTTttTM',
+    'dMttttttM',
+    'dMMMMMMMd',
+    'ndddddddn',
+    '.n.....n.',
+    'ndddddddn',
+    'dMMMMMMMd',
+    'dMttTtttM',
+    'dMttttTtM',
+    'dMttttttM',
+    'dMMMMMMMd',
+    'ndddddddn',
+  ],
+};
+
+// La maquina del sacramento: carcasa de Genesis Vestal fundida con la carne que
+// lleva siglos procesando. Es la lamina del world bible hecha sprite.
+const MAQUINA: Figura = {
+  paleta: {
+    n: 0x1e1611,
+    M: 0x9ca193, // carcasa
+    a: 0x333e42, // cristal
+    T: 0x7fc9bd, // senal
+    t: 0x487b84, // tubos
+    c: 0x8c4f4f, // carne
+    C: 0xb06a5c, // carne, luz
+  },
+  // prettier-ignore
+  filas: [
+    '......nnnnnnnn........',
+    '....nnMMMMMMMMnn......',
+    '...nMMMMMMMMMMMMn.....',
+    '..nMMaaaaaaaaMMMMn....',
+    '..nMMaTTaaaTaaMMMMn...',
+    '..nMMaaaaaaaaaMMMMn...',
+    '..nMMMMMMMMMMMMMMMn...',
+    '..nMMMMMMMMMMMMMMMn...',
+    '...nMMMMMMMMMMMMMn....',
+    '..t.nnMMMMMMMMnn.t....',
+    '..t..cccccccccc..t....',
+    '..tttcCccccccCcttt....',
+    '...ccccccccccccccc....',
+    '..ccCccccccccccCccc...',
+    '.ccccccccccccccccccc..',
+    'cccCcccccccccccccCccc.',
+    'ccccccccccccccccccccc.',
+    '.ccccccccccccccccccc..',
+    '..nccccccccccccccnn...',
+    '...nnnccccccccnnn.....',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
@@ -809,6 +914,9 @@ const FIGURAS: Record<string, Figura> = {
   placa: PLACA,
   durmiente: DURMIENTE,
   reja: REJA,
+  pantalla: PANTALLA,
+  conducto: CONDUCTO,
+  maquina: MAQUINA,
   carne: CARNE,
   ventana: VENTANA,
   cadena: CADENA,

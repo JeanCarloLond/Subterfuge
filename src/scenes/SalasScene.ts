@@ -112,6 +112,11 @@ export class SalasScene extends EscenaNivel {
       // Arena: el quirofano-altar, la camilla en el centro y la sangre de los
       // sacramentos anteriores. Nada de exvotos aqui: nadie da las gracias.
       decorado: [
+        // Aqui la maquina ya no se disimula: es el altar.
+        [640, 288, 'maquina'],
+        [120, 288, 'pantalla'],
+        [16, 288, 'conducto'],
+        [784, 208, 'conducto'],
         [40, 288, 'columna'],
         [96, 288, 'vela'],
         [144, 288, 'vela'],

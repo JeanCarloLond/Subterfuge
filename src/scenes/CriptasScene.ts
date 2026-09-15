@@ -106,6 +106,10 @@ export class CriptasScene extends EscenaNivel {
       // de parecer una imagen y pasa a ser un inventario. Ninguna vela: aqui
       // no se reza, se espera.
       decorado: [
+        // Lo que mantiene dormidos a los inscritos baja por estos conductos.
+        [16, 560, 'conducto'],
+        [704, 640, 'conducto'],
+        [330, 880, 'pantalla'],
         [100, 160, 'columna'],
         [16, 240, 'reja'],
         [220, 240, 'camilla'],

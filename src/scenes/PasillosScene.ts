@@ -119,6 +119,11 @@ export class PasillosScene extends EscenaNivel {
       // Burocracia: columnas como estanterias, cera de archivo, exvotos que
       // cuelgan del techo bajo, y la primera sangre en el suelo del fondo.
       decorado: [
+        // Zona administrativa: aqui es donde quedaron las terminales.
+        [250, 160, 'pantalla'],
+        [780, 344, 'pantalla'],
+        [1088, 344, 'conducto'],
+        [16, 520, 'conducto'],
         [100, 160, 'columna'],
         [420, 160, 'columna'],
         [700, 160, 'columna'],
