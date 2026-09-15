@@ -52,8 +52,10 @@ export class Vestal implements Enemigo {
     this.sprite.setData('enemigo', this);
 
     const cuerpo = this.cuerpo;
+    // Sprite de 22x38 con la caja de siempre, 12x26 pegada al suelo. El tocado
+    // y la cruz quedan fuera: no tiene sentido chocar con una insignia.
     cuerpo.setSize(12, 26);
-    cuerpo.setOffset(2, 2);
+    cuerpo.setOffset((22 - 12) / 2, 38 - 26);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setCollideWorldBounds(true);
 
@@ -178,7 +180,8 @@ export class Vestal implements Enemigo {
     // La escena crea el sello: la entidad no conoce el grupo de proyectiles.
     this.eventos.emit('lanzar', {
       x: this.sprite.x + (this.mirandoDerecha ? 10 : -10),
-      y: this.sprite.y - 16,
+      // A la altura del sello del pecho, no de la cintura.
+      y: this.sprite.y - 22,
       direccion: this.mirandoDerecha ? 1 : -1,
     });
   }

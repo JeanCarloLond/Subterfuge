@@ -109,42 +109,72 @@ const CIRUJANO: Figura = {
 };
 
 // -- Devoto ------------------------------------------------------------------
-// Encorvado y vendado. Es un fiel, no un monstruo: sigue siendo claramente una
-// persona, y ahi esta el horror.
+//
+// Fiel de abajo. El ethos del bible manda aqui: "el estatus social se mide por
+// cuanto te pareces fisicamente a un dios-carne". El Devoto esta en la base, asi
+// que conserva el cuerpo CASI entero — y eso es justo lo que da miedo: sigue
+// siendo una persona, y ahi esta el horror.
+//
+// Lo que cuenta su figura:
+//
+//   - La venda sobre los ojos. En la Diocesis mirar no da estatus; el fiel baja
+//     la mirada y ofrece las manos.
+//   - El brazo derecho INJERTADO: es el diezmo que ya pago. Carne que no es
+//     suya, cosida de mala manera.
+//   - La canula turquesa en la juntura. Tecnologia de Genesis Vestal reutilizada
+//     sin entenderla, que es como funciona todo aqui abajo.
+//
+// Encorvado hacia delante. Mira a la derecha; el codigo voltea la textura.
 
 const DEVOTO: Figura = {
   paleta: {
     h: 0x9a7f66, // piel
-    v: 0xc9bda8, // vendas
-    g: 0x5c4636, // ropa
-    d: 0x3a2c22, // sombra
+    H: 0xb39a80, // piel, luz
+    v: 0xd8cdbe, // vendas
+    V: 0xe2d8c6, // vendas, luz
+    g: 0x5c4636, // sayo
+    G: 0x715847, // sayo iluminado
+    d: 0x2e231b, // sombra y contorno
+    c: 0x8c4f4f, // carne injertada
+    t: 0x7fc9bd, // canula: resto de Genesis Vestal
+    n: 0x1e1611, // pies, negro
   },
   // prettier-ignore
   filas: [
-    '.....hhhh.......',
-    '....hhhhhh......',
-    '....hvvvhh......',
-    '....hvvvhh......',
-    '.....hhhh.......',
-    '.....gggg.......',
-    '....gggggg......',
-    '...gggggggg.....',
-    '..vgggggggg.....',
-    '..vvgggggggv....',
-    '...vggggggvv....',
-    '...ggggggggv....',
-    '...gggggggg.....',
-    '...ggggdggg.....',
-    '...gggddgg......',
-    '...ggdddgg......',
-    '...gddddgg......',
-    '..gddddddg......',
-    '..gddddddg......',
-    '..gdd...ddg.....',
-    '..gdd...ddg.....',
-    '..ggd...dgg.....',
-    '..ggd...dgg.....',
-    '.gggg...gggg....',
+    '........dddd..........',
+    '.......dhhhhd.........',
+    '......dhhhhhhd........',
+    '......dvvvvvvd........',
+    '......dvvvvvvd........',
+    '......dhhhhhhd........',
+    '.......dhhhhd.........',
+    '........dhhd..........',
+    '......ddgggggd........',
+    '.....dggGGGGggd.......',
+    '....dggGGGGGGggd......',
+    '...vdgGGGGGGGggd......',
+    '..vvdgGGGGGGGggcd.....',
+    '..vvdggGGGGGggccc.....',
+    '...vdgggGGGgggcccd....',
+    '...ddgggggggggcctd....',
+    '...dgggggggggggcd.....',
+    '...dggggggggggcd......',
+    '...dgggggggggdd.......',
+    '...dggggdggggd........',
+    '...ddgggddgggd........',
+    '..ddggdddddggd........',
+    '..dgddddddddgd........',
+    '..dgdd....ddgd........',
+    '..dgdd....ddgd........',
+    '..dgdd....ddgd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '.ddggd....dggdd.......',
+    '.nnggd....dggnn.......',
+    '.nnnn......nnnn.......',
+    '..nn........nn........',
   ],
 };
 
@@ -231,45 +261,75 @@ const UMBRAL: Figura = {
 };
 
 // -- Vestal ------------------------------------------------------------------
-// Clero: erguido, tocado alto y tunica limpia. Se distingue del Devoto por la
-// postura, no solo por el color: el Vestal no se dobla, administra.
+//
+// Alto clero. Por el mismo ethos que achica al Devoto, el Vestal va MAS
+// transformado: esta mas arriba, y aqui subir significa parecerse mas a un
+// dios-carne. Por eso de cintura para abajo ya no le quedan piernas, sino una
+// base de carne fundida que se agarra al suelo.
+//
+// Lo que cuenta su figura:
+//
+//   - El sello del diezmo en el pecho, en oro con la impronta oscura. Es su
+//     cargo: el que sella lo que se cobra.
+//   - La cara en sombra bajo el tocado. No administra con la mirada.
+//   - La cruz dorada por encima del tocado, y el collar: lo unico limpio.
+//   - La base de carne, con una vena turquesa: lo que le queda de la maquina.
+//
+// Erguido, nunca encorvado. El Devoto se dobla; el Vestal administra.
 
 const VESTAL: Figura = {
   paleta: {
+    o: 0xcda058, // oro del sello y el collar
+    O: 0xe7ce9f, // oro, reflejo
     m: 0xd8cdbe, // tocado
-    r: 0x6b6070, // tunica clerical
-    s: 0x453d4d, // sombra
-    o: 0xe8d9a0, // oro del sello
+    r: 0x5d5466, // tunica clerical
+    R: 0x7d7389, // tunica iluminada
+    s: 0x342f3e, // sombra de la tunica y de la cara
     p: 0x9a8878, // piel
+    c: 0x8c4f4f, // carne fundida de la base
+    t: 0x7fc9bd, // vena turquesa
+    n: 0x1e1611, // impronta del sello
   },
   // prettier-ignore
   filas: [
-    '.......oo.......',
-    '......oooo......',
-    '......mmmm......',
-    '.....mmmmmm.....',
-    '.....mppppm.....',
-    '.....mppppm.....',
-    '......pppp......',
-    '.....rrrrrr.....',
-    '....rrrrrrrr....',
-    '....rrroorrr....',
-    '...prrroorrrp...',
-    '...prrrrrrrrp...',
-    '...prrrrrrrrp...',
-    '....rrrrrrrr....',
-    '....rrrsrrrr....',
-    '....rrsssrrr....',
-    '....rsssssrr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rsssssssr....',
-    '...rrsssssrr....',
-    '...rrrsssrrr....',
-    '..rrrrrrrrrr....',
-    '..rrrrrrrrrr....',
+    '..........oo..........',
+    '.........oOOo.........',
+    '........oOooOo........',
+    '.........oOOo.........',
+    '..........oo..........',
+    '........mmmmmm........',
+    '.......mmmmmmmm.......',
+    '......mmmmmmmmmm......',
+    '......moooooooom......',
+    '......mssssssssm......',
+    '......mssppppssm......',
+    '......mssppppssm......',
+    '.......msppppsm.......',
+    '.......mmppppmm.......',
+    '......oooooooooo......',
+    '.....rrrrrrrrrrrr.....',
+    '....rrrRRRRRRRRrrr....',
+    '...prrRRRRRRRRRRrrp...',
+    '...prrRRRoooooRRrrp...',
+    '...prrRRoOnnOoRRrrp...',
+    '...prrRRoOnnOoRRrrp...',
+    '...prrRRRoooooRRrrp...',
+    '....rrRRRRRRRRRRrr....',
+    '....rrrRRRRRRRRrrr....',
+    '....orrrrRRRRrrrro....',
+    '.....rrrrrrrrrrrr.....',
+    '.....rrrrsssrrrrr.....',
+    '.....rrrsssssrrrr.....',
+    '.....rrssssssrrrr.....',
+    '....rrrsssssssssr.....',
+    '....rrsssssssssssr....',
+    '....rsssssccccssssr...',
+    '....rssscctccccssr....',
+    '....rssscccccccssr....',
+    '.....rsccccccccsr.....',
+    '.....cccccccccccc.....',
+    '....ccc.ccccc.ccc.....',
+    '...ccc...ccc...ccc....',
   ],
 };
 

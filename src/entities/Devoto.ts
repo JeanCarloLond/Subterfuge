@@ -53,8 +53,10 @@ export class Devoto implements Enemigo {
     this.sprite.setData('enemigo', this);
 
     const cuerpo = this.cuerpo;
+    // El sprite crecio a 22x34, la caja sigue siendo la de siempre: 12x22
+    // pegada al suelo y centrada. La cabeza y el brazo injertado no colisionan.
     cuerpo.setSize(12, 22);
-    cuerpo.setOffset(2, 2);
+    cuerpo.setOffset((22 - 12) / 2, 34 - 22);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setCollideWorldBounds(true);
 
