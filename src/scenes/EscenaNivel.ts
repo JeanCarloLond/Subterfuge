@@ -147,6 +147,16 @@ export interface DefinicionNivel {
    */
   tinte?: number;
   /**
+   * Material del muro de la zona, por claves de textura. Si no se indica, se
+   * usa la silleria del equipo (la del Atrio).
+   *
+   * Es lo que hace que bajar se note en la arquitectura y no solo en el tinte:
+   * chapa remachada en los Pasillos, piedra con vena en las Criptas, maquina
+   * en las Salas. El bible lo pide — cada capa esta mas lejos de parecer un
+   * edificio, hasta que "la arquitectura ya es carne".
+   */
+  muro?: readonly string[];
+  /**
    * Cuanta ruina se siembra sobre la piedra, en proporcion de tiles (0 a 1).
    *
    * Va suelto y no dentro del tile a proposito: una grieta horneada en el
@@ -581,15 +591,20 @@ export abstract class EscenaNivel extends Phaser.Scene {
    */
   private construirGeometria(): Phaser.Physics.Arcade.StaticGroup {
     const suelos = this.physics.add.staticGroup();
-    const variantes = this.textures.get('piedra').getFrameNames().length;
     const tinte = this.definicion.tinte;
 
+    // Cada zona puede traer su propio material. Si no lo trae, se usa la
+    // silleria del equipo, que es la del Atrio y la unica tenida: las demas
+    // ya vienen con su color puesto y tenirlas las emborronaria.
+    const propio = this.definicion.muro;
+    const variantes = propio ? propio.length : this.textures.get('piedra').getFrameNames().length;
+
     const poner = (x: number, y: number) => {
-      const pieza = suelos
-        .create(x, y, 'piedra', ruido(x, y, 1) % variantes)
-        .setOrigin(0, 0)
-        .refreshBody();
-      if (tinte !== undefined) pieza.setTint(tinte);
+      const cual = ruido(x, y, 1) % variantes;
+      const pieza = propio
+        ? suelos.create(x, y, propio[cual]).setOrigin(0, 0).refreshBody()
+        : suelos.create(x, y, 'piedra', cual).setOrigin(0, 0).refreshBody();
+      if (!propio && tinte !== undefined) pieza.setTint(tinte);
       this.tilesSolidos.add(`${x},${y}`);
     };
 

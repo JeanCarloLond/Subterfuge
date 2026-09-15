@@ -38,6 +38,7 @@ export class CriptasScene extends EscenaNivel {
       // Penumbra sedada: la piedra pierde el rojo y se queda casi monocroma.
       // Y no crece ni una brizna: a esta profundidad ya no llega nada vivo.
       tinte: 0x9aa0ac,
+      muro: ['muro-criptas-a-placeholder', 'muro-criptas-b-placeholder'],
       desgaste: { grietas: 0.09, musgo: 0 },
 
       // Escalera de pozo: cada tramo solapa en x con el de arriba (80 px de

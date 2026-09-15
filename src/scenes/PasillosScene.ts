@@ -31,6 +31,7 @@ export class PasillosScene extends EscenaNivel {
       // Un escalon mas abajo: la misma silleria, de vuelta de todo. Aqui ya se
       // agrieta mas de lo que crece.
       tinte: 0xc8bcc0,
+      muro: ['muro-pasillos-a-placeholder', 'muro-pasillos-b-placeholder'],
       desgaste: { grietas: 0.07, musgo: 0.025 },
 
       // Como en el Atrio: los corredores están a 176-184 px entre sí, muy por

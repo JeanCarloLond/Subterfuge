@@ -946,10 +946,244 @@ const MAQUINA: Figura = {
   ],
 };
 
+// -- La arquitectura del descenso --------------------------------------------
+//
+// La silleria del Atrio es arte del equipo (docs/arte/piezas). De ahi para
+// abajo el muro va cambiando de material, porque el bible dice que el Vientre
+// es "un futuro sedimentado" y que cada capa esta mas lejos de parecer
+// arquitectura: "Niveles Reformados: la arquitectura ya es carne".
+//
+// Antes las cuatro zonas eran el mismo ladrillo con un tinte distinto, y bajar
+// no se notaba en las paredes. Ahora se nota en el material:
+//
+//   Atrio     silleria. Todavia es un edificio.
+//   Pasillos  chapa remachada ENCIMA de la silleria. La burocracia parcheo.
+//   Criptas   la piedra sigue, pero la vena ya se abrio paso por las juntas.
+//   Salas     no queda piedra. Chapa de maquina y carne entre los paneles.
+//
+// Dos variantes por zona: con una sola, un suelo de treinta tiles se lee como
+// un patron y no como un muro.
+
+const MURO_PASILLOS_A: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jMMMMMMMMMMMMMMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmRmmmmmmmmRmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMMMMMMMMMMMMMMj',
+    'jjjjjjjjjjjjjjjj',
+    'jaaaaaaaabaaaaaj',
+    'jaaabaaaaaaabaaj',
+    'jaaaaaaaaabaaaaj',
+    'jbaaaaaabaaaaaaj',
+    'jaaaaaaaaaaabaaj',
+    'jaaabaaaaaaaaaaj',
+    'jaaaaaaaaaaaaaaj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+
+const MURO_PASILLOS_B: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jaaaaaaabaaaaaaj',
+    'jaaabaaaaaaabaaj',
+    'jaaaaaaaaabaaaaj',
+    'jbaaaaaabaaaaaaj',
+    'jaaaaaaaaaaabaaj',
+    'jaaabaaaaaaaaaaj',
+    'jjjjjjjjjjjjjjjj',
+    'jMMMMMMMMMMMMMMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmmmmmRRmmmmmMj',
+    'jMmmmmmRRmmmmmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMmmmmmmmmmmmmMj',
+    'jMMMMMMMMMMMMMMj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+
+const MURO_CRIPTAS_A: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjcjjjjjjjjjj',
+    'jaaaaCaaabaaaaaj',
+    'jaaabCaaaaaabaaj',
+    'jaaaacCaaabaaaaj',
+    'jbaaaacCaaaaaaaj',
+    'jaaaaaacCaaabaaj',
+    'jaaabaaacCaaaaaj',
+    'jjjjjjjjcCjjjjjj',
+    'jbbbbbbbcCbbbbbj',
+    'jbbbcbbbbcCbbbbj',
+    'jbbbbbbbbbcCbbbj',
+    'jcbbbbbbcbbcCbbj',
+    'jbbbbbbbbbbbcCbj',
+    'jbbbcbbbbbbbbcCj',
+    'jbbbbbbbbbbbbbcj',
+    'jjjjjjjjjjjjjjcj',
+  ],
+};
+
+const MURO_CRIPTAS_B: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jaaaaaaabaaaaaaj',
+    'jaaCbaaaaaaabaaj',
+    'jaCCaaaaaabaaaaj',
+    'jbCaaaaabaaaaaaj',
+    'jaCaaaaaaaaaCbaj',
+    'jaCabaaaaaaCCaaj',
+    'jjCjjjjjjjjCjjjj',
+    'jbCbbbbbcbbCbbbj',
+    'jbCbcbbbbbbCcbbj',
+    'jbCbbbbbbbcCbbbj',
+    'jcCbbbbbcbbCbbbj',
+    'jbCbbbbbbbbCcbbj',
+    'jbCbcbbbbbbCbbbj',
+    'jbCbbbbbbbbCbbbj',
+    'jjCjjjjjjjjCjjjj',
+  ],
+};
+
+const MURO_SALAS_A: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'nnnnnnnnnnnnnnnn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSRSSSSSSSSRSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSttSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccccccccccccccn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSRSSSSSSSSRSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccccccccccccccn',
+  ],
+};
+
+const MURO_SALAS_B: Figura = {
+  paleta: {
+    j: 0x241f1b, // junta
+    a: 0x51473d, // silleria
+    b: 0x453c33, // silleria, hilada baja
+    M: 0x7f8a85, // chapa
+    m: 0x5b6560, // chapa, relleno
+    S: 0x4a5450, // chapa oscura
+    R: 0xb9c2c9, // remache
+    n: 0x14100f, // junta de la maquina
+    c: 0x8c2f2f, // carne entre las juntas
+    C: 0xd4564a, // carne al rojo
+    t: 0x7fc9bd, // testigo encendido
+  },
+  // prettier-ignore
+  filas: [
+    'nnnnnnnnnnnnnnnn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccCccccccccCccn',
+    'ncCCccccccccCCcn',
+    'nccccccccccccccn',
+    'nMMMMMMMMMMMMMMn',
+    'nMSSSSttSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMSSSSSSSSSSSSMn',
+    'nMMMMMMMMMMMMMMn',
+    'nccccccccccccccn',
+    'nnnnnnnnnnnnnnnn',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
   'devoto-b': DEVOTO_B,
+  'muro-pasillos-a': MURO_PASILLOS_A,
+  'muro-pasillos-b': MURO_PASILLOS_B,
+  'muro-criptas-a': MURO_CRIPTAS_A,
+  'muro-criptas-b': MURO_CRIPTAS_B,
+  'muro-salas-a': MURO_SALAS_A,
+  'muro-salas-b': MURO_SALAS_B,
   vestal: VESTAL,
   sello: SELLO,
   reformado: REFORMADO,

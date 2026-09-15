@@ -39,6 +39,7 @@ export class SalasScene extends EscenaNivel {
       // por luz: es la sala donde se hace el sacramento. Mas oscura que las
       // Criptas pero mas calida, que es lo que la vuelve incomoda.
       tinte: 0xb08890,
+      muro: ['muro-salas-a-placeholder', 'muro-salas-b-placeholder'],
       desgaste: { grietas: 0.11, musgo: 0 },
 
       plataformas: [
