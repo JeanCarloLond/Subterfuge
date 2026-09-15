@@ -26,6 +26,8 @@ export class PasillosScene extends EscenaNivel {
       musica: 'pasillos',
       inicio: { x: 60, y: 130 },
 
+      llegada: 'pasillos',
+
       // Un escalon mas abajo: la misma silleria, de vuelta de todo. Aqui ya se
       // agrieta mas de lo que crece.
       tinte: 0xc8bcc0,
