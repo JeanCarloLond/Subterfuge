@@ -31,6 +31,7 @@ export class PasillosScene extends EscenaNivel {
       // Un escalon mas abajo: la misma silleria, de vuelta de todo. Aqui ya se
       // agrieta mas de lo que crece.
       tinte: 0xc8bcc0,
+      muro: ['muro-pasillos-a-placeholder', 'muro-pasillos-b-placeholder'],
       desgaste: { grietas: 0.07, musgo: 0.025 },
 
       // Como en el Atrio: los corredores están a 176-184 px entre sí, muy por
@@ -121,6 +122,34 @@ export class PasillosScene extends EscenaNivel {
       // Burocracia: columnas como estanterias, cera de archivo, exvotos que
       // cuelgan del techo bajo, y la primera sangre en el suelo del fondo.
       decorado: [
+        // Sangre y carne por todas partes: esto lleva generaciones
+        // cobrando cuerpo y no lo limpia nadie.
+        [652, 160, 'charco'],
+        [446, 432, 'charco'],
+        [805, 520, 'charco'],
+        [1048, 440, 'charco'],
+        [434, 108, 'charco'],
+        [1004, 440, 'pila-carne'],
+        [136, 160, 'pila-carne'],
+        [334, 64, 'pila-carne'],
+        [909, 64, 'bandeja'],
+        [834, 168, 'bandeja'],
+        [752, 160, 'cadaver'],
+        [447, 160, 'tanque'],
+        [959, 176, 'goteo'],
+        [408, 80, 'goteo'],
+        [736, 176, 'goteo'],
+        // El archivo medico de la Diocesis: placas puestas y un manual que
+        // sigue proyectandose para nadie.
+        [560, 344, 'radiografia'],
+        [1040, 160, 'radiografia'],
+        [420, 344, 'holograma'],
+        [660, 520, 'pila-carne'],
+        // Zona administrativa: aqui es donde quedaron las terminales.
+        [300, 160, 'pantalla'],
+        [780, 344, 'pantalla'],
+        [1088, 344, 'conducto'],
+        [16, 520, 'conducto'],
         [100, 160, 'columna'],
         [420, 160, 'columna'],
         [700, 160, 'columna'],
@@ -168,7 +197,7 @@ export class PasillosScene extends EscenaNivel {
         [900, 360, 'columna'],
         [300, 264, 'cadena'],
         [560, 264, 'cadena'],
-        [820, 264, 'cadena'],
+        [674, 80, 'cadena'],
         [200, 540, 'columna'],
         [700, 540, 'columna'],
       ],

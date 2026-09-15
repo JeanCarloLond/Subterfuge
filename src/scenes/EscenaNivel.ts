@@ -12,6 +12,7 @@ import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
 import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
 import { Impacto } from '../systems/Impacto';
+import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -59,7 +60,20 @@ export type TipoDecorado =
   | 'durmiente'
   | 'reja'
   | 'ventana'
-  | 'cadena';
+  | 'cadena'
+  // La capa de Genesis Vestal asomando por debajo de la Diocesis.
+  | 'pantalla'
+  | 'conducto'
+  | 'maquina'
+  // El hospital: lo que un sitio que lleva generaciones cobrando carne acumula.
+  | 'cadaver'
+  | 'pila-carne'
+  | 'holograma'
+  | 'radiografia'
+  | 'luz-hospital'
+  | 'tanque'
+  | 'bandeja'
+  | 'goteo';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -142,6 +156,16 @@ export interface DefinicionNivel {
    * un tileset distinto por nivel.
    */
   tinte?: number;
+  /**
+   * Material del muro de la zona, por claves de textura. Si no se indica, se
+   * usa la silleria del equipo (la del Atrio).
+   *
+   * Es lo que hace que bajar se note en la arquitectura y no solo en el tinte:
+   * chapa remachada en los Pasillos, piedra con vena en las Criptas, maquina
+   * en las Salas. El bible lo pide — cada capa esta mas lejos de parecer un
+   * edificio, hasta que "la arquitectura ya es carne".
+   */
+  muro?: readonly string[];
   /**
    * Cuanta ruina se siembra sobre la piedra, en proporcion de tiles (0 a 1).
    *
@@ -282,6 +306,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!this.scene.isActive('Hud')) this.scene.launch('Hud');
     this.emitirEstadoInicial();
 
+    this.catalogarZona();
     this.crearAyudaControles(this.definicion.mostrarAyuda === true);
   }
 
@@ -302,6 +327,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     for (const vestal of this.vestales) {
       vestal.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
     }
+
+    this.catalogarLoQueSeVe();
 
     this.actualizarJefe();
 
@@ -519,7 +546,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private crearDecorado(): void {
     for (const [x, y, tipo] of this.definicion.decorado ?? []) {
       const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
-      pieza.setOrigin(0.5, tipo === 'exvoto' ? 0 : 1);
+      const cuelga = tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo';
+      pieza.setOrigin(0.5, cuelga ? 0 : 1);
       pieza.setDepth(-5);
 
       if (tipo === 'vela') {
@@ -546,6 +574,71 @@ export abstract class EscenaNivel extends Phaser.Scene {
         if (this.definicion.tinte !== undefined) pieza.setTint(this.definicion.tinte);
       } else if (tipo === 'reja') {
         pieza.setAlpha(0.9);
+      } else if (tipo === 'pantalla' || tipo === 'maquina') {
+        // Parpadeo irregular: una senal que lleva generaciones sin que nadie
+        // la lea, no un piloto de encendido. Va detras de la piedra pero por
+        // delante del telon, y NO se tine con la zona — es lo unico del
+        // Vientre que no pertenece a la Diocesis.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.55, to: 1 },
+          duration: Phaser.Math.Between(900, 1700),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'conducto') {
+        pieza.setAlpha(0.85);
+        pieza.setDepth(-6);
+      } else if (tipo === 'holograma') {
+        // Gira, o lo intenta: la proyeccion lleva generaciones repitiendose y
+        // ya no se sostiene entera. Por eso parpadea y se estrecha, en vez de
+        // girar limpio.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          scaleX: { from: 1, to: 0.25 },
+          alpha: { from: 0.9, to: 0.55 },
+          duration: 1400,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'tanque') {
+        // El fluido sigue moviendose. Muy despacio: lleva siglos asi.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.86, to: 1 },
+          duration: Phaser.Math.Between(2400, 3400),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'goteo' || tipo === 'bandeja') {
+        pieza.setDepth(-5);
+      } else if (tipo === 'radiografia') {
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.7, to: 1 },
+          duration: Phaser.Math.Between(1800, 2600),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      } else if (tipo === 'luz-hospital') {
+        // Cuelga del techo, como el exvoto, pero no se balancea: esta atornillada.
+        pieza.setDepth(-6);
+        this.tweens.add({
+          targets: pieza,
+          alpha: { from: 0.8, to: 1 },
+          duration: Phaser.Math.Between(2200, 3200),
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
       }
     }
   }
@@ -560,15 +653,20 @@ export abstract class EscenaNivel extends Phaser.Scene {
    */
   private construirGeometria(): Phaser.Physics.Arcade.StaticGroup {
     const suelos = this.physics.add.staticGroup();
-    const variantes = this.textures.get('piedra').getFrameNames().length;
     const tinte = this.definicion.tinte;
 
+    // Cada zona puede traer su propio material. Si no lo trae, se usa la
+    // silleria del equipo, que es la del Atrio y la unica tenida: las demas
+    // ya vienen con su color puesto y tenirlas las emborronaria.
+    const propio = this.definicion.muro;
+    const variantes = propio ? propio.length : this.textures.get('piedra').getFrameNames().length;
+
     const poner = (x: number, y: number) => {
-      const pieza = suelos
-        .create(x, y, 'piedra', ruido(x, y, 1) % variantes)
-        .setOrigin(0, 0)
-        .refreshBody();
-      if (tinte !== undefined) pieza.setTint(tinte);
+      const cual = ruido(x, y, 1) % variantes;
+      const pieza = propio
+        ? suelos.create(x, y, propio[cual]).setOrigin(0, 0).refreshBody()
+        : suelos.create(x, y, 'piedra', cual).setOrigin(0, 0).refreshBody();
+      if (!propio && tinte !== undefined) pieza.setTint(tinte);
       this.tilesSolidos.add(`${x},${y}`);
     };
 
@@ -855,6 +953,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
 
     jefe.eventos.on('despierta', () => {
+      this.anotar('reformado');
       this.game.events.emit(EVENTOS_HUD.jefe, REFORMADO.vida, REFORMADO.vida);
       this.game.events.emit(
         EVENTOS_HUD.presentacion,
@@ -1143,6 +1242,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // El parry no rompe el sello: se lo queda el Cirujano y sale rebotado.
     if (this.cirujano.estaParando) {
       sello.devolver();
+      this.anotar('sello');
       this.cirujano.premiarParry();
       this.impacto.parryLogrado(sello.sprite.x, sello.sprite.y);
       sonido.selloDevuelto();
@@ -1206,6 +1306,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverRecogidaDeReliquia(reliquia: Reliquia): void {
     if (!reliquia.recoger()) return;
+    this.anotar('reliquia');
     if (!progreso.recogerReliquia(reliquia.id, reliquia.tipo)) return;
 
     this.cirujano.aplicarReliquia(reliquia.tipo);
@@ -1224,8 +1325,56 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     sonido.interfazAbrir();
     musica.atenuar(true);
-    this.scene.pause();
-    this.scene.launch('Pausa', { escenaJuego: this.scene.key });
+    this.abrirEncima('Pausa', { escenaJuego: this.scene.key });
+  }
+
+  /**
+   * Apunta a un fiel en el Registro cuando el Cirujano lo tiene lo bastante
+   * cerca como para haberlo visto de verdad. No basta con que exista en el
+   * nivel: catalogar algo que no has visto no es descubrirlo.
+   */
+  private catalogarLoQueSeVe(): void {
+    const RADIO_VISTA = 170;
+    const x = this.cirujano.sprite.x;
+    const y = this.cirujano.sprite.y;
+
+    for (const devoto of this.devotos) {
+      if (Phaser.Math.Distance.Between(x, y, devoto.sprite.x, devoto.sprite.y) < RADIO_VISTA) {
+        this.anotar('devoto');
+        break;
+      }
+    }
+
+    for (const vestal of this.vestales) {
+      if (Phaser.Math.Distance.Between(x, y, vestal.sprite.x, vestal.sprite.y) < RADIO_VISTA) {
+        this.anotar('vestal');
+        break;
+      }
+    }
+  }
+
+  /**
+   * Apunta en el Registro lo que esta zona contiene.
+   *
+   * La capa y el decorado se dan por vistos al entrar: son el sitio, y el
+   * jugador va a pasar por delante. Los fieles y los objetos NO se apuntan
+   * aqui — esos se descubren encontrandoselos, que es lo que hace que el libro
+   * crezca mientras juegas y no de golpe al cargar el nivel.
+   */
+  private catalogarZona(): void {
+    progreso.pisarCapa(this.scene.key);
+    progreso.descubrir('cirujano');
+
+    for (const [, , tipo] of this.definicion.decorado ?? []) {
+      if (fichaPorId(tipo)) progreso.descubrir(tipo);
+    }
+  }
+
+  /** Aviso discreto la primera vez que algo entra en el Registro. */
+  private anotar(id: string): void {
+    if (!progreso.descubrir(id)) return;
+    const ficha = fichaPorId(id);
+    if (ficha) this.game.events.emit(EVENTOS_HUD.aviso, `Registro: ${ficha.nombre}`);
   }
 
   /**
@@ -1254,26 +1403,47 @@ export abstract class EscenaNivel extends Phaser.Scene {
       }
     });
 
-    this.scene.pause();
-    this.scene.launch('Dialogo', { escenaJuego: this.scene.key, clave });
+    this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, clave });
   }
 
   /**
    * Abre la lectura del Codice sobre el juego en pausa.
    * Si no hay nada recogido, solo lo dice: no merece una pantalla entera.
    */
+  /**
+   * Abre una pantalla encima del nivel (el libro, la pausa, el dialogo).
+   *
+   * Pausa el nivel y lanza la otra escena, pero ademas deja puesta una RED DE
+   * SEGURIDAD: cuando la de encima se apaga, por el motivo que sea, el nivel
+   * vuelve. Sin esto, cualquier excepcion dentro de esas escenas dejaba el
+   * juego pausado para siempre y solo quedaba recargar — que es exactamente lo
+   * que pasaba al abrir el libro por segunda vez.
+   */
+  private abrirEncima(clave: string, datos: object): void {
+    this.scene.pause();
+    this.scene.launch(clave, datos);
+
+    this.scene.get(clave).events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      if (this.scene.isPaused()) this.scene.resume();
+    });
+  }
+
   private abrirCodice(): void {
     if (this.cirujano.estaMuerto || this.descendiendo) return;
 
-    if (progreso.fragmentosRecogidos === 0) {
-      this.game.events.emit(EVENTOS_HUD.aviso, 'aun no tienes fragmentos del Codice');
-      return;
-    }
+    // Nada de abrir dos cosas a la vez, ni de reabrir el libro mientras la
+    // escena anterior aun se esta apagando: ahi es donde se colaba la carrera
+    // que dejaba el nivel pausado sin nada delante.
+    if (this.scene.isActive('Codice')) return;
+    if (this.scene.isActive('Pausa') || this.scene.isActive('Dialogo')) return;
 
+    // El libro se abre SIEMPRE. Antes hacia falta un fragmento del Codice,
+    // porque el libro era solo el Codice; ahora el Registro y el corte del
+    // Vientre tienen contenido desde el primer segundo de partida, asi que
+    // negar el libro entero por no haber encontrado una hoja no tenia sentido.
     sonido.interfazAbrir();
     musica.atenuar(true);
-    this.scene.pause();
-    this.scene.launch('Codice', { escenaJuego: this.scene.key });
+    this.abrirEncima('Codice', { escenaJuego: this.scene.key });
   }
 
   // -- Altares, umbral, muerte ---------------------------------------------
@@ -1323,6 +1493,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * y sonido, y el aviso dice con palabras que ES el punto de guardado.
    */
   private rezarEn(altar: Altar): void {
+    this.anotar('altar');
     const DURACION_REZO_MS = 1100;
 
     altar.rezar();
