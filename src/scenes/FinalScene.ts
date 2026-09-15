@@ -3,6 +3,7 @@ import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
+import { cursorActivo } from '../ui/Cursor';
 
 /**
  * Cierre del teaser: el gancho.
@@ -85,7 +86,7 @@ export class FinalScene extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5)
       .setAlpha(0)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ cursor: cursorActivo() });
     reinicio.on('pointerover', () => reinicio.setColor('#d6cfc4'));
     reinicio.on('pointerout', () => reinicio.setColor('#4a4038'));
     reinicio.on('pointerdown', () => this.volverAlAtrio());

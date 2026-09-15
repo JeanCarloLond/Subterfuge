@@ -294,6 +294,41 @@ posición, para que las colisiones no se enteren.
 | Trepar (colgado)      | `W` / flecha arriba           |
 | Soltarse (colgado)    | `S` / flecha abajo            |
 
+### El cursor es el bisturí
+
+El ratón no es un accesorio aquí: el clic izquierdo corta y el derecho para. La
+flecha del navegador encima de eso decía "esto es una página web", así que
+`src/ui/Cursor.ts` la sustituye por el bisturí dorado del Cirujano, con la punta
+del filo como punto caliente.
+
+Es un cursor de **CSS**, no un sprite que persigue al puntero: un sprite va
+siempre un fotograma por detrás del ratón de verdad, y eso se nota cuando el
+ratón es un arma. A cambio, el navegador no sabe nada del zoom del juego, así
+que el dibujo se reescala a mano contra el tamaño del lienzo y se rehace cuando
+cambia la ventana.
+
+**No uses `useHandCursor: true`.** Devuelve la manita del sistema justo encima
+de los menús, que es el problema que esto vino a resolver. Para lo que se pueda
+pulsar:
+
+```ts
+texto.setInteractive({ cursor: cursorActivo() });
+```
+
+`cursorActivo()` es el mismo bisturí con el filo encendido: misma silueta, para
+que no dé un salto al pasar por encima de un botón.
+
+Lo que devuelve **no es el dibujo, es `var(--cursor-diocesis-activo)`**. Los
+objetos interactivos de Phaser se quedan con la cadena que se les dio al
+crearlos, así que una cadena literal se congelaría: al cambiar de escala, o al
+apagar el cursor desde el menú, el libro seguiría enseñando el cursor viejo
+hasta que su escena se reconstruyera. Apuntando a una variable de CSS basta con
+cambiarla en la raíz y cambia hasta el último.
+
+Se puede **apagar desde el menú de pausa**, y la preferencia se guarda en
+`localStorage`. Quien juega con teclado no mira el ratón en toda la partida:
+para esa persona el bisturí solo es un dibujo que estorba.
+
 ## Diseño de los enemigos
 
 Los tres se resuelven con la misma regla: **telegrafiar largo y castigar el

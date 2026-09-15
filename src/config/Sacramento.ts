@@ -12,6 +12,36 @@
  */
 export const RESOLUCION = { ancho: 480, alto: 320 } as const;
 
+/**
+ * El cursor del raton.
+ *
+ * El dibujo va en ArteProvisional (`cursor-placeholder`); aqui esta lo unico
+ * que hay que afinar: a que tamano se pinta y donde cree el sistema que
+ * apunta.
+ *
+ * El cursor NO lo escala Phaser: lo pinta el navegador sobre la pagina, asi
+ * que hay que reescalarlo a mano contra el zoom del lienzo. Sin eso, en una
+ * pantalla grande el bisturi sale como una mota de trece pixeles al lado de un
+ * personaje que mide medio metro.
+ */
+export const CURSOR = {
+  /**
+   * Limites del escalado entero. Por debajo de 2 no se distingue la hoja del
+   * mango; por encima de 6 tapa lo que estas a punto de cortar, y ademas los
+   * navegadores descartan el cursor si pasa de 128 px de lado (14 x 6 = 84,
+   * con margen de sobra).
+   */
+  escalaMinima: 2,
+  escalaMaxima: 6,
+
+  /**
+   * Punto caliente, en pixeles del dibujo sin escalar: la punta del filo, que
+   * esta en la esquina. Si esto deja de cuadrar con el dibujo, el jugador
+   * apunta a un sitio y clica en otro.
+   */
+  punta: { x: 0, y: 0 },
+} as const;
+
 /** Cinematica del Cirujano-Sacerdote. Valores en px/s y px/s^2. */
 export const MOVIMIENTO = {
   velocidadCaminar: 130,
