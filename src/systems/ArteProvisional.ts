@@ -106,15 +106,21 @@ const CIRUJANO: Figura = {
 //
 // Fiel de abajo. El ethos del bible manda: "el estatus social se mide por
 // cuanto te pareces fisicamente a un dios-carne". El Devoto esta en la base,
-// asi que conserva casi todo su cuerpo — y eso es lo que da miedo: sigue
-// siendo una persona debajo de lo que le han puesto.
+// asi que aun se le reconoce la persona debajo — y eso es lo que da miedo.
 //
-// Pero lo que le han puesto se VE, que es lo que faltaba: el brazo derecho es
-// una protesis de Genesis Vestal con fluido turquesa, lleva una placa
-// atornillada en la sien y un tubo entrando al cuello. Carne y maquina a
-// partes desiguales, como en las laminas del bible.
+// Pero el diezmo que ya pago se VE: la carne le sale por donde el sacramento
+// no cerro, al rojo vivo, y lo que le faltaba se lo repusieron con aparato de
+// Genesis Vestal. Carne y maquina a partes desiguales, como en las laminas.
 //
-// La venda sobre los ojos: aqui mirar no da estatus.
+// DOS VARIANTES, y el motivo no es decorativo: con una sola, una ronda de
+// cuatro Devotos parecia el mismo hombre copiado cuatro veces. El sacramento
+// no falla dos veces igual, asi que a cada uno le falta otra cosa.
+//
+//   A: placa en la sien, brazo derecho de aparato, la carne le sube del pecho.
+//   B: mandibula de metal, pierna izquierda entera sustituida, la carne le
+//      revienta el costado derecho.
+//
+// La venda sobre los ojos en los dos: aqui mirar no da estatus.
 
 const DEVOTO: Figura = {
   paleta: {
@@ -123,8 +129,10 @@ const DEVOTO: Figura = {
     g: 0x5c4636, // sayo
     G: 0x715847, // sayo iluminado
     d: 0x2e231b, // sombra y contorno
-    c: 0x8c4f4f, // carne viva
-    t: 0x7fc9bd, // fluido de la protesis
+    c: 0x8c2f2f, // carne
+    C: 0xb03a34, // carne viva
+    R: 0xd4564a, // carne al rojo, lo que ya no cierra
+    t: 0x7fc9bd, // fluido de Genesis Vestal
     M: 0x9ca193, // metal
     S: 0x5b5c57, // metal en sombra
     n: 0x1e1611, // negro
@@ -137,33 +145,87 @@ const DEVOTO: Figura = {
     '.....dvvvvvvMMd.......',
     '.....dvvvvvvMSd.......',
     '.....dhhhhhhMSd.......',
-    '......dhhhhdtSd.......',
-    '.......dhhdttSd.......',
-    '.....ddgggggtSd.......',
-    '....dggGGGGgSSMd......',
-    '...dggGGGGGGgMMMd.....',
-    '...dgGGGGGGGgMttMd....',
-    '..vdgGGGGGGGMMttMMd...',
-    '..vdggGGGGGMttttMMd...',
-    '...dgggGGGGMMttMMd....',
-    '...dggggGGGgMMMMd.....',
-    '...dgggggggggMMd......',
-    '...dgggggggggdd.......',
-    '...dggggdggggd........',
-    '...ddgggddgggd........',
-    '..ddggdddddggd........',
-    '..dgddddddddgd........',
-    '..dgdd....ddgd........',
-    '..dgdd....ddgd........',
-    '..dgdd....ddgd........',
-    '..dggd....dggd........',
-    '..dggd....dggd........',
+    '......dccccctSd.......',
+    '.....dcCCccctSd.......',
+    '....dcCCCccccSSd......',
+    '...dcCCRRCccccSMd.....',
+    '...dcCRRRRCcccMMMd....',
+    '...dcCRRRRCccMMttMd...',
+    '..vdcCRRRRCcMMttMMd...',
+    '..vdcCCRRCccMttttMd...',
+    '...dccCCCccccMMttMd...',
+    '...dgccCCcccccMMMd....',
+    '...dggcccccccgMMd.....',
+    '...dgggcccccggd.......',
+    '...dggggcgggggd.......',
+    '...ddgggcggggd........',
+    '..ddgggcccgggd........',
+    '..dggccccccggd........',
+    '..dgcc....ccgd........',
+    '..dgcc....ccgd........',
+    '..dgdd....ccgd........',
+    '..dggd....ccgd........',
+    '..dggd....cSSd........',
     '..dggd....dSSd........',
     '..dggd....dSSd........',
     '.ddggd....dSSdd.......',
     '.nnggd....dSSnn.......',
     '.nnnn......nnnn.......',
     '..nn........nn........',
+    '......................',
+  ],
+};
+
+const DEVOTO_B: Figura = {
+  paleta: {
+    h: 0x9a7f66, // piel
+    v: 0xd8cdbe, // vendas
+    g: 0x5c4636, // sayo
+    G: 0x715847, // sayo iluminado
+    d: 0x2e231b, // sombra y contorno
+    c: 0x8c2f2f, // carne
+    C: 0xb03a34, // carne viva
+    R: 0xd4564a, // carne al rojo, lo que ya no cierra
+    t: 0x7fc9bd, // fluido de Genesis Vestal
+    M: 0x9ca193, // metal
+    S: 0x5b5c57, // metal en sombra
+    n: 0x1e1611, // negro
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dhhhhhhd........',
+    '.....dhhhhhhhhd.......',
+    '.....dvvvvvvvhd.......',
+    '.....dvvvvvvvhd.......',
+    '.....dMMMMMMMSd.......',
+    '......dMSSSSMd........',
+    '.......dttSMd.........',
+    '.....ddgggggtd........',
+    '....dggGGGGggtd.......',
+    '...dggGGGGGGgcd.......',
+    '...dgGGGGGGgcCCd......',
+    '..vdgGGGGGGcCRRCd.....',
+    '..vdggGGGGcCRRRRCd....',
+    '...dgggGGGcCRRRRCd....',
+    '...dggggGGcCRRRCcd....',
+    '...dgggggggcCCCccd....',
+    '...dggggggggcccdd.....',
+    '...dggggdgggccd.......',
+    '...ddgggddggccd.......',
+    '..ddggdddddgccd.......',
+    '..dgddddddddgcd.......',
+    '..dMMd....ddgd........',
+    '..dMSd....ddgd........',
+    '..dMSd....ddgd........',
+    '..dMSd....dggd........',
+    '..dMSd....dggd........',
+    '..dMSd....dggd........',
+    '..dMSd....dggd........',
+    '.ddMSd....dggdd.......',
+    '.nnMSd....dggnn.......',
+    '.nnMMn.....nnnn.......',
+    '..nnn.......nn........',
     '......................',
   ],
 };
@@ -252,27 +314,29 @@ const UMBRAL: Figura = {
 
 // -- Vestal ------------------------------------------------------------------
 //
-// Alto clero, y por tanto MAS maquina: por el mismo ethos que deja al Devoto
-// casi entero, subir en la Diocesis significa parecerse mas a un dios-carne y
-// conservar menos cuerpo propio.
+// Alto clero, y por tanto MAS carne y MAS maquina: por el mismo ethos que deja
+// al Devoto casi entero, subir en la Diocesis significa parecerse mas a un
+// dios-carne y conservar menos cuerpo propio.
 //
-// De ahi su figura: un aparato de metal le cubre la cara entera, con una lente
-// turquesa por unico rasgo y tubos saliendo de la nuca. De cintura para abajo
-// ya no le quedan piernas, sino una base de carne fundida con costillas de
-// metal entre la masa. El sello del diezmo en el pecho, en oro, es su cargo.
+// Aqui la carne ya no es una herida, es el cuerpo: le desborda el habito y se
+// derrama hasta el suelo, al rojo vivo. Del hombre queda un aparato de metal
+// que le cubre la cara entera, con una lente turquesa por unico rasgo, y una
+// costilla de metal con su respiradero en mitad de la masa.
 //
-// Erguido, nunca encorvado. El Devoto se dobla; el Vestal administra.
+// El sello del diezmo en el pecho, en oro, es su cargo: el que sella lo que se
+// cobra. Erguido, nunca encorvado. El Devoto se dobla; el Vestal administra.
 
 const VESTAL: Figura = {
   paleta: {
     o: 0xcda058, // oro del sello y el collar
     O: 0xe7ce9f, // oro, reflejo
-    r: 0x5d5466, // tunica clerical
-    R: 0x7d7389, // tunica iluminada
+    r: 0x5d5466, // lo que queda del habito
+    R: 0xd4564a, // carne al rojo
     s: 0x342f3e, // sombra
     p: 0x9a8878, // piel
-    c: 0x8c4f4f, // carne fundida
-    t: 0x7fc9bd, // lente y fluido
+    c: 0x8c2f2f, // carne en sombra
+    C: 0xb03a34, // carne
+    t: 0x7fc9bd, // lente y respiradero
     T: 0xc9dcc8, // brillo de la lente
     n: 0x1e1611, // impronta del sello
     M: 0x9ca193, // metal
@@ -292,32 +356,32 @@ const VESTAL: Figura = {
     '.....MSSttttSSMt......',
     '.....MMSSSSSSMtt......',
     '......MMSSSSMMt.......',
-    '......ooMMMMoot.......',
-    '.....oooooooooo.......',
-    '....rrrrrrrrrrrr......',
-    '...rrrRRRRRRRRrrr.....',
-    '..prrRRRRRRRRRRrrp....',
-    '..prrRRRoooooRRrrp....',
-    '..prrRRoOnnOoRRrrp....',
-    '..prrRRoOnnOoRRrrp....',
-    '..prrRRRoooooRRrrp....',
-    '...rrRRRRRRRRRRrr.....',
-    '...rrrRRRRRRRRrrr.....',
-    '...orrrrRRRRrrrro.....',
-    '....rrrrrrrrrrrr......',
-    '....rrrrMssMrrrr......',
-    '....rrrMssssMrrr......',
-    '...rrrMsscssMrrr......',
-    '...rrMssccccsMrr......',
-    '...rMsscccccssMr......',
-    '...rMsccctcccsMr......',
-    '...rMscccccccsMr......',
-    '....MsccccccccM.......',
-    '....MccccccccM........',
-    '....cMccccccMc........',
-    '...cccMccccMccc.......',
-    '..ccc.Mcccc.Mcc.......',
-    '.ccc...MccM...ccc.....',
+    '......oocccccot.......',
+    '.....oocCCCCCcoo......',
+    '....rrcCRRRRRCcrr.....',
+    '...rrrcCRRRRRCcrrr....',
+    '..prrRcCRRRRRCcRrrp...',
+    '..prrRRoooooooRRrrp...',
+    '..prrRRoOnnnOoRRrrp...',
+    '..prrRRoOnnnOoRRrrp...',
+    '..prrRRoooooooRRrrp...',
+    '...rrRcCRRRRRCcRrr....',
+    '...rrcCRRRRRRRCcrr....',
+    '...ocCRRRRRRRRRCco....',
+    '....cCRRRRRRRRRCc.....',
+    '....cCRRRRRRRRRCc.....',
+    '...cCRRRRRRRRRRRCc....',
+    '...cCRRRRRRRRRRRCc....',
+    '..cCRRRRRRRRRRRRRCc...',
+    '..cCRRRRRMMRRRRRRCc...',
+    '..cCRRRRMttMRRRRRCc...',
+    '..cCRRRRRMMRRRRRRCc...',
+    '..ccCRRRRRRRRRRRCcc...',
+    '...ccCRRRRRRRRRCcc....',
+    '....ccCCRRRRRCCcc.....',
+    '.....cccCCCCCccc......',
+    '...ccc.cccccc.ccc.....',
+    '..ccc....cccc....cc...',
   ],
 };
 
@@ -885,6 +949,7 @@ const MAQUINA: Figura = {
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   devoto: DEVOTO,
+  'devoto-b': DEVOTO_B,
   vestal: VESTAL,
   sello: SELLO,
   reformado: REFORMADO,
