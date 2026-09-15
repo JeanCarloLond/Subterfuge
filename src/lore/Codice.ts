@@ -1,23 +1,47 @@
 /**
  * Fragmentos del Codice de la Carne.
  *
- * BORRADOR DERIVADO DEL WORLD BIBLE (docs/Subterfuge-world-bible.docx). Cada
- * fragmento sigue la estructura que el propio documento describe para el
- * Codice: versiculos de la escritura que los cientificos de Genesis Vestal
- * reescribieron sobre su fracaso, mas una anotacion al margen "hecha por
- * alguien que intento advertir algo". Leidos en orden, los margenes dejan ver
- * la verdad debajo de la doctrina.
+ * DERIVADO DEL WORLD BIBLE (docs/Subterfuge-world-bible.docx). El documento
+ * describe el Codice como escritura sagrada que los supervivientes de Genesis
+ * Vestal reescribieron ENCIMA de sus propios manuales tecnicos: "los protocolos
+ * quirurgicos se volvieron liturgia, los manuales tecnicos se volvieron
+ * escritura sagrada, las batas se volvieron vestiduras". Mas una anotacion al
+ * margen "hecha por alguien que intento advertir algo".
  *
- * Es texto de trabajo para que el equipo narrativo lo apruebe, corrija o
- * reescriba. Lo que NO es negociable, venga de quien venga la version final:
+ * De ahi las dos voces, y ninguna suena a salmo:
+ *
+ *   - EL VERSICULO es un procedimiento con siglos de incienso encima. Manda,
+ *     prohibe, pesa y registra: "se cubrira", "se administrara", "no se
+ *     admite otra moneda". Habla de instrumentos y de turnos, no de virtudes.
+ *   - EL MARGEN es una persona cansada escribiendo a escondidas. Frases
+ *     cortas, concretas, que no cierran la idea. No todas son confesiones:
+ *     hay correcciones al texto de arriba, cifras apuntadas a mano y cosas
+ *     practicas. Es un cuaderno de trabajo, no un testamento.
+ *
+ * Al escribir aqui, huye de la simetria. Si tres lineas llevan la misma
+ * cadencia, sobra una. El mundo no habla en paralelismos.
+ *
+ * Lo que NO es negociable, venga de quien venga la version final:
  *
  *   - Los Primigenios son ciegos. Nunca miran, ven ni observan. Conocen el
  *     mundo por tacto e ingesta. Dogma: "los dioses no miran, son mirados".
+ *     Cuidado con las metaforas de luz y oscuridad: para ellos no significan
+ *     nada.
  *   - Fueron mil. La doctrina lo conserva como numero sagrado.
  *   - La nina no fue sorteada: vino sola a pagar una deuda de su casa, y su
  *     tejido "responde". El Codice insinua, no explica.
  *   - Nadie dentro del mundo percibe el sacramento como violencia. El horror
  *     esta en la distancia entre lo que ellos creen y lo que el jugador lee.
+ *   - El fragmento V guarda el gancho del jefe ("Mi padre esta alli. O lo que
+ *     quedo."): la Sala de Sacramento lo usa.
+ *
+ * Formato del folio (src/ui/CodiceScene.ts): versiculo de 3 o 4 lineas de
+ * hasta 62 caracteres, margen de hasta 4. Sin tildes, como el resto del texto
+ * en pantalla.
+ *
+ * CADA LINEA DE `versiculo` SE NUMERA EN EL FOLIO, asi que cada una tiene que
+ * sostenerse sola. Partir una frase entre dos lineas mete un numero en mitad
+ * de la oracion, y eso solo se ve al abrir el Codice, nunca leyendo el array.
  */
 
 export interface FragmentoCodice {
@@ -37,15 +61,15 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice II, 4',
     titulo: 'De la mirada',
     versiculo: [
-      'Los dioses no miran: son mirados.',
-      'Quien alce los ojos hacia el Vientre Profundo peca de soberbia,',
-      'pues la vista es un don que los Primigenios no quisieron para si.',
+      'Se cubrira el rostro antes de la incision.',
+      'Los Mil no tienen ojos: no se les muestra nada.',
+      'Se les entrega. Mirar al dios es pedirle cuentas.',
       'Baja la mirada. Ofrece las manos.',
     ],
     margen: [
-      'No la quisieron. No la tuvieron.',
-      'Ninguno de los mil desarrollo tejido optico.',
-      'Lo escribimos asi para que nadie preguntara por que.',
+      'Donde dice "no tienen ojos", el manual decia:',
+      'sin tejido optico en ninguno de los mil.',
+      'Lo tachamos. Nadie ha preguntado nunca.',
     ],
   },
   {
@@ -53,15 +77,14 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice III, 1',
     titulo: 'Del diezmo',
     versiculo: [
-      'Lo que se ofrece es lo unico que el dios conoce.',
-      'Por la carne entregada sabe que existe el mundo;',
-      'por el tacto de la ofrenda sabe que existe el fiel.',
-      'Quien retiene su diezmo condena a los dioses al vacio.',
+      'Se pesara la ofrenda. Las dos cifras, al Registro.',
+      'El dios solo conoce lo que toca, y solo toca esto.',
+      'Quien retiene su diezmo le quita el mundo.',
     ],
     margen: [
-      'Cierto, a su manera. Sin ojos solo conocen lo que tocan',
-      'y lo que tragan. Por eso el hambre no termina nunca.',
-      'Por eso lo llamamos diezmo y no lo que es.',
+      'Peso de hoy: once kilos. El mes pasado, veinte.',
+      'Llevo la cuenta yo solo. No se la he ensenado.',
+      'Tocan mas fuerte cuando llega menos.',
     ],
   },
   {
@@ -69,15 +92,14 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice I, 1',
     titulo: 'Del origen',
     versiculo: [
-      'En el principio fue la promesa: que la muerte tendria fin.',
-      'Mil aceptaron la promesa con esperanza verdadera,',
-      'y la carne de los mil no murio.',
-      'Y los sabios, al ver que la carne no moria, se arrodillaron.',
+      'Se prometio el fin de la muerte. Se cumplio.',
+      'Mil aceptaron. Su carne no murio, ni muere.',
+      'Aquel dia se arrodillaron y empezo el Codice.',
     ],
     margen: [
-      'Genesis Vestal. Mil sujetos de prueba.',
-      'La carne no murio porque no pudimos matarla.',
-      'No nos arrodillamos: reescribimos el manual.',
+      'Mil sujetos. Lote unico. Genesis Vestal.',
+      'La carne no murio porque no supimos matarla.',
+      'Nadie se arrodillo. Se acabaron las ideas.',
     ],
   },
   {
@@ -85,15 +107,15 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice IV, 7',
     titulo: 'Del sorteo',
     versiculo: [
-      'Cada casa del Atrio inscribira a los suyos en el Registro,',
-      'y el Registro sera justo, porque el Registro no elige: sortea.',
-      'La deuda de una casa se salda con carne de esa casa.',
-      'No hay otra moneda.',
+      'Cada casa inscribira a los suyos, una vez al ano.',
+      'El Registro no elige: sortea. Por eso es justo.',
+      'La deuda de una casa se salda con su carne.',
+      'No se admite otra moneda.',
     ],
     margen: [
-      'Hoy inscribieron a una nina. No salio sorteada.',
-      'Vino sola, a pagar lo que debia su familia.',
-      'El Registro la acepto sin sortear nada.',
+      'Hoy entro una nina sin numero. No fue sorteada.',
+      'Traia la deuda de su casa escrita de su puno.',
+      'El Registro la acepto igual. No pregunte.',
     ],
   },
   {
@@ -101,14 +123,13 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice V, 2',
     titulo: 'De los Elegidos',
     versiculo: [
-      'El Elegido que completa el sacramento asciende y ya no vuelve.',
-      'El que no lo completa es Reformado, y el Reformado es honrado,',
-      'pues llevo la ofrenda a medias y aun asi la llevo.',
+      'El que completa el sacramento asciende y no vuelve.',
+      'Al que no lo completa se le llama Reformado.',
+      'Se le honra: llevo la ofrenda a medias y la llevo.',
     ],
     margen: [
-      'Honrado. Los guardamos en los niveles de abajo',
-      'para que nadie tenga que verlos.',
-      'Un sacramento a medias es una persona a medias.',
+      'Honrarlos es guardarlos abajo, donde no estorben.',
+      'Un sacramento a medias deja media persona.',
       'Mi padre esta alli. O lo que quedo.',
     ],
   },
@@ -117,16 +138,16 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice VI, 1',
     titulo: 'De las manos',
     versiculo: [
-      'El Cirujano no elige: ejecuta.',
-      'Sus manos son del Sacramento y su nombre es su numero.',
-      'No mirara al ofrendado. Mirar es preguntar,',
-      'y el Sacramento no admite preguntas.',
+      'Las Manos no eligen: ejecutan.',
+      'Su nombre es su numero.',
+      'No hablaran con el ofrendado ni le veran la cara.',
+      'Mirar es preguntar, y aqui no se pregunta.',
     ],
     margen: [
       'Hoy mire.',
-      'El tejido de la nina respondio como ningun otro.',
-      'No la rechazaron: la reconocieron. Tiene lo que a ellos les falta.',
-      'Que nadie lea esto antes de tiempo.',
+      'El tejido no se aparto del filo. Vino a buscarlo.',
+      'Ellos no la rechazaron. La reconocieron.',
+      'No apunto mas. Aqui no.',
     ],
   },
   {
@@ -134,14 +155,14 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice V, 9',
     titulo: 'De la espera',
     versiculo: [
-      'Quien espera su turno dormira, y el sueno sera su primera ofrenda.',
-      'Nadie entrara en la Sala despierto: la carne serena es carne grata.',
-      'Las Criptas guardan lo que la Diocesis aun no ha entregado.',
+      'La dosis se administrara la vispera del turno.',
+      'Nadie entra despierto en la Sala.',
+      'La carne serena es carne grata.',
+      'Las Criptas guardan lo que aun no se ha entregado.',
     ],
     margen: [
-      'Los sedamos para que no griten. No por ellos: por los que esperan',
-      'en la fila de arriba, que no deben oir lo que hay abajo.',
-      'La carne grata es la que no se resiste.',
+      'Dosis doble desde el jueves. La sencilla no cubre.',
+      'No es por ellos. Es por la fila de arriba.',
     ],
   },
   {
@@ -149,14 +170,15 @@ export const CODICE: readonly FragmentoCodice[] = [
     cita: 'Codice VII, 3',
     titulo: 'Del silencio',
     versiculo: [
-      'No preguntaras donde moran los nuevos dioses,',
-      'pues los dioses son mil y mil seran, y la cuenta no es del fiel.',
-      'Quien cuente, dude; quien dude, ofrezca.',
+      'No preguntaras donde moran los dioses nuevos.',
+      'Los dioses son mil y mil seran.',
+      'La cuenta no es del fiel.',
+      'Quien cuenta, duda. Quien duda, ofrece.',
     ],
     margen: [
-      'Hace tres generaciones que no aparece un dios nuevo.',
-      'Ningun Elegido ha llegado abajo entero. Ninguno.',
-      'Nadie lo dice. Yo lo escribo aqui para que quede.',
+      'Tres generaciones sin un dios nuevo.',
+      'Ningun Elegido ha llegado entero. Ninguno.',
+      'Lo dejo escrito porque nadie lo dice en voz alta.',
     ],
   },
 ];
