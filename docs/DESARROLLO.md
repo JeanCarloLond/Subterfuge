@@ -422,10 +422,18 @@ tres capas:
    numerados, filete doble de oro, cabecera con capítulo y folio en romanos. Lo
    que la Diócesis enseña, en tinta.
 3. **Al margen**, a lápiz: la otra mano. Gris (nada oficial en el Códice es
-   gris), en cursiva, inclinada dos grados, con su corchete y la etiqueta _"al
-   margen, a lápiz:"_. Llega medio segundo **después** del versículo, para que
-   primero se lea lo oficial y luego la duda. Antes las dos voces compartían
-   panel y tipografía y se leían como un solo texto.
+   gris), en cursiva, inclinada tres grados y con su corchete. Llega medio
+   segundo **después** del versículo, para que primero se lea lo oficial y
+   luego la duda. Antes las dos voces compartían panel y tipografía y se leían
+   como un solo texto.
+
+   **Sin etiqueta que lo anuncie.** Llevó un rótulo _"al margen, a lápiz:"_ y
+   se quitó: un folio del Vientre no se anota a sí mismo, y quien escribió eso
+   lo hizo a escondidas, no iba a ponerle título. El lápiz, la inclinación, el
+   corchete y el retraso bastan para leerlo como otra mano. Si alguna vez
+   quedara flojo, la respuesta es reforzar lo visual —más inclinación, un
+   tachón, una línea que una el margen con el versículo—, nunca volver a poner
+   texto que explique lo que el ojo ya entendió.
 
 Y la materia del mundo sobre el papel: cera de vela en el borde, una huella de
 sangre abajo a la derecha, los filos rotos y los bordes oscurecidos por el uso.
