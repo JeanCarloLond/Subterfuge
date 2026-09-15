@@ -26,72 +26,85 @@ interface Figura {
 
 // -- Cirujano-Sacerdote ------------------------------------------------------
 //
-// Silueta segun el boceto de la artista: el hombre de la MASCARA DORADA.
-// Capirote conico alto en oro, mascara sin ojos y tunica morada con estola
-// roja y hombreras doradas.
-//
-// Blasphemous es referente de TONO, no de diseno de personaje: sirve para el
-// horror gotico-religioso y el peso de la silueta, no para copiar al Penitente.
-// El Cirujano es oro y morado, no acero.
+// EL HOMBRE DE LA MASCARA DORADA, segun las referencias del world bible
+// (docs/Subterfuge-world-bible.docx, laminas del Taller #2): mascara de pico
+// en oro con filigrana, mitra rematada en cruz, habito oscuro con estola roja
+// y orillas doradas. El capirote conico que hubo aqui antes queda atras: no
+// era lo que el equipo definio.
 //
 // Tres cosas que no se pueden perder al pasarlo a Aseprite:
 //
-//   1. Las MANOS palidas asoman a los lados. Son su oficio y su condena, y hay
-//      que poder leerlas a 1x sin ampliar.
-//   2. El oro de la mascara es su color identitario. Es lo que lo separa de
-//      cualquier otra figura encapuchada del genero.
-//   3. La mascara no tiene ojos, solo una hendidura. En la Diocesis mirar no es
-//      lo que da estatus, y el habito clerical lo refleja.
+//   1. El PICO. Es la silueta. Se tiene que reconocer de un vistazo y a
+//      contraluz, que es como se le vera la mitad del tiempo.
+//   2. Las MANOS palidas asoman a los lados. Son su oficio y su condena.
+//   3. El oro es su color identitario, y lo unico limpio que lleva encima.
 //
-// Es un tecnico, no un guerrero: postura recta y estrecha, sin hombros de heroe.
+// El filo del bisturi va en turquesa a proposito: es el unico resto de
+// tecnologia de Genesis Vestal que el Cirujano toca todos los dias, y el unico
+// sitio de su figura donde el futuro asoma por debajo de lo medieval.
+//
+// Es un tecnico, no un guerrero: postura recta y estrecha, sin hombros de
+// heroe. Mira a la derecha; el codigo voltea la textura.
 
 const CIRUJANO: Figura = {
   paleta: {
-    K: 0xf2dc8c, // reflejo del oro
-    k: 0xc9a44c, // oro de la mascara y el capirote
-    j: 0x8a6a2a, // oro en sombra
-    n: 0x171319, // hendidura de la mascara
-    P: 0x63456f, // morado claro
-    p: 0x4a3358, // morado de la tunica
-    s: 0x2e1f38, // sombra de la tunica
-    r: 0x8c2f2f, // estola
-    m: 0xd8cdbe, // manos
-    g: 0x3a2c22, // botas y correas
+    K: 0xe7ce9f, // oro claro, el reflejo
+    k: 0xcda058, // oro de la mascara y la mitra
+    j: 0xad8b5b, // oro medio, orillas del habito
+    h: 0x8f6135, // oro en sombra
+    n: 0x1e1611, // hueco: cuencas de la mascara y negro del habito
+    d: 0x2a1f18, // habito en sombra
+    b: 0x4e3222, // habito
+    B: 0x664a30, // habito iluminado
+    r: 0x912927, // estola
+    R: 0xb03a34, // estola, luz
+    m: 0xc9bda8, // manos
+    M: 0xe2d8c6, // manos, luz
+    t: 0x609d94, // filo del bisturi: tecnologia de Genesis Vestal
+    T: 0xc9dcc8, // brillo del filo
   },
   // prettier-ignore
   filas: [
-    '.......KK.......',
-    '.......Kk.......',
-    '......jKKk......',
-    '......jKKk......',
-    '......jKKk......',
-    '.....jjKKkk.....',
-    '.....jKKKkk.....',
-    '.....jKKKkk.....',
-    '....jjKKKKkk....',
-    '....jKKKKKkk....',
-    '...jjKKKKKkkk...',
-    '...jKKKKKKkkk...',
-    '...jjkkkkkkkj...',
-    '...jkkkkkkkkj...',
-    '...jknnnnnnkj...',
-    '...jkkkkkkkkj...',
-    '....kkkkkkkk....',
-    '...kppppppppk...',
-    '..kkppPPppppkk..',
-    '..pppPPrrPPpp...',
-    '.mppPPrrrrPPpm..',
-    '.mmppPPrrPPppm..',
-    '..mpppppppppm...',
-    '...pppppppppp...',
-    '...ppppspppp....',
-    '...pppssppp.....',
-    '...ppsssspp.....',
-    '..ppssssspp.....',
-    '..pssssssspp....',
-    '..pss....ssp....',
-    '..gss....ssg....',
-    '.gggg....gggg...',
+    '..........nn............',
+    '.........nKKn...........',
+    '.......nnnKKnnn.........',
+    '.........nKKn...........',
+    '.....hkkkkkkkkh.........',
+    '....hkKKkkkkKKkh........',
+    '....hkkkkkkkkkkh........',
+    '....hjjjjjjjjjjh........',
+    '.....kKKkkkkKKk.........',
+    '....hkKKkkkkKKkh........',
+    '....hknnkkkknnkh........',
+    '....hknnkkkknnkhh.......',
+    '....hkkkkkkkkkkkkh......',
+    '.....hkkkkkkkkkkkkkh....',
+    '......hkkkkkkkkkkkkkkh..',
+    '.......hhkkkkkkkkkkkkh..',
+    '.........hhhkkkkkkkhh...',
+    '............hhhhhhh.....',
+    '.....jjjjjjjjjj.........',
+    '...jbbBBBBBBBBBBbbj.....',
+    '..jbbbBBBBBBBBBBBBbbj...',
+    '.jmbbdkjrrrrrrjkdbbbmj..',
+    '.MmbbdkjrrRRRRrjkdbbbmM.',
+    '.MmbbdkjrrRRRRrjkdbbbmT.',
+    '.mmbbdkjrrrrrrjkdbbbbmT.',
+    '.jmbbdkjrrrrrrjkdbbbmmt.',
+    '..jbbdkjrrrrrrjkdbbbbj..',
+    '..jbbdkjjrrrrjjkdbbbbj..',
+    '..jbbddkjrrrrjkddbbbbj..',
+    '..jbbddkjrrrrjkddbbbbj..',
+    '..jbbdddjrrrrjdddbbbbj..',
+    '..jbbddddrrrrddddbbbbj..',
+    '..jbbdddddddddddbbbbbj..',
+    '..jbbbdddddddddddbbbbj..',
+    '..jbbbbdddddddddbbbbbj..',
+    '.jbbbbbdddddddddbbbbbbj.',
+    '.jbbbbdddddddddddbbbbbj.',
+    '.jnnnddddddddddddnnnnnj.',
+    '..nnnn..........nnnnn...',
+    '.nnnnn..........nnnnnn..',
   ],
 };
 

@@ -116,8 +116,12 @@ export class CirujanoSacerdote {
     // El sprite mide 16x32, pero el capirote NO colisiona: la caja empieza a la
     // altura de la mascara. Un cono de 10 px que choque con los techos volveria
     // el salto impredecible sin que el jugador entienda por que.
+    // El sprite mide 24x40 pero la caja sigue siendo la misma de siempre:
+    // 10x22 pegada al suelo y centrada. La mascara, la mitra y el pico NO
+    // colisionan — un pico de 8 px chocando con los techos volveria el salto
+    // impredecible sin que el jugador entienda por que.
     cuerpo.setSize(10, 22);
-    cuerpo.setOffset(3, 10);
+    cuerpo.setOffset((24 - 10) / 2, 40 - 22);
     cuerpo.setGravityY(MOVIMIENTO.gravedad);
     cuerpo.setMaxVelocity(MOVIMIENTO.velocidadCaminar, MOVIMIENTO.velocidadCaidaMax);
 
@@ -388,7 +392,7 @@ export class CirujanoSacerdote {
       ancho = perfil.alto;
       alto = perfil.alcance;
       x = this.sprite.x;
-      y = this.sprite.y - 32 - perfil.alcance / 2 + 4;
+      y = this.sprite.y - this.sprite.height - perfil.alcance / 2 + 4;
     } else if (this.direccionAtaque === 'abajo') {
       ancho = perfil.alto;
       alto = perfil.alcance;
@@ -432,7 +436,7 @@ export class CirujanoSacerdote {
     const origenX = vertical ? this.sprite.x : this.sprite.x + direccion * 2;
     const origenY = vertical
       ? this.direccionAtaque === 'arriba'
-        ? this.sprite.y - 30
+        ? this.sprite.y - this.sprite.height + 2
         : this.sprite.y - 2
       : this.hitbox.y;
     const espejo = vertical ? 1 : direccion;
