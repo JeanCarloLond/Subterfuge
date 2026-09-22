@@ -15,6 +15,7 @@ import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacrame
 import { Impacto } from '../systems/Impacto';
 import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
+import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
@@ -1001,6 +1002,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     jefe.eventos.on('muerte', () => {
       this.jefeDerrotado = true;
+      recordar('hitos', 'manos-anteriores');
       this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
       this.abrirUmbral();
       this.subirReja();

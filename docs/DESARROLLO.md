@@ -516,6 +516,65 @@ Paleta del bible: carne, sangre, oro litúrgico, hueso. Todo con `Graphics`; no
 hace falta arte nuevo, aunque una textura de pergamino de la artista lo
 mejoraría. Las hojas que faltan aparecen como _arrancadas_ en el índice.
 
+## La web de la Diócesis (`web/`)
+
+El profesor pidió tres cosas tras la presentación: una web externa al juego
+para profundizar en el universo (#63), minijuegos complementarios (#64) y una
+genealogía o jerarquía de personajes y entidades (#62). Viven en `web/`, en
+este mismo repositorio, y se publican con el juego en el mismo despliegue de
+GitHub Pages: el juego en `/Subterfuge/` y el portal en `/Subterfuge/web/`.
+Vite compila las dos páginas (`build.rollupOptions.input`).
+
+**Qué es.** El bible lo describe en el Taller 4: "el sitio no se presenta como
+ficción; se presenta como el portal oficial de la Diócesis de la Carne". Es una
+sola página con rutas por hash (`web/src/main.ts`) y **la navegación es un
+descenso**: cada sección tiene una profundidad (`data-profundidad` en `<body>`)
+y el sitio se oscurece y se desordena al bajar. La portada parece la web de una
+iglesia; los Sacramentos ya no.
+
+| Sección     | Profundidad | Qué enseña                                                                   |
+| ----------- | ----------- | ---------------------------------------------------------------------------- |
+| Portada     | 0           | La fachada institucional: horarios, trámites, tu expediente.                 |
+| Doctrina    | 1           | Los ocho folios del Códice, y la **Vigilia** (una vela que se consume).      |
+| Registro    | 2           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.    |
+| El Vientre  | 3           | El corte de las seis capas.                                                  |
+| Linaje      | 4           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).  |
+| Sacramentos | 5           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64. |
+
+**Lo que se gana bajando.** El juego apunta en `localStorage` (clave
+`diocesis.memoria`, ver `src/systems/Memoria.ts`) lo que el jugador ha
+descubierto alguna vez: fragmentos, fichas, capas, reliquias y dos hitos (el
+jefe y el cierre). Es la unión de todas las partidas y nunca se borra desde el
+juego. Como juego y web comparten dominio, la web lo lee y abre lo que la
+Diócesis no publica: los márgenes del Códice y el manual de Genesis Vestal
+debajo, las fichas con nombre, las capas cerradas, y los expedientes del Linaje
+(la corporación, las herejías, las Manos anteriores, la niña). Para quien no ha
+jugado en ese navegador hay **claves**: frases del mundo que se presentan al pie
+de la página o vienen en la URL (`#/doctrina?clave=...`, pensado para un código
+QR). Una está en el código fuente de la web, que es donde el bible dice que
+debe estar.
+
+**Las láminas.** `scripts/exportar-arte.mjs` lee las figuras de
+`ArteProvisional.ts` (mapa de caracteres + paleta) y escribe
+`web/generado/arte.json`, que no se versiona; corre antes de `dev` y de
+`build`. Así la web nunca dibuja un sprite distinto del que dibuja el juego.
+
+**Los textos** salen de `src/lore/*` sin duplicarlos. Van sin tildes por la
+fuente del juego; `web/src/texto.ts` devuelve las que se pueden devolver sin
+ambigüedad y deja en paz las demás.
+
+**Los minijuegos** son los del bible, no otros: el Examen de Pureza ("un test
+que responde cosas que no deberías saber de ti": sabe cuántas veces lo has
+hecho, hasta dónde has bajado y qué hora es), el Sacramento ("precisión
+quirúrgica, tipo Operation pero litúrgico"; fallar deja una mancha en el portal
+que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
+al apagarse se ve lo que la luz tapaba). El Sacramento hecho perfecto también
+termina en Reformado: ningún Elegido ha llegado entero en tres generaciones.
+
+**Despliegue gratuito.** GitHub Pages, sin servidor: todo es estático y el
+estado vive en el navegador de cada visitante. No hay cuentas ni base de datos
+que pagar ni mantener.
+
 ## Rezar en un Altar
 
 Rezar es el punto de guardado, y tiene que **parecerlo**. Tres cosas ocurren a

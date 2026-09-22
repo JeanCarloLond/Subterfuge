@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Configuración de Vite.
@@ -18,6 +19,15 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: process.env.BASE_URL ?? '/',
   build: {
+    // Dos paginas en un solo despliegue: el juego en la raiz y la web de la
+    // Diocesis en /web/. Comparten dominio a proposito: la web lee del
+    // localStorage lo que el jugador descubrio bajando (ver src/systems/Memoria.ts).
+    rollupOptions: {
+      input: {
+        juego: fileURLToPath(new URL('./index.html', import.meta.url)),
+        diocesis: fileURLToPath(new URL('./web/index.html', import.meta.url)),
+      },
+    },
     // Phaser entero son ~1,2 MB y va en un único chunk a propósito: partirlo
     // no acelera nada aquí, porque el juego necesita el motor completo antes
     // de mostrar el primer fotograma.

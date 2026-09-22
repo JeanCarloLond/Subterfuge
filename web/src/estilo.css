@@ -1,0 +1,1077 @@
+/*
+ * Portal de la Diócesis de la Carne.
+ *
+ * La regla del sitio es la del mundo: descender es degradarse. Cada sección
+ * tiene una profundidad (data-profundidad en <body>), y cuanto más honda, más
+ * oscuro el fondo, menos hueso y más carne, y más se desordena la tipografía.
+ * La superficie parece el portal institucional de una iglesia; el fondo ya no.
+ *
+ * Paleta del bible: carne, sangre, oro litúrgico, hueso. Y el turquesa, que es
+ * el único color que no pertenece a la Diócesis: lo lleva lo que fue de
+ * Genesis Vestal (el manual bajo el Códice, las terminales, las cánulas).
+ */
+
+:root {
+  --hueso: #e7e0d1;
+  --hueso-2: #d8cfbb;
+  --tinta: #221820;
+  --tinta-2: #57494f;
+  --sangre: #8c2f2f;
+  --sangre-2: #b84a44;
+  --oro: #8f6d22;
+  --oro-2: #c9a44c;
+  --carne: #a86a66;
+  --turquesa: #2c8d88;
+  --lapiz: #4b4754;
+  --regla: rgba(34, 24, 32, 0.18);
+  --panel: rgba(34, 24, 32, 0.05);
+  --sombra: rgba(20, 10, 14, 0.35);
+  --ruido: 0;
+}
+
+body[data-profundidad='1'] {
+  --hueso: #ddd4c2;
+  --hueso-2: #cbc0a9;
+}
+body[data-profundidad='2'] {
+  --hueso: #cfc4b0;
+  --hueso-2: #b9ac95;
+  --panel: rgba(34, 24, 32, 0.07);
+}
+body[data-profundidad='3'] {
+  --hueso: #3a2c31;
+  --hueso-2: #2b2025;
+  --tinta: #e0d6c6;
+  --tinta-2: #b3a597;
+  --oro: #c9a44c;
+  --sangre: #c85752;
+  --lapiz: #b6adbd;
+  --regla: rgba(224, 214, 198, 0.2);
+  --panel: rgba(224, 214, 198, 0.06);
+  --ruido: 0.4;
+}
+body[data-profundidad='4'] {
+  --hueso: #241a1f;
+  --hueso-2: #1a1216;
+  --tinta: #e0d6c6;
+  --tinta-2: #a99b8f;
+  --oro: #c9a44c;
+  --sangre: #d05a52;
+  --lapiz: #b6adbd;
+  --regla: rgba(224, 214, 198, 0.2);
+  --panel: rgba(224, 214, 198, 0.06);
+  --ruido: 0.7;
+}
+body[data-profundidad='5'] {
+  --hueso: #140e12;
+  --hueso-2: #0d090b;
+  --tinta: #dccfbd;
+  --tinta-2: #9d8f85;
+  --oro: #c9a44c;
+  --sangre: #d9625a;
+  --lapiz: #b6adbd;
+  --regla: rgba(224, 214, 198, 0.2);
+  --panel: rgba(224, 214, 198, 0.07);
+  --ruido: 1;
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--hueso);
+  color: var(--tinta);
+  font-family: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  font-size: 18px;
+  line-height: 1.5;
+  transition:
+    background-color 0.9s ease,
+    color 0.9s ease;
+}
+body::before {
+  /* Grano del papel: crece con la profundidad hasta ser suciedad. */
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(0.06 + var(--ruido) * 0.16);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.5) 0.6px, transparent 0.7px);
+  background-size: 3px 3px;
+  z-index: 0;
+}
+
+a {
+  color: var(--sangre);
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--turquesa);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: Cinzel, 'Trajan Pro', Georgia, serif;
+  letter-spacing: 0.03em;
+  text-wrap: balance;
+  margin: 0;
+}
+h1 {
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 600;
+  line-height: 1.1;
+}
+h2 {
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 600;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--oro);
+}
+p {
+  margin: 0 0 14px;
+}
+.eyebrow {
+  font-family: Cinzel, Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 8px;
+}
+.mono {
+  font-family: 'IBM Plex Mono', Consolas, monospace;
+  font-size: 14px;
+}
+kbd {
+  font-family: 'IBM Plex Mono', Consolas, monospace;
+  font-size: 0.8em;
+  border: 1px solid var(--regla);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+button,
+.boton {
+  font-family: Cinzel, Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  background: transparent;
+  border: 1px solid var(--tinta-2);
+  padding: 9px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+button:hover,
+.boton:hover {
+  border-color: var(--sangre);
+  color: var(--sangre);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.boton-lleno {
+  background: var(--sangre);
+  border-color: var(--sangre);
+  color: #f2eadb;
+}
+.boton-lleno:hover {
+  color: #fff;
+  background: var(--sangre-2);
+}
+
+/* -- Cabecera ------------------------------------------------------------ */
+
+.cabecera {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 18px clamp(16px, 5vw, 48px);
+  border-bottom: 1px solid var(--regla);
+}
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--tinta);
+}
+.marca-sello {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--oro);
+  position: relative;
+  flex: none;
+}
+.marca-sello::before,
+.marca-sello::after {
+  content: '';
+  position: absolute;
+  background: var(--sangre);
+}
+.marca-sello::before {
+  width: 2px;
+  height: 22px;
+  left: 16px;
+  top: 6px;
+}
+.marca-sello::after {
+  width: 14px;
+  height: 2px;
+  left: 10px;
+  top: 13px;
+}
+.marca-nombre {
+  display: block;
+  font-family: Cinzel, Georgia, serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+.marca-lema {
+  display: block;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--tinta-2);
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  font-family: Cinzel, Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.nav a {
+  color: var(--tinta-2);
+  text-decoration: none;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+}
+.nav a:hover,
+.nav a.activa {
+  color: var(--tinta);
+  border-bottom-color: var(--sangre);
+}
+.nav .nav-juego {
+  color: var(--sangre);
+  border: 1px solid var(--sangre);
+  padding: 6px 12px;
+}
+.nav .nav-juego:hover {
+  background: var(--sangre);
+  color: #f2eadb;
+}
+
+/* -- Página -------------------------------------------------------------- */
+
+.pagina {
+  position: relative;
+  z-index: 1;
+  max-width: 76ch;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 5vw, 48px);
+  padding-block: 40px 72px;
+}
+.pagina:focus {
+  outline: none;
+}
+.pagina.ancha {
+  max-width: 1100px;
+}
+.seccion {
+  margin-bottom: 48px;
+}
+.lede {
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+.filete {
+  height: 3px;
+  border-top: 1px solid var(--oro);
+  border-bottom: 1px solid var(--oro);
+  margin: 18px 0 28px;
+  position: relative;
+}
+.filete::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  background: var(--oro);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Tarjetas de la portada */
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.tarjeta {
+  display: block;
+  text-decoration: none;
+  color: var(--tinta);
+  padding: 18px 18px 16px;
+  background: var(--panel);
+  border-top: 2px solid var(--oro);
+}
+.tarjeta:hover {
+  border-top-color: var(--sangre);
+}
+.tarjeta h3 {
+  color: var(--tinta);
+  margin-bottom: 6px;
+}
+.tarjeta p {
+  margin: 0;
+  color: var(--tinta-2);
+  font-size: 16px;
+}
+.tarjeta .profundidad {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--oro);
+  margin-bottom: 8px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 17px;
+}
+.tabla th {
+  text-align: left;
+  font-family: Cinzel, serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--oro);
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--tinta-2);
+}
+.tabla td {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--regla);
+  vertical-align: top;
+}
+.expediente {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.expediente div {
+  padding: 12px 14px;
+  background: var(--panel);
+}
+.expediente b {
+  display: block;
+  font-family: Cinzel, serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+.expediente span {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- Doctrina: los folios y la vela -------------------------------------- */
+
+.vigilia {
+  position: sticky;
+  top: 12px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  margin-bottom: 28px;
+  background: var(--hueso);
+  border: 1px solid var(--regla);
+  box-shadow: 0 6px 18px -10px var(--sombra);
+}
+.vela {
+  width: 26px;
+  height: 46px;
+  position: relative;
+  flex: none;
+}
+.vela-cuerpo {
+  position: absolute;
+  left: 8px;
+  bottom: 0;
+  width: 10px;
+  height: var(--cera, 30px);
+  background: linear-gradient(#efe6cf, #d8cba8);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.5s linear;
+}
+.vela-llama {
+  position: absolute;
+  left: 9px;
+  bottom: calc(var(--cera, 30px) + 1px);
+  width: 8px;
+  height: 14px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(#fff3c4, #e8a03a 55%, rgba(140, 47, 47, 0));
+  animation: parpadeo 0.28s infinite alternate;
+  transition: bottom 0.5s linear;
+}
+.apagada .vela-llama {
+  display: none;
+}
+.vela-humo {
+  display: none;
+  position: absolute;
+  left: 11px;
+  bottom: calc(var(--cera, 30px) + 2px);
+  width: 4px;
+  height: 18px;
+  background: linear-gradient(rgba(120, 110, 110, 0.7), transparent);
+  animation: humo 1.6s infinite;
+}
+.apagada .vela-humo {
+  display: block;
+}
+@keyframes parpadeo {
+  from {
+    transform: scaleX(0.9) translateY(0);
+  }
+  to {
+    transform: scaleX(1.1) translateY(-1px);
+  }
+}
+@keyframes humo {
+  from {
+    opacity: 0.8;
+    transform: translateY(0) scaleX(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-14px) scaleX(2);
+  }
+}
+.vigilia-texto {
+  flex: 1;
+  font-size: 15px;
+  color: var(--tinta-2);
+}
+.vigilia-texto b {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.folio {
+  position: relative;
+  margin: 0 0 36px;
+  padding: 26px 28px 24px 52px;
+  background: #d9cba6;
+  color: #2a1a1e;
+  box-shadow:
+    3px 4px 0 rgba(0, 0, 0, 0.35),
+    inset 0 0 60px rgba(90, 60, 30, 0.25);
+  transition:
+    background-color 0.8s,
+    color 0.8s;
+}
+.folio::before {
+  /* Cera de vela en el borde superior izquierdo. */
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: -4px;
+  width: 26px;
+  height: 12px;
+  background: #efe6cf;
+  border-radius: 40% 60% 60% 40% / 60% 60% 40% 40%;
+  box-shadow: 8px 10px 0 -3px #efe6cf;
+}
+.folio-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: Cinzel, serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a5f1e;
+  border-bottom: 1px solid #9a7a2c;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+.folio h3 {
+  color: #8c2f2f;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.versiculos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: v;
+}
+.versiculos li {
+  position: relative;
+  padding-left: 0;
+  margin-bottom: 6px;
+  font-size: 19px;
+  transition: opacity 0.8s;
+}
+.versiculos li::before {
+  counter-increment: v;
+  content: counter(v);
+  position: absolute;
+  left: -26px;
+  top: 3px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: #8c2f2f;
+}
+.versiculos li:first-child::first-letter {
+  font-family: Cinzel, serif;
+  font-size: 1.6em;
+  color: #8c2f2f;
+  line-height: 0.8;
+  padding-right: 2px;
+}
+.margen {
+  margin: 18px 0 0 12px;
+  padding-left: 14px;
+  border-left: 2px solid #4b4754;
+  font-style: italic;
+  color: #3f3d47;
+  transform: rotate(-1.5deg);
+  transform-origin: left top;
+  transition: opacity 0.8s;
+}
+.margen p {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+.margen.arrancado {
+  border-left-style: dashed;
+  color: #7a716c;
+  font-size: 15px;
+}
+.manual {
+  display: none;
+  margin-top: 18px;
+  padding: 12px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #7fd7d1;
+  background: rgba(10, 30, 30, 0.55);
+  border: 1px dashed rgba(127, 215, 209, 0.5);
+}
+.manual p {
+  margin: 0;
+}
+.apagada .folio {
+  background: #2a2126;
+  color: #6f6360;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.6);
+}
+.apagada .folio::before {
+  filter: brightness(0.5);
+}
+.apagada .folio h3,
+.apagada .folio-cabecera {
+  color: #6f5b4a;
+}
+.apagada .versiculos li {
+  opacity: 0.3;
+}
+.apagada .margen {
+  opacity: 1;
+  color: #cfc4c9;
+  border-left-color: #cfc4c9;
+}
+.apagada .manual.abierto {
+  display: block;
+}
+
+/* -- Registro ------------------------------------------------------------ */
+
+.fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 18px;
+}
+.ficha {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 14px;
+  padding: 14px;
+  background: var(--panel);
+  border-top: 2px solid var(--oro);
+  align-items: start;
+}
+.ficha.cerrada {
+  border-top-color: var(--tinta-2);
+}
+.ficha canvas {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--regla);
+}
+.ficha h3 {
+  color: var(--tinta);
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.ficha .hallazgo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--oro);
+  margin-bottom: 8px;
+}
+.ficha p {
+  margin: 0;
+  font-size: 16px;
+  color: var(--tinta-2);
+}
+.ficha.cerrada p {
+  font-style: italic;
+}
+
+/* -- El Vientre ---------------------------------------------------------- */
+
+.capas {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .capas {
+    grid-template-columns: 1fr;
+  }
+}
+.corte {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.capa {
+  text-align: left;
+  font-family: Cinzel, serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #e6dccb;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  padding: 14px 14px;
+  cursor: pointer;
+  position: relative;
+}
+.capa small {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+.capa.activa {
+  outline: 2px solid var(--oro-2);
+  outline-offset: -2px;
+}
+.capa.cerrada {
+  color: #8d8079;
+  border-style: dashed;
+}
+.capa-detalle {
+  padding: 18px 20px;
+  background: var(--panel);
+  border-top: 2px solid var(--oro);
+  min-height: 180px;
+}
+.capa-detalle p {
+  font-size: 18px;
+}
+.capa-detalle .estado {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--oro);
+}
+
+/* -- Linaje -------------------------------------------------------------- */
+
+.linaje {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.linaje-lienzo {
+  overflow-x: auto;
+  background: var(--panel);
+  border: 1px solid var(--regla);
+}
+.linaje-lienzo svg {
+  display: block;
+  min-width: 860px;
+  width: 100%;
+  height: auto;
+  font-family: 'Crimson Pro', Georgia, serif;
+}
+.nodo {
+  cursor: pointer;
+}
+.nodo rect {
+  fill: var(--hueso);
+  stroke: var(--tinta-2);
+  stroke-width: 1;
+  transition: stroke 0.2s;
+}
+.nodo text {
+  fill: var(--tinta);
+  font-size: 14px;
+  pointer-events: none;
+}
+.nodo .rango {
+  fill: var(--oro);
+  font-family: Cinzel, serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.nodo.dios rect {
+  stroke: var(--sangre);
+  stroke-width: 1.5;
+}
+.nodo.origen rect {
+  stroke: var(--turquesa);
+  stroke-dasharray: 3 2;
+}
+.nodo.origen text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+}
+.nodo.origen text.rango {
+  font-family: Cinzel, serif;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+}
+.nodo.margen rect {
+  stroke-dasharray: 4 3;
+}
+.nodo.cerrado rect {
+  fill: transparent;
+  stroke-dasharray: 2 3;
+}
+.nodo.cerrado text {
+  fill: var(--tinta-2);
+  font-style: italic;
+}
+.nodo:hover rect,
+.nodo.activo rect {
+  stroke: var(--oro-2);
+  stroke-width: 2;
+}
+.arista {
+  stroke: var(--tinta-2);
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+.arista.resaltada {
+  stroke: var(--sangre);
+  opacity: 1;
+  stroke-width: 1.6;
+}
+.arista.atenuada {
+  opacity: 0.12;
+}
+.arista-rotulo {
+  fill: var(--tinta-2);
+  font-size: 11px;
+  font-style: italic;
+  paint-order: stroke;
+  stroke: var(--hueso);
+  stroke-width: 3px;
+}
+.nivel-rotulo {
+  fill: var(--oro);
+  font-family: Cinzel, serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.nivel-linea {
+  stroke: var(--regla);
+  stroke-dasharray: 2 4;
+}
+.linaje-panel {
+  padding: 16px 18px;
+  background: var(--panel);
+  border-top: 2px solid var(--oro);
+}
+.linaje-panel h3 {
+  color: var(--tinta);
+  font-size: 17px;
+}
+.linaje-panel .rango-texto {
+  font-family: Cinzel, serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 10px;
+}
+.linaje-panel p {
+  font-size: 16px;
+}
+.linaje-panel ul {
+  padding-left: 18px;
+  margin: 0;
+  font-size: 15px;
+  color: var(--tinta-2);
+}
+.linaje-panel li b {
+  color: var(--tinta);
+  font-weight: 500;
+}
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13px;
+  color: var(--tinta-2);
+  margin-top: 10px;
+}
+.leyenda span::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 8px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 1px solid var(--tinta-2);
+}
+.leyenda .l-dios::before {
+  border-color: var(--sangre);
+  border-width: 1.5px;
+}
+.leyenda .l-origen::before {
+  border-color: var(--turquesa);
+  border-style: dashed;
+}
+.leyenda .l-margen::before {
+  border-style: dashed;
+}
+.leyenda .l-cerrado::before {
+  border-style: dotted;
+}
+
+/* -- Sacramentos (minijuegos) -------------------------------------------- */
+
+.juego-marco {
+  background: var(--panel);
+  border: 1px solid var(--regla);
+  padding: 18px;
+}
+.juego-marco canvas {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+  background: #120c10;
+  border: 1px solid var(--regla);
+  touch-action: none;
+  cursor: crosshair;
+}
+.juego-instruccion {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--turquesa);
+  min-height: 1.6em;
+  margin: 10px 0 4px;
+}
+.juego-estado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+.pregunta {
+  padding: 18px 20px;
+  background: var(--panel);
+  border-top: 2px solid var(--oro);
+  margin-bottom: 16px;
+}
+.pregunta h3 {
+  color: var(--tinta);
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.opciones {
+  display: grid;
+  gap: 8px;
+}
+.opciones button {
+  text-align: left;
+  font-family: 'Crimson Pro', serif;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 10px 14px;
+}
+.veredicto {
+  padding: 22px 24px;
+  border: 1px solid var(--oro);
+  background: var(--panel);
+}
+.veredicto h3 {
+  font-size: 22px;
+  color: var(--sangre);
+  margin-bottom: 8px;
+}
+.veredicto .mono {
+  color: var(--tinta-2);
+}
+.progreso-examen {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--tinta-2);
+  margin-bottom: 10px;
+}
+
+/* -- Pie ----------------------------------------------------------------- */
+
+.pie {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px 48px;
+  padding: 28px clamp(16px, 5vw, 48px) 40px;
+  border-top: 1px solid var(--regla);
+  font-size: 15px;
+  color: var(--tinta-2);
+}
+.pie-titulo {
+  font-family: Cinzel, serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 6px;
+}
+.pie-texto {
+  margin-bottom: 8px;
+}
+.forma-clave {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.forma-clave label {
+  font-style: italic;
+}
+.forma-clave input {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 7px 10px;
+  background: transparent;
+  color: var(--tinta);
+  border: 1px solid var(--tinta-2);
+  min-width: 160px;
+}
+.forma-clave button {
+  padding: 7px 12px;
+  font-size: 11px;
+}
+.clave-respuesta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--sangre);
+  flex-basis: 100%;
+}
+
+/* La mancha: lo que deja un Sacramento fallido. Persiste. */
+.mancha {
+  position: fixed;
+  right: -40px;
+  bottom: -40px;
+  width: 0;
+  height: 0;
+  border-radius: 45% 55% 50% 50%;
+  background: radial-gradient(rgba(140, 47, 47, 0.75), rgba(90, 20, 25, 0.35) 60%, transparent 72%);
+  pointer-events: none;
+  z-index: 3;
+  transition:
+    width 1.2s,
+    height 1.2s;
+}
+
+/* Degradación tipográfica al bajar: los títulos pierden la compostura. */
+body[data-profundidad='4'] h1,
+body[data-profundidad='5'] h1 {
+  animation: temblor 6s infinite steps(2);
+}
+body[data-profundidad='5'] .cabecera .marca-nombre {
+  animation: temblor 3s infinite steps(2);
+}
+@keyframes temblor {
+  0%,
+  92% {
+    letter-spacing: 0.03em;
+    transform: none;
+  }
+  94% {
+    letter-spacing: 0.12em;
+    transform: translateX(2px) skewX(-3deg);
+  }
+  96% {
+    letter-spacing: 0.01em;
+    transform: translateX(-2px);
+  }
+  100% {
+    letter-spacing: 0.03em;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

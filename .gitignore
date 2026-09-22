@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generado por scripts/exportar-arte.mjs antes de cada build
+web/generado

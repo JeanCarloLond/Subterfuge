@@ -2,6 +2,7 @@ import { CODICE } from '../lore/Codice';
 import { REGISTRO } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
 import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
+import { recordar } from './Memoria';
 
 /** Tipos de reliquia. Cada una mejora algo del Cirujano de forma permanente. */
 export type TipoReliquia = 'relicario' | 'frasco';
@@ -35,6 +36,7 @@ class Progreso {
   recogerFragmento(id: string): boolean {
     if (this.recogidos.has(id)) return false;
     this.recogidos.add(id);
+    recordar('fragmentos', id);
     return true;
   }
 
@@ -79,6 +81,7 @@ class Progreso {
   descubrir(id: string): boolean {
     if (this.fichas.has(id)) return false;
     this.fichas.add(id);
+    recordar('fichas', id);
     return true;
   }
 
@@ -100,6 +103,7 @@ class Progreso {
   pisarCapa(escena: string): boolean {
     if (this.capas.has(escena)) return false;
     this.capas.add(escena);
+    recordar('capas', escena);
     return true;
   }
 
@@ -145,6 +149,7 @@ class Progreso {
   recogerReliquia(id: string, tipo: TipoReliquia): boolean {
     if (this.reliquias.has(id)) return false;
     this.reliquias.set(id, tipo);
+    recordar('reliquias', id);
     return true;
   }
 

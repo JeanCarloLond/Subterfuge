@@ -17,7 +17,7 @@ export default tseslint.config(
 
   // Código del juego: corre en el navegador.
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'web/src/**/*.ts'],
     languageOptions: {
       globals: globals.browser,
     },

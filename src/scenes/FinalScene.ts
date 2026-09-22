@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
+import { recordar } from '../systems/Memoria';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { cursorActivo } from '../ui/Cursor';
@@ -26,6 +27,7 @@ export class FinalScene extends Phaser.Scene {
   }
 
   create(): void {
+    recordar('hitos', 'final');
     this.fragmentos = progreso.fragmentosRecogidos;
 
     this.cameras.main.setBackgroundColor('#0b090b');

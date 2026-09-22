@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Portal de la Diócesis de la Carne: doctrina, Registro, el Vientre, el linaje de los fieles y los sacramentos. Universo de Subterfuge."
+    />
+    <title>Diócesis de la Carne</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap"
+    />
+    <link rel="stylesheet" href="./src/estilo.css" />
+    <!--
+      REGISTRO WEB · Diócesis de la Carne · uso interno.
+      Si estás leyendo el código, ya has bajado más de lo que debías.
+      no vengas
+    -->
+  </head>
+  <body data-profundidad="0">
+    <header class="cabecera">
+      <a class="marca" href="#/">
+        <span class="marca-sello" aria-hidden="true"></span>
+        <span class="marca-texto">
+          <span class="marca-nombre">Diócesis de la Carne</span>
+          <span class="marca-lema">Los dioses no miran. Son mirados.</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Secciones del portal">
+        <a href="#/doctrina" data-ruta="doctrina">Doctrina</a>
+        <a href="#/registro" data-ruta="registro">Registro</a>
+        <a href="#/vientre" data-ruta="vientre">El Vientre</a>
+        <a href="#/linaje" data-ruta="linaje">Linaje</a>
+        <a href="#/sacramentos" data-ruta="sacramentos">Sacramentos</a>
+        <a class="nav-juego" id="enlace-juego" href="../">Descender</a>
+      </nav>
+    </header>
+
+    <main id="pagina" class="pagina" tabindex="-1"></main>
+
+    <footer class="pie">
+      <div class="pie-columna">
+        <p class="pie-titulo">Expediente del visitante</p>
+        <p id="pie-expediente" class="pie-texto">Sin descenso registrado.</p>
+        <form id="forma-clave" class="forma-clave" autocomplete="off">
+          <label for="campo-clave">¿Traes una clave?</label>
+          <input id="campo-clave" name="clave" type="text" placeholder="escríbela" />
+          <button type="submit">Presentar</button>
+          <span id="clave-respuesta" class="clave-respuesta" aria-live="polite"></span>
+        </form>
+      </div>
+      <div class="pie-columna pie-aviso">
+        <p class="pie-titulo">Aviso</p>
+        <p class="pie-texto">
+          Obra de ficción. <em>La Diócesis de la Carne</em> es un universo narrativo creado con
+          fines académicos por Agustín Figueroa, Alejandro Garcés, Jean Carlo Londoño y Mariana
+          Echeverri. Contiene horror corporal y temas religiosos tratados desde la ficción. Ninguna
+          institución real está representada.
+        </p>
+        <p class="pie-texto">
+          <a href="https://github.com/JeanCarloLond/Subterfuge">Código del proyecto</a>
+        </p>
+      </div>
+    </footer>
+
+    <div id="mancha" class="mancha" aria-hidden="true"></div>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

@@ -12,6 +12,15 @@ llega a `main`.
 > ¿Prefieres levantarlo en tu máquina? [Ejecutar en local](#ejecutar-en-local),
 > son tres comandos.
 
+### ✠ [Portal de la Diócesis](https://jeancarlolond.github.io/Subterfuge/web/)
+
+La web del universo, fuera del juego: la doctrina (el Códice con su Vigilia), el
+Registro con sus láminas, el corte del Vientre, el **Linaje** (de dónde viene
+cada uno y quién manda) y los **Sacramentos**, dos minijuegos. Se presenta como
+el portal oficial de una Diócesis que no debería existir. Lo que el jugador
+descubre bajando en el juego se abre también en la web, si juega en el mismo
+navegador; y hay claves escondidas donde el bible dice que deben estar.
+
 ## Descripción
 
 Subterfuge es un teaser jugable en formato de videojuego 2D ambientado en el universo narrativo de " Subterfuge -- La Diócesis de la Carne". El proyecto surge como una evolución del ArtBook tradicional, transformando la entrega visual en una experiencia interactiva que permite al jugador sumergirse en el mundo de forma orgánica y visceral.
@@ -209,8 +218,10 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 | `npm run typecheck`       | Comprobación de tipos sin generar build             |
 | `npm run verificar-arte`  | Comprueba las figuras del pixel art y los tilesets  |
 | `npm run verificar-rutas` | Comprueba que en cada nivel se pueda volver a subir |
+| `npm run exportar-arte`   | Saca los sprites a JSON para las láminas de la web  |
 
-Los dos últimos son propios del juego y no los cubre ningún linter.
+`npm run dev` sirve el juego en `/` y el portal en `/web/`. Los tres últimos
+son propios del proyecto y no los cubre ningún linter.
 `verificar-rutas` existe porque el Atrio llegó a publicarse sin ruta de vuelta, y
 al caer al fondo el jugador quedaba encallado; ahora eso no puede colarse.
 
