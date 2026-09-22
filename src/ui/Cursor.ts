@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CURSOR } from '../config/Sacramento';
+import { CURSOR, RESOLUCION } from '../config/Sacramento';
 import { tactil } from '../input/Tactil';
 
 /**
@@ -179,8 +179,10 @@ function dibujante(
  * tamano del personaje.
  */
 function escalaDelLienzo(juego: Phaser.Game): number {
-  const { displaySize, gameSize } = juego.scale;
-  const bruta = gameSize.width > 0 ? displaySize.width / gameSize.width : 1;
+  // Contra la resolucion LOGICA, no contra el lienzo: el lienzo ya viene
+  // ampliado (Nitidez.ts) y el cursor se dibuja para el espacio de 480x320.
+  const { displaySize } = juego.scale;
+  const bruta = displaySize.width / RESOLUCION.ancho;
 
   return Phaser.Math.Clamp(Math.round(bruta), CURSOR.escalaMinima, CURSOR.escalaMaxima);
 }

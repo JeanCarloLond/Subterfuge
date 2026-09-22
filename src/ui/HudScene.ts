@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CAIDA, FERVOR, INJERTADORA, POCION, VITALIDAD } from '../config/Sacramento';
+import { CAIDA, FERVOR, INJERTADORA, POCION, RESOLUCION, VITALIDAD } from '../config/Sacramento';
 import { CODICE } from '../lore/Codice';
 import { sonido } from '../systems/Sonido';
 
@@ -106,7 +106,7 @@ export class HudScene extends Phaser.Scene {
 
     // Avisos discretos (fragmento recogido, altar). Nunca bloquean la accion.
     this.textoAviso = this.add
-      .text(this.scale.width - 8, 8, '', {
+      .text(RESOLUCION.ancho - 8, 8, '', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#d6cfc4',
@@ -117,13 +117,13 @@ export class HudScene extends Phaser.Scene {
     // Inscripciones del Registro: una linea, centrada, en cursiva. Se lee de
     // pasada y desaparece. No abre nada.
     this.textoInscripcion = this.add
-      .text(this.scale.width / 2, this.scale.height - 34, '', {
+      .text(RESOLUCION.ancho / 2, RESOLUCION.alto - 34, '', {
         fontFamily: 'monospace',
         fontSize: '8px',
         fontStyle: 'italic',
         color: '#c9bda8',
         align: 'center',
-        wordWrap: { width: this.scale.width - 80 },
+        wordWrap: { width: RESOLUCION.ancho - 80 },
       })
       .setOrigin(0.5, 1)
       .setAlpha(0);
@@ -132,7 +132,7 @@ export class HudScene extends Phaser.Scene {
     // unico mensaje del juego que el jugador NO puede permitirse pasar por
     // alto, y en la esquina se confunde con "has recogido un fragmento".
     this.textoCaida = this.add
-      .text(this.scale.width / 2, this.scale.height / 2 - 12, 'LA CARNE CEDE', {
+      .text(RESOLUCION.ancho / 2, RESOLUCION.alto / 2 - 12, 'LA CARNE CEDE', {
         fontFamily: 'monospace',
         fontSize: '14px',
         color: '#8c2f2f',
@@ -144,7 +144,7 @@ export class HudScene extends Phaser.Scene {
     // Presentacion del jefe (issue #33): quien es, en el centro y en grande,
     // como un titulo. Es la unica vez que el juego nombra a un enemigo.
     this.textoPresentacion = this.add
-      .text(this.scale.width / 2, this.scale.height / 2 - 44, '', {
+      .text(RESOLUCION.ancho / 2, RESOLUCION.alto / 2 - 44, '', {
         fontFamily: 'monospace',
         fontSize: '13px',
         color: '#c9a44c',
@@ -153,7 +153,7 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setAlpha(0);
     this.textoSubtitulo = this.add
-      .text(this.scale.width / 2, this.scale.height / 2 - 28, '', {
+      .text(RESOLUCION.ancho / 2, RESOLUCION.alto / 2 - 28, '', {
         fontFamily: 'monospace',
         fontSize: '8px',
         fontStyle: 'italic',
@@ -166,7 +166,7 @@ export class HudScene extends Phaser.Scene {
     // Los navegadores no dejan sonar nada hasta el primer clic o tecla. Si el
     // jugador no lo sabe, cree que el juego no tiene sonido: se le dice.
     this.avisoAudio = this.add
-      .text(this.scale.width / 2, 8, 'pulsa cualquier tecla para activar el sonido', {
+      .text(RESOLUCION.ancho / 2, 8, 'pulsa cualquier tecla para activar el sonido', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#8a7d70',
@@ -415,10 +415,10 @@ export class HudScene extends Phaser.Scene {
    */
   private dibujarJefe(): void {
     const margen = 40;
-    const ancho = this.scale.width - margen * 2;
+    const ancho = RESOLUCION.ancho - margen * 2;
     const alto = 6;
     const x = margen;
-    const y = this.scale.height - 18;
+    const y = RESOLUCION.alto - 18;
     const proporcion = Phaser.Math.Clamp(this.jefeVida / this.jefeMaximo, 0, 1);
 
     this.grafico.fillStyle(0x1d1418, 1);

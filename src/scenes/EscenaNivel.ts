@@ -14,6 +14,7 @@ import { Injerto } from '../entities/Injerto';
 import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
 import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
+import { fijo } from '../systems/Nitidez';
 import { Impacto } from '../systems/Impacto';
 import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
@@ -439,11 +440,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
    */
   private crearFondo(): void {
     // El telon va fijo a la camara (scrollFactor 0), asi que se dimensiona con
-    // el lienzo, no con el tamaño del mundo.
-    const ancho = this.scale.width;
-    const alto = this.scale.height;
+    // la vista logica, no con el tamaño del mundo. Y se coloca con `fijo`:
+    // con la camara acercada, un objeto fijo no cae en su (x, y) sin mas.
+    const { ancho, alto } = RESOLUCION;
+    const esquina = fijo(0, 0);
 
-    const lejano = this.add.tileSprite(0, 0, ancho, alto, 'fondo-arcos');
+    const lejano = this.add.tileSprite(esquina.x, esquina.y, ancho, alto, 'fondo-arcos');
     lejano.setOrigin(0, 0);
     lejano.setScrollFactor(0);
     // setTileScale agranda el PATRON dentro del telon. Con setScale se agrandaba
@@ -453,7 +455,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     lejano.setDepth(-20);
     this.fondoLejano = lejano;
 
-    const cercano = this.add.tileSprite(0, 0, ancho, alto, 'fondo-arcos');
+    const cercano = this.add.tileSprite(esquina.x, esquina.y, ancho, alto, 'fondo-arcos');
     cercano.setOrigin(0, 0);
     cercano.setScrollFactor(0);
     cercano.setAlpha(0.75);
@@ -550,8 +552,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const color = this.definicion.polvo ?? 0xc9b48a;
 
     const emisor = this.add.particles(0, 0, 'chispa-placeholder', {
-      x: { min: 0, max: ancho },
-      y: { min: 0, max: alto },
+      x: { min: fijo(0, 0).x, max: fijo(ancho, 0).x },
+      y: { min: fijo(0, 0).y, max: fijo(0, alto).y },
       lifespan: { min: 6000, max: 11000 },
       speedX: { min: -6, max: 6 },
       speedY: { min: 2, max: 9 },
@@ -566,7 +568,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   }
 
   private crearVineta(): void {
-    const vineta = this.add.image(0, 0, 'vineta-placeholder');
+    const esquina = fijo(0, 0);
+    const vineta = this.add.image(esquina.x, esquina.y, 'vineta-placeholder');
     vineta.setOrigin(0, 0);
     vineta.setScrollFactor(0);
     vineta.setDepth(95);
@@ -1983,8 +1986,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     const columnas = Math.max(movimiento.height, combate.height);
     const alto = Math.ceil(margen + columnas + 26);
-    const x = (RESOLUCION.ancho - ancho) / 2;
-    const y = RESOLUCION.alto - alto - 14;
+    const { x, y } = fijo((RESOLUCION.ancho - ancho) / 2, RESOLUCION.alto - alto - 14);
 
     const fondo = this.add.graphics();
     fondo.fillStyle(0x0b090b, 0.86);

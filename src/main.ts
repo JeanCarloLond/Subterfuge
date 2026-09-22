@@ -1,6 +1,12 @@
 import Phaser from 'phaser';
 import './style.css';
-import { MOVIMIENTO, RESOLUCION } from './config/Sacramento';
+import { MOVIMIENTO } from './config/Sacramento';
+import {
+  LIENZO,
+  NitidezPlugin,
+  dimensionarContenedor,
+  registrarTextoNitido,
+} from './systems/Nitidez';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { AtrioScene } from './scenes/AtrioScene';
@@ -27,8 +33,11 @@ const configuracion: Phaser.Types.Core.GameConfig = {
   // del navegador encima del juego. Esto lo bloquea en el lienzo en TODAS las
   // escenas; el contenedor de la pagina se bloquea mas abajo.
   disableContextMenu: true,
-  width: RESOLUCION.ancho,
-  height: RESOLUCION.alto,
+  // El lienzo mide la resolucion logica (480x320) por una escala entera que
+  // depende de la pantalla, y cada camara se acerca esa misma escala: el mundo
+  // se ve igual, pero el texto se rasteriza a tamano real (#69, Nitidez.ts).
+  width: LIENZO.ancho,
+  height: LIENZO.alto,
   backgroundColor: '#141014',
   pixelArt: true,
   roundPixels: true,
@@ -38,11 +47,14 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     activePointers: 4,
   },
   scale: {
-    // FIT ya escala el lienzo de 480x320 para llenar la ventana. Combinarlo con
-    // `zoom` hacia que se pisaran: la vista quedaba recortada, el telon de fondo
-    // no llegaba a los bordes y el texto de ayuda se salia por abajo.
+    // FIT ajusta el lienzo a la ventana. Como el lienzo ya viene a la escala
+    // de la pantalla, el ajuste que le queda a FIT es pequeno; no usar `zoom`
+    // aqui, que se pisa con FIT (la vista quedaba recortada).
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  plugins: {
+    scene: [{ key: 'NitidezPlugin', plugin: NitidezPlugin, mapping: 'nitidez' }],
   },
   physics: {
     default: 'arcade',
@@ -67,6 +79,8 @@ const configuracion: Phaser.Types.Core.GameConfig = {
   ],
 };
 
+registrarTextoNitido();
+dimensionarContenedor('juego');
 new Phaser.Game(configuracion);
 
 // El lienzo no ocupa toda la pagina (Scale.FIT deja margenes), y un clic

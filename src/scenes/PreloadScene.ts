@@ -51,7 +51,13 @@ export class PreloadScene extends Phaser.Scene {
     // Banda sonora: pistas CC0 de OpenGameArt (autoria en
     // public/assets/audio/musica/LICENCIAS.md). Se dan los dos formatos y el
     // navegador elige el que sabe reproducir: Safari no lee Ogg Vorbis.
-    for (const archivo of Object.values(PISTAS)) {
+    //
+    // `VITE_SIN_AUDIO=1` salta la carga: un navegador sin salida de sonido
+    // (Chrome sin cabeza, para capturas automaticas) nunca termina de
+    // decodificar y el juego se queda en la barra de carga. Musica.ts ya
+    // tolera que una pista no exista.
+    const sinAudio = import.meta.env.VITE_SIN_AUDIO === '1';
+    for (const archivo of sinAudio ? [] : Object.values(PISTAS)) {
       this.load.audio(archivo, [
         `assets/audio/musica/${archivo}.ogg`,
         `assets/audio/musica/${archivo}.mp3`,

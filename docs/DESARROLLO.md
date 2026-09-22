@@ -651,6 +651,41 @@ el usuario interactúa. Los efectos comparten el contexto de Phaser (un solo
 contexto que desbloquear) y el HUD muestra _"pulsa cualquier tecla para activar
 el sonido"_ mientras siga bloqueado, para que nadie crea que el juego es mudo.
 
+## Nitidez: el lienzo mide lo que mide la pantalla
+
+El juego se diseña en **480×320 lógicos** (`RESOLUCION`), pero el lienzo ya no
+mide eso. Antes sí, y `Scale.FIT` lo estiraba con CSS ×3 o ×4: el pixel art
+aguanta eso; la tipografía no, y los diálogos se leían como bloques (#69).
+
+`src/systems/Nitidez.ts` calcula al arrancar una **escala entera** `ESCALA`
+(cuántas veces cabe 480×320 en la ventana, contando `devicePixelRatio`, entre
+1 y 6), y a partir de ahí:
+
+- El lienzo mide `480·ESCALA × 320·ESCALA` (`LIENZO`).
+- Un plugin de escena (`NitidezPlugin`) pone `setZoom(ESCALA)` y
+  `centerOn(240, 160)` en la cámara de **cada** escena al arrancar. El mundo se
+  ve igual y las escenas siguen colocando todo en coordenadas lógicas.
+- `this.add.text` se registra de nuevo (`registrarTextoNitido`) para que todo
+  texto nazca con `resolution = ESCALA`: se rasteriza a tamaño real.
+- El contenedor `#juego` se pone **exactamente** del tamaño del lienzo en
+  píxeles de pantalla (`dimensionarContenedor`), para que FIT no tenga nada
+  que escalar. En una 1080p eso deja un marco de 240 px a los lados: es el
+  precio de que cada píxel del arte caiga en un píxel del monitor. Si la
+  ventana se encoge después, FIT vuelve a actuar (con escala no entera).
+
+**Lo que hay que saber para no romperlo:**
+
+- Un objeto con `scrollFactor 0` en un nivel (telón, polvo, viñeta, panel de
+  ayuda) no cae en su `(x, y)` lógico con la cámara acercada: hay que
+  colocarlo en `fijo(x, y)`. Las escenas de interfaz no lo necesitan porque
+  `centerOn` ya deja el `(0, 0)` lógico en la esquina.
+- No usar `this.scale.width/height` para colocar cosas: eso es el lienzo.
+  Usar `RESOLUCION`.
+- `Cursor.ts` mide su escala contra `RESOLUCION`, no contra el lienzo.
+- `VITE_SIN_AUDIO=1 npm run build` salta la carga de música: un Chrome sin
+  cabeza (capturas automáticas) nunca termina de decodificar audio y se queda
+  en la barra de carga. Con esa variable se puede fotografiar el juego.
+
 ## Ajuste de sensación (game feel)
 
 Todos los valores viven en `src/config/Sacramento.ts`. Es el único sitio que hay que
