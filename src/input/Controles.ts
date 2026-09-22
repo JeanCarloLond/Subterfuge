@@ -1,13 +1,19 @@
 import Phaser from 'phaser';
+import { tactil } from './Tactil';
 
 /**
  * Mapa de entrada. Centralizado para poder anadir gamepad y remapeo
  * sin tocar la logica del personaje.
  *
- * Teclado y raton conviven: clic izquierdo golpea y clic derecho para, igual
- * que J y K. El raton se muestrea una vez por fotograma en `actualizar()`, que
- * la escena llama al principio de su `update`, para que "recien pulsado" y
- * "recien soltado" signifiquen lo mismo con ambos dispositivos.
+ * Teclado, raton y DEDOS conviven: clic izquierdo golpea y clic derecho para,
+ * igual que J y K, y los botones tactiles alimentan estas mismas banderas. Los
+ * tres se muestrean una vez por fotograma en `actualizar()`, que la escena
+ * llama al principio de su `update`, para que "recien pulsado" y "recien
+ * soltado" signifiquen lo mismo venga de donde venga.
+ *
+ * Que los dedos entren POR AQUI y no por otro sitio es la decision que sostiene
+ * todo el soporte movil (issue #65): ni las escenas ni el Cirujano saben que
+ * existen los botones.
  */
 export class Controles {
   private readonly izquierda: Phaser.Input.Keyboard.Key[];
@@ -63,6 +69,7 @@ export class Controles {
 
   /** Muestrea el raton. Llamar UNA vez por fotograma, antes de leer nada. */
   actualizar(): void {
+    tactil.actualizar();
     this.izqAntes = this.izqAhora;
     this.derAntes = this.derAhora;
     this.izqAhora = this.puntero.leftButtonDown();
@@ -71,57 +78,69 @@ export class Controles {
 
   /** Eje horizontal: -1 izquierda, 0 neutro, 1 derecha. */
   get ejeX(): number {
-    const izq = this.algunaAbajo(this.izquierda) ? 1 : 0;
-    const der = this.algunaAbajo(this.derecha) ? 1 : 0;
+    const izq = this.algunaAbajo(this.izquierda) || tactil.estaAbajo('izquierda') ? 1 : 0;
+    const der = this.algunaAbajo(this.derecha) || tactil.estaAbajo('derecha') ? 1 : 0;
     return der - izq;
   }
 
   get arribaMantenido(): boolean {
-    return this.algunaAbajo(this.arriba);
+    return this.algunaAbajo(this.arriba) || tactil.estaAbajo('arriba');
   }
 
   get abajoMantenido(): boolean {
-    return this.algunaAbajo(this.abajo);
+    return this.algunaAbajo(this.abajo) || tactil.estaAbajo('abajo');
   }
 
   get saltoMantenido(): boolean {
-    return this.algunaAbajo(this.saltar);
+    return this.algunaAbajo(this.saltar) || tactil.estaAbajo('saltar');
   }
 
   /** true solo en el fotograma en que se presiona. */
   get saltoPresionado(): boolean {
-    return this.algunaRecien(this.saltar);
+    return this.algunaRecien(this.saltar) || tactil.recienPulsada('saltar');
   }
 
   get dashPresionado(): boolean {
-    return this.algunaRecien(this.dash);
+    return this.algunaRecien(this.dash) || tactil.recienPulsada('dash');
   }
 
   /** J, C o clic izquierdo. */
   get ataquePresionado(): boolean {
-    return this.algunaRecien(this.atacar) || (this.izqAhora && !this.izqAntes);
+    return (
+      this.algunaRecien(this.atacar) ||
+      (this.izqAhora && !this.izqAntes) ||
+      tactil.recienPulsada('atacar')
+    );
   }
 
   /** Mantener el boton carga el golpe: gasta Fervor a cambio de dano. */
   get ataqueMantenido(): boolean {
-    return this.algunaAbajo(this.atacar) || this.izqAhora;
+    return this.algunaAbajo(this.atacar) || this.izqAhora || tactil.estaAbajo('atacar');
   }
 
   get ataqueSoltado(): boolean {
-    return this.algunaSoltada(this.atacar) || (!this.izqAhora && this.izqAntes);
+    return (
+      this.algunaSoltada(this.atacar) ||
+      (!this.izqAhora && this.izqAntes) ||
+      tactil.recienSoltada('atacar')
+    );
   }
 
   /** K, V o clic derecho. */
   get parryPresionado(): boolean {
-    return this.algunaRecien(this.parry) || (this.derAhora && !this.derAntes);
+    return (
+      this.algunaRecien(this.parry) ||
+      (this.derAhora && !this.derAntes) ||
+      tactil.recienPulsada('parry')
+    );
   }
 
   get pocionPresionada(): boolean {
-    return this.algunaRecien(this.pocion);
+    return this.algunaRecien(this.pocion) || tactil.recienPulsada('pocion');
   }
 
   get interactuarPresionado(): boolean {
-    return this.algunaRecien(this.interactuar);
+    return this.algunaRecien(this.interactuar) || tactil.recienPulsada('interactuar');
   }
 
   get silencioPresionado(): boolean {
@@ -134,16 +153,16 @@ export class Controles {
 
   /** Lanzar un injerto con la Injertadora. */
   get injertadoraPresionada(): boolean {
-    return this.algunaRecien(this.injertadora);
+    return this.algunaRecien(this.injertadora) || tactil.recienPulsada('injertadora');
   }
 
   /** Abrir el Codice de la Carne para leer lo recogido. */
   get codicePresionado(): boolean {
-    return this.algunaRecien(this.codice);
+    return this.algunaRecien(this.codice) || tactil.recienPulsada('codice');
   }
 
   get pausaPresionada(): boolean {
-    return this.algunaRecien(this.pausa);
+    return this.algunaRecien(this.pausa) || tactil.recienPulsada('pausa');
   }
 
   private algunaAbajo(teclas: Phaser.Input.Keyboard.Key[]): boolean {

@@ -9,6 +9,7 @@ import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { Fiel } from '../entities/Fiel';
+import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
 import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
@@ -22,7 +23,12 @@ import { sonido } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
 import { VOCES, type ClaveVoz } from '../lore/Voces';
 import { EVENTOS_HUD } from '../ui/HudScene';
-import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO } from '../ui/TextoControles';
+import {
+  CONTROLES_COMBATE,
+  CONTROLES_COMBATE_TACTIL,
+  CONTROLES_MOVIMIENTO,
+  CONTROLES_MOVIMIENTO_TACTIL,
+} from '../ui/TextoControles';
 
 /** Plataforma: [x, y, anchoEnTiles]. y crece hacia abajo. */
 export type Plataforma = readonly [x: number, y: number, anchoTiles: number];
@@ -325,6 +331,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (this.definicion.musica) musica.poner(this.definicion.musica);
 
     if (!this.scene.isActive('Hud')) this.scene.launch('Hud');
+
+    // La botonera solo en aparatos de dedos: en un portatil con pantalla
+    // tactil estorbaria encima de un juego que se esta jugando con teclado.
+    if (tactil.esAparatoTactil && !this.scene.isActive('Tactil')) this.scene.launch('Tactil');
     this.emitirEstadoInicial();
 
     this.catalogarZona();
@@ -1955,8 +1965,21 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Con el alto a mano, anadir una linea a la ayuda la sacaba del panel sin
     // que nada se quejara: paso al meter la Injertadora, y la columna de
     // combate acabo 14 px por debajo del borde, encima del pie.
-    const movimiento = this.add.text(12, margen, CONTROLES_MOVIMIENTO.join('\n'), estilo);
-    const combate = this.add.text(236, margen, CONTROLES_COMBATE.join('\n'), estilo);
+    // En un movil, un panel que dice "SALTAR ESPACIO" es peor que no tener
+    // ayuda: nombra teclas que ahi no existen.
+    const conDedos = tactil.esAparatoTactil;
+    const movimiento = this.add.text(
+      12,
+      margen,
+      (conDedos ? CONTROLES_MOVIMIENTO_TACTIL : CONTROLES_MOVIMIENTO).join('\n'),
+      estilo,
+    );
+    const combate = this.add.text(
+      236,
+      margen,
+      (conDedos ? CONTROLES_COMBATE_TACTIL : CONTROLES_COMBATE).join('\n'),
+      estilo,
+    );
 
     const columnas = Math.max(movimiento.height, combate.height);
     const alto = Math.ceil(margen + columnas + 26);
@@ -1972,7 +1995,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const pie = this.add.text(
       10,
       alto - 18,
-      'ESC  pausa        H  mostrar u ocultar esta ayuda        M  sonido',
+      conDedos
+        ? '||  pausa        L  libro        el juego se ve mejor en horizontal'
+        : 'ESC  pausa        H  mostrar u ocultar esta ayuda        M  sonido',
       estiloTenue,
     );
 

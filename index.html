@@ -2,7 +2,18 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      En movil hay que impedir que el navegador interprete los gestos: sin
+      `user-scalable=no` un doble toque para atacar hace zoom, y con la barra
+      de direcciones apareciendo y desapareciendo el lienzo baila. `viewport-fit`
+      mete el juego bajo la muesca de los telefonos con notch (issue #65).
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0b090b" />
     <title>Subterfuge</title>
   </head>
   <body>

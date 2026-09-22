@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { CURSOR } from '../config/Sacramento';
+import { tactil } from '../input/Tactil';
 
 /**
  * El cursor del raton: el bisturi del Cirujano en vez de la flecha del sistema.
@@ -79,6 +80,10 @@ export function alternarCursor(): boolean {
 }
 
 export function ponerCursor(escena: Phaser.Scene): void {
+  // En un movil no hay puntero que sustituir: el bisturi se quedaria clavado
+  // donde toco el ultimo dedo, como una mancha en la pantalla (issue #65).
+  if (tactil.esAparatoTactil) return;
+
   const juego = escena.game;
   const normal = dibujante(escena, CLAVE);
   const resaltado = dibujante(escena, CLAVE_ACTIVO);
