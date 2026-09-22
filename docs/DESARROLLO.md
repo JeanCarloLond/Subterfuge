@@ -599,9 +599,8 @@ van en unidades de radio desde su esquina (`BOTONES`), de modo que la botonera
 entera crece y encoge sin solaparse. Los márgenes de la muesca y la barra de
 gestos se leen de `--seguro-*`, que `style.css` copia de `env(safe-area-inset-*)`.
 
-Al tocar cualquier cosa del reparto conviene pasar `node scripts/…` no: basta
-con abrir `?tactil` en un ordenador, que fuerza el modo dedos sin necesidad de
-teléfono.
+Para probar el reparto sin tener un teléfono delante, `?tactil` fuerza el modo
+dedos en un ordenador.
 
 **Las pantallas tienen salida** (#74). El libro, el diálogo y la pausa se
 escribieron para teclado, y sus cierres eran textos de 7 px en una esquina.
