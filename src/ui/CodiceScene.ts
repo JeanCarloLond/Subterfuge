@@ -89,15 +89,15 @@ const SECCIONES = ['codice', 'registro', 'vientre', 'jerarquia'] as const;
 type Seccion = (typeof SECCIONES)[number];
 
 const ROTULOS: Readonly<Record<Seccion, string>> = {
-  codice: 'CODICE',
+  codice: 'CÓDICE',
   registro: 'REGISTRO',
   vientre: 'EL VIENTRE',
-  jerarquia: 'JERARQUIA',
+  jerarquia: 'JERARQUÍA',
 };
 
 const TITULOS: Readonly<Record<Seccion, string>> = {
-  codice: 'EL CODICE DE LA CARNE',
-  registro: 'REGISTRO DE LA DIOCESIS',
+  codice: 'EL CÓDICE DE LA CARNE',
+  registro: 'REGISTRO DE LA DIÓCESIS',
   vientre: 'CORTE DEL VIENTRE',
   jerarquia: 'ORDEN DE LOS FIELES',
 };
@@ -222,7 +222,7 @@ export class CodiceScene extends Phaser.Scene {
     this.add.text(
       folioX + 14,
       folioY + folioAlto - 16,
-      'A D  seccion     W S  pasar hoja     L  o  ESC: cerrar',
+      'A D  sección     W S  pasar hoja     L  o  ESC: cerrar',
       { fontFamily: 'monospace', fontSize: '7px', color: COLOR.tenue },
     );
 
@@ -477,7 +477,7 @@ export class CodiceScene extends Phaser.Scene {
     this.limpiarLectura();
 
     if (this.ids.length === 0) {
-      this.versiculoTexto.setText('Aun no has recogido ningun fragmento.');
+      this.versiculoTexto.setText('Aún no has recogido ningún fragmento.');
       return;
     }
 

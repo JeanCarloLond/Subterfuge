@@ -36,8 +36,8 @@
  *     quedo."): la Sala de Sacramento lo usa.
  *
  * Formato del folio (src/ui/CodiceScene.ts): versiculo de 3 o 4 lineas de
- * hasta 62 caracteres, margen de hasta 4. Sin tildes, como el resto del texto
- * en pantalla.
+ * hasta 62 caracteres, margen de hasta 4. El texto va en español correcto: una
+ * tilde no ocupa un caracter de mas, asi que no mueve el ajuste.
  *
  * CADA LINEA DE `versiculo` SE NUMERA EN EL FOLIO, asi que cada una tiene que
  * sostenerse sola. Partir una frase entre dos lineas mete un numero en mitad
@@ -58,107 +58,107 @@ export interface FragmentoCodice {
 export const CODICE: readonly FragmentoCodice[] = [
   {
     id: 'codice-01',
-    cita: 'Codice II, 4',
+    cita: 'Códice II, 4',
     titulo: 'De la mirada',
     versiculo: [
-      'Se cubrira el rostro antes de la incision.',
+      'Se cubrirá el rostro antes de la incisión.',
       'Los Mil no tienen ojos: no se les muestra nada.',
       'Se les entrega. Mirar al dios es pedirle cuentas.',
       'Baja la mirada. Ofrece las manos.',
     ],
     margen: [
-      'Donde dice "no tienen ojos", el manual decia:',
-      'sin tejido optico en ninguno de los mil.',
+      'Donde dice "no tienen ojos", el manual decía:',
+      'sin tejido óptico en ninguno de los mil.',
       'Lo tachamos. Nadie ha preguntado nunca.',
     ],
   },
   {
     id: 'codice-02',
-    cita: 'Codice III, 1',
+    cita: 'Códice III, 1',
     titulo: 'Del diezmo',
     versiculo: [
-      'Se pesara la ofrenda. Las dos cifras, al Registro.',
+      'Se pesará la ofrenda. Las dos cifras, al Registro.',
       'El dios solo conoce lo que toca, y solo toca esto.',
       'Quien retiene su diezmo le quita el mundo.',
     ],
     margen: [
       'Peso de hoy: once kilos. El mes pasado, veinte.',
-      'Llevo la cuenta yo solo. No se la he ensenado.',
-      'Tocan mas fuerte cuando llega menos.',
+      'Llevo la cuenta yo solo. No se la he enseñado.',
+      'Tocan más fuerte cuando llega menos.',
     ],
   },
   {
     id: 'codice-03',
-    cita: 'Codice I, 1',
+    cita: 'Códice I, 1',
     titulo: 'Del origen',
     versiculo: [
-      'Se prometio el fin de la muerte. Se cumplio.',
-      'Mil aceptaron. Su carne no murio, ni muere.',
-      'Aquel dia se arrodillaron y empezo el Codice.',
+      'Se prometió el fin de la muerte. Se cumplió.',
+      'Mil aceptaron. Su carne no murió, ni muere.',
+      'Aquel día se arrodillaron y empezó el Códice.',
     ],
     margen: [
-      'Mil sujetos. Lote unico. Genesis Vestal.',
-      'La carne no murio porque no supimos matarla.',
-      'Nadie se arrodillo. Se acabaron las ideas.',
+      'Mil sujetos. Lote único. Genesis Vestal.',
+      'La carne no murió porque no supimos matarla.',
+      'Nadie se arrodilló. Se acabaron las ideas.',
     ],
   },
   {
     id: 'codice-04',
-    cita: 'Codice IV, 7',
+    cita: 'Códice IV, 7',
     titulo: 'Del sorteo',
     versiculo: [
-      'Cada casa inscribira a los suyos, una vez al ano.',
+      'Cada casa inscribirá a los suyos, una vez al año.',
       'El Registro no elige: sortea. Por eso es justo.',
       'La deuda de una casa se salda con su carne.',
       'No se admite otra moneda.',
     ],
     margen: [
-      'Hoy entro una nina sin numero. No fue sorteada.',
-      'Traia la deuda de su casa escrita de su puno.',
-      'El Registro la acepto igual. No pregunte.',
+      'Hoy entró una niña sin número. No fue sorteada.',
+      'Traía la deuda de su casa escrita de su puño.',
+      'El Registro la aceptó igual. No pregunté.',
     ],
   },
   {
     id: 'codice-05',
-    cita: 'Codice V, 2',
+    cita: 'Códice V, 2',
     titulo: 'De los Elegidos',
     versiculo: [
       'El que completa el sacramento asciende y no vuelve.',
       'Al que no lo completa se le llama Reformado.',
-      'Se le honra: llevo la ofrenda a medias y la llevo.',
+      'Se le honra: llevó la ofrenda a medias y la llevó.',
     ],
     margen: [
       'Honrarlos es guardarlos abajo, donde no estorben.',
       'Un sacramento a medias deja media persona.',
-      'Mi padre esta alli. O lo que quedo.',
+      'Mi padre está allí. O lo que quedó.',
     ],
   },
   {
     id: 'codice-06',
-    cita: 'Codice VI, 1',
+    cita: 'Códice VI, 1',
     titulo: 'De las manos',
     versiculo: [
       'Las Manos no eligen: ejecutan.',
-      'Su nombre es su numero.',
-      'No hablaran con el ofrendado ni le veran la cara.',
-      'Mirar es preguntar, y aqui no se pregunta.',
+      'Su nombre es su número.',
+      'No hablarán con el ofrendado ni le verán la cara.',
+      'Mirar es preguntar, y aquí no se pregunta.',
     ],
     margen: [
-      'Hoy mire.',
-      'El tejido no se aparto del filo. Vino a buscarlo.',
+      'Hoy miré.',
+      'El tejido no se apartó del filo. Vino a buscarlo.',
       'Ellos no la rechazaron. La reconocieron.',
-      'No apunto mas. Aqui no.',
+      'No apunto más. Aquí no.',
     ],
   },
   {
     id: 'codice-07',
-    cita: 'Codice V, 9',
+    cita: 'Códice V, 9',
     titulo: 'De la espera',
     versiculo: [
-      'La dosis se administrara la vispera del turno.',
+      'La dosis se administrará la víspera del turno.',
       'Nadie entra despierto en la Sala.',
       'La carne serena es carne grata.',
-      'Las Criptas guardan lo que aun no se ha entregado.',
+      'Las Criptas guardan lo que aún no se ha entregado.',
     ],
     margen: [
       'Dosis doble desde el jueves. La sencilla no cubre.',
@@ -167,17 +167,17 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-08',
-    cita: 'Codice VII, 3',
+    cita: 'Códice VII, 3',
     titulo: 'Del silencio',
     versiculo: [
-      'No preguntaras donde moran los dioses nuevos.',
-      'Los dioses son mil y mil seran.',
+      'No preguntarás dónde moran los dioses nuevos.',
+      'Los dioses son mil y mil serán.',
       'La cuenta no es del fiel.',
       'Quien cuenta, duda. Quien duda, ofrece.',
     ],
     margen: [
       'Tres generaciones sin un dios nuevo.',
-      'Ningun Elegido ha llegado entero. Ninguno.',
+      'Ningún Elegido ha llegado entero. Ninguno.',
       'Lo dejo escrito porque nadie lo dice en voz alta.',
     ],
   },

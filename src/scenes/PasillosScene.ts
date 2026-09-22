@@ -204,8 +204,8 @@ export class PasillosScene extends EscenaNivel {
 
       inscripciones: [
         [150, 160, 'OFICINA DEL DIEZMO. Deudas de casa se saldan en carne de casa.'],
-        [560, 344, 'Sorteo de hoy: cerrado. Una inscripcion voluntaria. Sin numero.'],
-        [820, 520, 'Los Reformados no reciben visitas. Honrenlos desde aqui.'],
+        [560, 344, 'Sorteo de hoy: cerrado. Una inscripción voluntaria. Sin número.'],
+        [820, 520, 'Los Reformados no reciben visitas. Hónrenlos desde aquí.'],
       ],
 
       umbral: {

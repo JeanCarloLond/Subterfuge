@@ -739,7 +739,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       // Vida baja y frascos sin usar: recordar que existen, una vez por zona.
       if (!this.pistaPocionDada && puntos > 0 && puntos <= 2 && this.cirujano.pociones > 0) {
         this.pistaPocionDada = true;
-        this.game.events.emit(EVENTOS_HUD.aviso, 'Q  beber Pocion de Carne  (+3 vida)');
+        this.game.events.emit(EVENTOS_HUD.aviso, 'Q  beber Poción de Carne  (+3 vida)');
       }
     });
     this.cirujano.fervor.on('cambio', (puntos: number) => {
@@ -759,7 +759,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
     this.cirujano.eventos.on('caida', (dano: number) => {
       this.impacto.danoPorCaida(dano);
-      this.game.events.emit(EVENTOS_HUD.aviso, `caida: -${dano}`);
+      this.game.events.emit(EVENTOS_HUD.aviso, `caída: -${dano}`);
     });
     this.cirujano.vitalidad.on('muerte', () => this.alMorir());
 
@@ -1290,7 +1290,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (ofrenda.tipo === 'injerto') {
       this.anotar('injerto');
       if (!this.cirujano.cargarInjerto(OFRENDA.cargaInjerto)) {
-        this.game.events.emit(EVENTOS_HUD.aviso, 'la Injertadora esta llena');
+        this.game.events.emit(EVENTOS_HUD.aviso, 'la Injertadora está llena');
         return;
       }
 
@@ -1439,7 +1439,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     sonido.codice();
     this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
     // Aviso discreto: el lore no interrumpe la partida. Se lee cuando se quiera.
-    this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Codice  ·  L para leer');
+    this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Códice  ·  L para leer');
   }
 
   private resolverRecogidaDeReliquia(reliquia: Reliquia): void {
@@ -1738,7 +1738,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.game.events.emit(EVENTOS_HUD.caida, false);
     this.cameras.main.fadeIn(320, 11, 9, 11);
     this.reapareciendo = false;
-    this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al ultimo Altar donde rezaste');
+    this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al último Altar donde rezaste');
   }
 
   /**

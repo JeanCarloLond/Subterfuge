@@ -302,8 +302,9 @@ anteriores y el cierre) y llegar a la pantalla final con el recuento del libro.
 - **Sonido:** efectos sintetizados en tiempo real con Web Audio (cada clase de
   enemigo tiene su materia); música CC0 de OpenGameArt por zona, con créditos
   en el repositorio.
-- **Textos:** derivados del world bible. Sin tildes en pantalla por la fuente
-  del juego.
+- **Textos:** derivados del world bible, en español correcto. La fuente dibuja
+  la ñ y las tildes sin problema; lo que no las lleva son los identificadores
+  del código.
 - **Equipo:** Agustín Figueroa, Alejandro Garcés, Jean Carlo Londoño, Mariana
   Echeverri.
 

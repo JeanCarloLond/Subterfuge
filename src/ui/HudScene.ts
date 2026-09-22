@@ -309,7 +309,7 @@ export class HudScene extends Phaser.Scene {
     this.dibujarPociones(8, 32);
     // A la derecha del ultimo frasco, con el nombre del recurso y su tecla.
     this.textoPocion.setX(8 + this.pocionesMaximas * 8 + 4);
-    this.textoPocion.setText(this.pocionesActuales > 0 ? 'Q  Pocion de Carne' : 'sin Pocion');
+    this.textoPocion.setText(this.pocionesActuales > 0 ? 'Q  Poción de Carne' : 'sin Poción');
 
     if (this.injertadoraDescubierta) {
       this.dibujarInjertos(8, 41);
@@ -321,7 +321,7 @@ export class HudScene extends Phaser.Scene {
     if (this.jefeVida >= 0) this.dibujarJefe();
 
     this.textoCodice.setText(
-      this.fragmentos > 0 ? `codice  ${this.fragmentos}/${CODICE.length}   L` : '',
+      this.fragmentos > 0 ? `códice  ${this.fragmentos}/${CODICE.length}   L` : '',
     );
   }
 

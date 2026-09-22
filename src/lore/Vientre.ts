@@ -9,7 +9,8 @@
  * Las dos ultimas no se visitan en el teaser y salen en sombra a proposito: se
  * sabe que existen y no se sabe que hay. Es el gancho del descenso.
  *
- * Las descripciones son del bible, en la voz de la Diocesis. Sin tildes.
+ * Las descripciones son del bible, en la voz de la Diocesis, en español
+ * correcto: lo que no lleva tildes son los identificadores y los comentarios.
  */
 
 export interface CapaVientre {
@@ -26,14 +27,14 @@ export const VIENTRE: readonly CapaVientre[] = [
     descripcion: [
       'La superficie. La ciudad visible, donde vive casi todo',
       'el mundo y donde cada casa inscribe a los suyos.',
-      'Es la unica capa que todavia parece arquitectura.',
+      'Es la única capa que todavía parece arquitectura.',
     ],
   },
   {
     escena: 'Pasillos',
-    nombre: 'Pasillos de Preparacion',
+    nombre: 'Pasillos de Preparación',
     descripcion: [
-      'La administracion. Aqui se registran los diezmos de carne',
+      'La administración. Aquí se registran los diezmos de carne',
       'y se celebran los sorteos.',
       'Techos bajos: la burocracia no deja sitio para maniobrar.',
     ],
@@ -43,7 +44,7 @@ export const VIENTRE: readonly CapaVientre[] = [
     nombre: 'Criptas de Espera',
     descripcion: [
       'Donde se guarda, sedados, a quienes esperan turno.',
-      'Nadie grita aqui. Es lo piadoso, dice el Codice:',
+      'Nadie grita aquí. Es lo piadoso, dice el Códice:',
       'la carne serena es carne grata.',
     ],
   },
@@ -51,7 +52,7 @@ export const VIENTRE: readonly CapaVientre[] = [
     escena: 'Salas',
     nombre: 'Salas de Sacramento',
     descripcion: [
-      'Quirofanos convertidos en altares. Aqui ocurre.',
+      'Quirófanos convertidos en altares. Aquí ocurre.',
       'La Sala 7 es la tuya, y las Manos anteriores siguen',
       'dentro porque a los Reformados no se les traslada.',
     ],
@@ -70,8 +71,8 @@ export const VIENTRE: readonly CapaVientre[] = [
     nombre: 'El Vientre Profundo',
     descripcion: [
       'El santuario. Los Mil, sin forma humana reconocible.',
-      'Ninguno tiene ojos, y el pueblo no los ha visto jamas:',
-      'existen para el fiel solo a traves de la doctrina.',
+      'Ninguno tiene ojos, y el pueblo no los ha visto jamás:',
+      'existen para el fiel solo a través de la doctrina.',
     ],
   },
 ];
