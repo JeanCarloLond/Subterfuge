@@ -1114,6 +1114,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverGolpeDeJefe(jefe: Reformado): void {
     if (jefe.estaMuerto || this.cirujano.estaMuerto) return;
+    if (this.hayParedEntre(this.centroDe(jefe.sprite), this.centroDe(this.cirujano.sprite))) {
+      return;
+    }
     if (!jefe.consumirGolpe()) return;
 
     const resultado = this.cirujano.recibirDano(REFORMADO.dano, jefe.sprite.x);
@@ -1164,10 +1167,72 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   // -- Combate -------------------------------------------------------------
 
+  /**
+   * ¿Hay piedra entre estos dos puntos?
+   *
+   * La hitbox del golpe es un rectangulo puesto delante del Cirujano, y a
+   * Arcade le da igual lo que haya en medio: bastaba con pegarse a un muro
+   * para matar a lo que hubiera al otro lado sin exponerse (issue #56).
+   *
+   * Se cruza el segmento contra los CUERPOS de la silleria, uno a uno. La
+   * primera version preguntaba por casilla a `tilesSolidos`, dando por hecho
+   * que todo caia en la rejilla de 16 — y no cae: hay plataformas con la y en
+   * 360, que no es multiplo de 16. La cuenta no cuadraba con ninguna clave
+   * guardada, asi que la comprobacion decia "no hay pared" SIEMPRE y el
+   * agujero seguia abierto sin que nada fallara a la vista.
+   *
+   * Recorrer los cuerpos es exacto pase lo que pase con las coordenadas, y el
+   * filtro por caja envolvente deja el trabajo real en unas pocas piezas. Solo
+   * corre en el fotograma en que un golpe toca a alguien.
+   */
+  private hayParedEntre(
+    a: Phaser.Types.Math.Vector2Like,
+    b: Phaser.Types.Math.Vector2Like,
+  ): boolean {
+    const ax = a.x ?? 0;
+    const ay = a.y ?? 0;
+    const bx = b.x ?? 0;
+    const by = b.y ?? 0;
+    if (Math.hypot(bx - ax, by - ay) < 1) return false;
+
+    const linea = new Phaser.Geom.Line(ax, ay, bx, by);
+    const minX = Math.min(ax, bx);
+    const maxX = Math.max(ax, bx);
+    const minY = Math.min(ay, by);
+    const maxY = Math.max(ay, by);
+    const caja = new Phaser.Geom.Rectangle();
+
+    for (const hijo of this.suelos.getChildren()) {
+      const cuerpo = (hijo as Phaser.Physics.Arcade.Sprite).body;
+      if (!cuerpo) continue;
+      if (cuerpo.right < minX || cuerpo.left > maxX) continue;
+      if (cuerpo.bottom < minY || cuerpo.top > maxY) continue;
+
+      // Un pixel por dentro de cada lado: los pies del Cirujano rozan el tile
+      // que pisa, y sin este margen ese roce contaria como pared y ningun
+      // golpe a ras de suelo entraria nunca.
+      caja.setTo(cuerpo.left + 1, cuerpo.top + 1, cuerpo.width - 2, cuerpo.height - 2);
+      if (Phaser.Geom.Intersects.LineToRectangle(linea, caja)) return true;
+    }
+
+    return false;
+  }
+
+  /** Centro del cuerpo fisico, que es de donde y adonde se mide un golpe. */
+  private centroDe(sprite: Phaser.GameObjects.Sprite): Phaser.Math.Vector2 {
+    return (sprite.body as Phaser.Physics.Arcade.Body).center;
+  }
+
   private resolverGolpeDelCirujano(spriteEnemigo: Phaser.GameObjects.GameObject): void {
     // Da igual si es Devoto, Vestal o el Reformado: todos son Enemigo.
     const enemigo = enemigoDe(spriteEnemigo);
     if (!enemigo || enemigo.estaMuerto) return;
+
+    // Antes de `registrarGolpe`, que marca al enemigo como ya tocado en este
+    // swing: si el muro para el golpe, el swing no se gasta contra el.
+    if (this.hayParedEntre(this.centroDe(this.cirujano.sprite), this.centroDe(enemigo.sprite))) {
+      return;
+    }
 
     const dano = this.cirujano.registrarGolpe(enemigo);
     if (dano <= 0) return; // ya golpeado en este swing
@@ -1347,6 +1412,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverGolpeDeDevoto(devoto: Devoto): void {
     if (devoto.estaMuerto || this.cirujano.estaMuerto) return;
+    if (this.hayParedEntre(this.centroDe(devoto.sprite), this.centroDe(this.cirujano.sprite))) {
+      return;
+    }
     if (!devoto.consumirGolpe()) return;
 
     const resultado = this.cirujano.recibirDano(DEVOTO.dano, devoto.sprite.x);
