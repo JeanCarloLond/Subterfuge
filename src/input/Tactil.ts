@@ -47,6 +47,11 @@ class Tactil {
   get esAparatoTactil(): boolean {
     if (typeof window === 'undefined' || !window.matchMedia) return false;
 
+    // `?tactil` fuerza el modo dedos en un ordenador. Es para probar la
+    // botonera sin tener el telefono delante, que es como se colaron los
+    // fallos de #72 a #74; no cambia nada para quien solo juega.
+    if (window.location?.search.includes('tactil')) return true;
+
     const hayTactil = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const punteroBasto = window.matchMedia('(pointer: coarse)').matches;
     const hayRatonFino = window.matchMedia('(any-pointer: fine)').matches;
@@ -54,17 +59,21 @@ class Tactil {
     return hayTactil && punteroBasto && !hayRatonFino;
   }
 
-  /** El dedo toca el boton. */
-  pulsar(accion: AccionTactil): void {
-    this.abajo.add(accion);
+  /**
+   * Fija de golpe lo que hay pulsado ahora mismo.
+   *
+   * La botonera no enciende y apaga acciones: cada fotograma mira que dedos
+   * hay en la pantalla y manda la lista entera. Un estado que se sustituye no
+   * puede quedarse pegado, que era el fallo de raiz del mando tactil (#72).
+   */
+  fijar(acciones: ReadonlySet<AccionTactil>): void {
+    this.abajo = new Set(acciones);
   }
 
-  /** El dedo lo suelta, o se va del boton arrastrando. */
-  soltar(accion: AccionTactil): void {
-    this.abajo.delete(accion);
-  }
-
-  /** Suelta todo. Al esconder los botones o perder el foco no puede quedarse nada pegado. */
+  /**
+   * Suelta todo. Al esconder los botones, al perder el foco o al morir el
+   * Cirujano no puede quedarse nada pegado.
+   */
   soltarTodo(): void {
     this.abajo.clear();
   }

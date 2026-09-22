@@ -11,6 +11,8 @@ import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { cursorActivo } from './Cursor';
+import { tactil } from '../input/Tactil';
+import { botonTactil } from './BotonTactil';
 
 /** Datos con los que se lanza: que escena de juego hay que reanudar al cerrar. */
 interface DatosCodice {
@@ -251,24 +253,63 @@ export class CodiceScene extends Phaser.Scene {
     // marcada que el resto del folio.
     this.margenTexto.setAngle(-3);
 
+    const conDedos = tactil.esAparatoTactil;
+
     this.add.text(
       folioX + 14,
       folioY + folioAlto - 16,
-      'A D  sección     W S  pasar hoja     L  o  ESC: cerrar',
+      conDedos
+        ? 'toca una pestaña o una entrada'
+        : 'A D  sección     W S  pasar hoja     L  o  ESC: cerrar',
       { fontFamily: 'monospace', fontSize: '7px', color: COLOR.tenue },
     );
 
-    const cerrar = this.add
-      .text(folioX + folioAncho - 14, folioY + folioAlto - 16, '[ cerrar ]', {
-        fontFamily: 'monospace',
-        fontSize: '7px',
-        color: COLOR.tenue,
-      })
-      .setOrigin(1, 0)
-      .setInteractive({ cursor: cursorActivo() });
-    cerrar.on('pointerover', () => cerrar.setColor(COLOR.rubrica));
-    cerrar.on('pointerout', () => cerrar.setColor(COLOR.tenue));
-    cerrar.on('pointerdown', () => this.cerrar());
+    if (conDedos) {
+      // En un telefono, `[ cerrar ]` era un texto de 7 px en una esquina: un
+      // objetivo de dos milimetros, y el pie nombraba teclas que ahi no
+      // existen. Sin acertarlo no habia forma de salir del libro salvo
+      // recargar la pagina (issue #74). Ahora hay una cruz grande arriba.
+      botonTactil(this, {
+        x: folioX + folioAncho - 16,
+        y: folioY + 16,
+        radio: 13,
+        glifo: '×',
+        color: COLOR.rubrica,
+        alPulsar: () => this.cerrar(),
+      });
+
+      // Y flechas para pasar hoja sin tener que acertar en una linea del
+      // indice, que es lo que mas se usa dentro del libro.
+      const flechaY = folioY + folioAlto - 26;
+      botonTactil(this, {
+        x: folioX + folioAncho - 52,
+        y: flechaY,
+        radio: 11,
+        glifo: '^',
+        color: COLOR.tinta,
+        alPulsar: () => this.mover(-1),
+      });
+      botonTactil(this, {
+        x: folioX + folioAncho - 20,
+        y: flechaY,
+        radio: 11,
+        glifo: 'v',
+        color: COLOR.tinta,
+        alPulsar: () => this.mover(1),
+      });
+    } else {
+      const cerrar = this.add
+        .text(folioX + folioAncho - 14, folioY + folioAlto - 16, '[ cerrar ]', {
+          fontFamily: 'monospace',
+          fontSize: '7px',
+          color: COLOR.tenue,
+        })
+        .setOrigin(1, 0)
+        .setInteractive({ cursor: cursorActivo() });
+      cerrar.on('pointerover', () => cerrar.setColor(COLOR.rubrica));
+      cerrar.on('pointerout', () => cerrar.setColor(COLOR.tenue));
+      cerrar.on('pointerdown', () => this.cerrar());
+    }
 
     // Todo lo del Codice a un contenedor, para poder esconderlo de golpe al
     // pasar de seccion. Se agrupa DESPUES de crearlo para no tocar una linea
@@ -606,16 +647,22 @@ export class CodiceScene extends Phaser.Scene {
   private crearPestanas(x: number, y: number): void {
     let despl = 0;
     for (const clave of SECCIONES) {
-      const t = this.add
-        .text(x + despl, y, ROTULOS[clave], {
-          fontFamily: 'monospace',
-          fontSize: '7px',
-          color: COLOR.tenue,
-        })
-        .setInteractive({ cursor: cursorActivo() });
+      const t = this.add.text(x + despl, y, ROTULOS[clave], {
+        fontFamily: 'monospace',
+        fontSize: '7px',
+        color: COLOR.tenue,
+      });
+      // El area que responde es mucho mas alta que la letra: con el dedo no
+      // se apunta a siete pixeles (issue #74).
+      const alto = tactil.esAparatoTactil ? 26 : 14;
+      t.setInteractive(
+        new Phaser.Geom.Rectangle(-6, (14 - alto) / 2, t.width + 12, alto),
+        Phaser.Geom.Rectangle.Contains,
+      );
+      t.input!.cursor = cursorActivo();
       t.on('pointerdown', () => this.irASeccion(clave));
       this.pestanas.push(t);
-      despl += t.width + 12;
+      despl += t.width + (tactil.esAparatoTactil ? 18 : 12);
     }
   }
 

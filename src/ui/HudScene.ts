@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { CAIDA, FERVOR, INJERTADORA, POCION, RESOLUCION, VITALIDAD } from '../config/Sacramento';
 import { CODICE } from '../lore/Codice';
 import { sonido } from '../systems/Sonido';
+import { tactil } from '../input/Tactil';
 
 /** Nombres de los eventos que la escena de juego emite para el HUD. */
 export const EVENTOS_HUD = {
@@ -166,11 +167,18 @@ export class HudScene extends Phaser.Scene {
     // Los navegadores no dejan sonar nada hasta el primer clic o tecla. Si el
     // jugador no lo sabe, cree que el juego no tiene sonido: se le dice.
     this.avisoAudio = this.add
-      .text(RESOLUCION.ancho / 2, 8, 'pulsa cualquier tecla para activar el sonido', {
-        fontFamily: 'monospace',
-        fontSize: '8px',
-        color: '#8a7d70',
-      })
+      .text(
+        RESOLUCION.ancho / 2,
+        8,
+        tactil.esAparatoTactil
+          ? 'toca la pantalla para activar el sonido'
+          : 'pulsa cualquier tecla para activar el sonido',
+        {
+          fontFamily: 'monospace',
+          fontSize: '8px',
+          color: '#8a7d70',
+        },
+      )
       .setOrigin(0.5, 0)
       .setVisible(false);
 

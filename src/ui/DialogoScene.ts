@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { pensamiento, type ClavePensamiento, type Pensamiento } from '../lore/Pensamientos';
 import { sonido } from '../systems/Sonido';
+import { tactil } from '../input/Tactil';
+import { botonTactil } from './BotonTactil';
 
 /**
  * Datos con los que se lanza: a quien hay que reanudar y que se dice.
@@ -103,7 +105,20 @@ export class DialogoScene extends Phaser.Scene {
       })
       .setOrigin(1, 1);
 
-    this.add.text(14, alto - 14, 'ESC  saltar', {
+    if (tactil.esAparatoTactil) {
+      // Con el dedo no habia forma de saltarse la escena: ESC no existe en un
+      // telefono y tocar la pantalla solo avanza de cuadro (issue #74).
+      botonTactil(this, {
+        x: ancho - 26,
+        y: alto - 26,
+        radio: 13,
+        glifo: '»',
+        color: '#e8d9a0',
+        alPulsar: () => this.cerrar(),
+      });
+    }
+
+    this.add.text(14, alto - 14, tactil.esAparatoTactil ? 'toca  continuar' : 'ESC  saltar', {
       fontFamily: 'monospace',
       fontSize: '7px',
       color: COLOR.tenue,

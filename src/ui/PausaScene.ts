@@ -13,6 +13,7 @@ import {
 } from './TextoControles';
 import { alternarCursor, cursorActivo, cursorEncendido } from './Cursor';
 import { tactil } from '../input/Tactil';
+import { botonTactil } from './BotonTactil';
 
 /** Datos con los que se lanza: que escena de juego hay que reanudar. */
 interface DatosPausa {
@@ -100,10 +101,14 @@ export class PausaScene extends Phaser.Scene {
   // -- Construccion --------------------------------------------------------
 
   private crearMenu(): Phaser.GameObjects.Container {
-    const ancho = 200;
+    const conDedos = tactil.esAparatoTactil;
+    const ancho = conDedos ? 240 : 200;
+    // Con el dedo las opciones van mas separadas: 20 px entre lineas de 9 px
+    // es comodo con un raton y una loteria con un pulgar (issue #74).
+    const separacion = conDedos ? 30 : 20;
     // Alto calculado y no a ojo: si se anade una opcion mas, el pie no se
     // sube encima de ella sola.
-    const alto = 46 + PausaScene.OPCIONES.length * 20 + 24;
+    const alto = 46 + PausaScene.OPCIONES.length * separacion + 24;
     const x = (RESOLUCION.ancho - ancho) / 2;
     const y = (RESOLUCION.alto - alto) / 2;
 
@@ -122,9 +127,9 @@ export class PausaScene extends Phaser.Scene {
 
     this.opciones = PausaScene.OPCIONES.map((_, i) => {
       const texto = this.add
-        .text(ancho / 2, 46 + i * 20, '', {
+        .text(ancho / 2, 46 + i * separacion, '', {
           fontFamily: 'monospace',
-          fontSize: '9px',
+          fontSize: conDedos ? '11px' : '9px',
           color: COLOR.texto,
         })
         .setOrigin(0.5, 0);
@@ -148,14 +153,36 @@ export class PausaScene extends Phaser.Scene {
     });
 
     const pie = this.add
-      .text(ancho / 2, alto - 16, 'W S  o ratón  elegir     E  o clic  confirmar', {
-        fontFamily: 'monospace',
-        fontSize: '7px',
-        color: COLOR.tenue,
-      })
+      .text(
+        ancho / 2,
+        alto - 16,
+        conDedos ? 'toca una opción' : 'W S  o ratón  elegir     E  o clic  confirmar',
+        {
+          fontFamily: 'monospace',
+          fontSize: '7px',
+          color: COLOR.tenue,
+        },
+      )
       .setOrigin(0.5, 0);
 
-    return this.add.container(x, y, [fondo, titulo, ...this.opciones, pie]);
+    const menu = this.add.container(x, y, [fondo, titulo, ...this.opciones, pie]);
+
+    // Con el dedo, una cruz grande para salir: "continuar" es una linea mas
+    // de la lista y no se lee como la salida (issue #74).
+    if (conDedos) {
+      menu.add(
+        botonTactil(this, {
+          x: ancho - 14,
+          y: 14,
+          radio: 12,
+          glifo: '×',
+          color: COLOR.titulo,
+          alPulsar: () => this.cerrarOVolver(),
+        }),
+      );
+    }
+
+    return menu;
   }
 
   private crearControles(): Phaser.GameObjects.Container {
@@ -243,8 +270,12 @@ export class PausaScene extends Phaser.Scene {
         `${activa ? '>  ' : ''}${this.etiqueta(opcion)}${activa ? '  <' : ''}`,
       );
       this.opciones[i].setColor(activa ? COLOR.activo : COLOR.texto);
-      this.opciones[i].input?.hitArea.setSize(160, 18);
-      this.opciones[i].input?.hitArea.setPosition(this.opciones[i].width / 2 - 80, -4);
+      const altoZona = tactil.esAparatoTactil ? 28 : 18;
+      this.opciones[i].input?.hitArea.setSize(200, altoZona);
+      this.opciones[i].input?.hitArea.setPosition(
+        this.opciones[i].width / 2 - 100,
+        (12 - altoZona) / 2,
+      );
     });
   }
 

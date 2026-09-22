@@ -78,7 +78,17 @@ export function dimensionarContenedor(id: string): void {
   // En un aparato tactil manda llenar la pantalla: los controles de dedo
   // necesitan sitio y nadie mira el pixel de cerca. El lienzo ya viene a 2x o
   // 3x, asi que lo que FIT estira de mas es poco (#70).
-  if (tactil.esAparatoTactil) return;
+  //
+  // Y hay que decirlo con medidas EXPLICITAS: el contenedor es un elemento de
+  // una rejilla centrada, asi que sin tamano propio se encoge hasta el del
+  // lienzo y Scale.FIT se queda midiendo su propia salida. El juego acababa
+  // pequeno y centrado en vez de llenar el telefono (#73). `dvh` y no `vh`
+  // porque en moviles `vh` cuenta la barra de direcciones que luego se retira.
+  if (tactil.esAparatoTactil) {
+    contenedor.style.width = '100dvw';
+    contenedor.style.height = '100dvh';
+    return;
+  }
 
   const densidad = window.devicePixelRatio || 1;
   contenedor.style.width = `${LIENZO.ancho / densidad}px`;

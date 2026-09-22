@@ -1,6 +1,17 @@
 :root {
   color-scheme: dark;
   background-color: #0b090b;
+
+  /*
+    Las zonas que el aparato se reserva: la muesca y la barra de gestos. Solo
+    se pueden leer desde CSS, asi que se copian a variables propias para que
+    la botonera tactil las consulte y no ponga un boton donde el dedo no llega
+    (issue #73). En un escritorio valen cero.
+  */
+  --seguro-izquierda: env(safe-area-inset-left, 0px);
+  --seguro-derecha: env(safe-area-inset-right, 0px);
+  --seguro-arriba: env(safe-area-inset-top, 0px);
+  --seguro-abajo: env(safe-area-inset-bottom, 0px);
 }
 
 * {

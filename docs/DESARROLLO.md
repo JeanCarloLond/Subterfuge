@@ -575,6 +575,40 @@ termina en Reformado: ningún Elegido ha llegado entero en tres generaciones.
 estado vive en el navegador de cada visitante. No hay cuentas ni base de datos
 que pagar ni mantener.
 
+## El mando de los dedos
+
+`src/ui/TactilScene.ts` dibuja la botonera y `src/input/Tactil.ts` guarda el
+estado; `Controles` lee ese estado junto a las teclas, así que para el resto
+del juego un botón y una tecla son lo mismo.
+
+**La entrada se deriva, no se acumula** (#72). No hay `pointerdown` por botón.
+Cada fotograma se recorren los punteros que Phaser da por pulsados, se traduce
+cada uno con la cámara de la escena (`getWorldPoint`, no `worldX`: hay varias
+escenas a la vez y esta va con zoom), se busca el botón **más cercano** dentro
+de su alcance y se manda el conjunto entero con `tactil.fijar()`. De ahí salen
+tres cosas gratis: nada se queda pulsado sin dedo encima, arrastrar el pulgar
+de un botón a otro cambia de acción, y volver de una pantalla deja el mando
+limpio. El modelo anterior dependía de que **todos** los eventos de soltar
+llegaran siempre, y cuando uno faltaba el Cirujano corría solo hasta recargar.
+
+**El tamaño sale de la pantalla, no del lienzo** (#73). 44 px CSS es el mínimo
+de un objetivo táctil; se traduce a píxeles internos con
+`displaySize.width`, así que en un teléfono pequeño los botones salen
+proporcionalmente más grandes, que es justo lo que hace falta. Las posiciones
+van en unidades de radio desde su esquina (`BOTONES`), de modo que la botonera
+entera crece y encoge sin solaparse. Los márgenes de la muesca y la barra de
+gestos se leen de `--seguro-*`, que `style.css` copia de `env(safe-area-inset-*)`.
+
+Al tocar cualquier cosa del reparto conviene pasar `node scripts/…` no: basta
+con abrir `?tactil` en un ordenador, que fuerza el modo dedos sin necesidad de
+teléfono.
+
+**Las pantallas tienen salida** (#74). El libro, el diálogo y la pausa se
+escribieron para teclado, y sus cierres eran textos de 7 px en una esquina.
+`src/ui/BotonTactil.ts` es el botón redondo que usan las tres: el área que
+responde es 1,5 veces el círculo dibujado, y se actúa al **levantar** el dedo,
+para poder corregir un toque arrastrando fuera.
+
 ## La voz del portal
 
 Los textos propios de `web/` (no los que vienen de `src/lore`) hablan como

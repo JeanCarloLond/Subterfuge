@@ -1824,6 +1824,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.reapareciendo = true;
     this.cancelarDescenso();
 
+    // Se muere con el dedo puesto en la cruceta. Soltar el mando aqui evita
+    // que el Cirujano reaparezca ya corriendo contra una pared (#72).
+    tactil.soltarTodo();
+
     this.impacto.muerteCirujano(this.cirujano.sprite.x, this.cirujano.sprite.y);
     this.game.events.emit(EVENTOS_HUD.caida, true);
 
@@ -1986,7 +1990,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     const columnas = Math.max(movimiento.height, combate.height);
     const alto = Math.ceil(margen + columnas + 26);
-    const { x, y } = fijo((RESOLUCION.ancho - ancho) / 2, RESOLUCION.alto - alto - 14);
+    // Con los dedos, la ayuda NO va abajo: ahi esta la botonera, y el panel
+    // le caia justo encima (issue #73). Arriba no estorba a ningun pulgar.
+    const arriba = tactil.esAparatoTactil;
+    const { x, y } = fijo(
+      (RESOLUCION.ancho - ancho) / 2,
+      arriba ? 54 : RESOLUCION.alto - alto - 14,
+    );
 
     const fondo = this.add.graphics();
     fondo.fillStyle(0x0b090b, 0.86);
