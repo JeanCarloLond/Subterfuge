@@ -481,10 +481,10 @@ export function renderVientre(contenedor: HTMLElement): void {
       <h1>Un solo edificio, y más de un camino</h1>
       <div class="filete"></div>
       <p class="lede">
-        Catedral-hospital construida hacia abajo. La Diócesis enseña un descenso ordenado, con
-        turnos y registro; el edificio está lleno de conductos, pozos y grietas por los que se
-        salta el trámite. Casi todos son tubería de Genesis Vestal que nadie ha cerrado en tres
-        generaciones. Pulsa cualquier sala.
+        Plano informativo del templo, que se construyó hacia abajo. La Diócesis recomienda el
+        descenso ordenado, con turno y registro. El plano recoge también conductos, pozos y
+        grietas de la instalación original que no se han cerrado; se ruega no utilizarlos.
+        Pulse cualquier sala para ver su ficha.
       </p>
       <div class="linaje">
         <div class="linaje-lienzo">
@@ -587,12 +587,12 @@ export function renderVientre(contenedor: HTMLElement): void {
       <h3>${html(esta ? sala.nombre : 'Sala sin nombre')}</h3>
       <p class="rango-texto">${
         sala.tipo === 'sellada'
-          ? 'Consta en el plano. No se visita en el teaser.'
+          ? 'Consta en el plano. Sin acceso.'
           : esta
-            ? 'Pisada en tu descenso.'
-            : 'Consta en el plano. Aún no has estado.'
+            ? 'Visitada. Consta en su expediente.'
+            : 'Consta en el plano. Sin visita registrada.'
       }</p>
-      <p>${html(esta ? sala.descripcion : 'El Registro sabe que esta sala existe y dónde está. Lo que hay dentro se cuenta al que baja, no al que pregunta.')}</p>
+      <p>${html(esta ? sala.descripcion : 'El Registro tiene constancia de esta sala y de su ubicación. La descripción se facilita únicamente a quien la ha visitado.')}</p>
       <p class="rango-texto">${salidas.length} ${salidas.length === 1 ? 'salida' : 'salidas'}</p>
       <ul class="salidas">${salidas.join('')}</ul>
     `;

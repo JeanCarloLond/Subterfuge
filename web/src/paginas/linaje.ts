@@ -62,7 +62,7 @@ const NODOS: readonly Nodo[] = [
     x: 150,
     requiere: 'descenso',
     descripcion:
-      'Hace tres generaciones prometió el fin de la muerte por edición genética. Los mil primeros sujetos aceptaron con esperanza real. El experimento no falló del todo: funcionó, pero no como se esperaba. Su tecnología sigue en el Vientre, cubierta de cera y óxido, operada como liturgia por gente que no sabe que es tecnología.',
+      'Empresa de biotecnología, hoy sin actividad. Hace tres generaciones anunció el fin de la muerte mediante edición genética y admitió a mil voluntarios en su programa. El programa no fracasó del todo: funcionó, aunque no como estaba previsto. Sus instalaciones siguen en uso; parte del personal actual las considera parte del templo.',
   },
   {
     id: 'mil',
@@ -73,7 +73,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 0,
     x: 450,
     descripcion:
-      'Los mil sujetos originales. No murieron. Sus células siguieron regenerándose y mutando sin control, fusionándose con el complejo. No pudieron ser destruidos, así que fueron venerados. Ninguno desarrolló ojos: "los dioses no miran, son mirados". Cada uno colapsó hacia el órgano que dominó su mutación.',
+      'Los mil voluntarios del programa original. No fallecieron. Su tejido continúa regenerándose y mutando sin control, y en muchos casos se ha integrado con la estructura del edificio. No fue posible retirarlos, por lo que se les venera. Ninguno desarrolló ojos; la doctrina lo recoge así: "los dioses no miran, son mirados". Cada uno tiende hacia el órgano que dominó su transformación.',
   },
   {
     id: 'cientificos',
@@ -86,7 +86,7 @@ const NODOS: readonly Nodo[] = [
     x: 750,
     requiere: 'descenso',
     descripcion:
-      'Incapaces de eliminar a los Mil, reinterpretaron el desastre como milagro. No de forma pasiva: reescribieron su propio error científico como escritura sagrada, el Códice de la Carne, usando los manuales técnicos como materia prima doctrinal. Sus sucesores ya no sostienen la doctrina por obligación, sino por fe heredada.',
+      'Personal técnico superviviente del programa. Al no poder revertir el resultado, lo reinterpretaron como milagro y lo dejaron por escrito: el Códice de la Carne se redactó sobre los manuales técnicos, que se conservan debajo del texto. Sus sucesores ya no sostienen la doctrina por obligación, sino por fe. Ninguno queda con vida.',
   },
   {
     id: 'cerebrales',
@@ -97,7 +97,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 1,
     x: 250,
     descripcion:
-      'Masas cerebrales, pliegues y médulas fundidas con el cableado del complejo. Perdieron todo lo humano excepto el intelecto. Solo quieren seguir siendo venerados: la fe de los Devotos es el único estímulo que aún sienten. Mandan "revelaciones" que las Vestales leen como profecía.',
+      'Advocación cerebral: masas de pliegues y médula integradas con el cableado del complejo. Conservan el intelecto y nada más. Su único estímulo conocido es la devoción de los fieles, por lo que la Diócesis procura que no falte. Transmiten "revelaciones" que el clero interpreta y publica.',
   },
   {
     id: 'cordiales',
@@ -108,7 +108,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 1,
     x: 450,
     descripcion:
-      'Corazones colosales cuyo pulso se oye en los niveles profundos. Conservaron la emoción sin el intelecto: culpa, dolor y compasión a escala inhumana. Saben que son un error y quieren dejar de ser el motor de la carnicería. Cada favor que conceden es un latido que se roban a sí mismos.',
+      'Advocación cardíaca: corazones de gran tamaño cuyo pulso se percibe en los niveles profundos. Conservan la emoción y no el intelecto. Nota interna: manifiestan culpa y solicitan reiteradamente que se les deje morir. Se recomienda no atender esas peticiones. Colaboran con quien baja, a costa de sí mismos.',
   },
   {
     id: 'viscerales',
@@ -119,7 +119,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 1,
     x: 650,
     descripcion:
-      'Estómagos e intestinos fundidos con los ductos del Vientre. Ni buenos ni malos: hambre sin pensamiento. No quieren culto ni muerte, solo comer. Mantenerlos calmados es la excusa económica de todo el sistema, y por eso los diezmos de carne no pueden parar.',
+      'Advocación digestiva: estómagos e intestinos integrados con los ductos del Vientre. No tienen voluntad conocida más allá del apetito. No exigen culto ni piden nada; solo requieren alimento continuo. Son el motivo por el que el diezmo no puede interrumpirse y, en la práctica, la razón de ser de la Oficina.',
   },
   {
     id: 'vestales',
@@ -130,7 +130,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 2,
     x: 450,
     descripcion:
-      'Administran el diezmo, sellan el Registro y leen las revelaciones. Como los dioses no ven, el estatus lo otorga el clero: por eso su poder es político antes que sagrado. Van más transformadas que nadie, porque están más arriba: de cintura para abajo ya no les queda cuerpo.',
+      'Alto clero. Administran el diezmo, sellan el Registro e interpretan las revelaciones. Como los Mil no ven, es el clero quien reconoce el rango de cada fiel, y de ahí su autoridad. Son quienes más han entregado: de cintura para abajo no conservan cuerpo. Atienden con cita.',
   },
   {
     id: 'anatomistas',
@@ -143,7 +143,7 @@ const NODOS: readonly Nodo[] = [
     x: 750,
     requiere: 'descenso',
     descripcion:
-      'Descendientes clandestinos de técnicos de Genesis Vestal que conservaron fragmentos de conocimiento real. No quieren destruir a los Primigenios: quieren entenderlos y demostrar que son biología, no divinidad. Su biblia son los manuales que la Diócesis reescribió. Saber la verdad no les da el poder de decirla.',
+      'Expediente reservado. Descendientes de personal técnico del programa que conservan conocimiento no autorizado. No pretenden dañar a los Mil: pretenden estudiarlos y demostrar que son biología, no divinidad. Actúan dentro del propio clero; varios Cirujanos-Sacerdotes figuran en la lista. Su texto de referencia son los manuales que el Códice reescribió.',
   },
   {
     id: 'anteriores',
@@ -156,7 +156,7 @@ const NODOS: readonly Nodo[] = [
     x: 250,
     requiere: 'manos-anteriores',
     descripcion:
-      'El progenitor del Cirujano. Le enseñó a sostener el bisturí y se lo dejó en herencia junto con el número. Fue reformado en acto de servicio, en un sacramento fallido, y no fue trasladado abajo: se le dejó donde fue hecho. Es el jefe del teaser, y el jugador pelea contra el resultado de su propio oficio.',
+      'Manos del Sacramento número siete, titular anterior. Progenitor del titular actual, a quien formó desde niño y a quien transmitió el número. Reformado en acto de servicio en un sacramento fallido. Por norma no fue trasladado a los niveles inferiores: permanece en la Sala 7, donde fue hecho. En el teaser es el jefe: el titular actual se enfrenta a lo que su propio oficio produjo.',
   },
   {
     id: 'cirujano',
@@ -167,7 +167,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 3,
     x: 550,
     descripcion:
-      'No tiene nombre: tiene número. Entrenado desde niño para heredar el oficio. Cree en la Diócesis porque necesita creer: es lo único que hace soportable lo que hace con sus manos cada día. Es la excepción de la regla del cuerpo: no asciende porque no se ofrenda; vale más entero, cortando. Su habilidad lo hace demasiado valioso para desertar.',
+      'Titular de la Sala 7. Sin nombre propio; se le identifica por el número de puesto. Formado desde niño para heredar el oficio. Cree en la Diócesis porque lo necesita: es lo único que hace llevadero su trabajo diario. Es la excepción a la regla del cuerpo: no asciende porque no se ofrenda; conserva el cuerpo entero porque así rinde más. Su cualificación lo hace demasiado valioso para autorizar su baja.',
   },
   {
     id: 'devotos',
@@ -178,7 +178,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 4,
     x: 450,
     descripcion:
-      'Los fieles. Cada casa inscribe a los suyos una vez al año y paga su diezmo en carne. Un Devoto conserva casi todo el cuerpo, y por eso está abajo: le falta entregar. Lo que le falta se lo repuso el Sacramento con lo que había a mano.',
+      'Base de la Diócesis y mayoría de la población. Cada casa inscribe a los suyos una vez al año y liquida el diezmo en carne. Un Devoto conserva casi todo el cuerpo, y por eso ocupa el rango inferior: todavía le queda por entregar. Lo entregado se le repone con lo que haya disponible.',
   },
   {
     id: 'ayunantes',
@@ -191,7 +191,7 @@ const NODOS: readonly Nodo[] = [
     x: 150,
     requiere: 'descenso',
     descripcion:
-      'Se niegan a pagar diezmos de carne. No niegan que los dioses existan: niegan que merezcan ser alimentados. Mutilados por elección inversa, conservan el cuerpo íntegro en un mundo que premia la transformación, y eso los convierte en intocados. Esconden a Elegidos fugados.',
+      'Expediente reservado. Familias que rehúsan inscribir diezmo. No niegan la existencia de los Mil: niegan que deban alimentarse. Conservan el cuerpo íntegro, lo que en la Diócesis los señala como parias. Residen en los márgenes del Atrio. Se sospecha que ocultan a Elegidos fugados. En seguimiento.',
   },
   {
     id: 'rebano',
@@ -204,7 +204,7 @@ const NODOS: readonly Nodo[] = [
     x: 750,
     requiere: 'descenso',
     descripcion:
-      'Fanáticos que creen que la Diócesis se ha vuelto tibia. Si parecerse a los dioses da estatus, ellos quieren volverse dioses: se automutilan y autoinjertan fuera de todo sacramento, buscando la ascensión sin permiso del clero.',
+      'Expediente reservado. Fieles que consideran tibia a la Diócesis y buscan parecerse a los Mil por su cuenta, mediante mutilación e injerto fuera de sacramento. Persiguen la ascensión sin permiso del clero. Se les retira el instrumental cuando se les localiza.',
   },
   {
     id: 'elegidos',
@@ -215,7 +215,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 5,
     x: 450,
     descripcion:
-      'Quien sale en el sorteo, o quien salda una deuda de casa. Se les seda en las Criptas la víspera del turno y entran dormidos en la Sala. Cada sacramento se vive como una ceremonia solemne y honorable: nadie dentro del mundo lo percibe como violencia.',
+      'Fieles seleccionados por sorteo o inscritos por deuda de casa. Se les seda en las Criptas la víspera de su turno y entran dormidos en la Sala. La Diócesis celebra cada sacramento como una ceremonia solemne, y así lo viven las familias. No consta ninguna queja.',
   },
   {
     id: 'nina',
@@ -228,7 +228,7 @@ const NODOS: readonly Nodo[] = [
     x: 700,
     requiere: 'final',
     descripcion:
-      'No fue seleccionada: se ofreció sola para saldar la deuda de su familia, y firmó de su puño. Durante el sacramento su tejido responde como ningún otro: su cuerpo es compatible con lo que a los dioses les falta. Es la primera ofrenda capaz de darles vista. Los Cerebrales quieren ver por ella; los Cordiales quieren que ella los mire, para morir en paz.',
+      'Expediente reservado. Ofrenda voluntaria, sin número de sorteo: se presentó para liquidar la deuda de su casa y firmó de su puño. Durante el sacramento su tejido respondió de forma no documentada; es compatible con lo que a los Mil les falta y podría darles la vista. Los Cerebrales la reclaman para ver; los Cordiales, para ser mirados. La consulta sigue abierta.',
   },
   {
     id: 'ascendido',
@@ -239,7 +239,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 6,
     x: 300,
     descripcion:
-      'El que completa el sacramento asciende y no vuelve: se integra en los Mil. Es lo que la doctrina promete a cada casa. Ningún Elegido ha llegado abajo entero en tres generaciones, y nadie lo dice en voz alta.',
+      'Resultado previsto del sacramento: el Elegido se integra en los Mil y no regresa. Es lo que la doctrina promete a cada casa. Nota interna: no se registra ninguna integración completa en las últimas tres generaciones. Este dato no se comunica.',
   },
   {
     id: 'reformado',
@@ -250,7 +250,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 6,
     x: 550,
     descripcion:
-      'El que sobrevive parcialmente al sacramento sin completarse. La doctrina dice que se le honra; en la práctica se le guarda en los Niveles Reformados, donde no haya que verlo. Un sacramento a medias deja media persona.',
+      'Resultado parcial del sacramento: el Elegido sobrevive sin completarse. La doctrina establece que se le honra; el procedimiento es alojarlo en los Niveles Reformados, sin visitas. Un sacramento a medias deja media persona, y a esa media se la trata con respeto.',
   },
   {
     id: 'diezmado',
@@ -261,7 +261,7 @@ const NODOS: readonly Nodo[] = [
     nivel: 6,
     x: 780,
     descripcion:
-      'Se alimenta de los restos de carne que el sacramento rechazó, con una boca de bisturís óseos que perforan sin destruir. Su caparazón desarrolla un brillo dorado idéntico al de las reliquias, y cuando muere se usa como ornamento en los altares. Las Vestales lo cazan para hacer máscaras.',
+      'Fauna del Vientre. Se alimenta de los restos de carne que el sacramento rechaza; su boca es un conjunto de bisturís óseos que perforan sin destruir. Su caparazón adquiere un brillo dorado idéntico al de las reliquias y se aprovecha como ornamento de altar. Las Vestales lo cazan para hacer máscaras. Especie casi extinta.',
   },
 ];
 
@@ -336,9 +336,10 @@ export function renderLinaje(contenedor: HTMLElement): void {
       <h1>De dónde viene cada uno, y quién manda</h1>
       <div class="filete"></div>
       <p class="lede">
-        Arriba, lo que vino primero; abajo, adónde va la carne. La autoridad no sigue el mismo
-        orden, y eso es lo que hay que leer: los que vinieron primero no mandan, y los que mandan
-        no son los que más cuerpo conservan. Pulsa cualquier nombre.
+        Organigrama de la Diócesis para consulta del fiel. Se lee de arriba abajo: primero el
+        origen, después el clero y el oficio, y al final los destinos de la ofrenda. Advertencia
+        del Registro: el orden de autoridad no coincide con el de antigüedad ni con el de cuerpo
+        conservado. Pulse cualquier nombre para ver su ficha.
       </p>
       <div class="linaje">
         <div class="linaje-lienzo">
@@ -432,14 +433,14 @@ export function renderLinaje(contenedor: HTMLElement): void {
     if (!abierto(nodo)) {
       const como =
         nodo.requiere === 'final'
-          ? 'Se abre al terminar el descenso.'
+          ? 'Se habilita al completar el descenso.'
           : nodo.requiere === 'manos-anteriores'
-            ? 'Se abre al entrar en la Sala 7.'
-            : 'Se abre al completar el descenso, o con una clave.';
+            ? 'Se habilita tras visitar la Sala 7.'
+            : 'Se habilita al completar el descenso, o presentando una clave.';
       panel.innerHTML = `
         <h3>${html(etiqueta(nodo))}</h3>
         <div class="rango-texto">Expediente cerrado</div>
-        <p>La Diócesis no publica esta entrada. ${como}</p>
+        <p>Esta entrada no se facilita al público general. ${como}</p>
       `;
       return;
     }

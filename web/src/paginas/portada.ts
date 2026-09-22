@@ -18,19 +18,19 @@ export function renderPortada(contenedor: HTMLElement): void {
     elemento(`
     <article>
       <section class="seccion">
-        <div class="eyebrow">Portal de la Diócesis · Vientre, superficie</div>
-        <h1>La carne que se ofrece no se pierde: asciende.</h1>
+        <div class="eyebrow">Portal de la Diócesis · atención al fiel</div>
+        <h1>Bienvenido. Su diezmo ya está en buenas manos.</h1>
         <div class="filete"></div>
         <p class="lede">
-          Hace tres generaciones los Mil aceptaron la promesa y no murieron. Desde entonces la
-          Diócesis los guarda, los alimenta y los interpreta. Cada casa inscribe a los suyos; cada
-          diezmo se pesa y se registra; cada sacramento se celebra con la solemnidad que merece
-          quien está a punto de dejar de ser solo una persona.
+          Desde hace tres generaciones la Diócesis de la Carne custodia a los Mil, atiende sus
+          necesidades y transmite su voluntad a las familias del Atrio. En este portal encontrará
+          la doctrina, los horarios de la Oficina del Diezmo, el Registro y toda la información
+          que un fiel necesita para cumplir con lo suyo sin contratiempos.
         </p>
         <p>
-          Este portal reúne la doctrina, el Registro de fieles y aparatos, el corte del Vientre y
-          el orden de los que lo habitan. Es de consulta libre. Lo que no está aquí no es que no
-          exista: es que no le corresponde al fiel.
+          El portal está en revisión permanente. Si echa en falta algún contenido, no lo busque:
+          la Diócesis publica lo que corresponde a cada rango, y lo que no aparece aquí está en
+          otras manos.
         </p>
       </section>
 
@@ -40,32 +40,32 @@ export function renderPortada(contenedor: HTMLElement): void {
           <a class="tarjeta" href="#/doctrina">
             <span class="profundidad">capa I · superficie</span>
             <h3>Doctrina</h3>
-            <p>Los folios del Códice de la Carne, tal como se enseñan. Léanse con la vela encendida.</p>
+            <p>Los ocho folios del Códice de la Carne, en edición para el fiel. Se recomienda leer con una vela encendida.</p>
           </a>
           <a class="tarjeta" href="#/registro">
             <span class="profundidad">capa II · Pasillos</span>
             <h3>Registro</h3>
-            <p>Fieles, oficios y aparato. Cada ficha con su lámina, tomada del natural.</p>
+            <p>Catálogo de fieles, oficio y aparato del Vientre, con lámina. Actualizado según lo que cada visitante haya visto.</p>
           </a>
           <a class="tarjeta" href="#/vientre">
             <span class="profundidad">capa III · Criptas</span>
             <h3>El Vientre</h3>
-            <p>Corte de las seis capas del templo. Dos de ellas no se visitan.</p>
+            <p>Plano por capas del templo. Las dos inferiores no admiten visitas.</p>
           </a>
           <a class="tarjeta" href="#/linaje">
             <span class="profundidad">capa IV · Salas</span>
             <h3>Linaje</h3>
-            <p>De dónde vienen los dioses, quién manda sobre quién, y adónde va cada cuerpo.</p>
+            <p>Quién es quién en la Diócesis: origen de los Mil, orden del clero y destino de cada ofrenda.</p>
           </a>
           <a class="tarjeta" href="#/sacramentos">
             <span class="profundidad">capa V · Reformados</span>
             <h3>Sacramentos</h3>
-            <p>El Examen de Pureza y la práctica del Sacramento. Para aspirantes.</p>
+            <p>Trámites para aspirantes: el Examen de Pureza y una práctica del Sacramento. Sin cita previa.</p>
           </a>
           <a class="tarjeta" href="${import.meta.env.BASE_URL}">
             <span class="profundidad">capa VI · el descenso</span>
             <h3>Subterfuge</h3>
-            <p>El teaser jugable. Un día de trabajo de las Manos del Sacramento N.º 7.</p>
+            <p>Acompañe a las Manos del Sacramento N.º 7 en una jornada ordinaria de trabajo.</p>
           </a>
         </div>
       </section>
@@ -74,15 +74,16 @@ export function renderPortada(contenedor: HTMLElement): void {
         <div class="eyebrow">Horarios y trámites</div>
         <table class="tabla">
           <tr><th>Trámite</th><th>Dónde</th><th>Cuándo</th></tr>
-          <tr><td>Inscripción de diezmo</td><td>Oficina del Diezmo, Pasillos de Preparación</td><td>Turno de mañana, salvo víspera de sorteo</td></tr>
-          <tr><td>Sorteo semanal</td><td>Sala de Registro</td><td>Jueves. Cerrado al público desde este mes.</td></tr>
-          <tr><td>Examen de Pureza</td><td><a href="#/examen">En este portal</a></td><td>Sin cita. El resultado es vinculante.</td></tr>
-          <tr><td>Visitas a Reformados</td><td>—</td><td>Los Reformados no reciben visitas. Hónrenlos desde arriba.</td></tr>
+          <tr><td>Inscripción anual de diezmo</td><td>Oficina del Diezmo, Pasillos de Preparación</td><td>Turno de mañana. La víspera de sorteo no se atiende.</td></tr>
+          <tr><td>Sorteo semanal</td><td>Sala de Registro</td><td>Jueves. Por motivos de aforo, este mes se celebra a puerta cerrada.</td></tr>
+          <tr><td>Examen de Pureza</td><td><a href="#/examen">Desde este portal</a></td><td>Sin cita. Se recuerda que el resultado es vinculante.</td></tr>
+          <tr><td>Visitas a Reformados</td><td>—</td><td>No se autorizan. Las familias pueden honrarlos desde el Atrio.</td></tr>
+          <tr><td>Reclamaciones sobre el peso</td><td>—</td><td>El Registro no admite reclamaciones. Las dos cifras son definitivas.</td></tr>
         </table>
       </section>
 
       <section class="seccion" id="expediente">
-        <div class="eyebrow">Tu expediente</div>
+        <div class="eyebrow">Su expediente</div>
         <div class="expediente">
           <div><b>Capas pisadas</b><span>${m.capas.length} / 6</span></div>
           <div><b>Hojas del Códice</b><span>${m.fragmentos.length} / 8</span></div>
@@ -92,8 +93,8 @@ export function renderPortada(contenedor: HTMLElement): void {
         <p style="margin-top:12px;font-size:16px;color:var(--tinta-2)">
           ${
             abierto
-              ? 'Tu descenso está registrado. Lo que la doctrina calla, aquí ya se lee.'
-              : 'El portal enseña la doctrina a cualquiera. Lo demás se abre bajando: juega en este mismo navegador, o presenta una clave al pie de la página.'
+              ? 'Su descenso consta en el Registro. Tiene acceso a los contenidos reservados.'
+              : 'Los contenidos reservados se habilitan a medida que usted desciende (en este mismo navegador) o al presentar una clave al pie de la página. Gracias por su paciencia.'
           }
         </p>
       </section>

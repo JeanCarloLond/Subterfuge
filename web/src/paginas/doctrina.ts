@@ -74,16 +74,17 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
       <h1>El Códice de la Carne</h1>
       <div class="filete"></div>
       <p class="lede">
-        Ocho hojas de la escritura, tal como se enseñan en el Atrio. El fiel lee con la vela
-        encendida; lo que la luz no alcanza no es para el fiel.
+        Edición para el fiel de las ocho hojas del Códice, tal como se enseñan en el Atrio. La
+        Diócesis recomienda leerlas con una vela encendida y no prolongar la lectura más de lo
+        que dure la cera.
       </p>
       <p style="font-size:16px;color:var(--tinta-2)">
         ${
           abiertas === CODICE.length
-            ? 'Tienes las ocho hojas. En la oscuridad se leen enteras.'
+            ? 'Su ejemplar está completo. Le rogamos que no lo lea a oscuras.'
             : abiertas > 0
-              ? `Has recogido ${abiertas} de las ocho hojas. Solo en esas se ve lo que hay al margen.`
-              : 'No has recogido ninguna hoja. Los márgenes están arrancados: se recuperan bajando, o con una clave.'
+              ? `Su ejemplar tiene ${abiertas} de las ocho hojas completas. Las demás llegaron sin margen.`
+              : 'Su ejemplar llegó sin márgenes. Es normal: los márgenes se reponen en el descenso, o presentando una clave.'
         }
       </p>
 
@@ -116,7 +117,7 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
           abierta
             ? `<div class="margen">${parrafos(fragmento.margen)}</div>
                <div class="manual abierto">${(MANUAL[fragmento.id] ?? []).map((l) => `<p>${html(l)}</p>`).join('')}</div>`
-            : `<div class="margen arrancado"><p>El margen de esta hoja está arrancado. Se recupera en el descenso.</p></div>`
+            : `<div class="margen arrancado"><p>Margen no disponible en esta edición.</p></div>`
         }
       </section>
     `);
@@ -143,7 +144,7 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
       apagada = true;
       raiz.classList.add('apagada');
       texto.innerHTML =
-        '<b>La vela se ha apagado.</b> A oscuras, la hoja enseña lo que la luz tapaba. Avívala si quieres volver a leer solo la doctrina.';
+        '<b>La vela se ha apagado.</b> Le recomendamos encenderla de nuevo. La Diócesis no se hace responsable de lo que se lea a oscuras.';
       avivar.textContent = 'Encender';
       return;
     }
@@ -151,8 +152,8 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
       const segundos = Math.ceil((restante * DURACION_VELA_MS) / 1000);
       texto.innerHTML =
         abiertas > 0
-          ? `<b>Vigilia.</b> Lee mientras dure la vela. Quedan ${segundos} s de cera; avívala o deja que se consuma.`
-          : `<b>Vigilia.</b> Lee mientras dure la vela. Quedan ${segundos} s. Sin hojas recogidas, la oscuridad no enseña nada.`;
+          ? `<b>Vigilia.</b> Quedan ${segundos} segundos de cera. Puede avivar la vela cuantas veces quiera.`
+          : `<b>Vigilia.</b> Quedan ${segundos} segundos de cera. Con un ejemplar sin márgenes, apagarla no tiene consecuencias.`;
     }
   };
 

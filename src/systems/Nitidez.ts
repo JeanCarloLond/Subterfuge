@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
+import { tactil } from '../input/Tactil';
 
 /**
  * Nitidez: el juego se dibuja a la resolucion de la pantalla, no a 480x320.
@@ -73,11 +74,35 @@ export function dimensionarContenedor(id: string): void {
   if (typeof document === 'undefined') return;
   const contenedor = document.getElementById(id);
   if (!contenedor) return;
+
+  // En un aparato tactil manda llenar la pantalla: los controles de dedo
+  // necesitan sitio y nadie mira el pixel de cerca. El lienzo ya viene a 2x o
+  // 3x, asi que lo que FIT estira de mas es poco (#70).
+  if (tactil.esAparatoTactil) return;
+
   const densidad = window.devicePixelRatio || 1;
   contenedor.style.width = `${LIENZO.ancho / densidad}px`;
   contenedor.style.height = `${LIENZO.alto / densidad}px`;
   contenedor.style.maxWidth = '100vw';
   contenedor.style.maxHeight = '100vh';
+  enmarcar(densidad);
+}
+
+/**
+ * El marco: lo que rodea al lienzo cuando la pantalla no es un multiplo
+ * exacto de 480x320. Negro plano se leia como un fallo. Ahora es la silleria
+ * del Vientre (la del equipo), repetida a la misma escala que el juego,
+ * oscurecida con una vineta para que no compita con la escena, y un filete
+ * de oro alrededor del lienzo: el juego dentro de un nicho de piedra.
+ */
+function enmarcar(densidad: number): void {
+  const pixel = ESCALA / densidad;
+  const raiz = document.documentElement.style;
+  raiz.setProperty('--silleria', `url(${import.meta.env.BASE_URL}assets/tilesets/vientre.png)`);
+  raiz.setProperty('--silleria-ancho', `${128 * pixel}px`);
+  raiz.setProperty('--silleria-alto', `${16 * pixel}px`);
+  raiz.setProperty('--filete', `${Math.max(1, Math.round(pixel))}px`);
+  document.body.classList.add('enmarcado');
 }
 
 /**

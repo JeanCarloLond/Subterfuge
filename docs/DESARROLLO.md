@@ -575,6 +575,22 @@ termina en Reformado: ningún Elegido ha llegado entero en tres generaciones.
 estado vive en el navegador de cada visitante. No hay cuentas ni base de datos
 que pagar ni mantener.
 
+## La voz del portal
+
+Los textos propios de `web/` (no los que vienen de `src/lore`) hablan como
+habla una institución que atiende al público: parroquia y hospital a la vez,
+amable, administrativa, un poco anticuada. "Se recuerda a los fieles", "consta
+en su expediente", "gracias por su paciencia". Es lo que pide el bible para la
+web como obra madre: "burocracia religiosa normal hasta que empiezas a hurgar",
+como Welcome Home parece una empresa de restauración (#71).
+
+Las grietas van en lo pequeño y nunca se subrayan: un trámite que no debería
+existir ("Reclamaciones sobre el peso: no se admiten"), una nota interna que
+se coló en una ficha, un "no hace falta que nos cuente lo que vio". Fuera los
+remates aforísticos y las estructuras "no es X, es Y" salvo en el lema, que es
+del bible. Si un texto nuevo suena a narrador literario, está en la voz
+equivocada.
+
 ## Rezar en un Altar
 
 Rezar es el punto de guardado, y tiene que **parecerlo**. Tres cosas ocurren a
@@ -672,6 +688,13 @@ aguanta eso; la tipografía no, y los diálogos se leían como bloques (#69).
   que escalar. En una 1080p eso deja un marco de 240 px a los lados: es el
   precio de que cada píxel del arte caiga en un píxel del monitor. Si la
   ventana se encoge después, FIT vuelve a actuar (con escala no entera).
+- Ese marco no es negro (#70): `enmarcar()` pone en `<body>` la sillería del
+  Vientre repetida a la escala del juego, una viñeta encima para dejarla en
+  penumbra y un filete de oro alrededor del lienzo (clase `enmarcado` en
+  `style.css`). El juego queda dentro de un nicho de piedra.
+- En un **aparato táctil** no se ajusta el contenedor: FIT llena la pantalla
+  aunque la escala no sea entera. Los controles de dedo necesitan sitio, y el
+  lienzo ya viene a 2× o 3×, así que lo que FIT estira de más es poco.
 
 **Lo que hay que saber para no romperlo:**
 

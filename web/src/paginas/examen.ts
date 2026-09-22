@@ -120,40 +120,43 @@ const PREGUNTAS: readonly Pregunta[] = [
 const VEREDICTOS: Readonly<Record<Perfil, { titulo: string; texto: string }>> = {
   devoto: {
     titulo: 'APTO · Devoto',
-    texto: 'Se le inscribe en el sorteo de su casa. Conserve el cuerpo hasta que se le pida.',
+    texto:
+      'Queda inscrito en el sorteo de su casa. Mientras tanto, cuide su cuerpo: no es del todo suyo.',
   },
   vestal: {
     titulo: 'APTO · Vestal en formación',
-    texto: 'Sabe administrar lo que otros entregan. Se le asigna al Registro. Sella, no cargue.',
+    texto:
+      'Demuestra aptitud para administrar lo que otros entregan. Se le asigna al Registro. Recuerde: se sella, no se carga.',
   },
   manos: {
     titulo: 'APTO · Manos',
     texto:
-      'Se le asigna una Sala. Número pendiente. No hablará con el ofrendado ni le verá la cara.',
+      'Se le asignará una Sala en cuanto quede una libre. Se le recuerda que no hablará con el ofrendado ni le verá la cara.',
   },
   elegido: {
     titulo: 'APTO · Elegido voluntario',
     texto:
-      'Sin número. Preséntese en las Criptas la víspera del turno. La dosis se administrará allí.',
+      'Gracias por su ofrecimiento. Preséntese en las Criptas la víspera de su turno, en ayunas. La dosis se administra allí.',
   },
   ayunante: {
     titulo: 'NO APTO · Expediente abierto',
     texto:
-      'Cuerpo íntegro y voluntad de conservarlo. Se le clasifica como Ayunante y se le vigila desde el Atrio.',
+      'Manifiesta voluntad de conservar el cuerpo. Queda clasificado como Ayunante. Su domicilio pasa a la lista de seguimiento del Atrio.',
   },
   rebano: {
     titulo: 'NO APTO · Rebaño Hueco',
     texto:
-      'Busca la ascensión sin permiso del clero. Se le retira el instrumental. No se acerque a las Salas.',
+      'Manifiesta intención de ascender sin permiso del clero. Se le retira cualquier instrumental que posea. Absténgase de acercarse a las Salas.',
   },
   anatomista: {
     titulo: 'APTO · Manos (nota interna)',
-    texto: 'Técnicamente valioso. Pregunta demasiado. Observar. No dejarle solo con los manuales.',
+    texto:
+      'Aptitud técnica notable. (Nota interna: hace demasiadas preguntas. Observar. No dejarle a solas con los manuales.)',
   },
   ojos: {
     titulo: 'SIN CLASIFICAR',
     texto:
-      'Mira. El Registro no tiene casilla para esto. Se eleva la consulta al clero, que ya ha preguntado por usted.',
+      'Usted mira. El formulario no contempla esa casilla. Su consulta se eleva al clero, que, por cierto, ya había preguntado por usted.',
   },
 };
 
@@ -179,25 +182,29 @@ function loQueSabe(vez: number): string[] {
 
   lineas.push(
     vez === 1
-      ? 'Es la primera vez que se presenta al Examen.'
-      : `Es la ${vez}.ª vez que se presenta al Examen. Las anteriores también constan.`,
+      ? 'Es su primera vez en el Examen. Bienvenido.'
+      : `Es su ${vez}.ª vez en el Examen. Las anteriores también constan; no hace falta que insista.`,
   );
   lineas.push(
     hora.getHours() >= 22 || hora.getHours() < 6
-      ? `Son las ${hh}:${mm}. A esta hora la Oficina está cerrada y usted sigue aquí.`
-      : `Son las ${hh}:${mm}. Turno de ${hora.getHours() < 14 ? 'mañana' : 'tarde'}.`,
+      ? `Son las ${hh}:${mm}. La Oficina está cerrada a esta hora. Usted, por lo visto, no.`
+      : `Son las ${hh}:${mm}. Turno de ${hora.getHours() < 14 ? 'mañana' : 'tarde'}. Gracias por venir en horario.`,
   );
-  if (m.capas.length > 0) lineas.push(`Ha pisado ${m.capas.length} de las seis capas.`);
+  if (m.capas.length > 0)
+    lineas.push(`Consta que ha visitado ${m.capas.length} de las seis capas.`);
   if (m.hitos.includes('manos-anteriores'))
-    lineas.push('Estuvo en la Sala 7. Sabe lo que había dentro.');
-  if (m.hitos.includes('final')) lineas.push('Vio el cierre. Sabe que ella mira.');
-  if (m.fragmentos.length >= 8) lineas.push('Tiene las ocho hojas. Nadie debería tener las ocho.');
+    lineas.push('Consta una visita a la Sala 7. No hace falta que nos cuente lo que vio.');
+  if (m.hitos.includes('final'))
+    lineas.push('Consta que llegó hasta el final. Consta también quién le miró.');
+  if (m.fragmentos.length >= 8)
+    lineas.push('Tiene el Códice completo. Es más de lo que corresponde a su rango.');
   const manchas = mancha();
   if (manchas > 0)
     lineas.push(
-      `Ha fallado ${manchas} ${manchas === 1 ? 'sacramento' : 'sacramentos'} de práctica.`,
+      `Consta${manchas === 1 ? ' una práctica fallida' : `n ${manchas} prácticas fallidas`} del Sacramento.`,
     );
-  if (m.capas.length === 0 && !m.hitos.length) lineas.push('No consta ningún descenso. Todavía.');
+  if (m.capas.length === 0 && !m.hitos.length)
+    lineas.push('No consta ningún descenso a su nombre. Le esperamos.');
   return lineas;
 }
 
@@ -220,8 +227,9 @@ export function renderExamen(contenedor: HTMLElement): void {
       <h1>Examen de Pureza</h1>
       <div class="filete"></div>
       <p class="lede">
-        Diez preguntas. No hay respuestas correctas: hay respuestas que dicen dónde va cada cuerpo.
-        El resultado es vinculante.
+        Cuestionario de diez preguntas. No hay respuestas correctas ni incorrectas; solo
+        respuestas. Al terminar recibirá su clasificación. Se recuerda que el resultado es
+        vinculante y que las respuestas se conservan.
       </p>
       <div id="examen"></div>
       <p style="margin-top:16px"><a href="#/sacramentos">← Volver a los Sacramentos</a></p>

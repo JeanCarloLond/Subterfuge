@@ -35,3 +35,36 @@ body {
   /* El rebote elastico al llegar al borde mueve el lienzo mientras se juega. */
   overscroll-behavior: none;
 }
+
+/*
+  El marco de escritorio (Nitidez.ts pone la clase y las variables): silleria
+  del Vientre a la escala del juego, una vineta encima para que quede en
+  penumbra, y el lienzo con un filete de oro, como un relicario.
+*/
+body.enmarcado {
+  background-image: var(--silleria);
+  background-size: var(--silleria-ancho) var(--silleria-alto);
+  background-position: center;
+  image-rendering: pixelated;
+}
+body.enmarcado::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(11, 9, 11, 0.62) 35%,
+    rgba(11, 9, 11, 0.9) 75%,
+    rgba(11, 9, 11, 0.97) 100%
+  );
+}
+body.enmarcado #juego {
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 0 var(--filete) #0b090b,
+    0 0 0 calc(var(--filete) * 2) #8f6d22,
+    0 0 0 calc(var(--filete) * 3) #0b090b,
+    0 0 80px 30px rgba(0, 0, 0, 0.85);
+}

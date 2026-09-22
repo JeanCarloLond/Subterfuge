@@ -70,8 +70,9 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
       <h1>El Sacramento</h1>
       <div class="filete"></div>
       <p class="lede">
-        Cuatro versículos, cuatro gestos. Con el ratón o con el dedo. El Códice no admite
-        preguntas, así que lea la instrucción y haga exactamente eso.
+        Práctica guiada para aspirantes a Manos. Cuatro pasos, cada uno con su versículo. Puede
+        usar el ratón o el dedo. Lea la instrucción y hágala tal cual; el Códice no admite
+        preguntas y esta práctica tampoco.
       </p>
       <div class="juego-marco">
         <canvas id="lienzo" width="${ANCHO}" height="${ALTO}" aria-label="Mesa del sacramento"></canvas>
@@ -160,10 +161,10 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
     if (fallos > 0) {
       manchar();
       actualizarPie();
-      instruccion.textContent = `Sacramento fallido en ${fallos} ${fallos === 1 ? 'paso' : 'pasos'}. Manos: registrar y sustituir. La mancha queda.`;
+      instruccion.textContent = `Práctica no superada (${fallos} ${fallos === 1 ? 'paso incorrecto' : 'pasos incorrectos'}). Se anota en su expediente. La mancha del portal es suya.`;
     } else {
       instruccion.textContent =
-        'Sacramento completo. Integración: parcial. Clasificar como Reformado. — Lo ha hecho todo bien. Siempre acaba así.';
+        'Práctica superada. Resultado del ofrendado: integración parcial. Clasificar como Reformado. — No se preocupe: lo ha hecho todo bien. Siempre acaba así.';
     }
   }
 

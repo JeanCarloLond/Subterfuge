@@ -98,16 +98,17 @@ function prepararClave(): void {
     evento.preventDefault();
     const resultado = presentarClave(campo.value);
     if (!resultado) {
-      respuesta.textContent = 'El Registro no reconoce esa clave.';
+      respuesta.textContent =
+        'Esa clave no consta. Compruebe la ortografía o diríjase a la Oficina.';
       return;
     }
     if (resultado.abre.length === 0) {
-      respuesta.textContent = 'Correcto. Eso lo sabe cualquier fiel.';
+      respuesta.textContent = 'Correcto, pero eso lo sabe cualquier fiel. No abre nada.';
       return;
     }
     respuesta.textContent = resultado.nueva
-      ? 'Clave aceptada. El expediente se abre.'
-      : 'Esa clave ya está presentada.';
+      ? 'Clave aceptada. Se habilita su expediente. No la comparta.'
+      : 'Esa clave ya consta a su nombre.';
     campo.value = '';
     navegar();
   });

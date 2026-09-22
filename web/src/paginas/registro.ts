@@ -16,17 +16,17 @@ const FAMILIAS: ReadonlyArray<{ clave: Familia; titulo: string; nota: string }> 
   {
     clave: 'fieles',
     titulo: 'Fieles',
-    nota: 'Por rango. Cuanto más cuerpo han entregado, más arriba están.',
+    nota: 'Ordenados por rango, es decir, por lo que cada uno ha entregado ya.',
   },
   {
     clave: 'oficio',
     titulo: 'El oficio',
-    nota: 'Lo que llevan las Manos del Sacramento y lo que tocan a diario.',
+    nota: 'Instrumental y enseres de las Manos del Sacramento. Inventario de la Sala.',
   },
   {
     clave: 'aparato',
     titulo: 'Aparato',
-    nota: 'Lo que sigue funcionando en el Vientre aunque nadie sepa ya para qué se hizo.',
+    nota: 'Equipamiento heredado del Vientre. En servicio. No se dispone de manual.',
   },
 ];
 
@@ -39,8 +39,9 @@ export function renderRegistro(contenedor: HTMLElement): void {
       <h1>Registro de fieles, oficio y aparato</h1>
       <div class="filete"></div>
       <p class="lede">
-        Cada ficha lleva su lámina tomada del natural. ${abiertas} de ${REGISTRO.length} fichas
-        abiertas en tu expediente; las demás constan, pero no se enseñan a quien no las ha visto.
+        Catálogo oficial, con lámina tomada del natural. Su expediente tiene ${abiertas} de
+        ${REGISTRO.length} fichas habilitadas. El resto consta, pero por norma del Registro solo se
+        muestra a quien ya lo ha visto.
       </p>
     </article>
   `);
@@ -61,12 +62,12 @@ export function renderRegistro(contenedor: HTMLElement): void {
         <div class="ficha ${abierta ? '' : 'cerrada'}">
           <canvas width="96" height="96" aria-label="Lámina: ${html(ficha.nombre)}"></canvas>
           <div>
-            <h3>${abierta ? html(ficha.nombre) : 'Sin catalogar'}</h3>
+            <h3>${abierta ? html(ficha.nombre) : 'Pendiente de habilitar'}</h3>
             <div class="hallazgo">${html(acentuar(ficha.hallazgo))}</div>
             ${
               abierta
                 ? parrafo(ficha.descripcion)
-                : '<p>Consta en el Registro. La ficha se abre al encontrarlo en el descenso.</p>'
+                : '<p>Consta. La ficha se habilitará cuando lo encuentre en su descenso. No se adelanta información.</p>'
             }
           </div>
         </div>
