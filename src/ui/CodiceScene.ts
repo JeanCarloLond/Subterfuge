@@ -3,7 +3,9 @@ import { RESOLUCION } from '../config/Sacramento';
 import { CODICE, fragmentoPorId } from '../lore/Codice';
 import { FAMILIAS, REGISTRO, type Familia } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
+import { CRONOLOGIA } from '../lore/Cronologia';
 import { JERARQUIA } from '../lore/Jerarquia';
+import { LINAJE } from '../lore/Linaje';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -84,8 +86,15 @@ interface EntradaPagina {
   cabecera?: boolean;
 }
 
-/** Las cuatro secciones del libro, en el orden en que se pasan. */
-const SECCIONES = ['codice', 'registro', 'vientre', 'jerarquia'] as const;
+/**
+ * Las secciones del libro, en el orden en que se pasan.
+ *
+ * El orden no es decorativo: va de lo que el mundo dice de si mismo (el
+ * Codice) a lo que se ve (Registro), donde pasa (Vientre), quien manda
+ * (Jerarquia), de quien viene cada uno (Linaje) y en que orden ocurrio todo
+ * (Cronologia). Cada una contesta una pregunta que deja abierta la anterior.
+ */
+const SECCIONES = ['codice', 'registro', 'vientre', 'jerarquia', 'linaje', 'cronologia'] as const;
 type Seccion = (typeof SECCIONES)[number];
 
 const ROTULOS: Readonly<Record<Seccion, string>> = {
@@ -93,6 +102,8 @@ const ROTULOS: Readonly<Record<Seccion, string>> = {
   registro: 'REGISTRO',
   vientre: 'EL VIENTRE',
   jerarquia: 'JERARQUÍA',
+  linaje: 'LINAJE',
+  cronologia: 'CRONOLOGÍA',
 };
 
 const TITULOS: Readonly<Record<Seccion, string>> = {
@@ -100,6 +111,8 @@ const TITULOS: Readonly<Record<Seccion, string>> = {
   registro: 'REGISTRO DE LA DIÓCESIS',
   vientre: 'CORTE DEL VIENTRE',
   jerarquia: 'ORDEN DE LOS FIELES',
+  linaje: 'DE QUIÉN VIENE CADA UNO',
+  cronologia: 'LO QUE PASÓ, EN ORDEN',
 };
 
 export class CodiceScene extends Phaser.Scene {
@@ -112,7 +125,14 @@ export class CodiceScene extends Phaser.Scene {
   private pestanas: Phaser.GameObjects.Text[] = [];
   private tituloLibro!: Phaser.GameObjects.Text;
   /** Fila elegida dentro de cada seccion, para volver donde lo dejaste. */
-  private fila: Record<Seccion, number> = { codice: 0, registro: 0, vientre: 0, jerarquia: 0 };
+  private fila: Record<Seccion, number> = {
+    codice: 0,
+    registro: 0,
+    vientre: 0,
+    jerarquia: 0,
+    linaje: 0,
+    cronologia: 0,
+  };
 
   private folioTexto!: Phaser.GameObjects.Text;
   private tituloTexto!: Phaser.GameObjects.Text;
@@ -256,6 +276,8 @@ export class CodiceScene extends Phaser.Scene {
       registro: this.crearPaginaRegistro(folioX, folioY, folioAncho, folioAlto),
       vientre: this.crearPaginaVientre(folioX, folioY, folioAncho, folioAlto),
       jerarquia: this.crearPaginaJerarquia(folioX, folioY, folioAncho, folioAlto),
+      linaje: this.crearPaginaLinaje(folioX, folioY, folioAncho, folioAlto),
+      cronologia: this.crearPaginaCronologia(folioX, folioY, folioAncho, folioAlto),
     };
 
     // La primera fila de cada seccion tiene que ser una ficha de verdad: las
@@ -759,6 +781,41 @@ export class CodiceScene extends Phaser.Scene {
       descripcion: capa.descripcion,
       pie: capa.escena ? 'pisada' : 'no se llega en el teaser',
       abierta: () => (capa.escena ? progreso.estaPisada(capa.escena) : false),
+    }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /**
+   * La genealogia: de quien sale cada uno. Se lee de arriba abajo como un
+   * arbol, y por eso el pie de cada entrada dice de donde viene.
+   */
+  private crearPaginaLinaje(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = LINAJE.map((rama) => ({
+      nombre: rama.nombre,
+      descripcion: rama.descripcion,
+      pie: rama.viene,
+      abierta: rama.abierto,
+    }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /** La linea de tiempo. El pie lleva el "cuando", que aqui es el indice. */
+  private crearPaginaCronologia(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = CRONOLOGIA.map((hito) => ({
+      nombre: hito.titulo,
+      descripcion: hito.descripcion,
+      pie: hito.cuando,
+      abierta: hito.abierto,
     }));
     return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
   }
