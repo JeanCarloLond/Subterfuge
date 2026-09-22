@@ -61,45 +61,23 @@
         );
         pointer-events: none;
       }
+      /*
+       * Al quitar contenido sobra papel. En vez de dejar un hueco grande
+       * antes de los nombres, el aire se reparte entre todos los bloques: asi
+       * la hoja respira en vez de parecer que falta algo.
+       */
       .hoja {
         position: relative;
         z-index: 1;
         height: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
       }
 
       /* -- Cabecera ---------------------------------------------------- */
       .cabecera {
-        display: flex;
-        align-items: center;
-        gap: 9mm;
-      }
-      .sello {
-        width: 19mm;
-        height: 19mm;
-        border-radius: 50%;
-        border: 1.1mm solid #8f6d22;
-        position: relative;
-        flex: none;
-      }
-      .sello::before,
-      .sello::after {
-        content: '';
-        position: absolute;
-        background: #8c2f2f;
-      }
-      .sello::before {
-        width: 1.1mm;
-        height: 11mm;
-        left: 8.2mm;
-        top: 3mm;
-      }
-      .sello::after {
-        width: 7mm;
-        height: 1.1mm;
-        left: 5.3mm;
-        top: 6.2mm;
+        display: block;
       }
       .eyebrow {
         font-family: Cinzel, serif;
@@ -127,7 +105,7 @@
         height: 1mm;
         border-top: 0.3mm solid #8f6d22;
         border-bottom: 0.3mm solid #8f6d22;
-        margin: 7mm 0 6mm;
+        margin: 9mm 0 8mm;
         position: relative;
       }
       .filete::after {
@@ -145,44 +123,13 @@
         margin: 0 0 3.5mm;
       }
       .lede {
-        font-size: 12.4pt;
-        line-height: 1.42;
+        font-size: 12.8pt;
+        line-height: 1.5;
+        margin-bottom: 0;
       }
       .rubrica {
         color: #8c2f2f;
         font-weight: 600;
-      }
-
-      /* -- Los tres ejes del mundo -------------------------------------- */
-      .ejes {
-        margin-bottom: 5mm;
-      }
-      .ejes > div {
-        display: grid;
-        grid-template-columns: 24mm 1fr;
-        gap: 4mm;
-        padding: 2.6mm 0;
-        border-bottom: 0.2mm solid rgba(34, 24, 32, 0.16);
-      }
-      .ejes > div:first-child {
-        border-top: 0.2mm solid rgba(34, 24, 32, 0.16);
-      }
-      /* La ultima linea la pone el bloque de la entrega: dos seguidas cantan. */
-      .ejes > div:last-child {
-        border-bottom: 0;
-      }
-      .ejes b {
-        font-family: Cinzel, serif;
-        font-size: 9.5pt;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: #8c2f2f;
-        padding-top: 0.6mm;
-      }
-      .ejes span {
-        font-size: 10.6pt;
-        line-height: 1.38;
-        color: #33272d;
       }
 
       /* -- La entrega: enlace y QR ------------------------------------- */
@@ -193,8 +140,8 @@
         align-items: center;
         border-top: 0.3mm solid rgba(34, 24, 32, 0.25);
         border-bottom: 0.3mm solid rgba(34, 24, 32, 0.25);
-        padding: 5mm 0;
-        margin: 1mm 0 5mm;
+        padding: 7mm 0;
+        margin: 0;
       }
       .entrega h2 {
         font-family: Cinzel, serif;
@@ -241,15 +188,14 @@
       .secciones {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 2.4mm 8mm;
-        margin-bottom: 5mm;
+        gap: 3.4mm 10mm;
       }
       .secciones div {
         display: grid;
         grid-template-columns: 26mm 1fr;
         gap: 3mm;
         font-size: 10.4pt;
-        padding-bottom: 1.6mm;
+        padding-bottom: 2.4mm;
         border-bottom: 0.2mm dotted rgba(34, 24, 32, 0.28);
       }
       .secciones b {
@@ -264,7 +210,7 @@
 
       /* -- Equipo ------------------------------------------------------- */
       .equipo {
-        margin-top: auto;
+        margin: 0;
       }
       .equipo h2 {
         font-family: Cinzel, serif;
@@ -277,13 +223,13 @@
       .nombres {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 2.2mm 10mm;
+        gap: 3mm 10mm;
       }
       .nombres div {
         font-family: Cinzel, serif;
-        font-size: 12pt;
+        font-size: 12.6pt;
         letter-spacing: 0.02em;
-        padding-bottom: 1.8mm;
+        padding-bottom: 2.4mm;
         border-bottom: 0.25mm solid rgba(143, 109, 34, 0.55);
       }
 
@@ -309,7 +255,6 @@
   <body>
     <div class="hoja">
       <header class="cabecera">
-        <div class="sello"></div>
         <div>
           <div class="eyebrow">La Diócesis de la Carne</div>
           <h1>Libro de arte y biblia del mundo</h1>
@@ -330,39 +275,13 @@
         atiende al fiel.
       </p>
 
-      <div class="ejes">
-        <div>
-          <b>Mythos</b>
-          <span>
-            Una corporación prometió el fin de la muerte. Los mil que aceptaron no murieron: mutaron
-            sin control y se fundieron con el edificio. Nadie pudo destruirlos, así que fueron
-            venerados. Ninguno tiene ojos.
-          </span>
-        </div>
-        <div>
-          <b>Ethos</b>
-          <span>
-            El cuerpo es moneda. El estatus se mide por cuánto te pareces a un dios, de modo que
-            ascender es dejar de ser persona. Nadie ahí dentro llama violencia al sacramento.
-          </span>
-        </div>
-        <div>
-          <b>Topos</b>
-          <span>
-            El Vientre: una catedral-hospital de seis capas construida hacia abajo. Descender es
-            degradarse, y la arquitectura de las capas profundas ya es carne.
-          </span>
-        </div>
-      </div>
-
       <section class="entrega">
         <div>
           <h2>Entrega</h2>
           <div class="enlace">jeancarlolond.github.io/Subterfuge/web</div>
           <p>
-            Contiene el libro de arte completo y la biblia del mundo: doctrina, catálogo de
-            criaturas con sus láminas, plano del Vientre, linaje de dioses y fieles, y el teaser
-            jugable. Abre en cualquier navegador, sin instalar nada.
+            Contiene el libro de arte y la biblia del mundo al completo, en las secciones que se
+            listan abajo. Abre en cualquier navegador, sin instalar nada.
           </p>
         </div>
         <div class="qr">
