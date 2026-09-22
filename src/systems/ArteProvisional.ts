@@ -102,6 +102,136 @@ const CIRUJANO: Figura = {
   ],
 };
 
+// Paso intermedio del Cirujano: las piernas pasan juntas bajo el cuerpo.
+//
+// Caminaba con un cabeceo del 3 % y nada mas, asi que se deslizaba (issue
+// #51). Un ciclo de tres poses —piernas abiertas, piernas juntas, piernas
+// abiertas al reves— es lo minimo que se lee como andar a este tamano.
+//
+// Solo cambian las TRES ULTIMAS FILAS. De cintura para arriba es el mismo
+// dibujo, y tiene que seguir siendolo: si cambiara algo mas, el personaje
+// vibraria en vez de caminar.
+
+const CIRUJANO_PASO_A: Figura = {
+  paleta: {
+    n: 0x0c081f, // negro del hueco de la capucha y el contorno
+    N: 0x211746, // sobretodo, azul noche
+    q: 0x3a2a55, // morado en sombra
+    p: 0x51356a, // morado de la capucha y la mozeta
+    P: 0x775d91, // morado iluminado
+    L: 0x846d96, // morado, luz alta
+    k: 0xe3a940, // oro medio
+    K: 0xfcd038, // oro del pico
+    Y: 0xf4ed93, // oro palido, reflejo
+    j: 0xcb6e2f, // ambar: el pico en sombra
+    m: 0x5d3927, // la barbilla que asoma bajo la mascara
+  },
+  // prettier-ignore
+  filas: [
+    '.......qppppq...........',
+    '.....qppPPPPppq.........',
+    '....qppPPPPPPppq........',
+    '....qppPPPPPPPppq.......',
+    '....qppPnnnnnPppq.......',
+    '....qppnkkkkknPpq.......',
+    '....qppnkKKKKkkjq.......',
+    '....qppnkKYnKKkkjj......',
+    '....qppnkKKnKKkkkjj.....',
+    '....qppnkkKKkkkkjjj.....',
+    '....qppnnkkkkkjjjj......',
+    '....qppnnmkkkjjj........',
+    '....qppqnmmkjj..........',
+    '....qppq.mmjj...........',
+    '...qpppppppq............',
+    '..qppPPPPPPPppq.........',
+    '..qppPPPPPPPPPppq.......',
+    '..qppPPPPPPPPPppq.......',
+    '...qppppppppppq.........',
+    '....qppPPPPPpq..........',
+    '...qppPPPPPPPpq.........',
+    '...qpppppppppppq........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNN.........',
+    '.....NNNNKNNNNNm........',
+    '.....NNNNnNNNNmmM.......',
+    '.....NNNNKNNNNmMj.......',
+    '....NpppppppppNjKj......',
+    '....NkKYKkppppNjKKj.....',
+    '....NpppppppppNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNnNNNNNN.jKKj....',
+    '....NNNnnNNNNNN.jKKj....',
+    '...NNNNnnnNNNNNN.jKj....',
+    '...NNNnnnnnNNNNN.jKj....',
+    '...NNNnnnnnNNNNN..jj....',
+    '....NnnnnnnnnNN.........',
+    '.....nnnn..nnnn.........',
+    '......nnn..nnn..........',
+  ],
+};
+
+// La otra pose de contacto: mismo paso, la otra pierna delante.
+
+const CIRUJANO_PASO_B: Figura = {
+  paleta: {
+    n: 0x0c081f, // negro del hueco de la capucha y el contorno
+    N: 0x211746, // sobretodo, azul noche
+    q: 0x3a2a55, // morado en sombra
+    p: 0x51356a, // morado de la capucha y la mozeta
+    P: 0x775d91, // morado iluminado
+    L: 0x846d96, // morado, luz alta
+    k: 0xe3a940, // oro medio
+    K: 0xfcd038, // oro del pico
+    Y: 0xf4ed93, // oro palido, reflejo
+    j: 0xcb6e2f, // ambar: el pico en sombra
+    m: 0x5d3927, // la barbilla que asoma bajo la mascara
+  },
+  // prettier-ignore
+  filas: [
+    '.......qppppq...........',
+    '.....qppPPPPppq.........',
+    '....qppPPPPPPppq........',
+    '....qppPPPPPPPppq.......',
+    '....qppPnnnnnPppq.......',
+    '....qppnkkkkknPpq.......',
+    '....qppnkKKKKkkjq.......',
+    '....qppnkKYnKKkkjj......',
+    '....qppnkKKnKKkkkjj.....',
+    '....qppnkkKKkkkkjjj.....',
+    '....qppnnkkkkkjjjj......',
+    '....qppnnmkkkjjj........',
+    '....qppqnmmkjj..........',
+    '....qppq.mmjj...........',
+    '...qpppppppq............',
+    '..qppPPPPPPPppq.........',
+    '..qppPPPPPPPPPppq.......',
+    '..qppPPPPPPPPPppq.......',
+    '...qppppppppppq.........',
+    '....qppPPPPPpq..........',
+    '...qppPPPPPPPpq.........',
+    '...qpppppppppppq........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNN.........',
+    '.....NNNNKNNNNNm........',
+    '.....NNNNnNNNNmmM.......',
+    '.....NNNNKNNNNmMj.......',
+    '....NpppppppppNjKj......',
+    '....NkKYKkppppNjKKj.....',
+    '....NpppppppppNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNnNNNNNN.jKKj....',
+    '....NNNnnNNNNNN.jKKj....',
+    '...NNNNnnnNNNNNN.jKj....',
+    '...NNNnnnnnNNNNN.jKj....',
+    '...NNNnnnnnNNNNN..jj....',
+    '....NNnnn...nnnNN.......',
+    '....nnnn.....nnnn.......',
+    '....nnn.......nnn.......',
+  ],
+};
+
 // -- Devoto ------------------------------------------------------------------
 //
 // Fiel de abajo. El ethos del bible manda: "el estatus social se mide por
@@ -1608,6 +1738,8 @@ const CURSOR_ACTIVO: Figura = {
 
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
+  'cirujano-paso-a': CIRUJANO_PASO_A,
+  'cirujano-paso-b': CIRUJANO_PASO_B,
   devoto: DEVOTO,
   'devoto-b': DEVOTO_B,
   'muro-pasillos-a': MURO_PASILLOS_A,

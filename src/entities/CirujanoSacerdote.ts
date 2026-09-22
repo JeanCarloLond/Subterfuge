@@ -53,6 +53,20 @@ type DireccionAtaque = 'lateral' | 'arriba' | 'abajo';
  * El sprite sigue siendo un placeholder generado por codigo; el arte definitivo
  * es pixel art hecho a mano en Aseprite por el equipo (ver docs/issues/).
  */
+/**
+ * El ciclo de caminar: contacto, paso, contacto al reves, paso. La pose de
+ * reposo hace de primer contacto, asi que no hace falta un cuadro mas.
+ */
+const CICLO_PASO = [
+  'cirujano-placeholder',
+  'cirujano-paso-a-placeholder',
+  'cirujano-paso-b-placeholder',
+  'cirujano-paso-a-placeholder',
+] as const;
+
+/** Un cuadro cada tantos pixeles recorridos. Menos, y tiembla; mas, y patina. */
+const PX_POR_CUADRO = 9;
+
 export class CirujanoSacerdote {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   /** Zona de dano del golpe. La escena la cruza con el grupo de enemigos. */
@@ -99,6 +113,8 @@ export class CirujanoSacerdote {
   /** Para sonar el aterrizaje solo al pasar de aire a suelo. */
   private enSueloAntes = true;
   private velocidadCaidaPrevia = 0;
+  /** Pixeles recorridos desde el ultimo cuadro del ciclo de caminar. */
+  private recorridoPaso = 0;
   /** y del punto mas alto desde el que empezo a caer. */
   private inicioCaidaY = 0;
   private direccionAtaque: DireccionAtaque = 'lateral';
@@ -744,6 +760,7 @@ export class CirujanoSacerdote {
     this.sprite.setOrigin(0.5, 1);
 
     this.sprite.setAlpha(1);
+    this.sprite.setTexture('cirujano-placeholder');
     this.sprite.setPosition(x, y);
     this.inicioCaidaY = y;
     this.enSueloAntes = true;
@@ -1076,7 +1093,45 @@ export class CirujanoSacerdote {
     }
 
     this.sprite.setScale(escalaX, escalaY);
+    this.actualizarPaso(enSuelo);
     this.actualizarImpulsoVisual();
+  }
+
+  /**
+   * El ciclo de caminar: tres poses que se alternan con el avance.
+   *
+   * Antes solo habia un cabeceo del 3 % sobre un dibujo quieto, y eso no es
+   * andar, es deslizarse con el cuerpo temblando (issue #51). Ahora las
+   * piernas se abren, pasan juntas y se abren al reves.
+   *
+   * La fase va con la DISTANCIA RECORRIDA y no con el reloj: caminando contra
+   * una pared no avanzas, y con el reloj las piernas seguirian moviendose como
+   * si corrieras. Es el detalle que separa un ciclo de andar de un gif.
+   */
+  private actualizarPaso(enSuelo: boolean): void {
+    const quieto =
+      !enSuelo ||
+      this.estado === 'atacando' ||
+      this.estado === 'dash' ||
+      this.estado === 'rezando' ||
+      this.estado === 'bebiendo' ||
+      this.estado === 'agarre' ||
+      Math.abs(this.cuerpo.velocity.x) <= 20;
+
+    if (quieto) {
+      this.recorridoPaso = 0;
+      if (this.sprite.texture.key !== 'cirujano-placeholder') {
+        this.sprite.setTexture('cirujano-placeholder');
+      }
+      return;
+    }
+
+    this.recorridoPaso += Math.abs(this.cuerpo.deltaX());
+
+    // Un cuadro cada 9 px recorridos: a velocidad de paseo salen unos siete
+    // cambios por segundo, que es donde deja de leerse a saltos.
+    const clave = CICLO_PASO[Math.floor(this.recorridoPaso / PX_POR_CUADRO) % CICLO_PASO.length];
+    if (this.sprite.texture.key !== clave) this.sprite.setTexture(clave);
   }
 
   /**
