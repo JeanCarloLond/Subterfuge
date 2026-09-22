@@ -194,7 +194,7 @@ function verificarDecorado(nombre, archivo) {
 
   if (sueltas.length === 0) {
     console.log(`${nombre}: OK — las ${decorado.length} piezas de decorado se apoyan en algo`);
-    return true;
+    return verificarInscripciones(nombre, src, plataformas);
   }
 
   console.log(`${nombre}: FALLO — decorado flotando en el aire`);
@@ -203,6 +203,51 @@ function verificarDecorado(nombre, archivo) {
       ? 'no hay techo del que colgar'
       : 'no hay suelo ni muro ahí';
     console.log(`  "${d.tipo}" en x=${d.x} y=${d.y}: ${queFalta}`);
+  }
+  verificarInscripciones(nombre, src, plataformas);
+  return false;
+}
+
+/**
+ * Las placas del Registro también tienen que estar al alcance.
+ *
+ * No entraban en la comprobación del decorado y se coló una flotando, que el
+ * jugador solo podía leer saltando a ciegas (issue #53). Una placa se dibuja
+ * con el origen abajo, así que su `y` es la línea donde se apoya: tiene que
+ * coincidir con la superficie de una plataforma, igual que el decorado de
+ * suelo. Y no basta con que exista el suelo: hay que poder PONERSE delante,
+ * así que se comprueba también que quepa el cuerpo del Cirujano (22 px) sin
+ * que otra plataforma lo aplaste justo encima.
+ */
+function verificarInscripciones(nombre, src, plataformas) {
+  const placas = leerTuplas(src, 'inscripciones', /\[\s*(-?\d+),\s*(-?\d+),\s*'/g).map((m) => ({
+    x: Number(m[1]),
+    y: Number(m[2]),
+  }));
+
+  if (placas.length === 0) return true;
+
+  const ALTO_CIRUJANO = 22;
+
+  const malas = placas.filter((c) => {
+    const enSuelo = plataformas.some((p) => c.y === p.y && c.x >= p.x && c.x < p.x + p.ancho);
+    if (!enSuelo) return true;
+
+    // ¿Hay techo tan bajo que no se puede estar de pie delante de ella?
+    return plataformas.some(
+      (p) =>
+        c.x >= p.x && c.x < p.x + p.ancho && p.y + TILE > c.y - ALTO_CIRUJANO && p.y + TILE <= c.y,
+    );
+  });
+
+  if (malas.length === 0) {
+    console.log(`${nombre}: OK — las ${placas.length} placas se pueden leer de pie`);
+    return true;
+  }
+
+  console.log(`${nombre}: FALLO — placas inalcanzables`);
+  for (const c of malas) {
+    console.log(`  placa en x=${c.x} y=${c.y}: no se apoya en ninguna plataforma o no cabe leerla`);
   }
   return false;
 }

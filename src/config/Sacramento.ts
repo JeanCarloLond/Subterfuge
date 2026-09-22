@@ -42,6 +42,27 @@ export const CURSOR = {
   punta: { x: 0, y: 0 },
 } as const;
 
+/**
+ * La zona por la que al Cirujano se le puede HERIR.
+ *
+ * No es su cuerpo fisico. El cuerpo mide 10x22 y esta pegado al suelo porque
+ * es el que choca con la piedra: si abarcara la figura entera, la mitra y el
+ * pico tropezarian con cada techo y el salto se volveria impredecible. Pero
+ * usar ESE cuerpo tambien para recibir dano dejaba media figura fuera — un
+ * golpe a la altura de la cabeza no contaba aunque se viera impactar
+ * (issue #52).
+ *
+ * Asi que el dano tiene su propia caja, como ya lo tiene el ataque. Cubre lo
+ * que el jugador reconoce como su personaje y nada mas: se deja fuera el pico
+ * dorado, que sobresale y no es cuerpo, y la punta de la mitra.
+ */
+export const ZONA_DANO = {
+  /** El sprite mide 24 de ancho, pero 8 son pico. */
+  ancho: 16,
+  /** De los 40 del sprite, los 6 de arriba son la punta de la mitra. */
+  alto: 34,
+} as const;
+
 /** Cinematica del Cirujano-Sacerdote. Valores en px/s y px/s^2. */
 export const MOVIMIENTO = {
   velocidadCaminar: 130,
@@ -315,16 +336,21 @@ export const OFRENDA = {
   /**
    * Probabilidades por clase. Lo que no suma 1 es "no suelta nada".
    *
-   * El injerto cae poco y solo de quien lleva metal encima: el Devoto lo lleva
-   * porque el Sacramento le repuso lo que le falta, y el Vestal porque de
-   * cintura para abajo ya es todo protesis. Si cayera a menudo, la Injertadora
-   * dejaria de ser un recurso y pasaria a ser el arma principal.
+   * El injerto solo cae de quien lleva metal encima: el Devoto lo lleva porque
+   * el Sacramento le repuso lo que le falta, y el Vestal porque de cintura
+   * para abajo ya es todo protesis.
+   *
+   * Empezaron en 16 % y 22 % y en la practica el arma casi no aparecia
+   * (issue #55): salias del Atrio con el injerto de salida y poco mas. Ahora
+   * son 26 % y 32 %, aproximadamente uno de cada tres cuerpos. Sigue siendo
+   * escaso — con carga para cuatro y 420 ms entre disparos no se puede vivir
+   * de esto — pero deja usarla sin racionarla como una reliquia.
    */
   devotoCarne: 0.4,
-  devotoSello: 0.3,
-  devotoInjerto: 0.16,
+  devotoSello: 0.28,
+  devotoInjerto: 0.26,
   vestalCarne: 0.2,
-  vestalInjerto: 0.22,
+  vestalInjerto: 0.32,
   /** Cuanto dura en el suelo antes de desvanecerse (ms), y cuanto parpadea antes. */
   vidaMs: 11000,
   parpadeoMs: 2400,

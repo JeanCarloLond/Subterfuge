@@ -808,7 +808,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       grupo.add(devoto.sprite);
       this.devotos.push(devoto);
 
-      this.physics.add.overlap(devoto.hitbox, this.cirujano.sprite, () =>
+      this.physics.add.overlap(devoto.hitbox, this.cirujano.zonaDano, () =>
         this.resolverGolpeDeDevoto(devoto),
       );
     }
@@ -955,7 +955,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.obtenerGrupoEnemigos().add(jefe.sprite);
 
     this.ligadurasDeJefe.push(
-      this.physics.add.overlap(jefe.hitbox, this.cirujano.sprite, () =>
+      this.physics.add.overlap(jefe.hitbox, this.cirujano.zonaDano, () =>
         this.resolverGolpeDeJefe(jefe),
       ),
     );
@@ -1079,7 +1079,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       piedra.destroy();
     };
 
-    this.physics.add.overlap(piedra, this.cirujano.sprite, () => {
+    this.physics.add.overlap(piedra, this.cirujano.zonaDano, () => {
       if (resuelta || this.cirujano.estaMuerto) return;
       const resultado = this.cirujano.recibirDano(REFORMADO.escombros.dano, piedra.x);
       if (resultado === 'herido') this.impacto.danoRecibido();
@@ -1361,7 +1361,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Contra el escenario se disuelve: no atraviesa muros.
     this.physics.add.collider(sello.sprite, this.suelos, () => sello.destruir());
 
-    this.physics.add.overlap(sello.sprite, this.cirujano.sprite, () =>
+    this.physics.add.overlap(sello.sprite, this.cirujano.zonaDano, () =>
       this.resolverSelloContraCirujano(sello),
     );
 

@@ -12,6 +12,7 @@ import {
   POCION,
   RELIQUIA,
   VITALIDAD,
+  ZONA_DANO,
 } from '../config/Sacramento';
 import type { Controles } from '../input/Controles';
 import { Fervor } from '../systems/Fervor';
@@ -56,6 +57,11 @@ export class CirujanoSacerdote {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   /** Zona de dano del golpe. La escena la cruza con el grupo de enemigos. */
   readonly hitbox: Phaser.GameObjects.Zone;
+  /**
+   * Por donde se le HIERE. Sigue al sprite y cubre la figura que se ve, no la
+   * caja de 10x22 que choca con la piedra (ver ZONA_DANO).
+   */
+  readonly zonaDano: Phaser.GameObjects.Zone;
   readonly vitalidad: Vitalidad;
   readonly fervor: Fervor;
   /**
@@ -138,7 +144,22 @@ export class CirujanoSacerdote {
     cuerpoHitbox.setAllowGravity(false);
     cuerpoHitbox.enable = false;
 
+    this.zonaDano = escena.add.zone(x, y, ZONA_DANO.ancho, ZONA_DANO.alto);
+    escena.physics.add.existing(this.zonaDano);
+    (this.zonaDano.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
+    this.colocarZonaDano();
+
     this.vitalidad.on('muerte', () => this.morir());
+  }
+
+  /**
+   * Pega la zona de dano al sprite: centrada en x, con el borde de abajo en
+   * los pies. Se recoloca cada fotograma porque el cuerpo se mueve y la zona
+   * no tiene por que seguirle sola.
+   */
+  private colocarZonaDano(): void {
+    this.zonaDano.setPosition(this.sprite.x, this.sprite.y - ZONA_DANO.alto / 2);
+    (this.zonaDano.body as Phaser.Physics.Arcade.Body).updateFromGameObject();
   }
 
   get cuerpo(): Phaser.Physics.Arcade.Body {
@@ -222,6 +243,8 @@ export class CirujanoSacerdote {
   }
 
   actualizar(): void {
+    this.colocarZonaDano();
+
     if (this.estado === 'muerto') {
       this.cuerpo.setAccelerationX(0);
       this.cuerpo.setDragX(MOVIMIENTO.friccionSuelo);
@@ -699,12 +722,18 @@ export class CirujanoSacerdote {
     });
   }
 
-  /** Resurreccion en el ultimo Altar: restaura cuerpo, Fervor y pociones. */
+  /**
+   * Resurreccion en el ultimo Altar: restaura el cuerpo, NO el frasco.
+   *
+   * Antes la muerte rellenaba las Pociones, y eso las volvia infinitas: morir
+   * salia gratis y de hecho compensaba (issue #54). Ahora sales con las que
+   * te quedaban. Si quieres mas, rezas — que es el canal que la Diocesis tiene
+   * para eso y cuesta acercarse al Altar.
+   */
   reaparecerEn(x: number, y: number): void {
     this.estado = 'aire';
     this.vitalidad.restaurar();
     this.fervor.reiniciar();
-    this.cargasPocion = this.cargasPocionMax;
 
     // Deshace el desplome de `morir()` por completo. Sin esto el Cirujano
     // reaparece aplastado, tenido de rojo y medio transparente.
