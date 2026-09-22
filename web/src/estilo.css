@@ -787,7 +787,9 @@ button:disabled {
   stroke-dasharray: 4 3;
 }
 .nodo.cerrado rect {
-  fill: transparent;
+  /* Sin `fill: transparent`: el mapa del Vientre pinta el fondo de la capa en
+     el propio rect, y vaciarlo aquí borraría el degradado de profundidad. Lo
+     que dice "cerrada" es el trazo discontinuo y el texto en cursiva. */
   stroke-dasharray: 2 3;
 }
 .nodo.cerrado text {
@@ -1074,4 +1076,64 @@ body[data-profundidad='5'] .cabecera .marca-nombre {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* -- Mapa del Vientre ------------------------------------------------------
+   Reutiliza el esquema del linaje (.nodo, .arista) porque es el mismo gesto:
+   datos dibujados, no una ilustración. Lo propio de aquí son los ATAJOS —
+   conductos, pozos y grietas— que se dibujan de otra manera porque dicen otra
+   cosa: que el descenso ordenado que publica la Diócesis tiene agujeros. */
+
+.arista.atajo {
+  stroke-dasharray: 5 4;
+  stroke: var(--oro);
+  opacity: 0.55;
+}
+
+.arista.atajo.resaltada {
+  opacity: 1;
+}
+
+.salidas {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.salidas li {
+  border-left: 2px solid var(--borde);
+  padding-left: 0.6rem;
+  font-size: 0.86rem;
+}
+
+.salidas li strong {
+  color: var(--oro);
+  font-weight: 600;
+}
+
+.salidas li span {
+  color: var(--tinta-2);
+}
+
+/* Los pictogramas del mapa: trazo de plumilla, sin relleno. Heredan el color
+   del nodo, así que una sala cerrada tiene también el candado apagado. */
+.nodo .glifo {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+
+.nodo:hover .glifo,
+.nodo.activo .glifo {
+  opacity: 1;
+}
+
+.nodo.cerrado .glifo {
+  stroke: var(--tinta-2);
+  opacity: 0.45;
 }
