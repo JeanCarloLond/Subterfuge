@@ -3,8 +3,16 @@ import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
-import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO, CONTROLES_SISTEMA } from './TextoControles';
+import {
+  CONTROLES_COMBATE,
+  CONTROLES_COMBATE_TACTIL,
+  CONTROLES_MOVIMIENTO,
+  CONTROLES_MOVIMIENTO_TACTIL,
+  CONTROLES_SISTEMA,
+  CONTROLES_SISTEMA_TACTIL,
+} from './TextoControles';
 import { alternarCursor, cursorActivo, cursorEncendido } from './Cursor';
+import { tactil } from '../input/Tactil';
 
 /** Datos con los que se lanza: que escena de juego hay que reanudar. */
 interface DatosPausa {
@@ -166,12 +174,23 @@ export class PausaScene extends Phaser.Scene {
     // Los textos PRIMERO y el panel a la medida de lo que hay dentro. Con el
     // alto y las posiciones a mano, anadir una linea a la ayuda desbordaba el
     // panel sin que nada se quejara.
-    const movimiento = this.add.text(12, arriba, CONTROLES_MOVIMIENTO.join('\n'), estilo);
-    const combate = this.add.text(236, arriba, CONTROLES_COMBATE.join('\n'), estilo);
+    const conDedos = tactil.esAparatoTactil;
+    const movimiento = this.add.text(
+      12,
+      arriba,
+      (conDedos ? CONTROLES_MOVIMIENTO_TACTIL : CONTROLES_MOVIMIENTO).join('\n'),
+      estilo,
+    );
+    const combate = this.add.text(
+      236,
+      arriba,
+      (conDedos ? CONTROLES_COMBATE_TACTIL : CONTROLES_COMBATE).join('\n'),
+      estilo,
+    );
     const sistema = this.add.text(
       12,
       arriba + movimiento.height + 10,
-      CONTROLES_SISTEMA.join('\n'),
+      (conDedos ? CONTROLES_SISTEMA_TACTIL : CONTROLES_SISTEMA).join('\n'),
       estiloTenue,
     );
 

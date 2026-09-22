@@ -12,6 +12,39 @@
 
 export const ANCHO_MAXIMO = 34;
 
+/**
+ * La misma ayuda, contada para dedos.
+ *
+ * Un panel que dice "SALTAR ESPACIO" en un telefono es peor que no tener
+ * ayuda: nombra teclas que ahi no existen (issue #65). Los glifos son los que
+ * llevan escritos los botones en pantalla, para que se encuentren mirando.
+ */
+export const CONTROLES_MOVIMIENTO_TACTIL: readonly string[] = [
+  'MOVER     < >  cruceta izquierda',
+  'SALTAR    A',
+  '          dos veces: doble salto',
+  'DASH      >>  (esquiva)',
+  'TREPAR    ^  colgado de un borde',
+  'SOLTARSE  v  colgado de un borde',
+];
+
+export const CONTROLES_COMBATE_TACTIL: readonly string[] = [
+  'GOLPEAR   X',
+  '          +^ arriba   +v abajo',
+  '          abajo y acertar: rebotas',
+  'CARGADO   mantener X  (30 Fervor)',
+  'PARRY     P',
+  'INJERTAR  F  lanzar un injerto',
+  'POCION    Q  (+3 vida)',
+  'REZAR     E  junto a un Altar',
+  'CODICE    L  leer lo recogido',
+];
+
+export const CONTROLES_SISTEMA_TACTIL: readonly string[] = [
+  '||        pausa',
+  'gira el aparato: es horizontal',
+];
+
 export const CONTROLES_MOVIMIENTO: readonly string[] = [
   'MOVER     A D  o flechas',
   'SALTAR    ESPACIO',
@@ -40,7 +73,14 @@ export const CONTROLES_SISTEMA: readonly string[] = [
 ];
 
 // Si alguien alarga una linea, que falle aqui y no en la pantalla del jugador.
-for (const linea of [...CONTROLES_MOVIMIENTO, ...CONTROLES_COMBATE, ...CONTROLES_SISTEMA]) {
+for (const linea of [
+  ...CONTROLES_MOVIMIENTO,
+  ...CONTROLES_COMBATE,
+  ...CONTROLES_SISTEMA,
+  ...CONTROLES_MOVIMIENTO_TACTIL,
+  ...CONTROLES_COMBATE_TACTIL,
+  ...CONTROLES_SISTEMA_TACTIL,
+]) {
   if (linea.length > ANCHO_MAXIMO) {
     throw new Error(
       `Linea de ayuda demasiado larga (${linea.length} > ${ANCHO_MAXIMO}): "${linea}"`,

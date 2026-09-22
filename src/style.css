@@ -20,4 +20,18 @@ body {
 #juego canvas {
   image-rendering: pixelated;
   display: block;
+  /*
+    Sin esto, arrastrar el pulgar por la cruceta hace que el navegador crea que
+    quieres desplazar la pagina: el juego se queda sordo a mitad de un salto y
+    la pantalla rebota. Tambien quita el destello azul del toque en Android y
+    el menu de "copiar" al mantener pulsado.
+  */
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  /* El rebote elastico al llegar al borde mueve el lienzo mientras se juega. */
+  overscroll-behavior: none;
 }

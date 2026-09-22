@@ -12,6 +12,7 @@ import { HudScene } from './ui/HudScene';
 import { CodiceScene } from './ui/CodiceScene';
 import { DialogoScene } from './ui/DialogoScene';
 import { PausaScene } from './ui/PausaScene';
+import { TactilScene } from './ui/TactilScene';
 
 /**
  * Subterfuge - teaser jugable de "La Diocesis de la Carne".
@@ -31,6 +32,11 @@ const configuracion: Phaser.Types.Core.GameConfig = {
   backgroundColor: '#141014',
   pixelArt: true,
   roundPixels: true,
+  input: {
+    // Varios dedos a la vez. Con un solo puntero no se puede correr y saltar
+    // al mismo tiempo, que es el minimo para jugar esto en un movil (#65).
+    activePointers: 4,
+  },
   scale: {
     // FIT ya escala el lienzo de 480x320 para llenar la ventana. Combinarlo con
     // `zoom` hacia que se pisaran: la vista quedaba recortada, el telon de fondo
@@ -57,6 +63,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     CodiceScene,
     PausaScene,
     DialogoScene,
+    TactilScene,
   ],
 };
 
