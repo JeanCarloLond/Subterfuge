@@ -6,6 +6,7 @@ import { VIENTRE } from '../lore/Vientre';
 import { CRONOLOGIA } from '../lore/Cronologia';
 import { JERARQUIA } from '../lore/Jerarquia';
 import { LINAJE } from '../lore/Linaje';
+import { ZONAS_MAPA, croquisDe } from '../lore/Mapa';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -94,12 +95,21 @@ interface EntradaPagina {
  * (Jerarquia), de quien viene cada uno (Linaje) y en que orden ocurrio todo
  * (Cronologia). Cada una contesta una pregunta que deja abierta la anterior.
  */
-const SECCIONES = ['codice', 'registro', 'vientre', 'jerarquia', 'linaje', 'cronologia'] as const;
+const SECCIONES = [
+  'codice',
+  'registro',
+  'mapa',
+  'vientre',
+  'jerarquia',
+  'linaje',
+  'cronologia',
+] as const;
 type Seccion = (typeof SECCIONES)[number];
 
 const ROTULOS: Readonly<Record<Seccion, string>> = {
   codice: 'CÓDICE',
   registro: 'REGISTRO',
+  mapa: 'MAPA',
   vientre: 'EL VIENTRE',
   jerarquia: 'JERARQUÍA',
   linaje: 'LINAJE',
@@ -109,6 +119,7 @@ const ROTULOS: Readonly<Record<Seccion, string>> = {
 const TITULOS: Readonly<Record<Seccion, string>> = {
   codice: 'EL CÓDICE DE LA CARNE',
   registro: 'REGISTRO DE LA DIÓCESIS',
+  mapa: 'POR DÓNDE HE PASADO',
   vientre: 'CORTE DEL VIENTRE',
   jerarquia: 'ORDEN DE LOS FIELES',
   linaje: 'DE QUIÉN VIENE CADA UNO',
@@ -128,6 +139,7 @@ export class CodiceScene extends Phaser.Scene {
   private fila: Record<Seccion, number> = {
     codice: 0,
     registro: 0,
+    mapa: 0,
     vientre: 0,
     jerarquia: 0,
     linaje: 0,
@@ -274,6 +286,7 @@ export class CodiceScene extends Phaser.Scene {
         ...this.indiceTextos,
       ]),
       registro: this.crearPaginaRegistro(folioX, folioY, folioAncho, folioAlto),
+      mapa: this.crearPaginaMapa(folioX, folioY, folioAncho, folioAlto),
       vientre: this.crearPaginaVientre(folioX, folioY, folioAncho, folioAlto),
       jerarquia: this.crearPaginaJerarquia(folioX, folioY, folioAncho, folioAlto),
       linaje: this.crearPaginaLinaje(folioX, folioY, folioAncho, folioAlto),
@@ -782,6 +795,31 @@ export class CodiceScene extends Phaser.Scene {
       pie: capa.escena ? 'pisada' : 'no se llega en el teaser',
       abierta: () => (capa.escena ? progreso.estaPisada(capa.escena) : false),
     }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /**
+   * El croquis de lo recorrido, una zona por entrada.
+   *
+   * Se calcula AL ABRIR EL LIBRO, no al arrancar la partida: las paginas se
+   * construyen cada vez que se abre, asi que el plano esta al dia sin tener
+   * que refrescar nada a mano.
+   */
+  private crearPaginaMapa(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = ZONAS_MAPA.map((zona) => {
+      const croquis = croquisDe(zona.escena);
+      return {
+        nombre: zona.nombre,
+        descripcion: croquis.lineas,
+        pie: croquis.lineas.length ? `${croquis.recorrido} % recorrido` : 'sin pisar',
+        abierta: () => progreso.estaPisada(zona.escena),
+      };
+    });
     return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
   }
 

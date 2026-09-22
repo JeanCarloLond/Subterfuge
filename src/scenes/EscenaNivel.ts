@@ -179,6 +179,15 @@ export interface DefinicionNivel {
 /** Lado del tile. */
 const T = 16;
 
+/**
+ * Lado de la casilla del mapa, en pixeles del mundo.
+ *
+ * 64 es media pantalla de alto: lo bastante fino para que se distinga un
+ * corredor de una sala, y lo bastante grueso para que pasar por un sitio lo
+ * descubra entero y no deje agujeros donde el Cirujano no llego a pisar.
+ */
+const CASILLA_MAPA = 64;
+
 /** Desgaste por defecto: algo de ruina, nada de vegetacion. */
 const DESGASTE_POR_DEFECTO = { grietas: 0.06, musgo: 0 } as const;
 
@@ -279,6 +288,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.definicion = this.definirNivel();
     const { mundo, colorFondo, inicio } = this.definicion;
 
+    progreso.registrarMundo(this.scene.key, mundo.ancho, mundo.alto);
     this.physics.world.setBounds(0, 0, mundo.ancho, mundo.alto);
     this.cameras.main.setBounds(0, 0, mundo.ancho, mundo.alto);
     this.cameras.main.setBackgroundColor(colorFondo);
@@ -331,6 +341,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     this.catalogarLoQueSeVe();
+    this.anotarCasillaDelMapa();
 
     this.actualizarJefe();
 
@@ -1506,6 +1517,23 @@ export abstract class EscenaNivel extends Phaser.Scene {
     for (const [, , tipo] of this.definicion.decorado ?? []) {
       if (fichaPorId(tipo)) progreso.descubrir(tipo);
     }
+  }
+
+  /**
+   * Apunta en el mapa el trozo de zona por el que va pasando.
+   *
+   * El mapa del libro se revela andando, asi que basta con marcar la casilla
+   * de debajo del Cirujano cada fotograma: entrar en una la descubre entera.
+   * No se avisa de nada — un cartel cada 64 px seria insoportable.
+   */
+  private anotarCasillaDelMapa(): void {
+    if (this.cirujano.estaMuerto) return;
+
+    progreso.pisarCasilla(
+      this.scene.key,
+      Math.floor(this.cirujano.sprite.x / CASILLA_MAPA),
+      Math.floor(this.cirujano.sprite.y / CASILLA_MAPA),
+    );
   }
 
   /** Aviso discreto la primera vez que algo entra en el Registro. */
