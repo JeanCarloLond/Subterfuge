@@ -7,7 +7,7 @@
     "dev": "npm run exportar-arte && vite",
     "build": "npm run exportar-arte && tsc && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "npm run exportar-arte && tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
