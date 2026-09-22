@@ -40,6 +40,8 @@ export class Reformado implements Enemigo {
 
   private estado: EstadoReformado = 'dormido';
   private maniobra: Maniobra = 'embestida';
+  /** Pixeles recorridos desde el ultimo vaiven del arrastre. */
+  private recorridoArrastre = 0;
   private mirandoDerecha = false;
   private fase = 1;
 
@@ -140,6 +142,43 @@ export class Reformado implements Enemigo {
     });
   }
 
+  /**
+   * El arrastre del jefe.
+   *
+   * No tiene piernas que mover: es una masa de carne con instrumental dentro,
+   * asi que no puede "caminar". Pero deslizarse recto tampoco vale (issue
+   * #57): parecia un mueble empujado. Lo que si tiene es PESO, y eso se lee
+   * con el cuerpo — se bambolea de lado a lado y sube y baja al tirar de si
+   * mismo, como quien se arrastra a pulso.
+   *
+   * La fase va con la DISTANCIA recorrida, no con el reloj: parado no se
+   * bambolea, y cuanto mas rapido embiste, mas seguido se sacude.
+   */
+  private actualizarArrastre(): void {
+    // El salto y la anticipacion ya deforman el sprite con sus propios tweens.
+    // Pisarlos desde aqui cada fotograma los anularia, asi que el arrastre
+    // solo manda cuando el jefe avanza por el suelo.
+    if (this.estado === 'saltando' || this.estado === 'anticipando') {
+      this.recorridoArrastre = 0;
+      return;
+    }
+
+    const avance = Math.abs(this.cuerpo.deltaX());
+    if (avance < 0.2) {
+      this.recorridoArrastre = 0;
+      this.sprite.setAngle(0);
+      return;
+    }
+
+    this.recorridoArrastre += avance;
+    const fase = (this.recorridoArrastre / 26) * Math.PI * 2;
+
+    // Se inclina hacia donde va y rebota al apoyarse. Amplitudes cortas: es
+    // una tonelada de carne, no un muneco de goma.
+    this.sprite.setAngle(Math.sin(fase) * 2.6);
+    this.sprite.setScale(1 + Math.cos(fase) * 0.03, 1 - Math.cos(fase) * 0.045);
+  }
+
   /** El latido del pecho: un pulso de luz cuyo ritmo dice la fase. */
   private ajustarLatido(periodoMs: number): void {
     this.tweenLatido?.remove();
@@ -215,6 +254,8 @@ export class Reformado implements Enemigo {
   actualizar(objetivoX: number, objetivoY: number): void {
     this.seguirPresencia();
     if (this.estado === 'dormido' || this.estado === 'muerto') return;
+
+    this.actualizarArrastre();
 
     const ahora = this.escena.time.now;
 

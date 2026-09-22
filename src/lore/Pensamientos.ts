@@ -23,8 +23,9 @@
  *
  * Invariantes del bible: los Primigenios son ciegos y nunca se ven; fueron mil;
  * lexico de la Diocesis (Altar, sacramento, diezmo, Registro, Reformado) y
- * nunca terminos de videojuego. Sin tildes, como el resto del texto en
- * pantalla.
+ * nunca terminos de videojuego. El texto que SE LEE EN PANTALLA va en español
+ * correcto, con sus tildes y sus enes; lo que no lleva tildes son los
+ * identificadores y los comentarios (issue #58).
  *
  * Todo esto es SALTABLE (ver DialogoScene): la ruta Atrio -> Final se juega
  * entera sin leer una sola linea.
@@ -51,16 +52,16 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
     cuadros: [
       'Manos del Sacramento numero siete. No tengo otro nombre.',
       'Hoy hay una ofrenda de casa. Deuda vieja, se salda en carne.',
-      'No salio sorteada. Vino ella sola y firmo de su puno.',
-      'Cuadra sin que nadie llore. Esos son los buenos dias.',
+      'No salió sorteada. Vino ella sola y firmó de su puño.',
+      'Cuadra sin que nadie llore. Esos son los buenos días.',
     ],
   },
 
   // La burocracia le ensena la primera grieta, y el la anota como una rareza.
   pasillos: {
     cuadros: [
-      'El Registro de hoy trae una linea sin numero.',
-      'Una inscripcion voluntaria. No habia visto ninguna.',
+      'El Registro de hoy trae una línea sin número.',
+      'Una inscripción voluntaria. No había visto ninguna.',
       'Los turnos se cumplen igual. Bajo.',
     ],
   },
@@ -68,8 +69,8 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
   // La camilla vacia: la nina ya va por delante de el. Sin una palabra de mas.
   criptas: {
     cuadros: [
-      'Aqui se espera dormido. La carne serena no se resiste.',
-      'Su camilla esta hecha y vacia. Ya la han subido.',
+      'Aquí se espera dormido. La carne serena no se resiste.',
+      'Su camilla está hecha y vacía. Ya la han subido.',
       'Voy con retraso.',
     ],
   },
@@ -77,7 +78,7 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
   // Su propia sala, ocupada. El Registro ya le habia dicho por quien.
   salas: {
     cuadros: [
-      'Sala 7. La mia.',
+      'Sala 7. La mía.',
       'Manos anteriores: reformadas en acto de servicio.',
       'No las trasladaron. Se dejan donde fueron hechas.',
     ],
@@ -86,7 +87,7 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
   // Tras el jefe. Lo que queda cuando ya no hay nadie delante de ti.
   'manos-anteriores': {
     cuadros: [
-      'Ensenaron a las mias a sostener el bisturi.',
+      'Enseñaron a las mías a sostener el bisturí.',
       'Ahora sostengo yo, y no queda nadie delante.',
     ],
   },
@@ -98,9 +99,9 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
    */
   cierre: {
     cuadros: [
-      'Esta despierta. Nadie entra despierto.',
+      'Está despierta. Nadie entra despierto.',
       'Le pongo la mano encima y el tejido responde. No se aparta.',
-      'Los dioses no miran. Ella si.',
+      'Los dioses no miran. Ella sí.',
       'Levanto el bisturi. Y por primera vez me paro a mirarla.',
     ],
   },

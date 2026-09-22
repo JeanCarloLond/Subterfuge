@@ -28,15 +28,15 @@ export const JERARQUIA: readonly Rango[] = [
     ficha: 'devoto',
     nombre: 'Devoto',
     cuerpo: 'casi entero',
-    descripcion: ['Ha pagado un diezmo y sigue siendo reconocible.', 'Por eso esta abajo.'],
+    descripcion: ['Ha pagado un diezmo y sigue siendo reconocible.', 'Por eso está abajo.'],
   },
   {
     ficha: 'cirujano',
     nombre: 'Manos del Sacramento',
     cuerpo: 'intacto',
     descripcion: [
-      'La excepcion de la regla: no asciende porque no se',
-      'ofrenda. Vale mas entero, cortando.',
+      'La excepción de la regla: no asciende porque no se',
+      'ofrenda. Vale más entero, cortando.',
     ],
   },
   {
@@ -53,7 +53,7 @@ export const JERARQUIA: readonly Rango[] = [
     nombre: 'Reformado',
     cuerpo: 'a medias',
     descripcion: [
-      'Se quedo en mitad del sacramento. La doctrina lo honra',
+      'Se quedó en mitad del sacramento. La doctrina lo honra',
       'y lo guarda abajo, donde no haya que verlo.',
     ],
   },
@@ -62,7 +62,7 @@ export const JERARQUIA: readonly Rango[] = [
     nombre: 'Primigenio',
     cuerpo: 'ninguno',
     descripcion: [
-      'De los Mil no queda cuerpo, solo el organo que gano.',
+      'De los Mil no queda cuerpo, solo el órgano que ganó.',
       'Es la cima: no le queda nada que entregar.',
     ],
   },

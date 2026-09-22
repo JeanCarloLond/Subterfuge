@@ -16,8 +16,9 @@
  * eso ninguna ficha se horroriza de nada.
  *
  * Invariantes del bible: los Primigenios son ciegos y nunca se ven; fueron mil;
- * el estatus se mide por cuanto cuerpo has entregado. Sin tildes, como el resto
- * del texto en pantalla.
+ * el estatus se mide por cuanto cuerpo has entregado. El texto que SE LEE va en
+ * español correcto, con tildes y enes; sin tildes van los identificadores y los
+ * comentarios.
  */
 
 /** En que apartado del Registro cae cada ficha. */
@@ -48,7 +49,7 @@ export const REGISTRO: readonly FichaRegistro[] = [
       'Fiel de la base. Ha pagado su diezmo y conserva casi',
       'todo su cuerpo, que es lo que lo mantiene abajo.',
       'Lo que le falta se lo repuso el Sacramento con lo que',
-      'habia a mano. No ataca por maldad: cree que estorbas.',
+      'había a mano. No ataca por maldad: cree que estorbas.',
     ],
   },
   {
@@ -61,7 +62,7 @@ export const REGISTRO: readonly FichaRegistro[] = [
       'Clero. Sella lo que se cobra y no se ensucia las manos:',
       'por eso lanza el sello en vez de acercarse.',
       'De cintura para abajo ya no le quedan piernas. En la',
-      'Diocesis eso no es una perdida, es un ascenso.',
+      'Diócesis eso no es una pérdida, es un ascenso.',
     ],
   },
   {
@@ -71,10 +72,10 @@ export const REGISTRO: readonly FichaRegistro[] = [
     textura: 'reformado-placeholder',
     hallazgo: 'visto en las Salas',
     descripcion: [
-      'Elegido que no completo el sacramento. La doctrina dice',
+      'Elegido que no completó el sacramento. La doctrina dice',
       'que se le honra por haber llevado la ofrenda a medias.',
       'Honrarlo consiste en dejarlo donde fue hecho.',
-      'Este llevaba las Manos de la Sala 7 antes que tu.',
+      'Este llevaba las Manos de la Sala 7 antes que tú.',
     ],
   },
 
@@ -84,11 +85,11 @@ export const REGISTRO: readonly FichaRegistro[] = [
     familia: 'oficio',
     nombre: 'Manos del Sacramento',
     textura: 'cirujano-placeholder',
-    hallazgo: 'eres tu',
+    hallazgo: 'eres tú',
     descripcion: [
-      'No tiene nombre: tiene numero. Se hereda de un progenitor',
+      'No tiene nombre: tiene número. Se hereda de un progenitor',
       'y no se deserta, porque la mano entrenada vale demasiado.',
-      'La mascara es de oro y no tiene ojos que mirar: mirar al',
+      'La máscara es de oro y no tiene ojos que mirar: mirar al',
       'ofrendado es preguntar, y el Sacramento no admite eso.',
     ],
   },
@@ -100,9 +101,9 @@ export const REGISTRO: readonly FichaRegistro[] = [
     hallazgo: 'rezado',
     descripcion: [
       'Donde el Cirujano reafirma su fe para poder seguir bajando.',
-      'Repone el cuerpo y el frasco, nunca el Fervor: la devocion',
+      'Repone el cuerpo y el frasco, nunca el Fervor: la devoción',
       'no se guarda, se vuelve a ganar con el cuerpo.',
-      'Guardar la partida es, aqui dentro, un acto liturgico.',
+      'Guardar la partida es, aquí dentro, un acto litúrgico.',
     ],
   },
   {
@@ -112,10 +113,10 @@ export const REGISTRO: readonly FichaRegistro[] = [
     textura: 'sello-placeholder',
     hallazgo: 'devuelto con el parry',
     descripcion: [
-      'Lacre del Registro. Marca lo cobrado y a quien se le cobro.',
-      'Parado en el aire no se rompe: cambia de dueno.',
-      'Devolverselo a un Vestal no es una treta del combate.',
-      'Es la unica forma que tienes de firmar tu tambien.',
+      'Lacre del Registro. Marca lo cobrado y a quién se le cobró.',
+      'Parado en el aire no se rompe: cambia de dueño.',
+      'Devolvérselo a un Vestal no es una treta del combate.',
+      'Es la única forma que tienes de firmar tú también.',
     ],
   },
   {
@@ -125,10 +126,10 @@ export const REGISTRO: readonly FichaRegistro[] = [
     textura: 'injertadora-placeholder',
     hallazgo: 'cargada por primera vez',
     descripcion: [
-      'Encajaba las protesis a presion, en pocos instantes, sin',
+      'Encajaba las prótesis a presión, en pocos instantes, sin',
       'que al ofrendado le diera tiempo a moverse. Esa prisa era',
       'una piedad: cuanto menos dura, menos se recuerda.',
-      'Sigue funcionando. Solo ha cambiado hacia donde apunta.',
+      'Sigue funcionando. Solo ha cambiado hacia dónde apunta.',
     ],
   },
   {
@@ -139,9 +140,9 @@ export const REGISTRO: readonly FichaRegistro[] = [
     hallazgo: 'recogido de un cuerpo',
     descripcion: [
       'Lo que el Sacramento le puso a un fiel para reemplazar lo',
-      'que se llevo. Se le saca al cuerpo que lo llevaba y se le',
+      'que se llevó. Se le saca al cuerpo que lo llevaba y se le',
       'mete al siguiente, que es como ha funcionado siempre.',
-      'En la Diocesis el metal no se fabrica: se hereda.',
+      'En la Diócesis el metal no se fabrica: se hereda.',
     ],
   },
   {
@@ -152,9 +153,9 @@ export const REGISTRO: readonly FichaRegistro[] = [
     hallazgo: 'recogida en una ruta secreta',
     descripcion: [
       'Relicario de Carne y Frasco Consagrado: carne ajena',
-      'guardada en oro para que aguante mas quien la lleva.',
-      'La Diocesis no las reparte. Estan donde alguien las',
-      'escondio, que es distinto.',
+      'guardada en oro para que aguante más quien la lleva.',
+      'La Diócesis no las reparte. Están donde alguien las',
+      'escondió, que es distinto.',
     ],
   },
 
@@ -166,8 +167,8 @@ export const REGISTRO: readonly FichaRegistro[] = [
     textura: 'camilla-placeholder',
     hallazgo: 'visto en las Criptas',
     descripcion: [
-      'Mesa de quirofano con correas y siglos de uso encima.',
-      'Es el mueble que mejor explica este sitio: nadie decidio',
+      'Mesa de quirófano con correas y siglos de uso encima.',
+      'Es el mueble que mejor explica este sitio: nadie decidió',
       'nunca si era un altar o una camilla, y sigue sin decidirse.',
     ],
   },
@@ -178,9 +179,9 @@ export const REGISTRO: readonly FichaRegistro[] = [
     textura: 'tanque-placeholder',
     hallazgo: 'visto en las profundidades',
     descripcion: [
-      'Genesis Vestal cultivaba aqui lo que prometio que no moriria.',
-      'Cumplio: dentro sigue habiendo algo que no termina de morirse.',
-      'El fluido corre desde antes de que existiera la Diocesis.',
+      'Genesis Vestal cultivaba aquí lo que prometió que no moriría.',
+      'Cumplió: dentro sigue habiendo algo que no termina de morirse.',
+      'El fluido corre desde antes de que existiera la Diócesis.',
       'Nadie sabe apagarlo, y hace mucho que nadie lo intenta.',
     ],
   },
@@ -192,33 +193,33 @@ export const REGISTRO: readonly FichaRegistro[] = [
     hallazgo: 'vista en los Pasillos',
     descripcion: [
       'Sigue escribiendo lo que mide. Hace generaciones que',
-      'nadie sabe leerlo, asi que se copio a mano lo que parecia',
-      'importante y el resto se volvio escritura sagrada.',
-      'El Codice esta escrito encima de manuales como este.',
+      'nadie sabe leerlo, así que se copió a mano lo que parecía',
+      'importante y el resto se volvió escritura sagrada.',
+      'El Códice está escrito encima de manuales como este.',
     ],
   },
   {
     id: 'holograma',
     familia: 'aparato',
-    nombre: 'Proyeccion medica',
+    nombre: 'Proyección médica',
     textura: 'holograma-placeholder',
     hallazgo: 'vista en los Pasillos',
     descripcion: [
       'Un cuerpo humano completo, girando en el aire para nadie.',
-      'Es el manual de como era la gente antes del sacramento.',
-      'Sigue ahi, ensenandolo, delante de fieles que ya no',
+      'Es el manual de cómo era la gente antes del sacramento.',
+      'Sigue ahí, enseñándolo, delante de fieles que ya no',
       'reconocen esa forma como la suya.',
     ],
   },
   {
     id: 'pila-carne',
     familia: 'aparato',
-    nombre: 'Diezmo del dia',
+    nombre: 'Diezmo del día',
     textura: 'pila-carne-placeholder',
     hallazgo: 'visto en el descenso',
     descripcion: [
       'Pesado, anotado y apilado. Para el Registro esto es',
-      'contabilidad, y por eso esta ahi sin ceremonia ninguna.',
+      'contabilidad, y por eso está ahí sin ceremonia ninguna.',
       'Los dioses no ven lo que se les trae: solo lo tocan.',
       'Por eso el hambre no termina nunca.',
     ],

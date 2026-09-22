@@ -3,7 +3,10 @@ import { RESOLUCION } from '../config/Sacramento';
 import { CODICE, fragmentoPorId } from '../lore/Codice';
 import { FAMILIAS, REGISTRO, type Familia } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
+import { CRONOLOGIA } from '../lore/Cronologia';
 import { JERARQUIA } from '../lore/Jerarquia';
+import { LINAJE } from '../lore/Linaje';
+import { ZONAS_MAPA, croquisDe } from '../lore/Mapa';
 import { progreso } from '../systems/Progreso';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -84,22 +87,43 @@ interface EntradaPagina {
   cabecera?: boolean;
 }
 
-/** Las cuatro secciones del libro, en el orden en que se pasan. */
-const SECCIONES = ['codice', 'registro', 'vientre', 'jerarquia'] as const;
+/**
+ * Las secciones del libro, en el orden en que se pasan.
+ *
+ * El orden no es decorativo: va de lo que el mundo dice de si mismo (el
+ * Codice) a lo que se ve (Registro), donde pasa (Vientre), quien manda
+ * (Jerarquia), de quien viene cada uno (Linaje) y en que orden ocurrio todo
+ * (Cronologia). Cada una contesta una pregunta que deja abierta la anterior.
+ */
+const SECCIONES = [
+  'codice',
+  'registro',
+  'mapa',
+  'vientre',
+  'jerarquia',
+  'linaje',
+  'cronologia',
+] as const;
 type Seccion = (typeof SECCIONES)[number];
 
 const ROTULOS: Readonly<Record<Seccion, string>> = {
-  codice: 'CODICE',
+  codice: 'CÓDICE',
   registro: 'REGISTRO',
+  mapa: 'MAPA',
   vientre: 'EL VIENTRE',
-  jerarquia: 'JERARQUIA',
+  jerarquia: 'JERARQUÍA',
+  linaje: 'LINAJE',
+  cronologia: 'CRONOLOGÍA',
 };
 
 const TITULOS: Readonly<Record<Seccion, string>> = {
-  codice: 'EL CODICE DE LA CARNE',
-  registro: 'REGISTRO DE LA DIOCESIS',
+  codice: 'EL CÓDICE DE LA CARNE',
+  registro: 'REGISTRO DE LA DIÓCESIS',
+  mapa: 'POR DÓNDE HE PASADO',
   vientre: 'CORTE DEL VIENTRE',
   jerarquia: 'ORDEN DE LOS FIELES',
+  linaje: 'DE QUIÉN VIENE CADA UNO',
+  cronologia: 'LO QUE PASÓ, EN ORDEN',
 };
 
 export class CodiceScene extends Phaser.Scene {
@@ -112,7 +136,15 @@ export class CodiceScene extends Phaser.Scene {
   private pestanas: Phaser.GameObjects.Text[] = [];
   private tituloLibro!: Phaser.GameObjects.Text;
   /** Fila elegida dentro de cada seccion, para volver donde lo dejaste. */
-  private fila: Record<Seccion, number> = { codice: 0, registro: 0, vientre: 0, jerarquia: 0 };
+  private fila: Record<Seccion, number> = {
+    codice: 0,
+    registro: 0,
+    mapa: 0,
+    vientre: 0,
+    jerarquia: 0,
+    linaje: 0,
+    cronologia: 0,
+  };
 
   private folioTexto!: Phaser.GameObjects.Text;
   private tituloTexto!: Phaser.GameObjects.Text;
@@ -222,7 +254,7 @@ export class CodiceScene extends Phaser.Scene {
     this.add.text(
       folioX + 14,
       folioY + folioAlto - 16,
-      'A D  seccion     W S  pasar hoja     L  o  ESC: cerrar',
+      'A D  sección     W S  pasar hoja     L  o  ESC: cerrar',
       { fontFamily: 'monospace', fontSize: '7px', color: COLOR.tenue },
     );
 
@@ -254,8 +286,11 @@ export class CodiceScene extends Phaser.Scene {
         ...this.indiceTextos,
       ]),
       registro: this.crearPaginaRegistro(folioX, folioY, folioAncho, folioAlto),
+      mapa: this.crearPaginaMapa(folioX, folioY, folioAncho, folioAlto),
       vientre: this.crearPaginaVientre(folioX, folioY, folioAncho, folioAlto),
       jerarquia: this.crearPaginaJerarquia(folioX, folioY, folioAncho, folioAlto),
+      linaje: this.crearPaginaLinaje(folioX, folioY, folioAncho, folioAlto),
+      cronologia: this.crearPaginaCronologia(folioX, folioY, folioAncho, folioAlto),
     };
 
     // La primera fila de cada seccion tiene que ser una ficha de verdad: las
@@ -477,7 +512,7 @@ export class CodiceScene extends Phaser.Scene {
     this.limpiarLectura();
 
     if (this.ids.length === 0) {
-      this.versiculoTexto.setText('Aun no has recogido ningun fragmento.');
+      this.versiculoTexto.setText('Aún no has recogido ningún fragmento.');
       return;
     }
 
@@ -759,6 +794,66 @@ export class CodiceScene extends Phaser.Scene {
       descripcion: capa.descripcion,
       pie: capa.escena ? 'pisada' : 'no se llega en el teaser',
       abierta: () => (capa.escena ? progreso.estaPisada(capa.escena) : false),
+    }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /**
+   * El croquis de lo recorrido, una zona por entrada.
+   *
+   * Se calcula AL ABRIR EL LIBRO, no al arrancar la partida: las paginas se
+   * construyen cada vez que se abre, asi que el plano esta al dia sin tener
+   * que refrescar nada a mano.
+   */
+  private crearPaginaMapa(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = ZONAS_MAPA.map((zona) => {
+      const croquis = croquisDe(zona.escena);
+      return {
+        nombre: zona.nombre,
+        descripcion: croquis.lineas,
+        pie: croquis.lineas.length ? `${croquis.recorrido} % recorrido` : 'sin pisar',
+        abierta: () => progreso.estaPisada(zona.escena),
+      };
+    });
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /**
+   * La genealogia: de quien sale cada uno. Se lee de arriba abajo como un
+   * arbol, y por eso el pie de cada entrada dice de donde viene.
+   */
+  private crearPaginaLinaje(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = LINAJE.map((rama) => ({
+      nombre: rama.nombre,
+      descripcion: rama.descripcion,
+      pie: rama.viene,
+      abierta: rama.abierto,
+    }));
+    return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
+  }
+
+  /** La linea de tiempo. El pie lleva el "cuando", que aqui es el indice. */
+  private crearPaginaCronologia(
+    fx: number,
+    fy: number,
+    fa: number,
+    fh: number,
+  ): Phaser.GameObjects.Container {
+    const entradas: EntradaPagina[] = CRONOLOGIA.map((hito) => ({
+      nombre: hito.titulo,
+      descripcion: hito.descripcion,
+      pie: hito.cuando,
+      abierta: hito.abierto,
     }));
     return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
   }

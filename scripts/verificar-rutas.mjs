@@ -153,9 +153,28 @@ const EN_MURO = new Set(['reja', 'ventana', 'durmiente', 'radiografia']);
  */
 const COLGANTES = new Set(['exvoto', 'cadena', 'luz-hospital', 'goteo']);
 
+/**
+ * Extrae el array `nombre: [...]` contando corchetes.
+ *
+ * Antes se buscaba el cierre por sangría (`\n      ],`) y eso se rompe en
+ * cuanto Prettier colapsa un array corto a una línea: el bloque seguía
+ * comiéndose el array siguiente y se verificaban tuplas que no eran. Contar
+ * corchetes no depende del formato.
+ */
 function leerTuplas(src, nombre, patron) {
-  const bloque = src.match(new RegExp(`${nombre}: \\[([\\s\\S]*?)\\n {6}\\],`));
-  return bloque ? [...bloque[1].matchAll(patron)] : [];
+  const inicio = src.indexOf(`${nombre}: [`);
+  if (inicio < 0) return [];
+
+  let i = src.indexOf('[', inicio);
+  let nivel = 0;
+  for (let j = i; j < src.length; j += 1) {
+    if (src[j] === '[') nivel += 1;
+    else if (src[j] === ']') {
+      nivel -= 1;
+      if (nivel === 0) return [...src.slice(i + 1, j).matchAll(patron)];
+    }
+  }
+  return [];
 }
 
 function verificarDecorado(nombre, archivo) {
@@ -194,7 +213,7 @@ function verificarDecorado(nombre, archivo) {
 
   if (sueltas.length === 0) {
     console.log(`${nombre}: OK — las ${decorado.length} piezas de decorado se apoyan en algo`);
-    return true;
+    return verificarInscripciones(nombre, src, plataformas);
   }
 
   console.log(`${nombre}: FALLO — decorado flotando en el aire`);
@@ -204,6 +223,81 @@ function verificarDecorado(nombre, archivo) {
       : 'no hay suelo ni muro ahí';
     console.log(`  "${d.tipo}" en x=${d.x} y=${d.y}: ${queFalta}`);
   }
+  verificarInscripciones(nombre, src, plataformas);
+  return false;
+}
+
+/**
+ * Las placas del Registro también tienen que estar al alcance.
+ *
+ * No entraban en la comprobación del decorado y se coló una flotando, que el
+ * jugador solo podía leer saltando a ciegas (issue #53). Una placa se dibuja
+ * con el origen abajo, así que su `y` es la línea donde se apoya: tiene que
+ * coincidir con la superficie de una plataforma, igual que el decorado de
+ * suelo. Y no basta con que exista el suelo: hay que poder PONERSE delante,
+ * así que se comprueba también que quepa el cuerpo del Cirujano (22 px) sin
+ * que otra plataforma lo aplaste justo encima.
+ */
+function verificarInscripciones(nombre, src, plataformas) {
+  const placas = leerTuplas(src, 'inscripciones', /\[\s*(-?\d+),\s*(-?\d+),\s*'/g).map((m) => ({
+    x: Number(m[1]),
+    y: Number(m[2]),
+  }));
+
+  if (placas.length === 0) return true;
+
+  const ALTO_CIRUJANO = 22;
+
+  const malas = placas.filter((c) => {
+    const enSuelo = plataformas.some((p) => c.y === p.y && c.x >= p.x && c.x < p.x + p.ancho);
+    if (!enSuelo) return true;
+
+    // ¿Hay techo tan bajo que no se puede estar de pie delante de ella?
+    return plataformas.some(
+      (p) =>
+        c.x >= p.x && c.x < p.x + p.ancho && p.y + TILE > c.y - ALTO_CIRUJANO && p.y + TILE <= c.y,
+    );
+  });
+
+  if (malas.length === 0) {
+    console.log(`${nombre}: OK — las ${placas.length} placas se pueden leer de pie`);
+    return verificarFieles(nombre, src, plataformas);
+  }
+
+  console.log(`${nombre}: FALLO — placas inalcanzables`);
+  for (const c of malas) {
+    console.log(`  placa en x=${c.x} y=${c.y}: no se apoya en ninguna plataforma o no cabe leerla`);
+  }
+  verificarFieles(nombre, src, plataformas);
+  return false;
+}
+
+/**
+ * Los fieles con los que se habla tienen que estar de pie en algún sitio.
+ *
+ * Se dibujan con el origen abajo y sin física: si la `y` no coincide con la
+ * superficie de una plataforma, el personaje flota y nadie se da cuenta hasta
+ * verlo en pantalla. Misma comprobación que las placas y por el mismo motivo.
+ */
+function verificarFieles(nombre, src, plataformas) {
+  const fieles = leerTuplas(src, 'fieles', /\[\s*(-?\d+),\s*(-?\d+),\s*'/g).map((m) => ({
+    x: Number(m[1]),
+    y: Number(m[2]),
+  }));
+
+  if (fieles.length === 0) return true;
+
+  const sueltos = fieles.filter(
+    (f) => !plataformas.some((p) => f.y === p.y && f.x >= p.x && f.x < p.x + p.ancho),
+  );
+
+  if (sueltos.length === 0) {
+    console.log(`${nombre}: OK — ${fieles.length} fiel(es) de pie en el suelo`);
+    return true;
+  }
+
+  console.log(`${nombre}: FALLO — fieles flotando`);
+  for (const f of sueltos) console.log(`  fiel en x=${f.x} y=${f.y}: no hay plataforma ahí`);
   return false;
 }
 

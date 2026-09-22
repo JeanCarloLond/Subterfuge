@@ -8,6 +8,7 @@ import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
+import { Fiel } from '../entities/Fiel';
 import { Injerto } from '../entities/Injerto';
 import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
@@ -19,6 +20,7 @@ import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
+import { VOCES, type ClaveVoz } from '../lore/Voces';
 import { EVENTOS_HUD } from '../ui/HudScene';
 import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO } from '../ui/TextoControles';
 
@@ -115,6 +117,8 @@ export interface DefinicionNivel {
   decorado?: readonly Decorado[];
   /** Placas del Registro: lore de una linea, sin abrir nada. */
   inscripciones?: readonly Inscripcion[];
+  /** Fieles con los que se puede hablar. No atacan ni se les puede golpear. */
+  fieles?: ReadonlyArray<readonly [number, number, ClaveVoz]>;
   /**
    * Atrezo LEJANO: detras de todo, mas oscuro y con parallax. Da profundidad;
    * el jugador nunca lo toca. Las posiciones son aproximadas: al moverse la
@@ -179,6 +183,18 @@ export interface DefinicionNivel {
 
 /** Lado del tile. */
 const T = 16;
+
+/**
+ * Lado de la casilla del mapa, en pixeles del mundo.
+ *
+ * 64 es media pantalla de alto: lo bastante fino para que se distinga un
+ * corredor de una sala, y lo bastante grueso para que pasar por un sitio lo
+ * descubra entero y no deje agujeros donde el Cirujano no llego a pisar.
+ */
+const CASILLA_MAPA = 64;
+
+/** Lo que entrega el Reformado de las Criptas, una sola vez. */
+const INJERTOS_DEL_REFORMADO = 2;
 
 /** Desgaste por defecto: algo de ruina, nada de vegetacion. */
 const DESGASTE_POR_DEFECTO = { grietas: 0.06, musgo: 0 } as const;
@@ -247,6 +263,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private fragmentos: FragmentoCodice[] = [];
   private reliquias: Reliquia[] = [];
   private ofrendas: Ofrenda[] = [];
+  private fieles: Fiel[] = [];
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
@@ -280,6 +297,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.definicion = this.definirNivel();
     const { mundo, colorFondo, inicio } = this.definicion;
 
+    progreso.registrarMundo(this.scene.key, mundo.ancho, mundo.alto);
     this.physics.world.setBounds(0, 0, mundo.ancho, mundo.alto);
     this.cameras.main.setBounds(0, 0, mundo.ancho, mundo.alto);
     this.cameras.main.setBackgroundColor(colorFondo);
@@ -332,6 +350,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     this.catalogarLoQueSeVe();
+    this.anotarCasillaDelMapa();
 
     this.actualizarJefe();
 
@@ -342,6 +361,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.actualizarParallax();
     this.actualizarAltares();
+    this.actualizarFieles();
     this.actualizarUmbral();
     this.actualizarPlacas();
     this.comprobarCaidaAlVacio();
@@ -381,6 +401,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.fragmentos = [];
     this.reliquias = [];
     this.ofrendas = [];
+    this.fieles = [];
     this.placas = [];
     this.grupoEnemigos = undefined;
     this.tilesSolidos = new Set();
@@ -740,7 +761,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       // Vida baja y frascos sin usar: recordar que existen, una vez por zona.
       if (!this.pistaPocionDada && puntos > 0 && puntos <= 2 && this.cirujano.pociones > 0) {
         this.pistaPocionDada = true;
-        this.game.events.emit(EVENTOS_HUD.aviso, 'Q  beber Pocion de Carne  (+3 vida)');
+        this.game.events.emit(EVENTOS_HUD.aviso, 'Q  beber Poción de Carne  (+3 vida)');
       }
     });
     this.cirujano.fervor.on('cambio', (puntos: number) => {
@@ -760,7 +781,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
     this.cirujano.eventos.on('caida', (dano: number) => {
       this.impacto.danoPorCaida(dano);
-      this.game.events.emit(EVENTOS_HUD.aviso, `caida: -${dano}`);
+      this.game.events.emit(EVENTOS_HUD.aviso, `caída: -${dano}`);
     });
     this.cirujano.vitalidad.on('muerte', () => this.alMorir());
 
@@ -809,7 +830,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       grupo.add(devoto.sprite);
       this.devotos.push(devoto);
 
-      this.physics.add.overlap(devoto.hitbox, this.cirujano.sprite, () =>
+      this.physics.add.overlap(devoto.hitbox, this.cirujano.zonaDano, () =>
         this.resolverGolpeDeDevoto(devoto),
       );
     }
@@ -862,6 +883,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.physics.add.overlap(this.cirujano.sprite, reliquia.sprite, () =>
         this.resolverRecogidaDeReliquia(reliquia),
       );
+    }
+
+    for (const [x, y, clave] of this.definicion.fieles ?? []) {
+      this.fieles.push(new Fiel(this, x, y, clave));
     }
 
     for (const [x, y, texto] of this.definicion.inscripciones ?? []) {
@@ -956,7 +981,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.obtenerGrupoEnemigos().add(jefe.sprite);
 
     this.ligadurasDeJefe.push(
-      this.physics.add.overlap(jefe.hitbox, this.cirujano.sprite, () =>
+      this.physics.add.overlap(jefe.hitbox, this.cirujano.zonaDano, () =>
         this.resolverGolpeDeJefe(jefe),
       ),
     );
@@ -1081,7 +1106,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       piedra.destroy();
     };
 
-    this.physics.add.overlap(piedra, this.cirujano.sprite, () => {
+    this.physics.add.overlap(piedra, this.cirujano.zonaDano, () => {
       if (resuelta || this.cirujano.estaMuerto) return;
       const resultado = this.cirujano.recibirDano(REFORMADO.escombros.dano, piedra.x);
       if (resultado === 'herido') this.impacto.danoRecibido();
@@ -1116,6 +1141,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverGolpeDeJefe(jefe: Reformado): void {
     if (jefe.estaMuerto || this.cirujano.estaMuerto) return;
+    if (this.hayParedEntre(this.centroDe(jefe.sprite), this.centroDe(this.cirujano.sprite))) {
+      return;
+    }
     if (!jefe.consumirGolpe()) return;
 
     const resultado = this.cirujano.recibirDano(REFORMADO.dano, jefe.sprite.x);
@@ -1166,10 +1194,72 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   // -- Combate -------------------------------------------------------------
 
+  /**
+   * ¿Hay piedra entre estos dos puntos?
+   *
+   * La hitbox del golpe es un rectangulo puesto delante del Cirujano, y a
+   * Arcade le da igual lo que haya en medio: bastaba con pegarse a un muro
+   * para matar a lo que hubiera al otro lado sin exponerse (issue #56).
+   *
+   * Se cruza el segmento contra los CUERPOS de la silleria, uno a uno. La
+   * primera version preguntaba por casilla a `tilesSolidos`, dando por hecho
+   * que todo caia en la rejilla de 16 — y no cae: hay plataformas con la y en
+   * 360, que no es multiplo de 16. La cuenta no cuadraba con ninguna clave
+   * guardada, asi que la comprobacion decia "no hay pared" SIEMPRE y el
+   * agujero seguia abierto sin que nada fallara a la vista.
+   *
+   * Recorrer los cuerpos es exacto pase lo que pase con las coordenadas, y el
+   * filtro por caja envolvente deja el trabajo real en unas pocas piezas. Solo
+   * corre en el fotograma en que un golpe toca a alguien.
+   */
+  private hayParedEntre(
+    a: Phaser.Types.Math.Vector2Like,
+    b: Phaser.Types.Math.Vector2Like,
+  ): boolean {
+    const ax = a.x ?? 0;
+    const ay = a.y ?? 0;
+    const bx = b.x ?? 0;
+    const by = b.y ?? 0;
+    if (Math.hypot(bx - ax, by - ay) < 1) return false;
+
+    const linea = new Phaser.Geom.Line(ax, ay, bx, by);
+    const minX = Math.min(ax, bx);
+    const maxX = Math.max(ax, bx);
+    const minY = Math.min(ay, by);
+    const maxY = Math.max(ay, by);
+    const caja = new Phaser.Geom.Rectangle();
+
+    for (const hijo of this.suelos.getChildren()) {
+      const cuerpo = (hijo as Phaser.Physics.Arcade.Sprite).body;
+      if (!cuerpo) continue;
+      if (cuerpo.right < minX || cuerpo.left > maxX) continue;
+      if (cuerpo.bottom < minY || cuerpo.top > maxY) continue;
+
+      // Un pixel por dentro de cada lado: los pies del Cirujano rozan el tile
+      // que pisa, y sin este margen ese roce contaria como pared y ningun
+      // golpe a ras de suelo entraria nunca.
+      caja.setTo(cuerpo.left + 1, cuerpo.top + 1, cuerpo.width - 2, cuerpo.height - 2);
+      if (Phaser.Geom.Intersects.LineToRectangle(linea, caja)) return true;
+    }
+
+    return false;
+  }
+
+  /** Centro del cuerpo fisico, que es de donde y adonde se mide un golpe. */
+  private centroDe(sprite: Phaser.GameObjects.Sprite): Phaser.Math.Vector2 {
+    return (sprite.body as Phaser.Physics.Arcade.Body).center;
+  }
+
   private resolverGolpeDelCirujano(spriteEnemigo: Phaser.GameObjects.GameObject): void {
     // Da igual si es Devoto, Vestal o el Reformado: todos son Enemigo.
     const enemigo = enemigoDe(spriteEnemigo);
     if (!enemigo || enemigo.estaMuerto) return;
+
+    // Antes de `registrarGolpe`, que marca al enemigo como ya tocado en este
+    // swing: si el muro para el golpe, el swing no se gasta contra el.
+    if (this.hayParedEntre(this.centroDe(this.cirujano.sprite), this.centroDe(enemigo.sprite))) {
+      return;
+    }
 
     const dano = this.cirujano.registrarGolpe(enemigo);
     if (dano <= 0) return; // ya golpeado en este swing
@@ -1227,7 +1317,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (ofrenda.tipo === 'injerto') {
       this.anotar('injerto');
       if (!this.cirujano.cargarInjerto(OFRENDA.cargaInjerto)) {
-        this.game.events.emit(EVENTOS_HUD.aviso, 'la Injertadora esta llena');
+        this.game.events.emit(EVENTOS_HUD.aviso, 'la Injertadora está llena');
         return;
       }
 
@@ -1298,7 +1388,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Contra el escenario se disuelve: no atraviesa muros.
     this.physics.add.collider(sello.sprite, this.suelos, () => sello.destruir());
 
-    this.physics.add.overlap(sello.sprite, this.cirujano.sprite, () =>
+    this.physics.add.overlap(sello.sprite, this.cirujano.zonaDano, () =>
       this.resolverSelloContraCirujano(sello),
     );
 
@@ -1349,6 +1439,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   private resolverGolpeDeDevoto(devoto: Devoto): void {
     if (devoto.estaMuerto || this.cirujano.estaMuerto) return;
+    if (this.hayParedEntre(this.centroDe(devoto.sprite), this.centroDe(this.cirujano.sprite))) {
+      return;
+    }
     if (!devoto.consumirGolpe()) return;
 
     const resultado = this.cirujano.recibirDano(DEVOTO.dano, devoto.sprite.x);
@@ -1373,7 +1466,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     sonido.codice();
     this.game.events.emit(EVENTOS_HUD.codice, progreso.fragmentosRecogidos);
     // Aviso discreto: el lore no interrumpe la partida. Se lee cuando se quiera.
-    this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Codice  ·  L para leer');
+    this.game.events.emit(EVENTOS_HUD.aviso, 'fragmento del Códice  ·  L para leer');
   }
 
   private resolverRecogidaDeReliquia(reliquia: Reliquia): void {
@@ -1440,6 +1533,23 @@ export abstract class EscenaNivel extends Phaser.Scene {
     for (const [, , tipo] of this.definicion.decorado ?? []) {
       if (fichaPorId(tipo)) progreso.descubrir(tipo);
     }
+  }
+
+  /**
+   * Apunta en el mapa el trozo de zona por el que va pasando.
+   *
+   * El mapa del libro se revela andando, asi que basta con marcar la casilla
+   * de debajo del Cirujano cada fotograma: entrar en una la descubre entera.
+   * No se avisa de nada — un cartel cada 64 px seria insoportable.
+   */
+  private anotarCasillaDelMapa(): void {
+    if (this.cirujano.estaMuerto) return;
+
+    progreso.pisarCasilla(
+      this.scene.key,
+      Math.floor(this.cirujano.sprite.x / CASILLA_MAPA),
+      Math.floor(this.cirujano.sprite.y / CASILLA_MAPA),
+    );
   }
 
   /** Aviso discreto la primera vez que algo entra en el Registro. */
@@ -1536,6 +1646,54 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.rezarEn(altar);
       }
     }
+  }
+
+  /**
+   * Los fieles: se acercan, se encienden y hablan con E.
+   *
+   * Comparte la tecla con el Altar y con las placas, y por eso hay que cuidar
+   * el orden: si dos cosas se solapan, la E las dispararia las dos. Se sale en
+   * cuanto uno responde.
+   */
+  private actualizarFieles(): void {
+    if (this.cirujano.estaMuerto || this.descendiendo) return;
+
+    for (const fiel of this.fieles) {
+      const cerca = fiel.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
+      if (!cerca || !this.controles.interactuarPresionado) continue;
+
+      this.hablarCon(fiel);
+      return;
+    }
+  }
+
+  /**
+   * Abre la conversacion y aplica lo que ese fiel haga, si hace algo.
+   *
+   * El Reformado de las Criptas entrega metal, y solo la primera vez: sin ese
+   * limite bastaria con hablarle en bucle para no quedarse nunca sin munición,
+   * y la Injertadora dejaria de ser un recurso escaso.
+   */
+  private hablarCon(fiel: Fiel): void {
+    if (this.scene.isActive('Codice') || this.scene.isActive('Pausa')) return;
+    if (this.scene.isActive('Dialogo')) return;
+
+    const primeraVez = !fiel.yaHablado;
+    fiel.marcarHablado();
+
+    if (primeraVez && fiel.clave === 'reformado-viejo') {
+      if (this.cirujano.cargarInjerto(INJERTOS_DEL_REFORMADO)) {
+        this.anotar('injerto');
+        this.game.events.emit(
+          EVENTOS_HUD.aviso,
+          `el Reformado te da ${INJERTOS_DEL_REFORMADO} injertos`,
+        );
+      }
+    }
+
+    sonido.interfazAbrir();
+    musica.atenuar(true);
+    this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, dialogo: VOCES[fiel.clave] });
   }
 
   /** Las placas del Registro se leen de pasada, con E, sin pausar nada. */
@@ -1672,7 +1830,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.game.events.emit(EVENTOS_HUD.caida, false);
     this.cameras.main.fadeIn(320, 11, 9, 11);
     this.reapareciendo = false;
-    this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al ultimo Altar donde rezaste');
+    this.game.events.emit(EVENTOS_HUD.aviso, 'vuelves al último Altar donde rezaste');
   }
 
   /**

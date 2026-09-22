@@ -140,7 +140,7 @@ export class PausaScene extends Phaser.Scene {
     });
 
     const pie = this.add
-      .text(ancho / 2, alto - 16, 'W S  o raton  elegir     E  o clic  confirmar', {
+      .text(ancho / 2, alto - 16, 'W S  o ratón  elegir     E  o clic  confirmar', {
         fontFamily: 'monospace',
         fontSize: '7px',
         color: COLOR.tenue,
@@ -211,7 +211,7 @@ export class PausaScene extends Phaser.Scene {
       case 'sonido':
         return sonido.estaSilenciado ? 'Sonido: apagado' : 'Sonido: encendido';
       case 'cursor':
-        return cursorEncendido() ? 'Cursor: bisturi' : 'Cursor: del sistema';
+        return cursorEncendido() ? 'Cursor: bisturí' : 'Cursor: del sistema';
       default:
         return 'Volver al Atrio';
     }

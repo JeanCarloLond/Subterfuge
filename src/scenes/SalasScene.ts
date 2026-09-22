@@ -187,6 +187,8 @@ export class SalasScene extends EscenaNivel {
       // Las placas estan en la antesala: se leen antes de entrar, no en mitad
       // de la pelea. La segunda dice, en el tono del Registro, lo que hay al
       // otro lado de la reja y por que sigue ahi.
+      fieles: [[160, 288, 'sedante']],
+
       inscripciones: [
         [60, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.'],
         [

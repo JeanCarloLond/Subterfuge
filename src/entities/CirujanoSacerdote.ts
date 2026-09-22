@@ -12,6 +12,7 @@ import {
   POCION,
   RELIQUIA,
   VITALIDAD,
+  ZONA_DANO,
 } from '../config/Sacramento';
 import type { Controles } from '../input/Controles';
 import { Fervor } from '../systems/Fervor';
@@ -52,10 +53,29 @@ type DireccionAtaque = 'lateral' | 'arriba' | 'abajo';
  * El sprite sigue siendo un placeholder generado por codigo; el arte definitivo
  * es pixel art hecho a mano en Aseprite por el equipo (ver docs/issues/).
  */
+/**
+ * El ciclo de caminar: contacto, paso, contacto al reves, paso. La pose de
+ * reposo hace de primer contacto, asi que no hace falta un cuadro mas.
+ */
+const CICLO_PASO = [
+  'cirujano-placeholder',
+  'cirujano-paso-a-placeholder',
+  'cirujano-paso-b-placeholder',
+  'cirujano-paso-a-placeholder',
+] as const;
+
+/** Un cuadro cada tantos pixeles recorridos. Menos, y tiembla; mas, y patina. */
+const PX_POR_CUADRO = 9;
+
 export class CirujanoSacerdote {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   /** Zona de dano del golpe. La escena la cruza con el grupo de enemigos. */
   readonly hitbox: Phaser.GameObjects.Zone;
+  /**
+   * Por donde se le HIERE. Sigue al sprite y cubre la figura que se ve, no la
+   * caja de 10x22 que choca con la piedra (ver ZONA_DANO).
+   */
+  readonly zonaDano: Phaser.GameObjects.Zone;
   readonly vitalidad: Vitalidad;
   readonly fervor: Fervor;
   /**
@@ -93,6 +113,8 @@ export class CirujanoSacerdote {
   /** Para sonar el aterrizaje solo al pasar de aire a suelo. */
   private enSueloAntes = true;
   private velocidadCaidaPrevia = 0;
+  /** Pixeles recorridos desde el ultimo cuadro del ciclo de caminar. */
+  private recorridoPaso = 0;
   /** y del punto mas alto desde el que empezo a caer. */
   private inicioCaidaY = 0;
   private direccionAtaque: DireccionAtaque = 'lateral';
@@ -138,7 +160,22 @@ export class CirujanoSacerdote {
     cuerpoHitbox.setAllowGravity(false);
     cuerpoHitbox.enable = false;
 
+    this.zonaDano = escena.add.zone(x, y, ZONA_DANO.ancho, ZONA_DANO.alto);
+    escena.physics.add.existing(this.zonaDano);
+    (this.zonaDano.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
+    this.colocarZonaDano();
+
     this.vitalidad.on('muerte', () => this.morir());
+  }
+
+  /**
+   * Pega la zona de dano al sprite: centrada en x, con el borde de abajo en
+   * los pies. Se recoloca cada fotograma porque el cuerpo se mueve y la zona
+   * no tiene por que seguirle sola.
+   */
+  private colocarZonaDano(): void {
+    this.zonaDano.setPosition(this.sprite.x, this.sprite.y - ZONA_DANO.alto / 2);
+    (this.zonaDano.body as Phaser.Physics.Arcade.Body).updateFromGameObject();
   }
 
   get cuerpo(): Phaser.Physics.Arcade.Body {
@@ -222,6 +259,8 @@ export class CirujanoSacerdote {
   }
 
   actualizar(): void {
+    this.colocarZonaDano();
+
     if (this.estado === 'muerto') {
       this.cuerpo.setAccelerationX(0);
       this.cuerpo.setDragX(MOVIMIENTO.friccionSuelo);
@@ -699,12 +738,18 @@ export class CirujanoSacerdote {
     });
   }
 
-  /** Resurreccion en el ultimo Altar: restaura cuerpo, Fervor y pociones. */
+  /**
+   * Resurreccion en el ultimo Altar: restaura el cuerpo, NO el frasco.
+   *
+   * Antes la muerte rellenaba las Pociones, y eso las volvia infinitas: morir
+   * salia gratis y de hecho compensaba (issue #54). Ahora sales con las que
+   * te quedaban. Si quieres mas, rezas — que es el canal que la Diocesis tiene
+   * para eso y cuesta acercarse al Altar.
+   */
   reaparecerEn(x: number, y: number): void {
     this.estado = 'aire';
     this.vitalidad.restaurar();
     this.fervor.reiniciar();
-    this.cargasPocion = this.cargasPocionMax;
 
     // Deshace el desplome de `morir()` por completo. Sin esto el Cirujano
     // reaparece aplastado, tenido de rojo y medio transparente.
@@ -715,6 +760,7 @@ export class CirujanoSacerdote {
     this.sprite.setOrigin(0.5, 1);
 
     this.sprite.setAlpha(1);
+    this.sprite.setTexture('cirujano-placeholder');
     this.sprite.setPosition(x, y);
     this.inicioCaidaY = y;
     this.enSueloAntes = true;
@@ -1047,7 +1093,45 @@ export class CirujanoSacerdote {
     }
 
     this.sprite.setScale(escalaX, escalaY);
+    this.actualizarPaso(enSuelo);
     this.actualizarImpulsoVisual();
+  }
+
+  /**
+   * El ciclo de caminar: tres poses que se alternan con el avance.
+   *
+   * Antes solo habia un cabeceo del 3 % sobre un dibujo quieto, y eso no es
+   * andar, es deslizarse con el cuerpo temblando (issue #51). Ahora las
+   * piernas se abren, pasan juntas y se abren al reves.
+   *
+   * La fase va con la DISTANCIA RECORRIDA y no con el reloj: caminando contra
+   * una pared no avanzas, y con el reloj las piernas seguirian moviendose como
+   * si corrieras. Es el detalle que separa un ciclo de andar de un gif.
+   */
+  private actualizarPaso(enSuelo: boolean): void {
+    const quieto =
+      !enSuelo ||
+      this.estado === 'atacando' ||
+      this.estado === 'dash' ||
+      this.estado === 'rezando' ||
+      this.estado === 'bebiendo' ||
+      this.estado === 'agarre' ||
+      Math.abs(this.cuerpo.velocity.x) <= 20;
+
+    if (quieto) {
+      this.recorridoPaso = 0;
+      if (this.sprite.texture.key !== 'cirujano-placeholder') {
+        this.sprite.setTexture('cirujano-placeholder');
+      }
+      return;
+    }
+
+    this.recorridoPaso += Math.abs(this.cuerpo.deltaX());
+
+    // Un cuadro cada 9 px recorridos: a velocidad de paseo salen unos siete
+    // cambios por segundo, que es donde deja de leerse a saltos.
+    const clave = CICLO_PASO[Math.floor(this.recorridoPaso / PX_POR_CUADRO) % CICLO_PASO.length];
+    if (this.sprite.texture.key !== clave) this.sprite.setTexture(clave);
   }
 
   /**

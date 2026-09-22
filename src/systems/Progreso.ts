@@ -4,6 +4,9 @@ import { VIENTRE } from '../lore/Vientre';
 import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
 import { recordar } from './Memoria';
 
+/** Se devuelve al preguntar por una zona en la que no se ha entrado. */
+const VACIO: ReadonlySet<string> = new Set();
+
 /** Tipos de reliquia. Cada una mejora algo del Cirujano de forma permanente. */
 export type TipoReliquia = 'relicario' | 'frasco';
 
@@ -23,6 +26,23 @@ class Progreso {
   private fichas = new Set<string>();
   /** Capas del Vientre que el Cirujano ha pisado. */
   private capas = new Set<string>();
+  /**
+   * Trozos de cada zona por los que ya se ha pasado, para el mapa.
+   *
+   * Clave: nombre de escena. Valor: casillas "cx,cy" de la rejilla del mapa.
+   * Un Set por zona y no uno global porque el mapa se dibuja zona a zona, y
+   * mezclarlas obligaria a partir cadenas en el momento de pintar.
+   */
+  private casillas = new Map<string, Set<string>>();
+  /**
+   * Tamaño de cada zona, apuntado al construirla.
+   *
+   * El mapa necesita saber cuanto mide una zona para dibujarla a escala, y esa
+   * medida vive en la definicion del nivel. Se registra al entrar en vez de
+   * copiarla al libro: una constante duplicada se desincroniza en cuanto
+   * alguien alarga un corredor, y el mapa mentiria sin que nada fallara.
+   */
+  private mundos = new Map<string, { ancho: number; alto: number }>();
   /**
    * Injertos cargados en la Injertadora.
    *
@@ -119,6 +139,39 @@ class Progreso {
     return VIENTRE.length;
   }
 
+  // -- El mapa -------------------------------------------------------------
+
+  /**
+   * Apunta que el Cirujano ha estado en esta casilla.
+   * @returns true si es la primera vez, por si la escena quiere avisar.
+   */
+  pisarCasilla(escena: string, cx: number, cy: number): boolean {
+    let zona = this.casillas.get(escena);
+    if (!zona) {
+      zona = new Set();
+      this.casillas.set(escena, zona);
+    }
+
+    const clave = `${cx},${cy}`;
+    if (zona.has(clave)) return false;
+    zona.add(clave);
+    return true;
+  }
+
+  registrarMundo(escena: string, ancho: number, alto: number): void {
+    this.mundos.set(escena, { ancho, alto });
+  }
+
+  /** Cuanto mide una zona, o undefined si no se ha entrado nunca. */
+  mundoDe(escena: string): { ancho: number; alto: number } | undefined {
+    return this.mundos.get(escena);
+  }
+
+  /** Lo explorado de una zona. Vacio si no se ha entrado nunca. */
+  casillasDe(escena: string): ReadonlySet<string> {
+    return this.casillas.get(escena) ?? VACIO;
+  }
+
   // -- La Injertadora ------------------------------------------------------
 
   get injertos(): number {
@@ -190,6 +243,8 @@ class Progreso {
     this.reliquias.clear();
     this.fichas.clear();
     this.capas.clear();
+    this.casillas.clear();
+    this.mundos.clear();
     this.cargaInjertadora = INJERTADORA.cargaInicial;
   }
 }
