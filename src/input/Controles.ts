@@ -72,8 +72,16 @@ export class Controles {
     tactil.actualizar();
     this.izqAntes = this.izqAhora;
     this.derAntes = this.derAhora;
-    this.izqAhora = this.puntero.leftButtonDown();
-    this.derAhora = this.puntero.rightButtonDown();
+
+    // EN UN MOVIL EL RATON NO EXISTE, Y ESO HAY QUE DECIRLO AQUI. Phaser marca
+    // `buttons = 1` en cada toque, asi que para `leftButtonDown()` cualquier
+    // dedo en la pantalla —la cruceta incluida— era el boton de atacar: el
+    // Cirujano encadenaba golpes solo, el estado `atacando` le bloqueaba el
+    // movimiento y parecia que el juego se habia colgado (#75). Con los dedos
+    // solo manda la botonera.
+    const conDedos = tactil.esAparatoTactil;
+    this.izqAhora = !conDedos && this.puntero.leftButtonDown();
+    this.derAhora = !conDedos && this.puntero.rightButtonDown();
   }
 
   /** Eje horizontal: -1 izquierda, 0 neutro, 1 derecha. */

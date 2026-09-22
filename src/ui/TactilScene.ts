@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { tactil, type AccionTactil } from '../input/Tactil';
+import { toques } from '../input/Toques';
 
 /**
  * La botonera de los dedos. Solo existe en aparatos tactiles.
@@ -136,9 +137,8 @@ export class TactilScene extends Phaser.Scene {
   }
 
   create(): void {
-    // Cada dedo es un puntero. Con uno solo no se puede correr y saltar a la
-    // vez, que es el minimo para que esto se pueda jugar.
-    this.input.addPointer(3);
+    // Los dedos se leen del navegador, no de Phaser: ver `input/Toques.ts`.
+    toques.escuchar(this.game.canvas);
 
     this.grafico = this.add.graphics().setDepth(10);
     this.puestos = [];
@@ -295,14 +295,7 @@ export class TactilScene extends Phaser.Scene {
     }
 
     const pulsados = new Set<AccionTactil>();
-    const camara = this.cameras.main;
-    for (const puntero of this.input.manager.pointers) {
-      if (!puntero.isDown) continue;
-
-      // Se traduce con la camara de ESTA escena y no se usa `worldX`: ese
-      // valor lo calcula Phaser con la camara de quien proceso el evento, y
-      // aqui hay varias escenas a la vez y la de interfaz va con zoom.
-      const punto = camara.getWorldPoint(puntero.x, puntero.y);
+    for (const punto of toques.activos) {
       const puesto = this.botonBajo(punto.x, punto.y);
       if (puesto) pulsados.add(puesto.boton.accion);
     }

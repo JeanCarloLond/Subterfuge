@@ -7,6 +7,7 @@ import {
   dimensionarContenedor,
   registrarTextoNitido,
 } from './systems/Nitidez';
+import { toques } from './input/Toques';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { AtrioScene } from './scenes/AtrioScene';
@@ -81,7 +82,14 @@ const configuracion: Phaser.Types.Core.GameConfig = {
 
 registrarTextoNitido();
 dimensionarContenedor('juego');
-new Phaser.Game(configuracion);
+const juego = new Phaser.Game(configuracion);
+
+// Banco de pruebas del mando tactil: con `?tactil` el juego se deja tocar
+// desde fuera (scripts/probar-tactil.mjs manda dedos de verdad con el
+// protocolo de Chrome). Sin ese parametro no se expone nada.
+if (location.search.includes('tactil')) {
+  Object.assign(window, { juego, toques });
+}
 
 // El lienzo no ocupa toda la pagina (Scale.FIT deja margenes), y un clic
 // derecho en ese margen tambien abria el menu. Toda la pagina es el juego, asi

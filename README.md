@@ -219,6 +219,7 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 | `npm run verificar-arte`  | Comprueba las figuras del pixel art y los tilesets  |
 | `npm run verificar-rutas` | Comprueba que en cada nivel se pueda volver a subir |
 | `npm run exportar-arte`   | Saca los sprites a JSON para las láminas de la web  |
+| `npm run probar-tactil`   | Prueba el mando táctil con toques reales en Chrome  |
 
 `npm run dev` sirve el juego en `/` y el portal en `/web/`. Los tres últimos
 son propios del proyecto y no los cubre ningún linter.

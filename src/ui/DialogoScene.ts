@@ -4,6 +4,7 @@ import { pensamiento, type ClavePensamiento, type Pensamiento } from '../lore/Pe
 import { sonido } from '../systems/Sonido';
 import { tactil } from '../input/Tactil';
 import { botonTactil } from './BotonTactil';
+import { toques } from '../input/Toques';
 
 /**
  * Datos con los que se lanza: a quien hay que reanudar y que se dice.
@@ -130,7 +131,19 @@ export class DialogoScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown-SPACE', () => this.avanzar());
     this.input.keyboard?.on('keydown-ENTER', () => this.avanzar());
     this.input.keyboard?.on('keydown-ESC', () => this.cerrar());
-    this.input.on('pointerdown', () => this.avanzar());
+    if (tactil.esAparatoTactil) {
+      // Con el dedo, avanzar tambien va por los toques en crudo (#75), y se
+      // ignora el toque que cae sobre el boton de saltar: si no, saltarse la
+      // escena avanzaba un cuadro antes de cerrarla.
+      const soltar = toques.alSoltar((punto) => {
+        const enSaltar =
+          Phaser.Math.Distance.Between(punto.x, punto.y, ancho - 26, alto - 26) <= 21;
+        if (!enSaltar) this.avanzar();
+      });
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, soltar);
+    } else {
+      this.input.on('pointerdown', () => this.avanzar());
+    }
   }
 
   /** Escribe el cuadro actual letra a letra. */

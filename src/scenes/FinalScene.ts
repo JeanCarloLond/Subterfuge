@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
 import { recordar } from '../systems/Memoria';
+import { tactil } from '../input/Tactil';
+import { toques } from '../input/Toques';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { cursorActivo } from '../ui/Cursor';
@@ -92,6 +94,17 @@ export class FinalScene extends Phaser.Scene {
     reinicio.on('pointerover', () => reinicio.setColor('#d6cfc4'));
     reinicio.on('pointerout', () => reinicio.setColor('#4a4038'));
     reinicio.on('pointerdown', () => this.volverAlAtrio());
+
+    // Con el dedo, cualquier toque vale: acertar en una linea de ocho pixeles
+    // no es una forma de cerrar un juego (#75).
+    if (tactil.esAparatoTactil) {
+      reinicio.setText('toca para volver al Atrio');
+      const nacido = performance.now();
+      const soltar = toques.alSoltar((_punto, inicio) => {
+        if (inicio >= nacido) this.volverAlAtrio();
+      });
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, soltar);
+    }
 
     // Entradas escalonadas: el cierre debe respirar, no soltarlo todo de golpe.
     this.aparecer(gancho, 700);

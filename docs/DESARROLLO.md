@@ -581,15 +581,33 @@ que pagar ni mantener.
 estado; `Controles` lee ese estado junto a las teclas, así que para el resto
 del juego un botón y una tecla son lo mismo.
 
-**La entrada se deriva, no se acumula** (#72). No hay `pointerdown` por botón.
-Cada fotograma se recorren los punteros que Phaser da por pulsados, se traduce
-cada uno con la cámara de la escena (`getWorldPoint`, no `worldX`: hay varias
-escenas a la vez y esta va con zoom), se busca el botón **más cercano** dentro
-de su alcance y se manda el conjunto entero con `tactil.fijar()`. De ahí salen
-tres cosas gratis: nada se queda pulsado sin dedo encima, arrastrar el pulgar
-de un botón a otro cambia de acción, y volver de una pantalla deja el mando
-limpio. El modelo anterior dependía de que **todos** los eventos de soltar
-llegaran siempre, y cuando uno faltaba el Cirujano corría solo hasta recargar.
+**Los dedos se leen del navegador, no de Phaser** (`src/input/Toques.ts`,
+#72 y #75). Un `Pointer` de Phaser pasa por demasiadas manos: se reparte entre
+escenas y la de arriba puede quedárselo, guarda en caché los límites del lienzo
+(y esa caché envejece al entrar en pantalla completa, así que los toques caen
+desplazados), y su `isDown` se queda encendido si se pierde un `touchend`. Las
+tres cosas dejaron el mando muerto en el móvil de un probador. `TouchEvent.touches`,
+en cambio, es la lista **autoritativa** de dedos puestos: se copia entera en
+cada evento, así que no hay estado que pueda desincronizarse, y el rectángulo
+del lienzo se lee en el momento del evento, nunca antes.
+
+Sobre eso, **la entrada se deriva, no se acumula**: cada fotograma se mira qué
+botón tiene cada dedo debajo (el más cercano dentro de su alcance) y se manda
+el conjunto entero con `tactil.fijar()`. Nada se queda pulsado sin dedo encima,
+arrastrar el pulgar de un botón a otro cambia de acción, y volver de una
+pantalla deja el mando limpio.
+
+**Un dedo no es un clic izquierdo** (#75). Phaser marca `buttons = 1` en cada
+toque, así que para `leftButtonDown()` cualquier dedo en la pantalla —la
+cruceta incluida— era el botón de atacar: el Cirujano encadenaba golpes solo,
+el estado `atacando` le bloqueaba el movimiento y parecía que el juego se había
+colgado. `Controles` ignora los botones del ratón cuando el aparato es táctil.
+
+**Un botón no atiende a un dedo anterior a él** (#75). Abrir el libro con el
+botón `L` dejaba el dedo justo encima de la cruz de cerrar, que nacía debajo y
+se quedaba con su suelta: el libro se abría y se cerraba en el mismo gesto.
+`toques` entrega, con cada suelta, el instante en que ese dedo se posó, y los
+botones descartan los que son anteriores a su propia creación.
 
 **El tamaño sale de la pantalla, no del lienzo** (#73). 44 px CSS es el mínimo
 de un objetivo táctil; se traduce a píxeles internos con
@@ -599,8 +617,15 @@ van en unidades de radio desde su esquina (`BOTONES`), de modo que la botonera
 entera crece y encoge sin solaparse. Los márgenes de la muesca y la barra de
 gestos se leen de `--seguro-*`, que `style.css` copia de `env(safe-area-inset-*)`.
 
-Para probar el reparto sin tener un teléfono delante, `?tactil` fuerza el modo
-dedos en un ordenador.
+**Cómo se prueba esto sin un teléfono.** `?tactil` fuerza el modo dedos en un
+ordenador y expone `window.juego`; `npm run probar-tactil` (con el juego
+servido en `localhost:4173`) abre Chrome sin ventana, manda toques de verdad
+por el protocolo de DevTools y comprueba doce cosas: que la cruceta mueva, que
+mover no ataque, que soltar pare, que un toque cancelado no se quede pegado,
+que se pueda correr y saltar a la vez, que el libro se abra y se cierre **dos
+veces seguidas**, y que tras morir el mando siga respondiendo. Los fallos de
+móvil no los caza ningún linter ni se ven en una captura: son de
+comportamiento, y esta es la forma de que no vuelvan.
 
 **Las pantallas tienen salida** (#74). El libro, el diálogo y la pausa se
 escribieron para teclado, y sus cierres eran textos de 7 px en una esquina.
