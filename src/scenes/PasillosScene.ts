@@ -202,6 +202,8 @@ export class PasillosScene extends EscenaNivel {
         [700, 540, 'columna'],
       ],
 
+      fieles: [[176, 248, 'registradora']],
+
       inscripciones: [
         [150, 160, 'OFICINA DEL DIEZMO. Deudas de casa se saldan en carne de casa.'],
         [576, 520, 'Sorteo de hoy: cerrado. Una inscripción voluntaria. Sin número.'],

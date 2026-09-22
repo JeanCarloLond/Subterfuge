@@ -1,12 +1,19 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
-import { pensamiento, type ClavePensamiento } from '../lore/Pensamientos';
+import { pensamiento, type ClavePensamiento, type Pensamiento } from '../lore/Pensamientos';
 import { sonido } from '../systems/Sonido';
 
-/** Datos con los que se lanza: a quien hay que reanudar y que se piensa. */
+/**
+ * Datos con los que se lanza: a quien hay que reanudar y que se dice.
+ *
+ * O una `clave` de los pensamientos del Cirujano, o un `dialogo` suelto. Lo
+ * segundo es para los fieles con los que se puede hablar (issue #60): su texto
+ * no vive en Pensamientos porque no lo piensa el protagonista, lo dice otro.
+ */
 interface DatosDialogo {
   escenaJuego: string;
-  clave: ClavePensamiento;
+  clave?: ClavePensamiento;
+  dialogo?: Pensamiento;
 }
 
 const COLOR = {
@@ -56,7 +63,8 @@ export class DialogoScene extends Phaser.Scene {
 
   create(datos: DatosDialogo): void {
     this.escenaJuego = datos.escenaJuego;
-    this.cuadros = pensamiento(datos.clave).cuadros;
+    const guion = datos.dialogo ?? (datos.clave ? pensamiento(datos.clave) : undefined);
+    this.cuadros = guion?.cuadros ?? [];
     this.indice = 0;
     this.cerrando = false;
 
@@ -70,7 +78,7 @@ export class DialogoScene extends Phaser.Scene {
     banda.lineStyle(1, COLOR.oro, 0.7);
     banda.lineBetween(0, bandaY, ancho, bandaY);
 
-    const quien = pensamiento(datos.clave).quien;
+    const quien = guion?.quien;
     if (quien) {
       this.add.text(18, bandaY + 10, quien, {
         fontFamily: 'monospace',

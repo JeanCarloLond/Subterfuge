@@ -8,6 +8,7 @@ import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
+import { Fiel } from '../entities/Fiel';
 import { Injerto } from '../entities/Injerto';
 import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
@@ -18,6 +19,7 @@ import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
+import { VOCES, type ClaveVoz } from '../lore/Voces';
 import { EVENTOS_HUD } from '../ui/HudScene';
 import { CONTROLES_COMBATE, CONTROLES_MOVIMIENTO } from '../ui/TextoControles';
 
@@ -114,6 +116,8 @@ export interface DefinicionNivel {
   decorado?: readonly Decorado[];
   /** Placas del Registro: lore de una linea, sin abrir nada. */
   inscripciones?: readonly Inscripcion[];
+  /** Fieles con los que se puede hablar. No atacan ni se les puede golpear. */
+  fieles?: ReadonlyArray<readonly [number, number, ClaveVoz]>;
   /**
    * Atrezo LEJANO: detras de todo, mas oscuro y con parallax. Da profundidad;
    * el jugador nunca lo toca. Las posiciones son aproximadas: al moverse la
@@ -188,6 +192,9 @@ const T = 16;
  */
 const CASILLA_MAPA = 64;
 
+/** Lo que entrega el Reformado de las Criptas, una sola vez. */
+const INJERTOS_DEL_REFORMADO = 2;
+
 /** Desgaste por defecto: algo de ruina, nada de vegetacion. */
 const DESGASTE_POR_DEFECTO = { grietas: 0.06, musgo: 0 } as const;
 
@@ -255,6 +262,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private fragmentos: FragmentoCodice[] = [];
   private reliquias: Reliquia[] = [];
   private ofrendas: Ofrenda[] = [];
+  private fieles: Fiel[] = [];
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
@@ -352,6 +360,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.actualizarParallax();
     this.actualizarAltares();
+    this.actualizarFieles();
     this.actualizarUmbral();
     this.actualizarPlacas();
     this.comprobarCaidaAlVacio();
@@ -391,6 +400,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.fragmentos = [];
     this.reliquias = [];
     this.ofrendas = [];
+    this.fieles = [];
     this.placas = [];
     this.grupoEnemigos = undefined;
     this.tilesSolidos = new Set();
@@ -872,6 +882,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.physics.add.overlap(this.cirujano.sprite, reliquia.sprite, () =>
         this.resolverRecogidaDeReliquia(reliquia),
       );
+    }
+
+    for (const [x, y, clave] of this.definicion.fieles ?? []) {
+      this.fieles.push(new Fiel(this, x, y, clave));
     }
 
     for (const [x, y, texto] of this.definicion.inscripciones ?? []) {
@@ -1630,6 +1644,54 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.rezarEn(altar);
       }
     }
+  }
+
+  /**
+   * Los fieles: se acercan, se encienden y hablan con E.
+   *
+   * Comparte la tecla con el Altar y con las placas, y por eso hay que cuidar
+   * el orden: si dos cosas se solapan, la E las dispararia las dos. Se sale en
+   * cuanto uno responde.
+   */
+  private actualizarFieles(): void {
+    if (this.cirujano.estaMuerto || this.descendiendo) return;
+
+    for (const fiel of this.fieles) {
+      const cerca = fiel.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
+      if (!cerca || !this.controles.interactuarPresionado) continue;
+
+      this.hablarCon(fiel);
+      return;
+    }
+  }
+
+  /**
+   * Abre la conversacion y aplica lo que ese fiel haga, si hace algo.
+   *
+   * El Reformado de las Criptas entrega metal, y solo la primera vez: sin ese
+   * limite bastaria con hablarle en bucle para no quedarse nunca sin munición,
+   * y la Injertadora dejaria de ser un recurso escaso.
+   */
+  private hablarCon(fiel: Fiel): void {
+    if (this.scene.isActive('Codice') || this.scene.isActive('Pausa')) return;
+    if (this.scene.isActive('Dialogo')) return;
+
+    const primeraVez = !fiel.yaHablado;
+    fiel.marcarHablado();
+
+    if (primeraVez && fiel.clave === 'reformado-viejo') {
+      if (this.cirujano.cargarInjerto(INJERTOS_DEL_REFORMADO)) {
+        this.anotar('injerto');
+        this.game.events.emit(
+          EVENTOS_HUD.aviso,
+          `el Reformado te da ${INJERTOS_DEL_REFORMADO} injertos`,
+        );
+      }
+    }
+
+    sonido.interfazAbrir();
+    musica.atenuar(true);
+    this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, dialogo: VOCES[fiel.clave] });
   }
 
   /** Las placas del Registro se leen de pasada, con E, sin pausar nada. */

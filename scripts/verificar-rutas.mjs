@@ -153,9 +153,28 @@ const EN_MURO = new Set(['reja', 'ventana', 'durmiente', 'radiografia']);
  */
 const COLGANTES = new Set(['exvoto', 'cadena', 'luz-hospital', 'goteo']);
 
+/**
+ * Extrae el array `nombre: [...]` contando corchetes.
+ *
+ * Antes se buscaba el cierre por sangría (`\n      ],`) y eso se rompe en
+ * cuanto Prettier colapsa un array corto a una línea: el bloque seguía
+ * comiéndose el array siguiente y se verificaban tuplas que no eran. Contar
+ * corchetes no depende del formato.
+ */
 function leerTuplas(src, nombre, patron) {
-  const bloque = src.match(new RegExp(`${nombre}: \\[([\\s\\S]*?)\\n {6}\\],`));
-  return bloque ? [...bloque[1].matchAll(patron)] : [];
+  const inicio = src.indexOf(`${nombre}: [`);
+  if (inicio < 0) return [];
+
+  let i = src.indexOf('[', inicio);
+  let nivel = 0;
+  for (let j = i; j < src.length; j += 1) {
+    if (src[j] === '[') nivel += 1;
+    else if (src[j] === ']') {
+      nivel -= 1;
+      if (nivel === 0) return [...src.slice(i + 1, j).matchAll(patron)];
+    }
+  }
+  return [];
 }
 
 function verificarDecorado(nombre, archivo) {
@@ -242,13 +261,43 @@ function verificarInscripciones(nombre, src, plataformas) {
 
   if (malas.length === 0) {
     console.log(`${nombre}: OK — las ${placas.length} placas se pueden leer de pie`);
-    return true;
+    return verificarFieles(nombre, src, plataformas);
   }
 
   console.log(`${nombre}: FALLO — placas inalcanzables`);
   for (const c of malas) {
     console.log(`  placa en x=${c.x} y=${c.y}: no se apoya en ninguna plataforma o no cabe leerla`);
   }
+  verificarFieles(nombre, src, plataformas);
+  return false;
+}
+
+/**
+ * Los fieles con los que se habla tienen que estar de pie en algún sitio.
+ *
+ * Se dibujan con el origen abajo y sin física: si la `y` no coincide con la
+ * superficie de una plataforma, el personaje flota y nadie se da cuenta hasta
+ * verlo en pantalla. Misma comprobación que las placas y por el mismo motivo.
+ */
+function verificarFieles(nombre, src, plataformas) {
+  const fieles = leerTuplas(src, 'fieles', /\[\s*(-?\d+),\s*(-?\d+),\s*'/g).map((m) => ({
+    x: Number(m[1]),
+    y: Number(m[2]),
+  }));
+
+  if (fieles.length === 0) return true;
+
+  const sueltos = fieles.filter(
+    (f) => !plataformas.some((p) => f.y === p.y && f.x >= p.x && f.x < p.x + p.ancho),
+  );
+
+  if (sueltos.length === 0) {
+    console.log(`${nombre}: OK — ${fieles.length} fiel(es) de pie en el suelo`);
+    return true;
+  }
+
+  console.log(`${nombre}: FALLO — fieles flotando`);
+  for (const f of sueltos) console.log(`  fiel en x=${f.x} y=${f.y}: no hay plataforma ahí`);
   return false;
 }
 

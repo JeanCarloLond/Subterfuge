@@ -188,6 +188,8 @@ export class AtrioScene extends EscenaNivel {
       ],
 
       // Placas del Registro: la burocracia del diezmo empieza en la calle.
+      fieles: [[96, 288, 'inscriptor']],
+
       inscripciones: [
         [170, 288, 'CASA POR CASA. Inscriban a los suyos. El Registro no elige: sortea.'],
         [250, 688, 'Los exvotos de arriba son de sacramentos completos. Den gracias.'],

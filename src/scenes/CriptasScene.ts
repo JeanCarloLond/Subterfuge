@@ -204,6 +204,8 @@ export class CriptasScene extends EscenaNivel {
       ],
 
       // Placas del Registro. Burocracia hasta aqui abajo.
+      fieles: [[112, 880, 'reformado-viejo']],
+
       inscripciones: [
         [140, 160, 'REGISTRO DE ESPERA. Turno por sorteo. No despertar a los inscritos.'],
         [340, 480, 'Sedación administrada. Carne serena, carne grata.'],
