@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Entrega · Libro de arte y biblia del mundo</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      /*
+       * Una hoja A4 con la estetica del portal de la Diocesis: pergamino,
+       * filete de oro, rubrica en rojo y el turquesa de Genesis Vestal como
+       * unico color que no pertenece al culto. Se imprime a PDF con Chrome.
+       *
+       * REGLA: una sola pagina. Si se anade algo, hay que quitar otra cosa.
+       */
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      body {
+        width: 210mm;
+        height: 297mm;
+        padding: 17mm 18mm 14mm;
+        background: #e7e0d1;
+        color: #221820;
+        font-family: 'Crimson Pro', Georgia, serif;
+        font-size: 11.2pt;
+        line-height: 1.45;
+        position: relative;
+        overflow: hidden;
+      }
+      /* Grano del papel y penumbra en los bordes, como en el portal. */
+      body::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(90, 60, 40, 0.5) 0.6px, transparent 0.7px);
+        background-size: 4px 4px;
+        opacity: 0.22;
+        pointer-events: none;
+      }
+      body::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(120, 90, 60, 0) 55%,
+          rgba(120, 90, 60, 0.22) 100%
+        );
+        pointer-events: none;
+      }
+      .hoja {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* -- Cabecera ---------------------------------------------------- */
+      .cabecera {
+        display: flex;
+        align-items: center;
+        gap: 9mm;
+      }
+      .sello {
+        width: 19mm;
+        height: 19mm;
+        border-radius: 50%;
+        border: 1.1mm solid #8f6d22;
+        position: relative;
+        flex: none;
+      }
+      .sello::before,
+      .sello::after {
+        content: '';
+        position: absolute;
+        background: #8c2f2f;
+      }
+      .sello::before {
+        width: 1.1mm;
+        height: 11mm;
+        left: 8.2mm;
+        top: 3mm;
+      }
+      .sello::after {
+        width: 7mm;
+        height: 1.1mm;
+        left: 5.3mm;
+        top: 6.2mm;
+      }
+      .eyebrow {
+        font-family: Cinzel, serif;
+        font-size: 8pt;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: #8f6d22;
+      }
+      h1 {
+        font-family: Cinzel, serif;
+        font-size: 23pt;
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 2mm 0 0;
+        letter-spacing: 0.01em;
+      }
+      .lema {
+        font-style: italic;
+        color: #57494f;
+        margin-top: 1.5mm;
+        font-size: 11pt;
+      }
+
+      .filete {
+        height: 1mm;
+        border-top: 0.3mm solid #8f6d22;
+        border-bottom: 0.3mm solid #8f6d22;
+        margin: 7mm 0 6mm;
+        position: relative;
+      }
+      .filete::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: -1.3mm;
+        width: 3mm;
+        height: 3mm;
+        background: #8f6d22;
+        transform: translateX(-50%) rotate(45deg);
+      }
+
+      p {
+        margin: 0 0 3.5mm;
+      }
+      .lede {
+        font-size: 12.4pt;
+        line-height: 1.42;
+      }
+      .rubrica {
+        color: #8c2f2f;
+        font-weight: 600;
+      }
+
+      /* -- Los tres ejes del mundo -------------------------------------- */
+      .ejes {
+        margin-bottom: 5mm;
+      }
+      .ejes > div {
+        display: grid;
+        grid-template-columns: 24mm 1fr;
+        gap: 4mm;
+        padding: 2.6mm 0;
+        border-bottom: 0.2mm solid rgba(34, 24, 32, 0.16);
+      }
+      .ejes > div:first-child {
+        border-top: 0.2mm solid rgba(34, 24, 32, 0.16);
+      }
+      /* La ultima linea la pone el bloque de la entrega: dos seguidas cantan. */
+      .ejes > div:last-child {
+        border-bottom: 0;
+      }
+      .ejes b {
+        font-family: Cinzel, serif;
+        font-size: 9.5pt;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #8c2f2f;
+        padding-top: 0.6mm;
+      }
+      .ejes span {
+        font-size: 10.6pt;
+        line-height: 1.38;
+        color: #33272d;
+      }
+
+      /* -- La entrega: enlace y QR ------------------------------------- */
+      .entrega {
+        display: grid;
+        grid-template-columns: 1fr 34mm;
+        gap: 8mm;
+        align-items: center;
+        border-top: 0.3mm solid rgba(34, 24, 32, 0.25);
+        border-bottom: 0.3mm solid rgba(34, 24, 32, 0.25);
+        padding: 5mm 0;
+        margin: 1mm 0 5mm;
+      }
+      .entrega h2 {
+        font-family: Cinzel, serif;
+        font-size: 10.5pt;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #8f6d22;
+        margin: 0 0 2mm;
+      }
+      .enlace {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12.5pt;
+        color: #8c2f2f;
+        word-break: break-all;
+        margin-bottom: 2.5mm;
+      }
+      .entrega p {
+        margin: 0;
+        font-size: 10.6pt;
+        color: #3d3239;
+      }
+      .qr {
+        text-align: center;
+      }
+      .qr img {
+        width: 34mm;
+        height: 34mm;
+        image-rendering: pixelated;
+        border: 0.3mm solid #8f6d22;
+        padding: 1.2mm;
+        background: #efe9dc;
+      }
+      .qr span {
+        display: block;
+        font-family: Cinzel, serif;
+        font-size: 6.6pt;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #8f6d22;
+        margin-top: 1.6mm;
+      }
+
+      /* -- Indice del portal ------------------------------------------- */
+      .secciones {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.4mm 8mm;
+        margin-bottom: 5mm;
+      }
+      .secciones div {
+        display: grid;
+        grid-template-columns: 26mm 1fr;
+        gap: 3mm;
+        font-size: 10.4pt;
+        padding-bottom: 1.6mm;
+        border-bottom: 0.2mm dotted rgba(34, 24, 32, 0.28);
+      }
+      .secciones b {
+        font-family: Cinzel, serif;
+        font-size: 9pt;
+        letter-spacing: 0.06em;
+        color: #221820;
+      }
+      .secciones span {
+        color: #4a3f45;
+      }
+
+      /* -- Equipo ------------------------------------------------------- */
+      .equipo {
+        margin-top: auto;
+      }
+      .equipo h2 {
+        font-family: Cinzel, serif;
+        font-size: 9.5pt;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #8f6d22;
+        margin: 0 0 3mm;
+      }
+      .nombres {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.2mm 10mm;
+      }
+      .nombres div {
+        font-family: Cinzel, serif;
+        font-size: 12pt;
+        letter-spacing: 0.02em;
+        padding-bottom: 1.8mm;
+        border-bottom: 0.25mm solid rgba(143, 109, 34, 0.55);
+      }
+
+      .pie {
+        margin-top: 6mm;
+        display: flex;
+        justify-content: space-between;
+        gap: 6mm;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 7.6pt;
+        color: #6b5f55;
+      }
+      .pie em {
+        font-style: normal;
+        color: #8f6d22;
+      }
+      /* El turquesa: lo unico de esta hoja que no pertenece a la Diocesis. */
+      .nota-tec {
+        color: #2c8d88;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hoja">
+      <header class="cabecera">
+        <div class="sello"></div>
+        <div>
+          <div class="eyebrow">La Diócesis de la Carne</div>
+          <h1>Libro de arte y biblia del mundo</h1>
+          <div class="lema">Los dioses no miran. Son mirados.</div>
+        </div>
+      </header>
+
+      <div class="filete"></div>
+
+      <p class="lede">
+        <span class="rubrica"
+          >El libro de arte y la biblia de este mundo no se entregan como documentos aparte: se
+          entregan como el mundo mismo.</span
+        >
+        Ambos viven dentro del portal de la Diócesis, una web que no se presenta como ficción sino
+        como el sitio oficial de un culto que no debería existir. Lo que en un artbook serían
+        láminas, fichas, mapas y escritura sagrada, aquí son las secciones de una institución que
+        atiende al fiel.
+      </p>
+
+      <div class="ejes">
+        <div>
+          <b>Mythos</b>
+          <span>
+            Una corporación prometió el fin de la muerte. Los mil que aceptaron no murieron: mutaron
+            sin control y se fundieron con el edificio. Nadie pudo destruirlos, así que fueron
+            venerados. Ninguno tiene ojos.
+          </span>
+        </div>
+        <div>
+          <b>Ethos</b>
+          <span>
+            El cuerpo es moneda. El estatus se mide por cuánto te pareces a un dios, de modo que
+            ascender es dejar de ser persona. Nadie ahí dentro llama violencia al sacramento.
+          </span>
+        </div>
+        <div>
+          <b>Topos</b>
+          <span>
+            El Vientre: una catedral-hospital de seis capas construida hacia abajo. Descender es
+            degradarse, y la arquitectura de las capas profundas ya es carne.
+          </span>
+        </div>
+      </div>
+
+      <section class="entrega">
+        <div>
+          <h2>Entrega</h2>
+          <div class="enlace">jeancarlolond.github.io/Subterfuge/web</div>
+          <p>
+            Contiene el libro de arte completo y la biblia del mundo: doctrina, catálogo de
+            criaturas con sus láminas, plano del Vientre, linaje de dioses y fieles, y el teaser
+            jugable. Abre en cualquier navegador, sin instalar nada.
+          </p>
+        </div>
+        <div class="qr">
+          <img src="../qr/qr-portal.png" alt="Código QR del portal de la Diócesis" />
+          <span>Descender</span>
+        </div>
+      </section>
+
+      <div class="secciones">
+        <div><b>Doctrina</b><span>El Códice de la Carne, en edición para el fiel.</span></div>
+        <div><b>Registro</b><span>Fieles, oficio y aparato, con su lámina.</span></div>
+        <div><b>El Vientre</b><span>Plano por capas del templo.</span></div>
+        <div><b>Linaje</b><span>Origen de los Mil y orden del clero.</span></div>
+        <div><b>Sacramentos</b><span>Tres trámites jugables para aspirantes.</span></div>
+        <div><b>Subterfuge</b><span>Una jornada de trabajo del Cirujano-Sacerdote.</span></div>
+      </div>
+
+      <section class="equipo">
+        <h2>Integrantes</h2>
+        <div class="nombres">
+          <div>Agustín Figueroa</div>
+          <div>Alejandro Garcés Ramírez</div>
+          <div>Jean Carlo Londoño Ocampo</div>
+          <div>Mariana Echeverri Ramírez</div>
+        </div>
+      </section>
+
+      <footer class="pie">
+        <span><em>Obra de ficción.</em> Universo narrativo con fines académicos.</span>
+        <span class="nota-tec">jeancarlolond.github.io/Subterfuge</span>
+      </footer>
+    </div>
+  </body>
+</html>
