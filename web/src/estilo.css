@@ -727,23 +727,55 @@ button:disabled {
 
 /* -- Linaje -------------------------------------------------------------- */
 
+/*
+ * El explorador: diagrama a la izquierda, ficha a la derecha, y los dos
+ * caben en pantalla a la vez (issue #78). Antes el diagrama ocupaba todo el
+ * ancho y la ficha quedaba debajo, asi que leer una entrada era bajar, leer,
+ * subir a buscar la siguiente y volver a bajar.
+ */
 .linaje {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 18px;
+  align-items: stretch;
+  /* Lo que queda de ventana bajo la cabecera y la entradilla: el plano y la
+     ficha caben juntos sin que la pagina se desplace. */
+  height: clamp(340px, calc(100vh - 400px), 620px);
+}
+@media (max-width: 880px) {
+  .linaje {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
 }
 .linaje-lienzo {
-  overflow-x: auto;
+  /* En pantalla ancha el plano entero cabe: no se desplaza, se mira. */
+  overflow: hidden;
+  /* Sin esto, el ancho minimo del dibujo estira la rejilla y en un telefono
+     la pagina entera se desplaza de lado, con la entradilla cortada. */
+  min-width: 0;
+  display: grid;
+  place-items: center;
   background: var(--panel);
   border: 1px solid var(--regla);
 }
 .linaje-lienzo svg {
   display: block;
-  min-width: 860px;
   width: 100%;
-  height: auto;
+  height: 100%;
   font-family: 'Crimson Pro', Georgia, serif;
+}
+@media (max-width: 880px) {
+  /* En un telefono no hay forma de que quepa legible: se arrastra. */
+  .linaje-lienzo {
+    overflow: auto;
+    display: block;
+    max-height: 56vh;
+  }
+  .linaje-lienzo svg {
+    min-width: 860px;
+    height: auto;
+  }
 }
 .nodo {
   cursor: pointer;
@@ -756,13 +788,13 @@ button:disabled {
 }
 .nodo text {
   fill: var(--tinta);
-  font-size: 14px;
+  font-size: 16px;
   pointer-events: none;
 }
 .nodo .rango {
   fill: var(--oro);
   font-family: Cinzel, serif;
-  font-size: 9px;
+  font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -817,8 +849,8 @@ button:disabled {
   opacity: 0.12;
 }
 .arista-rotulo {
-  fill: var(--tinta-2);
-  font-size: 11px;
+  fill: var(--tinta);
+  font-size: 13px;
   font-style: italic;
   paint-order: stroke;
   stroke: var(--hueso);
@@ -827,7 +859,7 @@ button:disabled {
 .nivel-rotulo {
   fill: var(--oro);
   font-family: Cinzel, serif;
-  font-size: 9px;
+  font-size: 10.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -839,6 +871,55 @@ button:disabled {
   padding: 16px 18px;
   background: var(--panel);
   border-top: 2px solid var(--oro);
+  overflow: auto;
+}
+@media (max-width: 880px) {
+  .linaje-panel {
+    max-height: none;
+  }
+}
+
+/*
+ * Las relaciones de la ficha son BOTONES: pulsar una salta a esa entrada y
+ * el diagrama se mueve con ella. Es la forma de recorrer el linaje sin
+ * volver al diagrama a buscar el siguiente nombre (issue #78).
+ */
+.salto {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--tinta-2);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--regla);
+  padding: 8px 2px;
+  cursor: pointer;
+}
+.salto:last-child {
+  border-bottom: 0;
+}
+.salto b {
+  color: var(--tinta);
+  font-weight: 600;
+}
+.salto:hover {
+  color: var(--sangre);
+  border-color: var(--sangre);
+}
+.salto:hover b {
+  color: var(--sangre);
+}
+.salto .verbo {
+  color: var(--tinta-2);
+}
+.salto .flecha {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--oro);
+  margin-right: 6px;
 }
 .linaje-panel h3 {
   color: var(--tinta);
@@ -860,6 +941,11 @@ button:disabled {
   margin: 0;
   font-size: 15px;
   color: var(--tinta-2);
+}
+.linaje-panel .relaciones {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
 }
 .linaje-panel li b {
   color: var(--tinta);

@@ -336,10 +336,9 @@ export function renderLinaje(contenedor: HTMLElement): void {
       <h1>De dónde viene cada uno, y quién manda</h1>
       <div class="filete"></div>
       <p class="lede">
-        Organigrama de la Diócesis para consulta del fiel. Se lee de arriba abajo: primero el
-        origen, después el clero y el oficio, y al final los destinos de la ofrenda. Advertencia
-        del Registro: el orden de autoridad no coincide con el de antigüedad ni con el de cuerpo
-        conservado. Pulse cualquier nombre para ver su ficha.
+        Organigrama de la Diócesis, de arriba abajo: el origen, el clero, el oficio y el destino
+        de la ofrenda. Pulse cualquier nombre para ver su ficha, y siga las relaciones para
+        recorrerlo. Advertencia del Registro: la autoridad no sigue el orden de antigüedad.
       </p>
       <div class="linaje">
         <div class="linaje-lienzo">
@@ -370,6 +369,8 @@ export function renderLinaje(contenedor: HTMLElement): void {
 
   // Aristas: una curva de un nodo al otro, con el verbo a mitad de camino.
   const aristas = new Map<SVGElement, Arista>();
+  /** Donde cae el rotulo de cada arista, segun el punto del recorrido. */
+  const sitios = new Map<Arista, (t: number) => { x: number; y: number }>();
   const bezier = (a: number, b: number, c: number, d: number, t: number) =>
     (1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t * t * c + t ** 3 * d;
   ARISTAS.forEach((arista, indice) => {
@@ -390,19 +391,63 @@ export function renderLinaje(contenedor: HTMLElement): void {
     );
     lienzo.append(camino);
     aristas.set(camino, arista);
-    // El rotulo va a distinta altura de la curva segun la arista, para que dos
-    // que salen del mismo nodo no se pisen.
-    const t = mismoNivel ? 0.5 : [0.3, 0.5, 0.7][indice % 3];
-    const mx = mismoNivel ? (p.x + q.x) / 2 : bezier(p.x, p.x, q.x, q.x, t);
-    const my = mismoNivel
-      ? p.y + ALTO_NODO / 2 + 36
-      : bezier(y1, (y1 + y2) / 2, (y1 + y2) / 2, y2, t);
-    lienzo.append(
-      svg(
-        `<text class="arista-rotulo" x="${mx}" y="${my}" text-anchor="middle">${html(arista.verbo)}</text>`,
-      ),
-    );
+
+    // El verbo NO se dibuja aqui. Con veintiocho relaciones a la vez, los
+    // rotulos se cruzaban entre si y con los nodos hasta ser ilegibles
+    // (issue #77). Se guarda donde iria, y solo se pintan los de la entrada
+    // seleccionada, que como mucho son cinco y salen en direcciones
+    // distintas.
+    const puntoDe = (t: number) =>
+      mismoNivel
+        ? { x: (p.x + q.x) / 2, y: p.y + ALTO_NODO / 2 + 34 }
+        : {
+            x: bezier(p.x, p.x, q.x, q.x, t),
+            y: bezier(y1, (y1 + y2) / 2, (y1 + y2) / 2, y2, t),
+          };
+    sitios.set(arista, puntoDe);
+    void indice;
   });
+
+  // Los rotulos de la seleccion van en su propia capa, encima de las
+  // aristas y debajo de los nodos.
+  const capaRotulos = svg('<g></g>');
+  lienzo.append(capaRotulos);
+
+  /**
+   * Pinta los verbos de las relaciones de un nodo, probando varios puntos del
+   * recorrido hasta dar con uno que no pise a otro rotulo ya puesto.
+   */
+  const pintarRotulos = (id: string) => {
+    capaRotulos.replaceChildren();
+    const puestos: { x: number; y: number; ancho: number }[] = [];
+
+    for (const arista of ARISTAS) {
+      if (arista.de !== id && arista.a !== id) continue;
+      const sitio = sitios.get(arista);
+      if (!sitio) continue;
+
+      const ancho = arista.verbo.length * 4.6;
+      let mejor = sitio(0.5);
+      for (const t of [0.5, 0.36, 0.64, 0.26, 0.74, 0.16]) {
+        const punto = sitio(t);
+        const choca = puestos.some(
+          (otro) =>
+            Math.abs(otro.y - punto.y) < 13 &&
+            Math.abs(otro.x - punto.x) < (otro.ancho + ancho) / 2,
+        );
+        if (!choca) {
+          mejor = punto;
+          break;
+        }
+      }
+      puestos.push({ ...mejor, ancho });
+      capaRotulos.append(
+        svg(
+          `<text class="arista-rotulo" x="${mejor.x}" y="${mejor.y}" text-anchor="middle">${html(arista.verbo)}</text>`,
+        ),
+      );
+    }
+  };
 
   // Nodos encima de las aristas.
   const grupos = new Map<string, SVGElement>();
@@ -423,6 +468,7 @@ export function renderLinaje(contenedor: HTMLElement): void {
   const mostrar = (id: string) => {
     const nodo = porId.get(id);
     if (!nodo) return;
+    pintarRotulos(id);
     for (const [gid, g] of grupos) g.classList.toggle('activo', gid === id);
     for (const [camino, arista] of aristas) {
       const toca = arista.de === id || arista.a === id;
@@ -449,15 +495,25 @@ export function renderLinaje(contenedor: HTMLElement): void {
       const otro = porId.get(a.de === id ? a.a : a.de);
       if (!otro) return '';
       const flecha = a.de === id ? '→' : '←';
-      return `<li>${flecha} <b>${html(etiqueta(otro))}</b>: ${html(a.verbo)}</li>`;
+      return `<button type="button" class="salto" data-ir="${otro.id}">
+          <span class="flecha">${flecha}</span><b>${html(etiqueta(otro))}</b>
+          <span class="verbo"> · ${html(a.verbo)}</span>
+        </button>`;
     });
     panel.innerHTML = `
       <h3>${html(nodo.nombre)}</h3>
       <div class="rango-texto">${html(nodo.rango)}</div>
       <p>${html(nodo.descripcion)}</p>
       <p><b>Autoridad.</b> ${html(nodo.autoridad)}</p>
-      <ul>${relaciones.join('')}</ul>
+      <div class="rango-texto" style="margin-top:14px">Relaciones</div>
+      <div class="relaciones">${relaciones.join('')}</div>
     `;
+
+    // Cada relacion lleva a su entrada: el linaje se recorre saltando de
+    // nombre en nombre, sin volver al diagrama a buscar (issue #78).
+    for (const boton of panel.querySelectorAll<HTMLButtonElement>('.salto')) {
+      boton.addEventListener('click', () => mostrar(boton.dataset.ir ?? id));
+    }
   };
 
   for (const [id, g] of grupos) {

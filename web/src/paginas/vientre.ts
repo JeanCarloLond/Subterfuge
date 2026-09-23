@@ -481,10 +481,9 @@ export function renderVientre(contenedor: HTMLElement): void {
       <h1>Un solo edificio, y más de un camino</h1>
       <div class="filete"></div>
       <p class="lede">
-        Plano informativo del templo, que se construyó hacia abajo. La Diócesis recomienda el
-        descenso ordenado, con turno y registro. El plano recoge también conductos, pozos y
-        grietas de la instalación original que no se han cerrado; se ruega no utilizarlos.
-        Pulse cualquier sala para ver su ficha.
+        Plano informativo del templo, que se construyó hacia abajo. Recoge también los conductos,
+        pozos y grietas de la instalación original que no se han cerrado; se ruega no utilizarlos.
+        Pulse cualquier sala para ver su ficha, y sus salidas para moverse por el plano.
       </p>
       <div class="linaje">
         <div class="linaje-lienzo">
@@ -576,10 +575,15 @@ export function renderVientre(contenedor: HTMLElement): void {
 
     const esta = conocida(sala);
     const capa = VIENTRE[sala.capa];
+    // Cada salida es un boton: pulsarla lleva a esa sala. Recorrer el plano
+    // deja de ser subir y bajar por la pagina (issue #78).
     const salidas = CAMINOS.filter((p) => p.de === id || p.a === id).map((p) => {
       const otra = porId.get(p.de === id ? p.a : p.de);
       const nombreOtra = otra && conocida(otra) ? otra.nombre : 'sala sin nombre';
-      return `<li><strong>${html(PASOS[p.tipo])}</strong> · ${html(nombreOtra)}<br><span>${html(p.nota)}</span></li>`;
+      return `<button type="button" class="salto" data-ir="${otra?.id ?? ''}">
+          <span class="flecha">${p.de === id ? '→' : '←'}</span><b>${html(nombreOtra)}</b>
+          <span class="verbo"> · ${html(PASOS[p.tipo])}. ${html(p.nota)}</span>
+        </button>`;
     });
 
     panel.innerHTML = `
@@ -594,8 +598,13 @@ export function renderVientre(contenedor: HTMLElement): void {
       }</p>
       <p>${html(esta ? sala.descripcion : 'El Registro tiene constancia de esta sala y de su ubicación. La descripción se facilita únicamente a quien la ha visitado.')}</p>
       <p class="rango-texto">${salidas.length} ${salidas.length === 1 ? 'salida' : 'salidas'}</p>
-      <ul class="salidas">${salidas.join('')}</ul>
+      <div class="relaciones">${salidas.join('')}</div>
     `;
+
+    for (const boton of panel.querySelectorAll<HTMLButtonElement>('.salto')) {
+      const destino = boton.dataset.ir;
+      if (destino) boton.addEventListener('click', () => mostrar(destino));
+    }
   };
 
   for (const [id, g] of grupos) {

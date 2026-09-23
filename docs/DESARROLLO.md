@@ -633,6 +633,34 @@ escribieron para teclado, y sus cierres eran textos de 7 px en una esquina.
 responde es 1,5 veces el círculo dibujado, y se actúa al **levantar** el dedo,
 para poder corregir un toque arrastrando fuera.
 
+## Linaje y El Vientre: dos exploradores, no dos posters
+
+Las dos secciones con diagrama (`web/src/paginas/linaje.ts` y `vientre.ts`)
+comparten el mismo patrón, y comparten los dos fallos que señaló la revisión:
+
+**Los rótulos se pisaban** (#77). El Linaje dibujaba el verbo de las
+veintiocho relaciones a la vez, y se cruzaban entre sí y con los nodos hasta
+ser ilegibles. Ahora las aristas guardan **dónde iría** su rótulo
+(`sitios`, una función del punto del recorrido) y solo se pintan los de la
+entrada seleccionada: como mucho cinco, y salen en direcciones distintas. Al
+colocarlos se prueban varios puntos de la curva (0,5 · 0,36 · 0,64 · …) hasta
+dar con uno que no pise a otro rótulo ya puesto.
+
+**Había que desplazarse para verlo todo** (#78). El diagrama ocupaba el ancho
+entero y la ficha quedaba debajo, así que leer una entrada era bajar, leer,
+subir a buscar la siguiente y volver a bajar. Ahora es un explorador: el
+diagrama a la izquierda —escalado para caber entero en el hueco que deja la
+ventana, `height: clamp(340px, calc(100vh - 400px), 620px)`— y la ficha a la
+derecha. Y **las relaciones de la ficha son botones**: pulsar una salta a esa
+entrada y el diagrama la sigue, de modo que el linaje se recorre de nombre en
+nombre sin volver al dibujo a buscar. Lo mismo con las salidas de cada sala en
+el plano del Vientre.
+
+En un teléfono no hay forma de que un grafo de siete niveles quepa legible, así
+que ahí el diagrama vuelve a arrastrarse (`overflow: auto`, `min-width: 860px`)
+y la ficha va debajo. El `min-width: 0` del contenedor es lo que impide que ese
+ancho mínimo estire la rejilla y desplace la página entera de lado.
+
 ## La voz del portal
 
 Los textos propios de `web/` (no los que vienen de `src/lore`) hablan como
