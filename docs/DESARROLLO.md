@@ -566,8 +566,9 @@ ambigüedad y deja en paz las demás.
 **Los minijuegos** son los del bible, no otros: el Examen de Pureza ("un test
 que responde cosas que no deberías saber de ti": sabe cuántas veces lo has
 hecho, hasta dónde has bajado y qué hora es), el Sacramento ("precisión
-quirúrgica, tipo Operation pero litúrgico"; fallar deja una mancha en el portal
-que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
+quirúrgica, tipo Operation pero litúrgico"; a pixel, seis pasos que acaban a
+corazón abierto, con el injerto dado entre latido y latido; fallar deja una
+mancha en el portal que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
 al apagarse se ve lo que la luz tapaba; la vela vive en la esquina, a pixel, y se
 aviva con un fósforo: `web/src/vela.ts`). El Sacramento hecho perfecto también
 termina en Reformado: ningún Elegido ha llegado entero en tres generaciones.

@@ -1841,6 +1841,10 @@ button:disabled {
   touch-action: none;
   cursor: crosshair;
 }
+/* Lienzo de baja resolución: se agranda sin suavizar, como el juego. */
+.juego-marco canvas.lienzo-pixel {
+  image-rendering: pixelated;
+}
 .juego-instruccion {
   font-family: var(--f-mono);
   font-size: 14px;
