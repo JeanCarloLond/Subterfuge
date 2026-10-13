@@ -1862,49 +1862,235 @@ button:disabled {
   text-transform: uppercase;
   color: var(--tinta-2);
 }
-.pregunta {
-  position: relative;
-  padding: 22px 24px;
-  margin-bottom: 18px;
+/* El Examen es un expediente del Registro (#84): hoja por pregunta, cruz a
+   tinta, la hoja que se levanta y la resolución sellada con lacre. */
+.legajo {
+  perspective: 1400px;
 }
-.pregunta h3 {
+.hoja-exp {
+  position: relative;
+  padding: 24px 30px 20px;
+  margin-bottom: 18px;
+  transform-origin: top center;
+}
+.hoja-exp-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--f-pixel);
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--oro);
+  border-bottom: 3px double var(--oro-2);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+.hoja-exp-cabecera span:last-child {
+  text-align: right;
+}
+.hoja-exp-folio {
+  font-family: var(--f-pixel);
+  font-size: 11px;
+  color: var(--sangre);
+  margin-bottom: 8px;
+}
+.hoja-exp h3 {
   color: var(--tinta);
   font-size: 20px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 .opciones {
   display: grid;
-  gap: 10px;
 }
 .opciones button {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
   text-align: left;
   font-family: var(--f-texto);
   font-size: 17px;
   letter-spacing: 0;
   text-transform: none;
-  padding: 11px 16px;
-  border-color: rgba(42, 26, 30, 0.35);
+  color: var(--tinta);
+  padding: 10px 6px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dashed rgba(42, 26, 30, 0.28);
+  box-shadow: none;
+  clip-path: none;
 }
 .opciones button:hover {
-  background: rgba(140, 47, 47, 0.1);
+  color: var(--tinta);
+  background: rgba(140, 47, 47, 0.07);
 }
+.opciones button:active {
+  transform: none;
+}
+.opciones button:disabled {
+  cursor: default;
+  opacity: 1;
+  color: var(--tinta-2);
+  background: transparent;
+}
+.opciones button.marcada {
+  color: var(--tinta);
+}
+.casilla {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  border: 2px solid #4a3a3e;
+  background: rgba(255, 250, 235, 0.4);
+}
+/* La cruz a tinta: dos trazos, uno detrás de otro. */
+.marcada .casilla::before,
+.marcada .casilla::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 4px;
+  width: 21px;
+  height: 3px;
+  border-radius: 2px;
+  background: #24161a;
+  animation: trazo 0.16s ease-out both;
+}
+.marcada .casilla::before {
+  transform: rotate(42deg);
+}
+.marcada .casilla::after {
+  transform: rotate(-38deg);
+  animation-delay: 0.14s;
+}
+.marcada span:last-child {
+  text-decoration: underline 2px rgba(36, 22, 26, 0.7);
+  text-underline-offset: 4px;
+}
+@keyframes trazo {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.hoja-exp-pie {
+  margin-top: 16px;
+  font-size: 13px;
+  font-style: italic;
+  text-align: right;
+  color: var(--tinta-2);
+}
+/* Se levanta como la hoja de un legajo, por arriba. */
+.pasando-hoja {
+  animation: levantar-hoja 0.36s ease-in forwards;
+}
+@keyframes levantar-hoja {
+  to {
+    transform: rotateX(78deg) translateY(-24px);
+    opacity: 0;
+  }
+}
+
 .veredicto {
-  padding: 26px 28px;
   border-top: 4px solid var(--sangre);
+  animation: golpe 0.22s 0.62s;
 }
 .veredicto h3 {
   font-size: 24px;
   color: var(--sangre);
   margin-bottom: 10px;
+  padding-right: 96px;
 }
 .veredicto .mono {
   color: var(--tinta-2);
 }
-.progreso-examen {
+.a-maquina {
+  animation: a-maquina 0.3s both;
+  animation-delay: calc(1s + var(--i) * 0.35s);
+}
+@keyframes a-maquina {
+  from {
+    opacity: 0;
+  }
+}
+.lacre {
+  position: absolute;
+  top: 64px;
+  right: 22px;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 48% 52% 46% 54% / 53% 47% 55% 45%;
+  /* Lacre, no botón: mate, con el borde irregular de donde se derramó. */
+  background: radial-gradient(circle at 40% 36%, #a33b34, #8c2f2f 50%, #6e2424);
+  box-shadow:
+    5px -4px 0 -2px #8c2f2f,
+    -6px 3px 0 -3px #7e2a2a,
+    3px 7px 0 -3px #7e2a2a,
+    -3px -6px 0 -4px #8c2f2f,
+    0 3px 2px rgba(40, 12, 12, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 2px 3px rgba(255, 190, 170, 0.12);
+  transform: rotate(-9deg);
+  animation: sellar 0.4s cubic-bezier(0.3, 1.5, 0.5, 1) 0.3s both;
+}
+.lacre::before {
+  content: '';
+  position: absolute;
+  inset: 11px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 210, 190, 0.32);
+}
+.lacre span {
   font-family: var(--f-pixel);
-  font-size: 11px;
-  color: var(--sangre);
-  margin-bottom: 10px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 225, 205, 0.85);
+}
+@keyframes sellar {
+  from {
+    transform: rotate(-9deg) scale(1.9);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(-9deg) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes golpe {
+  30% {
+    transform: translateY(3px);
+  }
+  60% {
+    transform: translateY(-1px);
+  }
+}
+@media (max-width: 600px) {
+  .hoja-exp {
+    padding: 20px 18px 16px;
+  }
+  .lacre {
+    top: 58px;
+    right: 12px;
+    width: 62px;
+    height: 62px;
+  }
+  .lacre::before {
+    inset: 8px;
+  }
+  .veredicto h3 {
+    padding-right: 70px;
+  }
 }
 
 /* -- Pie: el zócalo ------------------------------------------------------------------ */

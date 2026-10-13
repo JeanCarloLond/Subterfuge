@@ -208,7 +208,26 @@ function loQueSabe(vez: number): string[] {
   return lineas;
 }
 
-export function renderExamen(contenedor: HTMLElement): void {
+const QUIETO =
+  typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+const MESES = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+
+/** Cuántos exámenes constan ya, sin contar este. */
+function examenesPrevios(): number {
+  try {
+    return Number(localStorage.getItem(CLAVE_EXAMENES) ?? '0');
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * El Examen es un trámite, así que se rellena en un expediente (#84): una hoja
+ * del Registro por pregunta, la respuesta marcada a tinta, la hoja que se
+ * levanta como en un legajo y, al final, la resolución con su sello de lacre.
+ */
+export function renderExamen(contenedor: HTMLElement): () => void {
   const puntos: Record<Perfil, number> = {
     devoto: 0,
     vestal: 0,
@@ -220,6 +239,7 @@ export function renderExamen(contenedor: HTMLElement): void {
     ojos: 0,
   };
   let indice = 0;
+  let temporizador = 0;
 
   const raiz = elemento(`
     <article>
@@ -231,11 +251,29 @@ export function renderExamen(contenedor: HTMLElement): void {
         respuestas. Al terminar recibirá su clasificación. Se recuerda que el resultado es
         vinculante y que las respuestas se conservan.
       </p>
-      <div id="examen"></div>
+      <div class="legajo" id="examen"></div>
       <p style="margin-top:16px"><a href="#/sacramentos">← Volver a los Sacramentos</a></p>
     </article>
   `);
   const marco = raiz.querySelector('#examen') as HTMLElement;
+
+  const hoy = new Date();
+  const cabecera = (numero: number) => `
+    <header class="hoja-exp-cabecera">
+      <span>Registro de la Diócesis<br />Oficina del Diezmo</span>
+      <span>Expediente ${numero}<br />${hoy.getDate()} · ${MESES[hoy.getMonth()]} · ${hoy.getFullYear()}</span>
+    </header>`;
+  // Cada presentación abre expediente nuevo. Los números de antes son de otros.
+  let numero = 41207 + examenesPrevios() * 37;
+
+  /** Las hojas que quedan debajo se ven por el canto. */
+  const canto = (restantes: number) =>
+    Array.from({ length: Math.min(4, restantes) }, (_, i) => {
+      const d = (i + 1) * 3;
+      return `${d}px ${d}px 0 -1px ${i % 2 ? '#c4b28a' : '#d2c29c'}`;
+    })
+      .concat('0 18px 30px -16px rgba(0, 0, 0, 0.95)', 'inset 0 0 44px rgba(110, 72, 34, 0.3)')
+      .join(', ');
 
   const veredicto = () => {
     const vez = contarExamen();
@@ -246,20 +284,24 @@ export function renderExamen(contenedor: HTMLElement): void {
     const v = VEREDICTOS[perfil];
 
     marco.innerHTML = `
-      <div class="veredicto">
-        <div class="eyebrow">Veredicto del Registro</div>
+      <section class="hoja-exp veredicto">
+        ${cabecera(numero)}
+        <div class="hoja-exp-folio">Resolución</div>
         <h3>${html(v.titulo)}</h3>
         <p>${html(v.texto)}</p>
-        <div class="eyebrow" style="margin-top:18px">Lo que el Registro ya sabía</div>
+        <div class="lacre" aria-hidden="true"><span>Registro</span></div>
+        <div class="eyebrow" style="margin-top:22px">Lo que el Registro ya sabía</div>
         ${loQueSabe(vez)
-          .map((l) => `<p class="mono">${html(l)}</p>`)
+          .map((l, i) => `<p class="mono a-maquina" style="--i:${i}">${html(l)}</p>`)
           .join('')}
-        <p style="margin-top:14px"><button type="button" id="repetir">Presentarse otra vez</button></p>
-      </div>
+        <footer class="hoja-exp-pie">Resolución vinculante. Archívese.</footer>
+        <p style="margin-top:6px"><button type="button" id="repetir">Presentarse otra vez</button></p>
+      </section>
     `;
     marco.querySelector('#repetir')?.addEventListener('click', () => {
       for (const clave of Object.keys(puntos) as Perfil[]) puntos[clave] = 0;
       indice = 0;
+      numero = 41207 + examenesPrevios() * 37;
       preguntar();
     });
   };
@@ -271,26 +313,46 @@ export function renderExamen(contenedor: HTMLElement): void {
     }
     const p = PREGUNTAS[indice];
     marco.innerHTML = `
-      <div class="pregunta">
-        <div class="progreso-examen">${indice + 1} / ${PREGUNTAS.length}</div>
+      <section class="hoja-exp pregunta" style="box-shadow:${canto(PREGUNTAS.length - indice - 1)}">
+        ${cabecera(numero)}
+        <div class="hoja-exp-folio">Pregunta ${ROMANOS[indice]} de ${ROMANOS[PREGUNTAS.length - 1]}</div>
         <h3>${html(p.texto)}</h3>
         <div class="opciones">
-          ${p.opciones.map((o, i) => `<button type="button" data-i="${i}">${html(o.texto)}</button>`).join('')}
+          ${p.opciones
+            .map(
+              (o, i) =>
+                `<button type="button" data-i="${i}"><span class="casilla" aria-hidden="true"></span><span>${html(o.texto)}</span></button>`,
+            )
+            .join('')}
         </div>
-      </div>
+        <footer class="hoja-exp-pie">Rellénese a tinta. No se admiten enmiendas.</footer>
+      </section>
     `;
-    for (const boton of marco.querySelectorAll<HTMLButtonElement>('button[data-i]')) {
+    const hoja = marco.querySelector('.hoja-exp') as HTMLElement;
+    const botones = [...marco.querySelectorAll<HTMLButtonElement>('button[data-i]')];
+    for (const boton of botones) {
       boton.addEventListener('click', () => {
+        // Marcar es definitivo: la tinta no se borra.
+        for (const b of botones) b.disabled = true;
+        boton.classList.add('marcada');
         const opcion = p.opciones[Number(boton.dataset.i)];
         for (const [perfil, n] of Object.entries(opcion.suma) as [Perfil, number][]) {
           puntos[perfil] += n;
         }
         indice += 1;
-        preguntar();
+        if (QUIETO) {
+          temporizador = window.setTimeout(preguntar, 250);
+          return;
+        }
+        temporizador = window.setTimeout(() => {
+          hoja.classList.add('pasando-hoja');
+          temporizador = window.setTimeout(preguntar, 360);
+        }, 480);
       });
     }
   };
 
   contenedor.append(raiz);
   preguntar();
+  return () => window.clearTimeout(temporizador);
 }

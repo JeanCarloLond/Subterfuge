@@ -565,7 +565,8 @@ ambigüedad y deja en paz las demás.
 
 **Los minijuegos** son los del bible, no otros: el Examen de Pureza ("un test
 que responde cosas que no deberías saber de ti": sabe cuántas veces lo has
-hecho, hasta dónde has bajado y qué hora es), el Sacramento ("precisión
+hecho, hasta dónde has bajado y qué hora es; se rellena a tinta en un expediente
+del Registro y la resolución se sella con lacre), el Sacramento ("precisión
 quirúrgica, tipo Operation pero litúrgico"; a pixel, seis pasos que acaban a
 corazón abierto, con el injerto dado entre latido y latido; fallar deja una
 mancha en el portal que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
