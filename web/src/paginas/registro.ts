@@ -73,7 +73,7 @@ export function renderRegistro(contenedor: HTMLElement): void {
         </div>
       `);
       const lienzo = tarjeta.querySelector('canvas') as HTMLCanvasElement;
-      pintarFigura(lienzo, ficha.textura, abierta ? {} : { silueta: 'rgba(60, 40, 48, 0.9)' });
+      pintarFigura(lienzo, ficha.textura, abierta ? {} : { silueta: 'rgba(196, 168, 140, 0.22)' });
       rejilla.append(tarjeta);
     }
     raiz.append(seccion);

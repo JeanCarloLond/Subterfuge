@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Silkscreen&display=swap"
     />
     <link rel="stylesheet" href="./src/estilo.css" />
     <!--
@@ -22,20 +22,44 @@
     -->
   </head>
   <body data-profundidad="0">
+    <!-- El ambiente: polvo del juego, la vela del visitante y el riel de
+         profundidad. Ver src/ambiente.ts. -->
+    <canvas id="polvo" class="polvo" aria-hidden="true"></canvas>
+    <div id="luz" class="luz" aria-hidden="true"></div>
+    <nav id="riel" class="riel" aria-label="Profundidad"></nav>
+
     <header class="cabecera">
       <a class="marca" href="#/">
-        <span class="marca-sello" aria-hidden="true"></span>
+        <canvas
+          id="marca-vela"
+          class="marca-vela"
+          width="20"
+          height="40"
+          aria-hidden="true"
+        ></canvas>
         <span class="marca-texto">
           <span class="marca-nombre">Diócesis de la Carne</span>
           <span class="marca-lema">Los dioses no miran. Son mirados.</span>
         </span>
       </a>
       <nav class="nav" aria-label="Secciones del portal">
-        <a href="#/doctrina" data-ruta="doctrina">Doctrina</a>
-        <a href="#/registro" data-ruta="registro">Registro</a>
-        <a href="#/vientre" data-ruta="vientre">El Vientre</a>
-        <a href="#/linaje" data-ruta="linaje">Linaje</a>
-        <a href="#/sacramentos" data-ruta="sacramentos">Sacramentos</a>
+        <a href="#/doctrina" data-ruta="doctrina"><span class="nav-num">I</span>Doctrina</a>
+        <a href="#/registro" data-ruta="registro"><span class="nav-num">II</span>Registro</a>
+        <a href="#/vientre" data-ruta="vientre"><span class="nav-num">III</span>El Vientre</a>
+        <a href="#/linaje" data-ruta="linaje"><span class="nav-num">IV</span>Linaje</a>
+        <a href="#/sacramentos" data-ruta="sacramentos"
+          ><span class="nav-num">V</span>Sacramentos</a
+        >
+        <button
+          type="button"
+          id="boton-musica"
+          class="boton-musica"
+          aria-pressed="false"
+          title="Escuchar el Vientre"
+        >
+          <span class="musica-icono" aria-hidden="true"></span
+          ><span class="musica-texto">Sonido</span>
+        </button>
         <a class="nav-juego" id="enlace-juego" href="../">Descender</a>
       </nav>
     </header>

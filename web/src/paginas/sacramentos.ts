@@ -23,16 +23,19 @@ export function renderSacramentos(contenedor: HTMLElement): void {
       </p>
       <div class="rejilla">
         <a class="tarjeta" href="#/examen">
+          <canvas class="lamina" data-figura="placa" width="72" height="72" aria-hidden="true"></canvas>
           <span class="profundidad">trámite · vinculante</span>
           <h3>Examen de Pureza</h3>
           <p>Diez preguntas para determinar su lugar en la Diócesis. Conteste con sinceridad; el Registro contrastará sus respuestas con lo que ya consta de usted.</p>
         </a>
         <a class="tarjeta" href="#/sacramento">
+          <canvas class="lamina" data-figura="bandeja" width="72" height="72" aria-hidden="true"></canvas>
           <span class="profundidad">práctica · con las manos</span>
           <h3>El Sacramento</h3>
           <p>Práctica guiada en cuatro pasos: cubrir, pesar, incidir y sellar. Se informa de que los errores quedan registrados y son visibles en el resto del portal.</p>
         </a>
         <a class="tarjeta" href="#/doctrina">
+          <canvas class="lamina" data-figura="vela" width="72" height="72" aria-hidden="true"></canvas>
           <span class="profundidad">lectura · con vela</span>
           <h3>Vigilia</h3>
           <p>Lectura del Códice con vela. Se recomienda mantenerla encendida durante toda la sesión.</p>

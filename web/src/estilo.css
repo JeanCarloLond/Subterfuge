@@ -1,108 +1,161 @@
 /*
  * Portal de la Diócesis de la Carne.
  *
- * La regla del sitio es la del mundo: descender es degradarse. Cada sección
- * tiene una profundidad (data-profundidad en <body>), y cuanto más honda, más
- * oscuro el fondo, menos hueso y más carne, y más se desordena la tipografía.
- * La superficie parece el portal institucional de una iglesia; el fondo ya no.
+ * EL PORTAL ESTÁ HECHO DEL JUEGO (issue #80). La primera versión era una web
+ * institucional limpia sobre papel claro que se oscurecía al bajar: se leía
+ * bien, pero se leía como una página informativa cualquiera. Ahora cada
+ * sección es un muro del Vientre:
  *
- * Paleta del bible: carne, sangre, oro litúrgico, hueso. Y el turquesa, que es
- * el único color que no pertenece a la Diócesis: lo lleva lo que fue de
- * Genesis Vestal (el manual bajo el Códice, las terminales, las cánulas).
+ *   - La PARED es el muro del juego en esa capa: la sillería del equipo en el
+ *     Atrio, la chapa remachada de los Pasillos, la vena de las Criptas, la
+ *     máquina de las Salas (ver ambiente.ts). Descender es degradarse, y se ve
+ *     en la piedra, igual que jugando.
+ *   - Lo que se lee va en DOCUMENTOS clavados al muro: folios, fichas, placas.
+ *     Pergamino sobre piedra, como el Códice y las placas del Registro dentro
+ *     del juego.
+ *   - Hay POLVO que cae y una VELA que acompaña al puntero.
+ *   - Las etiquetas, los números y los botones van en letra de PIXEL
+ *     (Silkscreen): es la voz del HUD del juego. Los títulos, en capitales
+ *     litúrgicas (Cinzel); el cuerpo, en Crimson Pro.
+ *
+ * Paleta del bible: carne, sangre, oro litúrgico, hueso. Y el turquesa, el
+ * único color que no pertenece a la Diócesis: lo lleva lo que fue de Genesis
+ * Vestal (el manual bajo el Códice, las terminales, los desvíos del plano).
+ *
+ * LOS TOKENS SE REDEFINEN POR ÁMBITO. Sobre la piedra, `--tinta` es claro;
+ * dentro de un documento de pergamino, `.documento` lo vuelve oscuro, y todo
+ * lo que hay dentro le sigue sin una regla más. `--hueso` sigue siendo "la
+ * superficie" (los diagramas SVG lo usan como relleno de los nodos).
  */
 
 :root {
-  --hueso: #e7e0d1;
-  --hueso-2: #d8cfbb;
-  --tinta: #221820;
-  --tinta-2: #57494f;
-  --sangre: #8c2f2f;
-  --sangre-2: #b84a44;
-  --oro: #8f6d22;
-  --oro-2: #c9a44c;
-  --carne: #a86a66;
-  --turquesa: #2c8d88;
-  --lapiz: #4b4754;
-  --regla: rgba(34, 24, 32, 0.18);
-  --panel: rgba(34, 24, 32, 0.05);
-  --sombra: rgba(20, 10, 14, 0.35);
-  --ruido: 0;
+  /* Piedra y luz */
+  --piedra: #0e0a0c;
+  --hueso: #1c1519;
+  --hueso-2: #140f12;
+  --tinta: #ece2cf;
+  --tinta-2: #b3a596;
+  --sangre: #c9544c;
+  --sangre-2: #e06a5f;
+  --sangre-honda: #8c2f2f;
+  --oro: #d1ad58;
+  --oro-2: #ecc877;
+  --carne: #b8837d;
+  --turquesa: #5cc9c1;
+  --lapiz: #b6adbd;
+  --regla: rgba(236, 226, 207, 0.15);
+  --panel: rgba(16, 11, 14, 0.72);
+  --sombra: rgba(0, 0, 0, 0.7);
+  --boton-fondo: rgba(20, 14, 17, 0.6);
+
+  /* Pergamino */
+  --perg: #d9c9a3;
+  --perg-oscuro: #b9a67c;
+  --perg-tinta: #2a1a1e;
+
+  /* El muro de la capa: lo pone ambiente.ts */
+  --muro: none;
+  --muro-tamano: 384px 96px;
+  --muro-oscuro: 0.66;
+
+  /* Tipografía */
+  --f-titulo: Cinzel, 'Trajan Pro', Georgia, serif;
+  --f-texto: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  --f-pixel: Silkscreen, 'IBM Plex Mono', Consolas, monospace;
+  --f-mono: 'IBM Plex Mono', Consolas, monospace;
 }
 
+/* Cada capa, un poco más honda: el muro se apaga y la luz se enfría. */
 body[data-profundidad='1'] {
-  --hueso: #ddd4c2;
-  --hueso-2: #cbc0a9;
+  --muro-oscuro: 0.68;
 }
 body[data-profundidad='2'] {
-  --hueso: #cfc4b0;
-  --hueso-2: #b9ac95;
-  --panel: rgba(34, 24, 32, 0.07);
+  --muro-oscuro: 0.7;
 }
 body[data-profundidad='3'] {
-  --hueso: #3a2c31;
-  --hueso-2: #2b2025;
-  --tinta: #e0d6c6;
-  --tinta-2: #b3a597;
+  --muro-oscuro: 0.74;
   --oro: #c9a44c;
-  --sangre: #c85752;
-  --lapiz: #b6adbd;
-  --regla: rgba(224, 214, 198, 0.2);
-  --panel: rgba(224, 214, 198, 0.06);
-  --ruido: 0.4;
 }
 body[data-profundidad='4'] {
-  --hueso: #241a1f;
-  --hueso-2: #1a1216;
-  --tinta: #e0d6c6;
-  --tinta-2: #a99b8f;
-  --oro: #c9a44c;
+  --muro-oscuro: 0.78;
   --sangre: #d05a52;
-  --lapiz: #b6adbd;
-  --regla: rgba(224, 214, 198, 0.2);
-  --panel: rgba(224, 214, 198, 0.06);
-  --ruido: 0.7;
 }
 body[data-profundidad='5'] {
-  --hueso: #140e12;
-  --hueso-2: #0d090b;
-  --tinta: #dccfbd;
-  --tinta-2: #9d8f85;
-  --oro: #c9a44c;
+  --muro-oscuro: 0.82;
   --sangre: #d9625a;
-  --lapiz: #b6adbd;
-  --regla: rgba(224, 214, 198, 0.2);
-  --panel: rgba(224, 214, 198, 0.07);
-  --ruido: 1;
 }
+
+/* Dentro de un documento, la tinta es tinta. */
+.documento,
+.tarjeta,
+.ficha,
+.pregunta,
+.veredicto,
+.linaje-panel,
+.capa-detalle,
+.expediente > div {
+  --tinta: var(--perg-tinta);
+  --tinta-2: #5d4b50;
+  --oro: #7a5f1e;
+  --oro-2: #9a7a2c;
+  --sangre: #8c2f2f;
+  --sangre-2: #a83a36;
+  --regla: rgba(42, 26, 30, 0.2);
+  --panel: rgba(42, 26, 30, 0.06);
+  --boton-fondo: rgba(255, 248, 230, 0.35);
+  --hueso: var(--perg);
+  color: var(--tinta);
+  background:
+    radial-gradient(ellipse at 18% 8%, rgba(255, 250, 230, 0.4), transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(120, 78, 38, 0.22), transparent 55%),
+    radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px) 0 0 / 4px 4px,
+    var(--perg);
+  box-shadow:
+    0 14px 28px -14px rgba(0, 0, 0, 0.9),
+    0 2px 0 rgba(0, 0, 0, 0.45),
+    inset 0 0 44px rgba(110, 72, 34, 0.3);
+}
+
+/* -- Base --------------------------------------------------------------------- */
 
 * {
   box-sizing: border-box;
 }
 html {
   scroll-behavior: smooth;
+  background: var(--piedra);
 }
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--hueso);
   color: var(--tinta);
-  font-family: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  font-family: var(--f-texto);
   font-size: 18px;
   line-height: 1.5;
-  transition:
-    background-color 0.9s ease,
-    color 0.9s ease;
+  background-color: var(--piedra);
+  background-image:
+    linear-gradient(rgba(10, 7, 9, var(--muro-oscuro)), rgba(10, 7, 9, var(--muro-oscuro))),
+    var(--muro);
+  background-size: auto, var(--muro-tamano);
+  background-attachment: fixed, fixed;
+  image-rendering: pixelated;
 }
-body::before {
-  /* Grano del papel: crece con la profundidad hasta ser suciedad. */
+/* Grano y viñeta: lo que vuelve una pantalla un sitio con aire. */
+body::before,
+body::after {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: calc(0.06 + var(--ruido) * 0.16);
-  background-image: radial-gradient(rgba(0, 0, 0, 0.5) 0.6px, transparent 0.7px);
+  z-index: 1;
+}
+body::before {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.55) 0.7px, transparent 0.8px);
   background-size: 3px 3px;
-  z-index: 0;
+  opacity: 0.35;
+}
+body::after {
+  background: radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(4, 2, 3, 0.75) 100%);
 }
 
 a {
@@ -110,26 +163,34 @@ a {
 }
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+.nodo:focus-visible {
   outline: 2px solid var(--turquesa);
   outline-offset: 2px;
+}
+::selection {
+  background: rgba(201, 84, 76, 0.45);
+  color: #fff;
 }
 
 h1,
 h2,
 h3 {
-  font-family: Cinzel, 'Trajan Pro', Georgia, serif;
+  font-family: var(--f-titulo);
   letter-spacing: 0.03em;
   text-wrap: balance;
   margin: 0;
 }
 h1 {
-  font-size: clamp(30px, 5vw, 46px);
-  font-weight: 600;
-  line-height: 1.1;
+  font-size: clamp(32px, 5.2vw, 54px);
+  font-weight: 700;
+  line-height: 1.05;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.6),
+    0 0 26px rgba(232, 160, 58, 0.18);
 }
 h2 {
-  font-size: clamp(20px, 3vw, 26px);
+  font-size: clamp(21px, 3vw, 28px);
   font-weight: 600;
 }
 h3 {
@@ -140,71 +201,237 @@ h3 {
 p {
   margin: 0 0 14px;
 }
+
+/* La voz del HUD: pixel, mayúsculas, oro. */
 .eyebrow {
-  font-family: Cinzel, Georgia, serif;
+  font-family: var(--f-pixel);
   font-size: 12px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--oro);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--sangre);
+  box-shadow: 0 0 10px rgba(201, 84, 76, 0.7);
+  flex: none;
 }
 .mono {
-  font-family: 'IBM Plex Mono', Consolas, monospace;
+  font-family: var(--f-mono);
   font-size: 14px;
 }
 kbd {
-  font-family: 'IBM Plex Mono', Consolas, monospace;
-  font-size: 0.8em;
-  border: 1px solid var(--regla);
-  border-bottom-width: 2px;
-  border-radius: 3px;
+  font-family: var(--f-pixel);
+  font-size: 0.75em;
+  border: 2px solid var(--regla);
   padding: 0 5px;
 }
+
+/* -- Botones: biselados como los del HUD ------------------------------------ */
+
 button,
 .boton {
-  font-family: Cinzel, Georgia, serif;
-  font-size: 13px;
-  letter-spacing: 0.12em;
+  --bisel: 4px;
+  font-family: var(--f-pixel);
+  font-size: 12px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--tinta);
-  background: transparent;
-  border: 1px solid var(--tinta-2);
-  padding: 9px 16px;
+  background: var(--boton-fondo);
+  border: 2px solid var(--tinta-2);
+  padding: 9px 15px;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.3);
+  clip-path: polygon(
+    var(--bisel) 0,
+    calc(100% - var(--bisel)) 0,
+    100% var(--bisel),
+    100% calc(100% - var(--bisel)),
+    calc(100% - var(--bisel)) 100%,
+    var(--bisel) 100%,
+    0 calc(100% - var(--bisel)),
+    0 var(--bisel)
+  );
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background-color 0.15s,
+    transform 0.1s;
 }
 button:hover,
 .boton:hover {
   border-color: var(--sangre);
   color: var(--sangre);
 }
+button:active,
+.boton:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
 button:disabled {
   opacity: 0.45;
   cursor: default;
 }
 .boton-lleno {
-  background: var(--sangre);
+  background: var(--sangre-honda);
   border-color: var(--sangre);
-  color: #f2eadb;
+  color: #f6ecd8;
 }
 .boton-lleno:hover {
   color: #fff;
-  background: var(--sangre-2);
+  background: var(--sangre);
 }
 
-/* -- Cabecera ------------------------------------------------------------ */
+/* -- Ambiente: polvo, vela y riel --------------------------------------------- */
+
+.polvo {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.luz {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    circle 320px at var(--luz-x, 50%) var(--luz-y, 20%),
+    rgba(255, 196, 120, 0.15),
+    rgba(232, 160, 58, 0.06) 42%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+.luz.fija {
+  background: radial-gradient(
+    ellipse 70% 45% at 50% 0%,
+    rgba(255, 210, 150, 0.12),
+    transparent 70%
+  );
+}
+
+/* El riel de profundidad: una cadena con seis paradas, a la izquierda. */
+.riel {
+  position: fixed;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 15;
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  padding: 14px 0;
+}
+@media (min-width: 1320px) {
+  .riel {
+    display: flex;
+  }
+}
+.riel-cadena {
+  position: absolute;
+  left: 13px;
+  top: 0;
+  bottom: 26px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(209, 173, 88, 0.55) 0 5px,
+    transparent 5px 8px
+  );
+}
+.riel-parada {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--tinta-2);
+}
+.riel-numero {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  color: var(--tinta-2);
+  background: #150f12;
+  border: 2px solid rgba(209, 173, 88, 0.45);
+  transition:
+    background 0.3s,
+    color 0.3s,
+    box-shadow 0.3s;
+}
+.riel-nombre {
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  white-space: nowrap;
+}
+.riel-parada:hover .riel-nombre,
+.riel-parada.actual .riel-nombre {
+  opacity: 1;
+  transform: none;
+}
+.riel-parada.pasada .riel-numero {
+  border-color: var(--oro);
+  color: var(--oro);
+}
+.riel-parada.actual .riel-numero {
+  background: var(--sangre-honda);
+  border-color: var(--oro-2);
+  color: #fff;
+  box-shadow:
+    0 0 0 3px rgba(10, 7, 9, 0.9),
+    0 0 18px rgba(232, 160, 58, 0.7);
+}
+.riel-parada.actual .riel-nombre {
+  color: var(--tinta);
+}
+.riel-cota {
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  color: var(--turquesa);
+  padding-left: 2px;
+  margin-top: 4px;
+}
+
+/* -- Cabecera: un dintel de piedra -------------------------------------------- */
 
 .cabecera {
-  position: relative;
-  z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px 24px;
-  padding: 18px clamp(16px, 5vw, 48px);
-  border-bottom: 1px solid var(--regla);
+  padding: 12px clamp(16px, 5vw, 48px);
+  background: linear-gradient(rgba(8, 5, 7, 0.96), rgba(12, 8, 10, 0.88));
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(209, 173, 88, 0.55);
+  box-shadow:
+    0 3px 0 rgba(8, 5, 7, 0.9),
+    0 4px 0 rgba(209, 173, 88, 0.25),
+    0 16px 30px -18px #000;
 }
 .marca {
   display: flex;
@@ -213,37 +440,31 @@ button:disabled {
   text-decoration: none;
   color: var(--tinta);
 }
-.marca-sello {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 2px solid var(--oro);
-  position: relative;
+.marca-vela {
+  width: 20px;
+  height: 40px;
+  image-rendering: pixelated;
   flex: none;
+  filter: drop-shadow(0 -4px 8px rgba(255, 190, 100, 0.75));
+  animation: llama 2.4s ease-in-out infinite;
 }
-.marca-sello::before,
-.marca-sello::after {
-  content: '';
-  position: absolute;
-  background: var(--sangre);
-}
-.marca-sello::before {
-  width: 2px;
-  height: 22px;
-  left: 16px;
-  top: 6px;
-}
-.marca-sello::after {
-  width: 14px;
-  height: 2px;
-  left: 10px;
-  top: 13px;
+@keyframes llama {
+  0%,
+  100% {
+    filter: drop-shadow(0 -4px 8px rgba(255, 190, 100, 0.75));
+  }
+  45% {
+    filter: drop-shadow(0 -5px 12px rgba(255, 170, 80, 0.95));
+  }
+  60% {
+    filter: drop-shadow(0 -3px 6px rgba(255, 200, 120, 0.6));
+  }
 }
 .marca-nombre {
   display: block;
-  font-family: Cinzel, Georgia, serif;
+  font-family: var(--f-titulo);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 19px;
   letter-spacing: 0.08em;
 }
 .marca-lema {
@@ -255,93 +476,327 @@ button:disabled {
 .nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 18px;
-  font-family: Cinzel, Georgia, serif;
-  font-size: 13px;
-  letter-spacing: 0.12em;
+  align-items: center;
+  gap: 4px 20px;
+  font-family: var(--f-pixel);
+  font-size: 12px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 .nav a {
   color: var(--tinta-2);
   text-decoration: none;
-  padding: 6px 0;
+  padding: 8px 0 6px;
   border-bottom: 2px solid transparent;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    text-shadow 0.2s;
+}
+.nav-num {
+  color: var(--oro);
+  margin-right: 6px;
+  font-size: 10px;
 }
 .nav a:hover,
 .nav a.activa {
   color: var(--tinta);
   border-bottom-color: var(--sangre);
+  text-shadow: 0 0 12px rgba(232, 160, 58, 0.55);
 }
 .nav .nav-juego {
-  color: var(--sangre);
-  border: 1px solid var(--sangre);
-  padding: 6px 12px;
+  --bisel: 4px;
+  color: #f6ecd8;
+  background: var(--sangre-honda);
+  border: 2px solid var(--sangre);
+  padding: 8px 14px;
+  clip-path: polygon(
+    var(--bisel) 0,
+    calc(100% - var(--bisel)) 0,
+    100% var(--bisel),
+    100% calc(100% - var(--bisel)),
+    calc(100% - var(--bisel)) 100%,
+    var(--bisel) 100%,
+    0 calc(100% - var(--bisel)),
+    0 var(--bisel)
+  );
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35);
 }
 .nav .nav-juego:hover {
   background: var(--sangre);
-  color: #f2eadb;
+  color: #fff;
+  text-shadow: none;
 }
 
-/* -- Página -------------------------------------------------------------- */
+/* El botón de sonido: dos barras de pixel que se mueven si suena. */
+.boton-musica {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-color: rgba(179, 165, 150, 0.4);
+}
+.musica-icono {
+  width: 12px;
+  height: 12px;
+  background:
+    linear-gradient(currentColor, currentColor) 0 100% / 3px 40% no-repeat,
+    linear-gradient(currentColor, currentColor) 4px 100% / 3px 80% no-repeat,
+    linear-gradient(currentColor, currentColor) 8px 100% / 3px 55% no-repeat;
+  opacity: 0.55;
+}
+.boton-musica.encendida {
+  color: var(--oro-2);
+  border-color: var(--oro);
+}
+.boton-musica.encendida .musica-icono {
+  opacity: 1;
+  animation: ecualizador 0.9s steps(3) infinite;
+}
+.boton-musica.recordada:not(.encendida) {
+  border-color: var(--oro);
+}
+@keyframes ecualizador {
+  0% {
+    background-size:
+      3px 40%,
+      3px 80%,
+      3px 55%;
+  }
+  50% {
+    background-size:
+      3px 90%,
+      3px 35%,
+      3px 75%;
+  }
+  100% {
+    background-size:
+      3px 60%,
+      3px 70%,
+      3px 30%;
+  }
+}
+
+/* -- Página: la nave por la que se baja ---------------------------------------- */
 
 .pagina {
   position: relative;
-  z-index: 1;
-  max-width: 76ch;
+  z-index: 2;
+  max-width: calc(76ch + 96px);
   margin-inline: auto;
   padding-inline: clamp(16px, 5vw, 48px);
-  padding-block: 40px 72px;
+  padding-block: 48px 80px;
+  /* La nave: el muro se apaga detrás del texto y sigue viéndose a los lados. */
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(12, 8, 10, 0.86) 36px,
+    rgba(12, 8, 10, 0.86) calc(100% - 36px),
+    transparent
+  );
+  min-height: calc(100vh - 90px);
 }
 .pagina:focus {
   outline: none;
 }
 .pagina.ancha {
-  max-width: 1100px;
+  max-width: 1200px;
 }
+
+/* Cambiar de sección es bajar o subir una capa. */
+.pagina.pasando {
+  animation: pasar 0.22s ease-in forwards;
+}
+.pagina.llegando-abajo {
+  animation: llegar-abajo 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pagina.llegando-arriba {
+  animation: llegar-arriba 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes pasar {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: blur(3px);
+  }
+}
+@keyframes llegar-abajo {
+  from {
+    opacity: 0;
+    transform: translateY(34px);
+    filter: blur(3px);
+  }
+}
+@keyframes llegar-arriba {
+  from {
+    opacity: 0;
+    transform: translateY(-34px);
+    filter: blur(3px);
+  }
+}
+
 .seccion {
-  margin-bottom: 48px;
+  margin-bottom: 52px;
+}
+.seccion > h2 {
+  margin-bottom: 6px;
 }
 .lede {
   font-size: 21px;
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--tinta-2);
 }
 .filete {
-  height: 3px;
+  height: 4px;
   border-top: 1px solid var(--oro);
   border-bottom: 1px solid var(--oro);
-  margin: 18px 0 28px;
+  margin: 20px 0 30px;
   position: relative;
+  opacity: 0.85;
 }
 .filete::after {
   content: '';
   position: absolute;
   left: 50%;
-  top: -4px;
-  width: 9px;
-  height: 9px;
-  background: var(--oro);
+  top: -5px;
+  width: 11px;
+  height: 11px;
+  background: var(--sangre);
+  border: 2px solid var(--oro);
   transform: translateX(-50%) rotate(45deg);
 }
 
-/* Tarjetas de la portada */
+/* -- Portada: la escena del Atrio ------------------------------------------------ */
+
+.escena {
+  position: relative;
+  margin: -48px 0 56px;
+  border-bottom: 1px solid rgba(209, 173, 88, 0.4);
+}
+.escena canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+.escena-texto {
+  position: absolute;
+  left: clamp(16px, 4vw, 52px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 46%;
+}
+.escena h1 {
+  font-size: clamp(34px, 5.4vw, 68px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+.escena-lema {
+  font-style: italic;
+  font-size: clamp(16px, 2vw, 22px);
+  color: var(--tinta);
+  text-shadow: 0 2px 6px #000;
+  margin: 0 0 18px;
+}
+.escena-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 700px) {
+  /* En un teléfono el título va debajo, así que la mitad izquierda de la
+     escena (la penumbra reservada al título) sobra: se encuadra solo el Atrio
+     con sus figuras, y se ven el doble de grandes. */
+  .escena canvas {
+    aspect-ratio: 170 / 124;
+    object-fit: cover;
+    object-position: 100% 50%;
+  }
+  .escena-texto {
+    position: static;
+    transform: none;
+    max-width: none;
+    padding: 18px 0 0;
+  }
+  .escena {
+    margin-bottom: 36px;
+  }
+}
+.portada-texto {
+  max-width: 76ch;
+  margin-inline: auto;
+}
+
+/* -- Placas: los documentos clavados al muro ------------------------------------- */
+
 .rejilla {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 .tarjeta {
+  position: relative;
   display: block;
   text-decoration: none;
-  color: var(--tinta);
-  padding: 18px 18px 16px;
-  background: var(--panel);
-  border-top: 2px solid var(--oro);
+  padding: 20px 20px 18px;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.25s;
+}
+.tarjeta:has(.lamina) {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: 4px 16px;
+  align-items: start;
+}
+.tarjeta:has(.lamina) > :not(.lamina) {
+  grid-column: 2;
+}
+.tarjeta .lamina {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  width: 72px;
+  height: 72px;
+  image-rendering: pixelated;
+  background: radial-gradient(circle at 50% 45%, #3a2a2c, #140e11 75%);
+  box-shadow:
+    inset 0 0 0 2px rgba(42, 26, 30, 0.85),
+    inset 0 0 18px rgba(0, 0, 0, 0.9);
+}
+/* Dos clavos arriba: el papel está clavado, no apoyado. */
+.tarjeta::before,
+.tarjeta::after,
+.ficha::before,
+.ficha::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle at 35% 35%, #c9b07a, #5a4520 70%);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+.tarjeta::before,
+.ficha::before {
+  left: 8px;
+}
+.tarjeta::after,
+.ficha::after {
+  right: 8px;
 }
 .tarjeta:hover {
-  border-top-color: var(--sangre);
+  transform: translateY(-4px) rotate(-0.4deg);
+  box-shadow:
+    0 22px 34px -16px rgba(0, 0, 0, 0.95),
+    0 0 0 1px rgba(201, 164, 76, 0.7),
+    0 0 46px -8px rgba(232, 160, 58, 0.55),
+    inset 0 0 44px rgba(110, 72, 34, 0.25);
 }
 .tarjeta h3 {
+  font-size: 17px;
   color: var(--tinta);
   margin-bottom: 6px;
 }
@@ -349,14 +804,19 @@ button:disabled {
   margin: 0;
   color: var(--tinta-2);
   font-size: 16px;
+  line-height: 1.45;
 }
 .tarjeta .profundidad {
   display: block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--oro);
-  margin-bottom: 8px;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sangre);
+  margin-bottom: 6px;
 }
+
+/* -- Tablas y expediente ---------------------------------------------------------- */
 
 .tabla {
   width: 100%;
@@ -365,56 +825,62 @@ button:disabled {
 }
 .tabla th {
   text-align: left;
-  font-family: Cinzel, serif;
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--oro);
-  padding: 6px 10px 6px 0;
-  border-bottom: 1px solid var(--tinta-2);
+  padding: 8px 12px 8px 0;
+  border-bottom: 2px solid rgba(209, 173, 88, 0.5);
 }
 .tabla td {
-  padding: 8px 10px 8px 0;
+  padding: 10px 12px 10px 0;
   border-bottom: 1px solid var(--regla);
   vertical-align: top;
+}
+.tabla tr:hover td {
+  background: rgba(209, 173, 88, 0.05);
 }
 .expediente {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
-.expediente div {
-  padding: 12px 14px;
-  background: var(--panel);
+.expediente > div {
+  padding: 14px 16px;
 }
 .expediente b {
   display: block;
-  font-family: Cinzel, serif;
-  font-size: 11px;
-  letter-spacing: 0.14em;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--oro);
+  margin-bottom: 4px;
 }
 .expediente span {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--f-pixel);
   font-size: 22px;
+  color: var(--sangre);
   font-variant-numeric: tabular-nums;
 }
 
-/* -- Doctrina: los folios y la vela -------------------------------------- */
+/* -- Doctrina: los folios y la vela ------------------------------------------------ */
 
 .vigilia {
   position: sticky;
-  top: 12px;
-  z-index: 2;
+  top: 86px;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 10px 14px;
-  margin-bottom: 28px;
-  background: var(--hueso);
-  border: 1px solid var(--regla);
-  box-shadow: 0 6px 18px -10px var(--sombra);
+  padding: 10px 16px;
+  margin-bottom: 30px;
+  background: rgba(10, 7, 9, 0.92);
+  border: 1px solid rgba(209, 173, 88, 0.5);
+  box-shadow:
+    0 0 0 3px rgba(10, 7, 9, 0.6),
+    0 10px 24px -12px #000;
 }
 .vela {
   width: 26px;
@@ -428,8 +894,7 @@ button:disabled {
   bottom: 0;
   width: 10px;
   height: var(--cera, 30px);
-  background: linear-gradient(#efe6cf, #d8cba8);
-  border-radius: 2px 2px 0 0;
+  background: linear-gradient(90deg, #d8cba8, #efe6cf 40%, #c9b88f);
   transition: height 0.5s linear;
 }
 .vela-llama {
@@ -440,6 +905,7 @@ button:disabled {
   height: 14px;
   border-radius: 50% 50% 45% 45%;
   background: radial-gradient(#fff3c4, #e8a03a 55%, rgba(140, 47, 47, 0));
+  box-shadow: 0 -2px 18px 6px rgba(255, 180, 90, 0.35);
   animation: parpadeo 0.28s infinite alternate;
   transition: bottom 0.5s linear;
 }
@@ -489,13 +955,17 @@ button:disabled {
 
 .folio {
   position: relative;
-  margin: 0 0 36px;
-  padding: 26px 28px 24px 52px;
-  background: #d9cba6;
+  margin: 0 0 40px;
+  padding: 28px 30px 26px 56px;
   color: #2a1a1e;
+  background:
+    radial-gradient(ellipse at 15% 5%, rgba(255, 250, 230, 0.45), transparent 50%),
+    radial-gradient(ellipse at 90% 95%, rgba(110, 70, 35, 0.28), transparent 55%),
+    radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px) 0 0 / 4px 4px,
+    #d9caa4;
   box-shadow:
-    3px 4px 0 rgba(0, 0, 0, 0.35),
-    inset 0 0 60px rgba(90, 60, 30, 0.25);
+    0 18px 30px -16px rgba(0, 0, 0, 0.95),
+    inset 0 0 60px rgba(90, 60, 30, 0.3);
   transition:
     background-color 0.8s,
     color 0.8s;
@@ -516,18 +986,18 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-family: Cinzel, serif;
-  font-size: 12px;
-  letter-spacing: 0.14em;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #7a5f1e;
-  border-bottom: 1px solid #9a7a2c;
-  padding-bottom: 6px;
-  margin-bottom: 14px;
+  border-bottom: 2px solid #9a7a2c;
+  padding-bottom: 7px;
+  margin-bottom: 16px;
 }
 .folio h3 {
   color: #8c2f2f;
-  font-size: 18px;
+  font-size: 20px;
   margin-bottom: 12px;
 }
 .versiculos {
@@ -548,14 +1018,15 @@ button:disabled {
   content: counter(v);
   position: absolute;
   left: -26px;
-  top: 3px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  top: 4px;
+  font-family: var(--f-pixel);
+  font-size: 10px;
   color: #8c2f2f;
 }
 .versiculos li:first-child::first-letter {
-  font-family: Cinzel, serif;
-  font-size: 1.6em;
+  font-family: var(--f-titulo);
+  font-size: 1.7em;
+  font-weight: 700;
   color: #8c2f2f;
   line-height: 0.8;
   padding-right: 2px;
@@ -583,87 +1054,102 @@ button:disabled {
   display: none;
   margin-top: 18px;
   padding: 12px 14px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--f-mono);
   font-size: 13px;
   line-height: 1.6;
   color: #7fd7d1;
-  background: rgba(10, 30, 30, 0.55);
+  background: rgba(8, 26, 26, 0.75);
   border: 1px dashed rgba(127, 215, 209, 0.5);
+  text-shadow: 0 0 8px rgba(92, 201, 193, 0.45);
 }
 .manual p {
   margin: 0;
 }
 .apagada .folio {
-  background: #2a2126;
+  background: #1f181c;
   color: #6f6360;
-  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.6);
+  box-shadow: 0 18px 30px -16px #000;
 }
 .apagada .folio::before {
-  filter: brightness(0.5);
+  filter: brightness(0.4);
 }
 .apagada .folio h3,
 .apagada .folio-cabecera {
   color: #6f5b4a;
 }
 .apagada .versiculos li {
-  opacity: 0.3;
+  opacity: 0.28;
 }
 .apagada .margen {
   opacity: 1;
-  color: #cfc4c9;
-  border-left-color: #cfc4c9;
+  color: #d8cfd4;
+  border-left-color: #d8cfd4;
 }
 .apagada .manual.abierto {
   display: block;
 }
 
-/* -- Registro ------------------------------------------------------------ */
+/* -- Registro: fichas con su lámina en vitrina ------------------------------------- */
 
 .fichas {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
 }
 .ficha {
+  position: relative;
   display: grid;
   grid-template-columns: 96px 1fr;
-  gap: 14px;
-  padding: 14px;
-  background: var(--panel);
-  border-top: 2px solid var(--oro);
+  gap: 16px;
+  padding: 22px 16px 16px;
   align-items: start;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.25s;
+}
+.ficha:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 20px 30px -16px #000,
+    0 0 0 1px rgba(201, 164, 76, 0.6),
+    inset 0 0 44px rgba(110, 72, 34, 0.25);
 }
 .ficha.cerrada {
-  border-top-color: var(--tinta-2);
+  filter: saturate(0.5) brightness(0.86);
 }
 .ficha canvas {
   width: 96px;
   height: 96px;
   image-rendering: pixelated;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--regla);
+  background: radial-gradient(circle at 50% 45%, #3a2a2c, #120c0f 75%);
+  box-shadow:
+    inset 0 0 0 2px rgba(42, 26, 30, 0.9),
+    inset 0 0 22px rgba(0, 0, 0, 0.95);
 }
 .ficha h3 {
   color: var(--tinta);
-  font-size: 15px;
-  margin-bottom: 2px;
+  font-size: 16px;
+  margin-bottom: 4px;
 }
 .ficha .hallazgo {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--oro);
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--sangre);
   margin-bottom: 8px;
 }
 .ficha p {
   margin: 0;
   font-size: 16px;
+  line-height: 1.45;
   color: var(--tinta-2);
 }
 .ficha.cerrada p {
   font-style: italic;
 }
 
-/* -- El Vientre ---------------------------------------------------------- */
+/* -- El Vientre (corte antiguo, por si alguna página aún lo usa) ------------------- */
 
 .capas {
   display: grid;
@@ -683,21 +1169,18 @@ button:disabled {
 }
 .capa {
   text-align: left;
-  font-family: Cinzel, serif;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--f-pixel);
+  font-size: 11px;
   color: #e6dccb;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  padding: 14px 14px;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  padding: 14px;
   cursor: pointer;
   position: relative;
 }
 .capa small {
   display: block;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--f-mono);
   font-size: 11px;
-  letter-spacing: 0;
   text-transform: none;
   opacity: 0.8;
   margin-top: 2px;
@@ -712,35 +1195,31 @@ button:disabled {
 }
 .capa-detalle {
   padding: 18px 20px;
-  background: var(--panel);
-  border-top: 2px solid var(--oro);
   min-height: 180px;
 }
 .capa-detalle p {
   font-size: 18px;
 }
 .capa-detalle .estado {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
+  font-family: var(--f-pixel);
+  font-size: 11px;
   color: var(--oro);
 }
 
-/* -- Linaje -------------------------------------------------------------- */
+/* -- Linaje y plano del Vientre: el explorador ------------------------------------- */
 
 /*
- * El explorador: diagrama a la izquierda, ficha a la derecha, y los dos
- * caben en pantalla a la vez (issue #78). Antes el diagrama ocupaba todo el
- * ancho y la ficha quedaba debajo, asi que leer una entrada era bajar, leer,
- * subir a buscar la siguiente y volver a bajar.
+ * Diagrama a la izquierda, ficha a la derecha, y los dos caben en pantalla a
+ * la vez (issue #78). El diagrama es un PLANO sobre piedra; la ficha, un
+ * documento de pergamino.
  */
 .linaje {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 350px);
+  gap: 20px;
   align-items: stretch;
-  /* Lo que queda de ventana bajo la cabecera y la entradilla: el plano y la
-     ficha caben juntos sin que la pagina se desplace. */
-  height: clamp(340px, calc(100vh - 400px), 620px);
+  /* Lo que queda de ventana bajo la cabecera y la entradilla. */
+  height: clamp(340px, calc(100vh - 430px), 640px);
 }
 @media (max-width: 880px) {
   .linaje {
@@ -751,22 +1230,28 @@ button:disabled {
 .linaje-lienzo {
   /* En pantalla ancha el plano entero cabe: no se desplaza, se mira. */
   overflow: hidden;
-  /* Sin esto, el ancho minimo del dibujo estira la rejilla y en un telefono
-     la pagina entera se desplaza de lado, con la entradilla cortada. */
+  /* Sin esto, el ancho mínimo del dibujo estira la rejilla y en un teléfono
+     la página entera se desplaza de lado. */
   min-width: 0;
   display: grid;
   place-items: center;
-  background: var(--panel);
-  border: 1px solid var(--regla);
+  background:
+    linear-gradient(rgba(209, 173, 88, 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(209, 173, 88, 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
+    rgba(10, 7, 9, 0.88);
+  border: 1px solid rgba(209, 173, 88, 0.45);
+  box-shadow:
+    0 0 0 4px rgba(10, 7, 9, 0.75),
+    inset 0 0 60px rgba(0, 0, 0, 0.8);
 }
 .linaje-lienzo svg {
   display: block;
   width: 100%;
   height: 100%;
-  font-family: 'Crimson Pro', Georgia, serif;
+  font-family: var(--f-texto);
 }
 @media (max-width: 880px) {
-  /* En un telefono no hay forma de que quepa legible: se arrastra. */
+  /* En un teléfono no hay forma de que quepa legible: se arrastra. */
   .linaje-lienzo {
     overflow: auto;
     display: block;
@@ -781,21 +1266,25 @@ button:disabled {
   cursor: pointer;
 }
 .nodo rect {
-  fill: var(--hueso);
+  fill: #1c1519;
   stroke: var(--tinta-2);
   stroke-width: 1;
-  transition: stroke 0.2s;
+  transition:
+    stroke 0.2s,
+    filter 0.2s;
 }
 .nodo text {
   fill: var(--tinta);
   font-size: 16px;
   pointer-events: none;
 }
+/* Dentro del plano, las capitales litúrgicas: un pixel de 8 px escalado a
+   tres cuartos ya no se lee. */
 .nodo .rango {
   fill: var(--oro);
-  font-family: Cinzel, serif;
+  font-family: var(--f-titulo);
   font-size: 10.5px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .nodo.dios rect {
@@ -807,21 +1296,18 @@ button:disabled {
   stroke-dasharray: 3 2;
 }
 .nodo.origen text {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--f-mono);
   font-size: 11px;
 }
 .nodo.origen text.rango {
-  font-family: Cinzel, serif;
-  font-size: 8px;
+  font-family: var(--f-titulo);
+  font-size: 8.5px;
   letter-spacing: 0.06em;
 }
 .nodo.margen rect {
   stroke-dasharray: 4 3;
 }
 .nodo.cerrado rect {
-  /* Sin `fill: transparent`: el mapa del Vientre pinta el fondo de la capa en
-     el propio rect, y vaciarlo aquí borraría el degradado de profundidad. Lo
-     que dice "cerrada" es el trazo discontinuo y el texto en cursiva. */
   stroke-dasharray: 2 3;
 }
 .nodo.cerrado text {
@@ -832,106 +1318,63 @@ button:disabled {
 .nodo.activo rect {
   stroke: var(--oro-2);
   stroke-width: 2;
+  filter: drop-shadow(0 0 8px rgba(232, 160, 58, 0.55));
 }
 .arista {
   stroke: var(--tinta-2);
   stroke-width: 1;
   fill: none;
-  opacity: 0.55;
-  transition: opacity 0.2s;
+  opacity: 0.5;
+  transition: opacity 0.25s;
 }
 .arista.resaltada {
   stroke: var(--sangre);
   opacity: 1;
-  stroke-width: 1.6;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 4px rgba(201, 84, 76, 0.7));
 }
 .arista.atenuada {
-  opacity: 0.12;
+  opacity: 0.1;
 }
 .arista-rotulo {
   fill: var(--tinta);
   font-size: 13px;
   font-style: italic;
   paint-order: stroke;
-  stroke: var(--hueso);
-  stroke-width: 3px;
+  stroke: #0e0a0c;
+  stroke-width: 4px;
 }
 .nivel-rotulo {
   fill: var(--oro);
-  font-family: Cinzel, serif;
+  font-family: var(--f-titulo);
   font-size: 10.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 .nivel-linea {
-  stroke: var(--regla);
+  stroke: rgba(209, 173, 88, 0.18);
   stroke-dasharray: 2 4;
 }
 .linaje-panel {
-  padding: 16px 18px;
-  background: var(--panel);
-  border-top: 2px solid var(--oro);
+  padding: 20px 20px 18px;
   overflow: auto;
-}
-@media (max-width: 880px) {
-  .linaje-panel {
-    max-height: none;
-  }
-}
-
-/*
- * Las relaciones de la ficha son BOTONES: pulsar una salta a esa entrada y
- * el diagrama se mueve con ella. Es la forma de recorrer el linaje sin
- * volver al diagrama a buscar el siguiente nombre (issue #78).
- */
-.salto {
-  display: block;
-  width: 100%;
-  text-align: left;
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 15px;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--tinta-2);
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--regla);
-  padding: 8px 2px;
-  cursor: pointer;
-}
-.salto:last-child {
-  border-bottom: 0;
-}
-.salto b {
-  color: var(--tinta);
-  font-weight: 600;
-}
-.salto:hover {
-  color: var(--sangre);
-  border-color: var(--sangre);
-}
-.salto:hover b {
-  color: var(--sangre);
-}
-.salto .verbo {
-  color: var(--tinta-2);
-}
-.salto .flecha {
-  font-family: 'IBM Plex Mono', monospace;
-  color: var(--oro);
-  margin-right: 6px;
 }
 .linaje-panel h3 {
   color: var(--tinta);
-  font-size: 17px;
+  font-size: 19px;
 }
-.linaje-panel .rango-texto {
-  font-family: Cinzel, serif;
+.linaje-panel .rango-texto,
+.linaje-panel .eyebrow {
+  font-family: var(--f-pixel);
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--oro);
   margin-bottom: 10px;
+}
+.linaje-panel .eyebrow::before {
+  background: var(--sangre);
+  box-shadow: none;
 }
 .linaje-panel p {
   font-size: 16px;
@@ -951,13 +1394,65 @@ button:disabled {
   color: var(--tinta);
   font-weight: 500;
 }
+
+/*
+ * Las relaciones de la ficha son BOTONES: pulsar una salta a esa entrada y el
+ * diagrama se mueve con ella (issue #78).
+ */
+.salto {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--f-texto);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--tinta-2);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--regla);
+  padding: 9px 4px;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+  transition:
+    background 0.15s,
+    padding 0.15s;
+}
+.salto:last-child {
+  border-bottom: 0;
+}
+.salto b {
+  color: var(--tinta);
+  font-weight: 600;
+}
+.salto:hover {
+  color: var(--sangre);
+  background: rgba(140, 47, 47, 0.08);
+  padding-left: 10px;
+}
+.salto:hover b {
+  color: var(--sangre);
+}
+.salto .verbo {
+  color: var(--tinta-2);
+}
+.salto .flecha {
+  font-family: var(--f-pixel);
+  font-size: 11px;
+  color: var(--oro);
+  margin-right: 8px;
+}
 .leyenda {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 18px;
-  font-size: 13px;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--tinta-2);
-  margin-top: 10px;
+  margin-top: 14px;
 }
 .leyenda span::before {
   content: '';
@@ -983,12 +1478,62 @@ button:disabled {
   border-style: dotted;
 }
 
-/* -- Sacramentos (minijuegos) -------------------------------------------- */
+/* Mapa del Vientre: los atajos se dibujan de otra manera porque dicen otra
+   cosa: que el descenso ordenado que publica la Diócesis tiene agujeros. */
+.arista.atajo {
+  stroke-dasharray: 5 4;
+  stroke: var(--oro);
+  opacity: 0.55;
+}
+.arista.atajo.resaltada {
+  opacity: 1;
+}
+.salidas {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.salidas li {
+  border-left: 2px solid var(--regla);
+  padding-left: 0.6rem;
+  font-size: 0.86rem;
+}
+.salidas li strong {
+  color: var(--oro);
+  font-weight: 600;
+}
+.salidas li span {
+  color: var(--tinta-2);
+}
+/* Pictogramas del mapa: trazo de plumilla, sin relleno. */
+.nodo .glifo {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+.nodo:hover .glifo,
+.nodo.activo .glifo {
+  opacity: 1;
+}
+.nodo.cerrado .glifo {
+  stroke: var(--tinta-2);
+  opacity: 0.45;
+}
+
+/* -- Sacramentos ---------------------------------------------------------------------- */
 
 .juego-marco {
-  background: var(--panel);
-  border: 1px solid var(--regla);
   padding: 18px;
+  background: rgba(10, 7, 9, 0.9);
+  border: 1px solid rgba(209, 173, 88, 0.45);
+  box-shadow:
+    0 0 0 4px rgba(10, 7, 9, 0.7),
+    0 20px 36px -18px #000;
 }
 .juego-marco canvas {
   display: block;
@@ -996,88 +1541,96 @@ button:disabled {
   max-width: 640px;
   margin-inline: auto;
   background: #120c10;
-  border: 1px solid var(--regla);
+  border: 2px solid rgba(209, 173, 88, 0.35);
   touch-action: none;
   cursor: crosshair;
 }
 .juego-instruccion {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--f-mono);
   font-size: 14px;
   color: var(--turquesa);
+  text-shadow: 0 0 8px rgba(92, 201, 193, 0.35);
   min-height: 1.6em;
-  margin: 10px 0 4px;
+  margin: 12px 0 6px;
 }
 .juego-estado {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 22px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
+  font-family: var(--f-pixel);
+  font-size: 11px;
+  text-transform: uppercase;
   color: var(--tinta-2);
 }
 .pregunta {
-  padding: 18px 20px;
-  background: var(--panel);
-  border-top: 2px solid var(--oro);
-  margin-bottom: 16px;
+  position: relative;
+  padding: 22px 24px;
+  margin-bottom: 18px;
 }
 .pregunta h3 {
   color: var(--tinta);
-  font-size: 18px;
-  margin-bottom: 12px;
+  font-size: 20px;
+  margin-bottom: 14px;
 }
 .opciones {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 .opciones button {
   text-align: left;
-  font-family: 'Crimson Pro', serif;
+  font-family: var(--f-texto);
   font-size: 17px;
   letter-spacing: 0;
   text-transform: none;
-  padding: 10px 14px;
+  padding: 11px 16px;
+  border-color: rgba(42, 26, 30, 0.35);
+}
+.opciones button:hover {
+  background: rgba(140, 47, 47, 0.1);
 }
 .veredicto {
-  padding: 22px 24px;
-  border: 1px solid var(--oro);
-  background: var(--panel);
+  padding: 26px 28px;
+  border-top: 4px solid var(--sangre);
 }
 .veredicto h3 {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--sangre);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .veredicto .mono {
   color: var(--tinta-2);
 }
 .progreso-examen {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--tinta-2);
+  font-family: var(--f-pixel);
+  font-size: 11px;
+  color: var(--sangre);
   margin-bottom: 10px;
 }
 
-/* -- Pie ----------------------------------------------------------------- */
+/* -- Pie: el zócalo ------------------------------------------------------------------ */
 
 .pie {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px 48px;
-  padding: 28px clamp(16px, 5vw, 48px) 40px;
-  border-top: 1px solid var(--regla);
+  gap: 26px 48px;
+  padding: 34px clamp(16px, 5vw, 48px) 44px;
+  background: linear-gradient(rgba(8, 5, 7, 0.9), rgba(4, 2, 3, 0.98));
+  border-top: 1px solid rgba(209, 173, 88, 0.55);
+  box-shadow:
+    0 -3px 0 rgba(8, 5, 7, 0.9),
+    0 -4px 0 rgba(209, 173, 88, 0.25);
   font-size: 15px;
   color: var(--tinta-2);
 }
 .pie-titulo {
-  font-family: Cinzel, serif;
+  font-family: var(--f-pixel);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--oro);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .pie-texto {
   margin-bottom: 8px;
@@ -1086,27 +1639,35 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 10px;
 }
 .forma-clave label {
   font-style: italic;
+  flex-basis: 100%;
 }
+/* La ranura: un hueco tallado en la piedra donde se mete la clave. */
 .forma-clave input {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  padding: 7px 10px;
-  background: transparent;
-  color: var(--tinta);
-  border: 1px solid var(--tinta-2);
-  min-width: 160px;
+  font-family: var(--f-pixel);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 9px 12px;
+  background: #050304;
+  color: var(--oro-2);
+  border: 2px solid rgba(209, 173, 88, 0.35);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.9);
+  min-width: 200px;
+  flex: 1 1 200px;
+}
+.forma-clave input::placeholder {
+  color: rgba(179, 165, 150, 0.45);
 }
 .forma-clave button {
-  padding: 7px 12px;
+  padding: 9px 14px;
   font-size: 11px;
 }
 .clave-respuesta {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--f-mono);
   font-size: 13px;
   color: var(--sangre);
   flex-basis: 100%;
@@ -1128,7 +1689,7 @@ button:disabled {
     height 1.2s;
 }
 
-/* Degradación tipográfica al bajar: los títulos pierden la compostura. */
+/* Degradación al bajar: los títulos pierden la compostura. */
 body[data-profundidad='4'] h1,
 body[data-profundidad='5'] h1 {
   animation: temblor 6s infinite steps(2);
@@ -1155,6 +1716,28 @@ body[data-profundidad='5'] .cabecera .marca-nombre {
     transform: none;
   }
 }
+
+/* -- Pantallas estrechas ------------------------------------------------------------ */
+
+@media (max-width: 880px) {
+  .cabecera {
+    position: relative;
+  }
+  .nav {
+    gap: 2px 14px;
+    font-size: 11px;
+  }
+  .vigilia {
+    top: 8px;
+  }
+  .pagina {
+    background: rgba(12, 8, 10, 0.86);
+  }
+  body {
+    background-attachment: scroll, scroll;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1162,64 +1745,4 @@ body[data-profundidad='5'] .cabecera .marca-nombre {
     animation: none !important;
     transition: none !important;
   }
-}
-
-/* -- Mapa del Vientre ------------------------------------------------------
-   Reutiliza el esquema del linaje (.nodo, .arista) porque es el mismo gesto:
-   datos dibujados, no una ilustración. Lo propio de aquí son los ATAJOS —
-   conductos, pozos y grietas— que se dibujan de otra manera porque dicen otra
-   cosa: que el descenso ordenado que publica la Diócesis tiene agujeros. */
-
-.arista.atajo {
-  stroke-dasharray: 5 4;
-  stroke: var(--oro);
-  opacity: 0.55;
-}
-
-.arista.atajo.resaltada {
-  opacity: 1;
-}
-
-.salidas {
-  list-style: none;
-  margin: 0.6rem 0 0;
-  padding: 0;
-  display: grid;
-  gap: 0.55rem;
-}
-
-.salidas li {
-  border-left: 2px solid var(--borde);
-  padding-left: 0.6rem;
-  font-size: 0.86rem;
-}
-
-.salidas li strong {
-  color: var(--oro);
-  font-weight: 600;
-}
-
-.salidas li span {
-  color: var(--tinta-2);
-}
-
-/* Los pictogramas del mapa: trazo de plumilla, sin relleno. Heredan el color
-   del nodo, así que una sala cerrada tiene también el candado apagado. */
-.nodo .glifo {
-  fill: none;
-  stroke: var(--oro);
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.75;
-}
-
-.nodo:hover .glifo,
-.nodo.activo .glifo {
-  opacity: 1;
-}
-
-.nodo.cerrado .glifo {
-  stroke: var(--tinta-2);
-  opacity: 0.45;
 }

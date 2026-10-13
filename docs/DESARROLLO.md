@@ -633,6 +633,44 @@ escribieron para teclado, y sus cierres eran textos de 7 px en una esquina.
 responde es 1,5 veces el círculo dibujado, y se actúa al **levantar** el dedo,
 para poder corregir un toque arrastrando fuera.
 
+## El portal está hecho del juego (#80)
+
+La primera versión del portal era una web institucional limpia sobre papel
+claro que se oscurecía al bajar: se leía bien, pero como una página
+informativa cualquiera. La revisión pidió la identidad del juego, y la
+respuesta fue no inventar una estética nueva sino **construir la web con las
+piezas del juego**:
+
+| Pieza                         | De dónde sale                                                                                                                                                                                                            | Dónde vive                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| **El muro de cada sección**   | La sillería del equipo (`vientre.png`) en el Atrio; las figuras `muro-pasillos-*`, `muro-criptas-*` y `muro-salas-*` en el resto, en damero. Al bajar de sección cambia la pared: descender es degradarse, como jugando. | `web/src/ambiente.ts` (`ponerMuro`) |
+| **La escena de la portada**   | El Atrio montado con los sprites del juego: sillería, ventanas con haces de luz, cadenas, el Altar entre dos velas, el Cirujano y un Devoto. Solo se anima la luz.                                                       | `web/src/escena.ts`                 |
+| **Las láminas de las placas** | Cada placa lleva el sprite de lo que enlaza (el Códice, un Devoto, el Reformado, la camilla…). Se declaran en el marcado con `<canvas class="lamina" data-figura="...">` y `pintarLaminas()` las rellena.                | `web/src/arte.ts`                   |
+| **El polvo**                  | Las motas del juego, cuadradas, del color de la capa.                                                                                                                                                                    | `ambiente.ts` (`arrancarPolvo`)     |
+| **La vela del visitante**     | Un resplandor que sigue al puntero: el Vientre está a oscuras y se lee con lo que se lleva en la mano.                                                                                                                   | `ambiente.ts` (`arrancarLuz`)       |
+| **La música**                 | Las pistas CC0 del juego, una por capa, con fundido. **Solo suena si se pide** (botón Sonido); la preferencia se recuerda pero no arranca sin un gesto.                                                                  | `ambiente.ts` (`ponerPista`)        |
+| **La marca**                  | La vela del juego en lugar del círculo con cruz, que se leía como cristiana.                                                                                                                                             | `index.html`, `pintarMarca()`       |
+
+Y tres decisiones de composición:
+
+- **Documentos clavados al muro.** Lo que se lee va en pergamino sobre piedra
+  (folios, fichas, placas, la ficha del explorador), como el Códice y las
+  placas dentro del juego. En CSS es un ámbito: dentro de `.tarjeta`,
+  `.ficha`, `.linaje-panel`… los tokens `--tinta`, `--oro`, `--sangre` se
+  redefinen para pergamino y todo lo de dentro les sigue sin una regla más.
+- **La voz del HUD.** Etiquetas, números y botones en Silkscreen (pixel), los
+  botones biselados como los del juego. Los títulos en Cinzel y el cuerpo en
+  Crimson Pro. Dentro de los diagramas SVG no se usa pixel: a 8 px escalado
+  deja de leerse.
+- **Cambiar de sección es bajar o subir.** El contenido sale, el muro cambia
+  mientras no se ve nada y lo nuevo entra desde abajo si la capa es más honda
+  y desde arriba si se vuelve. Un riel a la izquierda (pantallas anchas)
+  marca la capa y la cota en metros.
+
+Con `prefers-reduced-motion` no hay polvo animado, la vela no sigue al
+puntero y no hay transiciones. En un teléfono la escena se encuadra solo en
+sus figuras y el título va debajo.
+
 ## Linaje y El Vientre: dos exploradores, no dos posters
 
 Las dos secciones con diagrama (`web/src/paginas/linaje.ts` y `vientre.ts`)

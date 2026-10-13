@@ -60,3 +60,40 @@ export function pintarFigura(
   });
   return true;
 }
+
+/**
+ * Pinta una figura en un canvas nuevo a una escala entera y devuelve el canvas.
+ * Sirve para componer texturas y escenas: el pixel del juego se agranda sin
+ * suavizar, que es lo que lo mantiene reconocible.
+ */
+export function lienzoDe(textura: string, escala = 1): HTMLCanvasElement | null {
+  const fig = figura(textura);
+  if (!fig) return null;
+  const alto = fig.filas.length;
+  const ancho = Math.max(...fig.filas.map((f) => f.length));
+  const lienzo = document.createElement('canvas');
+  lienzo.width = ancho * escala;
+  lienzo.height = alto * escala;
+  const ctx = lienzo.getContext('2d');
+  if (!ctx) return null;
+  fig.filas.forEach((fila, y) => {
+    for (let x = 0; x < fila.length; x += 1) {
+      const color = fig.paleta[fila[x]];
+      if (!color) continue;
+      ctx.fillStyle = color;
+      ctx.fillRect(x * escala, y * escala, escala, escala);
+    }
+  });
+  return lienzo;
+}
+
+/**
+ * Rellena todos los `<canvas class="lamina" data-figura="...">` de un nodo con
+ * su sprite. Así las páginas declaran la lámina en el marcado y no tienen que
+ * saber pintar nada.
+ */
+export function pintarLaminas(raiz: ParentNode): void {
+  for (const lienzo of raiz.querySelectorAll<HTMLCanvasElement>('canvas.lamina[data-figura]')) {
+    pintarFigura(lienzo, lienzo.dataset.figura ?? '', { escalaMaxima: 8 });
+  }
+}

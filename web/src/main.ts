@@ -20,6 +20,8 @@ import { renderExamen } from './paginas/examen';
 import { renderSacramento } from './paginas/sacramento';
 import { presentarClave } from './memoria';
 import { actualizarPie } from './pie';
+import { ambienteDe, arrancarAmbiente } from './ambiente';
+import { pintarLaminas } from './arte';
 
 type Limpieza = void | (() => void);
 type Pagina = (contenedor: HTMLElement) => Limpieza;
@@ -32,7 +34,7 @@ interface Ruta {
 }
 
 const RUTAS: Readonly<Record<string, Ruta>> = {
-  '': { pagina: renderPortada, profundidad: 0, titulo: 'Diócesis de la Carne' },
+  '': { pagina: renderPortada, profundidad: 0, titulo: 'Diócesis de la Carne', ancha: true },
   doctrina: { pagina: renderDoctrina, profundidad: 1, titulo: 'Doctrina' },
   registro: { pagina: renderRegistro, profundidad: 2, titulo: 'Registro', ancha: true },
   vientre: { pagina: renderVientre, profundidad: 3, titulo: 'El Vientre', ancha: true },
@@ -43,6 +45,12 @@ const RUTAS: Readonly<Record<string, Ruta>> = {
 };
 
 let limpieza: Limpieza;
+let profundidadAnterior = -1;
+/** Cada navegación tiene número: si llega otra antes de acabar, la vieja se rinde. */
+let turno = 0;
+
+const QUIETO =
+  typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function rutaActual(): string {
   return location.hash.replace(/^#\/?/, '').split('?')[0].replace(/\/$/, '');
@@ -68,11 +76,9 @@ function navegar(): void {
   const contenedor = document.getElementById('pagina');
   if (!contenedor) return;
 
-  if (typeof limpieza === 'function') limpieza();
-  contenedor.replaceChildren();
-  contenedor.classList.toggle('ancha', ruta.ancha === true);
-  document.body.dataset.profundidad = String(ruta.profundidad);
-  document.title = clave ? `${ruta.titulo} · Diócesis de la Carne` : ruta.titulo;
+  const mio = (turno += 1);
+  const primera = profundidadAnterior < 0;
+  const baja = ruta.profundidad >= profundidadAnterior;
 
   for (const enlace of document.querySelectorAll<HTMLAnchorElement>('.nav a[data-ruta]')) {
     const activa =
@@ -82,10 +88,39 @@ function navegar(): void {
     enlace.classList.toggle('activa', activa);
   }
 
-  limpieza = ruta.pagina(contenedor);
-  window.scrollTo({ top: 0 });
-  contenedor.focus({ preventScroll: true });
-  actualizarPie();
+  const pintar = () => {
+    if (mio !== turno) return;
+    if (typeof limpieza === 'function') limpieza();
+    contenedor.replaceChildren();
+    contenedor.classList.remove('pasando', 'llegando-abajo', 'llegando-arriba');
+    contenedor.classList.toggle('ancha', ruta.ancha === true);
+    document.body.dataset.profundidad = String(ruta.profundidad);
+    document.title = clave ? `${ruta.titulo} · Diócesis de la Carne` : ruta.titulo;
+    ambienteDe(ruta.profundidad);
+
+    limpieza = ruta.pagina(contenedor);
+    pintarLaminas(contenedor);
+    window.scrollTo({ top: 0 });
+    contenedor.focus({ preventScroll: true });
+    actualizarPie();
+    profundidadAnterior = ruta.profundidad;
+
+    // Llegar a una capa más honda entra desde abajo; volver, desde arriba.
+    if (!primera && !QUIETO) {
+      void contenedor.offsetWidth;
+      contenedor.classList.add(baja ? 'llegando-abajo' : 'llegando-arriba');
+    }
+  };
+
+  // Cambiar de sección es bajar o subir una capa: lo que había se va, el muro
+  // cambia mientras no se ve nada, y lo nuevo entra.
+  if (primera || QUIETO) {
+    pintar();
+  } else {
+    contenedor.classList.remove('llegando-abajo', 'llegando-arriba');
+    contenedor.classList.add('pasando');
+    window.setTimeout(pintar, 210);
+  }
 }
 
 function prepararClave(): void {
@@ -120,6 +155,7 @@ function prepararEnlaceAlJuego(): void {
 }
 
 window.addEventListener('hashchange', navegar);
+arrancarAmbiente();
 prepararClave();
 prepararEnlaceAlJuego();
 navegar();

@@ -9,17 +9,32 @@
 
 import { memoriaDelDescenso, descensoAbierto } from '../memoria';
 import { elemento } from '../texto';
+import { montarEscena } from '../escena';
 
-export function renderPortada(contenedor: HTMLElement): void {
+export function renderPortada(contenedor: HTMLElement): () => void {
   const m = memoriaDelDescenso();
   const abierto = descensoAbierto();
 
   contenedor.append(
     elemento(`
     <article>
+      <!-- La entrada es el sitio: el Atrio, con los sprites del juego (#80). -->
+      <header class="escena">
+        <canvas id="escena-atrio" aria-hidden="true"></canvas>
+        <div class="escena-texto">
+          <div class="eyebrow">Portal oficial · atención al fiel</div>
+          <h1>Diócesis de la Carne</h1>
+          <p class="escena-lema">Los dioses no miran. Son mirados.</p>
+          <div class="escena-acciones">
+            <a class="boton boton-lleno" href="${import.meta.env.BASE_URL}">Descender al Vientre</a>
+            <a class="boton" href="#/doctrina">Leer la doctrina</a>
+          </div>
+        </div>
+      </header>
+
+      <div class="portada-texto">
       <section class="seccion">
-        <div class="eyebrow">Portal de la Diócesis · atención al fiel</div>
-        <h1>Bienvenido. Su diezmo ya está en buenas manos.</h1>
+        <h2>Bienvenido. Su diezmo ya está en buenas manos.</h2>
         <div class="filete"></div>
         <p class="lede">
           Desde hace tres generaciones la Diócesis de la Carne custodia a los Mil, atiende sus
@@ -38,31 +53,37 @@ export function renderPortada(contenedor: HTMLElement): void {
         <div class="eyebrow">Consulta</div>
         <div class="rejilla">
           <a class="tarjeta" href="#/doctrina">
+            <canvas class="lamina" data-figura="codice" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa I · superficie</span>
             <h3>Doctrina</h3>
             <p>Los ocho folios del Códice de la Carne, en edición para el fiel. Se recomienda leer con una vela encendida.</p>
           </a>
           <a class="tarjeta" href="#/registro">
+            <canvas class="lamina" data-figura="devoto" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa II · Pasillos</span>
             <h3>Registro</h3>
             <p>Catálogo de fieles, oficio y aparato del Vientre, con lámina. Actualizado según lo que cada visitante haya visto.</p>
           </a>
           <a class="tarjeta" href="#/vientre">
+            <canvas class="lamina" data-figura="reja" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa III · Criptas</span>
             <h3>El Vientre</h3>
             <p>Plano por capas del templo. Las dos inferiores no admiten visitas.</p>
           </a>
           <a class="tarjeta" href="#/linaje">
+            <canvas class="lamina" data-figura="reformado" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa IV · Salas</span>
             <h3>Linaje</h3>
             <p>Quién es quién en la Diócesis: origen de los Mil, orden del clero y destino de cada ofrenda.</p>
           </a>
           <a class="tarjeta" href="#/sacramentos">
+            <canvas class="lamina" data-figura="camilla" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa V · Reformados</span>
             <h3>Sacramentos</h3>
             <p>Trámites para aspirantes: el Examen de Pureza y una práctica del Sacramento. Sin cita previa.</p>
           </a>
           <a class="tarjeta" href="${import.meta.env.BASE_URL}">
+            <canvas class="lamina" data-figura="cirujano" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa VI · el descenso</span>
             <h3>Subterfuge</h3>
             <p>Acompañe a las Manos del Sacramento N.º 7 en una jornada ordinaria de trabajo.</p>
@@ -98,7 +119,11 @@ export function renderPortada(contenedor: HTMLElement): void {
           }
         </p>
       </section>
+      </div>
     </article>
   `),
   );
+
+  const lienzo = contenedor.querySelector<HTMLCanvasElement>('#escena-atrio');
+  return lienzo ? montarEscena(lienzo) : () => undefined;
 }
