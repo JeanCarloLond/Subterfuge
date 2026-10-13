@@ -867,90 +867,89 @@ button:disabled {
 
 /* -- Doctrina: el libro y la vela ------------------------------------------------ */
 
-.vigilia {
-  position: sticky;
-  top: 86px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
-  margin-bottom: 30px;
-  background: rgba(10, 7, 9, 0.92);
-  border: 1px solid rgba(209, 173, 88, 0.5);
-  box-shadow:
-    0 0 0 3px rgba(10, 7, 9, 0.6),
-    0 10px 24px -12px #000;
+/* La vela de la Vigilia (#82): en la esquina, a pixel, fuera de la columna de
+   texto. Cuando el pie de la página sube, se apoya encima de él. */
+.vela-vigilia {
+  --escala: 3;
+  --sobre-pie: 0px;
+  position: fixed;
+  left: max(10px, env(safe-area-inset-left));
+  bottom: calc(10px + var(--sobre-pie));
+  z-index: 40;
+  width: calc(20px * var(--escala));
+  height: calc(58px * var(--escala));
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  clip-path: none;
+  overflow: visible;
 }
-.vela {
-  width: 26px;
-  height: 46px;
-  position: relative;
-  flex: none;
+.vela-vigilia:hover,
+.vela-vigilia:active {
+  transform: none;
 }
-.vela-cuerpo {
+.vela-vigilia canvas {
   position: absolute;
-  left: 8px;
+  left: 0;
   bottom: 0;
-  width: 10px;
-  height: var(--cera, 30px);
-  background: linear-gradient(90deg, #d8cba8, #efe6cf 40%, #c9b88f);
-  transition: height 0.5s linear;
+  width: calc(36px * var(--escala));
+  height: calc(58px * var(--escala));
+  image-rendering: pixelated;
+  pointer-events: none;
 }
-.vela-llama {
+.vela-halo {
+  --pabilo: 50%;
   position: absolute;
-  left: 9px;
-  bottom: calc(var(--cera, 30px) + 1px);
-  width: 8px;
-  height: 14px;
-  border-radius: 50% 50% 45% 45%;
-  background: radial-gradient(#fff3c4, #e8a03a 55%, rgba(140, 47, 47, 0));
-  box-shadow: 0 -2px 18px 6px rgba(255, 180, 90, 0.35);
-  animation: parpadeo 0.28s infinite alternate;
-  transition: bottom 0.5s linear;
+  left: calc(9.5px * var(--escala) - 90px);
+  top: calc(var(--pabilo) - 90px);
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 200, 110, 0.45),
+    rgba(232, 160, 58, 0.16) 40%,
+    rgba(232, 160, 58, 0) 70%
+  );
+  pointer-events: none;
 }
-.apagada .vela-llama {
-  display: none;
-}
-.vela-humo {
-  display: none;
+.vela-rotulo {
   position: absolute;
-  left: 11px;
-  bottom: calc(var(--cera, 30px) + 2px);
-  width: 4px;
-  height: 18px;
-  background: linear-gradient(rgba(120, 110, 110, 0.7), transparent);
-  animation: humo 1.6s infinite;
+  left: calc(100% + 4px);
+  bottom: calc(4px * var(--escala));
+  padding: 4px 6px;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  color: var(--oro);
+  white-space: nowrap;
+  background: rgba(10, 7, 9, 0.85);
+  border: 1px solid rgba(209, 173, 88, 0.45);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
 }
-.apagada .vela-humo {
-  display: block;
+.vela-rotulo.visible,
+.vela-vigilia:hover .vela-rotulo,
+.vela-vigilia:focus-visible .vela-rotulo {
+  opacity: 1;
 }
-@keyframes parpadeo {
-  from {
-    transform: scaleX(0.9) translateY(0);
-  }
-  to {
-    transform: scaleX(1.1) translateY(-1px);
-  }
+.vela-vigilia:focus-visible {
+  outline: 2px solid var(--turquesa);
+  outline-offset: 2px;
 }
-@keyframes humo {
-  from {
-    opacity: 0.8;
-    transform: translateY(0) scaleX(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-14px) scaleX(2);
-  }
-}
-.vigilia-texto {
-  flex: 1;
-  font-size: 15px;
+.vigilia-nota {
+  font-size: 16px;
   color: var(--tinta-2);
 }
-.vigilia-texto b {
+.vigilia-nota b {
   color: var(--tinta);
   font-weight: 600;
+}
+@media (max-width: 900px) {
+  .vela-vigilia {
+    --escala: 2;
+  }
 }
 
 /* El Códice es un libro (#83): tapas de piel, dos caras y una hoja que gira.
@@ -2023,9 +2022,6 @@ body[data-profundidad='5'] .cabecera .marca-nombre {
   .nav {
     gap: 2px 14px;
     font-size: 11px;
-  }
-  .vigilia {
-    top: 8px;
   }
   .pagina {
     background: rgba(12, 8, 10, 0.86);

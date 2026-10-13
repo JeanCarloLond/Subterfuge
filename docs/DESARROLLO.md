@@ -568,7 +568,8 @@ que responde cosas que no deberías saber de ti": sabe cuántas veces lo has
 hecho, hasta dónde has bajado y qué hora es), el Sacramento ("precisión
 quirúrgica, tipo Operation pero litúrgico"; fallar deja una mancha en el portal
 que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
-al apagarse se ve lo que la luz tapaba). El Sacramento hecho perfecto también
+al apagarse se ve lo que la luz tapaba; la vela vive en la esquina, a pixel, y se
+aviva con un fósforo: `web/src/vela.ts`). El Sacramento hecho perfecto también
 termina en Reformado: ningún Elegido ha llegado entero en tres generaciones.
 
 **Despliegue gratuito.** GitHub Pages, sin servidor: todo es estático y el

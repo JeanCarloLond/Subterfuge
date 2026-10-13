@@ -15,6 +15,7 @@ import { CODICE } from '../../../src/lore/Codice';
 import { type Folio, montarLibro } from '../libro';
 import { fragmentoAbierto } from '../memoria';
 import { acentuar, elemento, html, parrafos } from '../texto';
+import { montarVela } from '../vela';
 
 /**
  * Lo que había escrito debajo de cada hoja antes de que la Diócesis la
@@ -64,8 +65,6 @@ const MANUAL: Readonly<Record<string, readonly string[]>> = {
   ],
 };
 
-const DURACION_VELA_MS = 75_000;
-
 export function renderDoctrina(contenedor: HTMLElement): () => void {
   const abiertas = CODICE.filter((f) => fragmentoAbierto(f.id)).length;
 
@@ -89,15 +88,7 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
         }
       </p>
 
-      <div class="vigilia" id="vigilia">
-        <div class="vela" id="vela">
-          <div class="vela-cuerpo"></div>
-          <div class="vela-llama"></div>
-          <div class="vela-humo"></div>
-        </div>
-        <div class="vigilia-texto" id="vigilia-texto"></div>
-        <button type="button" id="avivar">Avivar</button>
-      </div>
+      <p class="vigilia-nota" id="vigilia-nota" aria-live="polite"></p>
 
       <div id="libro"></div>
     </article>
@@ -129,48 +120,22 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
   contenedor.append(raiz);
 
   // -- La Vigilia -----------------------------------------------------------
+  // La vela vive en la esquina (`vela.ts`); aquí solo se oscurece la página.
 
-  const vela = raiz.querySelector('#vela') as HTMLElement;
-  const texto = raiz.querySelector('#vigilia-texto') as HTMLElement;
-  const avivar = raiz.querySelector('#avivar') as HTMLButtonElement;
-
-  let encendidaDesde = performance.now();
-  let apagada = false;
-  let temporizador = 0;
-
-  const actualizar = () => {
-    const restante = Math.max(0, 1 - (performance.now() - encendidaDesde) / DURACION_VELA_MS);
-    vela.style.setProperty('--cera', `${6 + Math.round(restante * 26)}px`);
-
-    if (!apagada && restante === 0) {
-      apagada = true;
-      raiz.classList.add('apagada');
-      texto.innerHTML =
-        '<b>La vela se ha apagado.</b> Le recomendamos encenderla de nuevo. La Diócesis no se hace responsable de lo que se lea a oscuras.';
-      avivar.textContent = 'Encender';
-      return;
-    }
-    if (!apagada) {
-      const segundos = Math.ceil((restante * DURACION_VELA_MS) / 1000);
-      texto.innerHTML =
-        abiertas > 0
-          ? `<b>Vigilia.</b> Quedan ${segundos} segundos de cera. Puede avivar la vela cuantas veces quiera.`
-          : `<b>Vigilia.</b> Quedan ${segundos} segundos de cera. Con un ejemplar sin márgenes, apagarla no tiene consecuencias.`;
-    }
+  const nota = raiz.querySelector('#vigilia-nota') as HTMLElement;
+  const avisar = (apagada: boolean) => {
+    raiz.classList.toggle('apagada', apagada);
+    nota.innerHTML = apagada
+      ? '<b>La vela se ha apagado.</b> Le recomendamos encenderla de nuevo. La Diócesis no se hace responsable de lo que se lea a oscuras.'
+      : abiertas > 0
+        ? '<b>Vigilia.</b> La vela de la esquina se ahoga sola. Puede avivarla cuantas veces quiera.'
+        : '<b>Vigilia.</b> La vela de la esquina se ahoga sola. Con un ejemplar sin márgenes, dejar que se apague no tiene consecuencias.';
   };
+  avisar(false);
+  const cerrarVela = montarVela(avisar);
 
-  avivar.addEventListener('click', () => {
-    encendidaDesde = performance.now();
-    apagada = false;
-    raiz.classList.remove('apagada');
-    avivar.textContent = 'Avivar';
-    actualizar();
-  });
-
-  actualizar();
-  temporizador = window.setInterval(actualizar, 500);
   return () => {
-    window.clearInterval(temporizador);
+    cerrarVela();
     cerrarLibro();
   };
 }
