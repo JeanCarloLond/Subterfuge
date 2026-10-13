@@ -535,7 +535,7 @@ iglesia; los Sacramentos ya no.
 | Sección     | Profundidad | Qué enseña                                                                   |
 | ----------- | ----------- | ---------------------------------------------------------------------------- |
 | Portada     | 0           | La fachada institucional: horarios, trámites, tu expediente.                 |
-| Doctrina    | 1           | Los ocho folios del Códice, y la **Vigilia** (una vela que se consume).      |
+| Doctrina    | 1           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.            |
 | Registro    | 2           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.    |
 | El Vientre  | 3           | El corte de las seis capas.                                                  |
 | Linaje      | 4           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).  |

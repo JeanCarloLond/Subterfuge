@@ -12,6 +12,7 @@
  */
 
 import { CODICE } from '../../../src/lore/Codice';
+import { type Folio, montarLibro } from '../libro';
 import { fragmentoAbierto } from '../memoria';
 import { acentuar, elemento, html, parrafos } from '../texto';
 
@@ -98,31 +99,32 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
         <button type="button" id="avivar">Avivar</button>
       </div>
 
-      <div id="folios"></div>
+      <div id="libro"></div>
     </article>
   `);
 
-  const folios = raiz.querySelector('#folios') as HTMLElement;
-  CODICE.forEach((fragmento, i) => {
+  // Cada folio es una doble página: la escritura, y enfrente lo que la otra
+  // mano dejó al margen (o el hueco donde lo arrancaron).
+  const folios: Folio[] = CODICE.map((fragmento, i) => {
     const abierta = fragmentoAbierto(fragmento.id);
     const romano = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'][i];
-    const folio = elemento(`
-      <section class="folio" aria-labelledby="folio-${i}">
+    return {
+      romano,
+      ganada: abierta,
+      izquierda: `
         <div class="folio-cabecera"><span>${html(acentuar(fragmento.cita))}</span><span>fol. ${romano}</span></div>
-        <h3 id="folio-${i}">${html(fragmento.titulo)}</h3>
+        <h3>${html(fragmento.titulo)}</h3>
         <ol class="versiculos">
           ${fragmento.versiculo.map((v) => `<li>${html(acentuar(v))}</li>`).join('')}
-        </ol>
-        ${
-          abierta
-            ? `<div class="margen">${parrafos(fragmento.margen)}</div>
-               <div class="manual abierto">${(MANUAL[fragmento.id] ?? []).map((l) => `<p>${html(l)}</p>`).join('')}</div>`
-            : `<div class="margen arrancado"><p>Margen no disponible en esta edición.</p></div>`
-        }
-      </section>
-    `);
-    folios.append(folio);
+        </ol>`,
+      derecha: abierta
+        ? `<div class="margen">${parrafos(fragmento.margen)}</div>
+           <div class="manual abierto">${(MANUAL[fragmento.id] ?? []).map((l) => `<p>${html(l)}</p>`).join('')}</div>`
+        : `<div class="desgarro" aria-hidden="true"><i></i></div>
+           <div class="margen arrancado"><p>Margen no disponible en esta edición.</p></div>`,
+    };
   });
+  const cerrarLibro = montarLibro(raiz.querySelector('#libro') as HTMLElement, folios);
 
   contenedor.append(raiz);
 
@@ -167,5 +169,8 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
 
   actualizar();
   temporizador = window.setInterval(actualizar, 500);
-  return () => window.clearInterval(temporizador);
+  return () => {
+    window.clearInterval(temporizador);
+    cerrarLibro();
+  };
 }

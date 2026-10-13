@@ -865,7 +865,7 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
-/* -- Doctrina: los folios y la vela ------------------------------------------------ */
+/* -- Doctrina: el libro y la vela ------------------------------------------------ */
 
 .vigilia {
   position: sticky;
@@ -953,34 +953,168 @@ button:disabled {
   font-weight: 600;
 }
 
-.folio {
+/* El Códice es un libro (#83): tapas de piel, dos caras y una hoja que gira.
+   Se sale de la columna de texto para que cada cara tenga el ancho de una página. */
+.libro {
+  --ancho-libro: min(1060px, 100vw - 32px);
+  width: var(--ancho-libro);
+  margin: 8px calc((100% - var(--ancho-libro)) / 2) 0;
+}
+.libro-tapa {
+  padding: 14px;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(120, 50, 45, 0.35), transparent 60%),
+    radial-gradient(rgba(0, 0, 0, 0.25) 0.8px, transparent 1px) 0 0 / 3px 3px,
+    #3a1d20;
+  border-radius: 3px 6px 6px 3px;
+  box-shadow:
+    inset 0 0 0 2px #1d0e10,
+    inset 0 0 0 4px rgba(201, 164, 76, 0.45),
+    inset 0 0 0 6px #1d0e10,
+    0 26px 40px -18px #000,
+    0 0 0 1px #000;
+}
+.libro-hojas {
   position: relative;
-  margin: 0 0 40px;
-  padding: 28px 30px 26px 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 470px;
+  perspective: 2400px;
+  touch-action: pan-y;
+  /* El canto de las hojas que quedan por debajo. */
+  box-shadow:
+    -2px 2px 0 #c7b68c,
+    -4px 4px 0 #b8a67c,
+    2px 2px 0 #c7b68c,
+    4px 4px 0 #b8a67c;
+}
+.hoja {
+  position: relative;
+  padding: 30px 34px 52px 52px;
   color: #2a1a1e;
   background:
     radial-gradient(ellipse at 15% 5%, rgba(255, 250, 230, 0.45), transparent 50%),
     radial-gradient(ellipse at 90% 95%, rgba(110, 70, 35, 0.28), transparent 55%),
     radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px) 0 0 / 4px 4px,
     #d9caa4;
-  box-shadow:
-    0 18px 30px -16px rgba(0, 0, 0, 0.95),
-    inset 0 0 60px rgba(90, 60, 30, 0.3);
+  box-shadow: inset 0 0 60px rgba(90, 60, 30, 0.3);
   transition:
     background-color 0.8s,
     color 0.8s;
 }
-.folio::before {
-  /* Cera de vela en el borde superior izquierdo. */
+/* El lomo: cada cara se oscurece hacia el centro. */
+.hoja-izq {
+  background-image:
+    linear-gradient(90deg, transparent 82%, rgba(70, 40, 20, 0.12) 92%, rgba(40, 20, 10, 0.42)),
+    radial-gradient(ellipse at 15% 5%, rgba(255, 250, 230, 0.45), transparent 50%),
+    radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px);
+  background-size:
+    auto,
+    auto,
+    4px 4px;
+}
+.hoja-der {
+  padding-left: 40px;
+  background-image:
+    linear-gradient(270deg, transparent 82%, rgba(70, 40, 20, 0.12) 92%, rgba(40, 20, 10, 0.42)),
+    radial-gradient(ellipse at 90% 95%, rgba(110, 70, 35, 0.28), transparent 55%),
+    radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px);
+  background-size:
+    auto,
+    auto,
+    4px 4px;
+}
+.hoja-izq::before {
+  /* Cera de vela en la esquina de la página. */
   content: '';
   position: absolute;
-  left: 22px;
-  top: -4px;
-  width: 26px;
-  height: 12px;
+  left: 18px;
+  top: 10px;
+  width: 22px;
+  height: 10px;
   background: #efe6cf;
   border-radius: 40% 60% 60% 40% / 60% 60% 40% 40%;
-  box-shadow: 8px 10px 0 -3px #efe6cf;
+  box-shadow: 7px 9px 0 -3px #efe6cf;
+  opacity: 0.85;
+}
+/* Hoja sin margen: lo arrancaron. Queda un resto de papel junto al lomo y,
+   debajo, la página siguiente, en blanco. */
+.hoja-der:has(.arrancado) {
+  background-color: #cdbb92;
+}
+.desgarro {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  filter: drop-shadow(3px 0 2px rgba(50, 28, 14, 0.45));
+}
+.desgarro i {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(270deg, transparent 40%, rgba(40, 20, 10, 0.4)),
+    radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px) 0 0 / 4px 4px,
+    #d9caa4;
+  clip-path: polygon(
+    0 0,
+    84% 0,
+    82% 2.4%,
+    77% 5.7%,
+    75% 8.7%,
+    75% 10.5%,
+    74% 12.2%,
+    74% 14%,
+    78% 16.7%,
+    75% 18.6%,
+    80% 21.8%,
+    79% 24.9%,
+    74% 29.1%,
+    74% 32.9%,
+    74% 34.9%,
+    78% 37.3%,
+    79% 39.3%,
+    77% 42.6%,
+    74% 45.6%,
+    74% 47.4%,
+    74% 50.7%,
+    75% 53.2%,
+    74% 55.9%,
+    76% 59.6%,
+    77% 61.8%,
+    82% 64.8%,
+    79% 68.3%,
+    75% 72.4%,
+    78% 75.1%,
+    78% 77.1%,
+    80% 78.8%,
+    81% 82.4%,
+    78% 86.3%,
+    79% 89.7%,
+    79% 92.8%,
+    84% 96.6%,
+    82% 100%,
+    0 100%
+  );
+}
+.hoja-der .margen.arrancado {
+  position: absolute;
+  right: 34px;
+  bottom: 56px;
+  width: 52%;
+  margin: 0;
+  transform: none;
+  border-left: 0;
+  text-align: right;
+}
+.hoja-pie {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  text-align: center;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  color: #7a5f1e;
 }
 .folio-cabecera {
   display: flex;
@@ -995,10 +1129,163 @@ button:disabled {
   padding-bottom: 7px;
   margin-bottom: 16px;
 }
-.folio h3 {
+.hoja h3 {
   color: #8c2f2f;
   font-size: 20px;
   margin-bottom: 12px;
+}
+
+/* La hoja que gira: dos caras espalda con espalda. */
+.hoja-volando {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 3;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.hoja-volando.desde-der {
+  left: 50%;
+  transform-origin: left center;
+}
+.hoja-volando.desde-izq {
+  left: 0;
+  transform-origin: right center;
+}
+.hoja-volando > .hoja {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.hoja-volando > .cara-dorso {
+  transform: rotateY(180deg);
+}
+.hoja-sombra {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(30, 15, 10, 0.7), rgba(30, 15, 10, 0.25));
+  opacity: 0;
+  pointer-events: none;
+}
+.hoja-volando.entera {
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  transform-origin: left center;
+}
+
+.libro-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.libro-paso {
+  min-width: 46px;
+  min-height: 44px;
+  padding: 4px 12px;
+  font-size: 20px;
+  line-height: 1;
+}
+.libro-paso[data-paso='1'] svg {
+  transform: scaleX(-1);
+}
+.libro-paso:disabled {
+  opacity: 0.3;
+  cursor: default;
+  border-color: var(--tinta-2);
+  color: var(--tinta);
+}
+.libro-cintas {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+.libro-cintas button {
+  --bisel: 3px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 6px;
+  font-size: 10px;
+  color: var(--tinta-2);
+  border-color: rgba(179, 165, 150, 0.4);
+  background: transparent;
+}
+/* Las hojas que el visitante tiene completas llevan cinta de oro. */
+.libro-cintas button.ganada {
+  color: var(--oro);
+  border-color: rgba(209, 173, 88, 0.6);
+  box-shadow: inset 0 -3px 0 var(--oro);
+}
+.libro-cuenta {
+  display: none;
+  min-width: 120px;
+  text-align: center;
+  font-family: var(--f-pixel);
+  font-size: 12px;
+  color: var(--tinta-2);
+}
+.libro-cintas button[aria-current='page'] {
+  color: #fff;
+  background: var(--sangre-honda);
+  border-color: var(--sangre);
+}
+
+@media (max-width: 720px) {
+  .libro-tapa {
+    padding: 8px;
+  }
+  .libro-hojas {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .hoja,
+  .hoja-der {
+    padding: 26px 20px 46px 46px;
+  }
+  .hoja-izq,
+  .hoja-der {
+    background-image:
+      radial-gradient(ellipse at 15% 5%, rgba(255, 250, 230, 0.45), transparent 50%),
+      radial-gradient(rgba(90, 60, 30, 0.12) 0.7px, transparent 0.8px);
+    background-size:
+      auto,
+      4px 4px;
+  }
+  .hoja-izq {
+    padding-bottom: 20px;
+  }
+  .hoja-izq .hoja-pie {
+    display: none;
+  }
+  .hoja-der {
+    padding-top: 6px;
+  }
+  .desgarro {
+    display: none;
+  }
+  .hoja-der .margen.arrancado {
+    position: static;
+    width: auto;
+    margin-top: 8px;
+    text-align: left;
+    border-left: 2px dashed #7a716c;
+    padding-left: 14px;
+  }
+  .libro-cintas {
+    display: none;
+  }
+  .libro-cuenta {
+    display: block;
+  }
 }
 .versiculos {
   list-style: none;
@@ -1065,15 +1352,25 @@ button:disabled {
 .manual p {
   margin: 0;
 }
-.apagada .folio {
+.apagada .libro-hojas {
+  box-shadow:
+    -2px 2px 0 #2c2226,
+    -4px 4px 0 #231b1e,
+    2px 2px 0 #2c2226,
+    4px 4px 0 #231b1e;
+}
+.apagada .desgarro i {
+  background: #1f181c;
+}
+.apagada .hoja {
   background: #1f181c;
   color: #6f6360;
   box-shadow: 0 18px 30px -16px #000;
 }
-.apagada .folio::before {
+.apagada .hoja-izq::before {
   filter: brightness(0.4);
 }
-.apagada .folio h3,
+.apagada .hoja h3,
 .apagada .folio-cabecera {
   color: #6f5b4a;
 }
