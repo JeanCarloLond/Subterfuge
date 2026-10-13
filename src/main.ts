@@ -6,6 +6,7 @@ import {
   NitidezPlugin,
   dimensionarContenedor,
   registrarTextoNitido,
+  vigilarGiro,
 } from './systems/Nitidez';
 import { toques } from './input/Toques';
 import { BootScene } from './scenes/BootScene';
@@ -83,6 +84,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
 registrarTextoNitido();
 dimensionarContenedor('juego');
 const juego = new Phaser.Game(configuracion);
+vigilarGiro(juego);
 
 // Banco de pruebas del mando tactil: con `?tactil` el juego se deja tocar
 // desde fuera (scripts/probar-tactil.mjs manda dedos de verdad con el

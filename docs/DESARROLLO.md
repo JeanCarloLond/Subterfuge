@@ -819,6 +819,16 @@ aguanta eso; la tipografía no, y los diálogos se leían como bloques (#69).
 - En un **aparato táctil** no se ajusta el contenedor: FIT llena la pantalla
   aunque la escala no sea entera. Los controles de dedo necesitan sitio, y el
   lienzo ya viene a 2× o 3×, así que lo que FIT estira de más es poco.
+  La escala se calcula con las medidas del teléfono **en horizontal** (lado
+  largo × lado corto), se arranque como se arranque: así el texto sale nítido
+  también cuando se gira, que es como se juega.
+- **Al girar el teléfono** (#75) Phaser se quedaba con el tamaño de antes: su
+  `refresh()` corre antes de que el contenedor `100dvw × 100dvh` se recoloque,
+  calcula con las medidas viejas y, peor, las guarda como buenas, así que ya
+  no vuelve a enterarse. `vigilarGiro()` escucha `resize`, `orientationchange`,
+  `visualViewport` y `fullscreenchange`, espera dos fotogramas y entonces
+  pide a Phaser que vuelva a medir. En horizontal el juego llena el alto; las
+  franjas a los lados son la proporción 3:2 del juego, no un fallo.
 
 **Lo que hay que saber para no romperlo:**
 

@@ -34,8 +34,21 @@ import { tactil } from '../input/Tactil';
 function calcularEscala(): number {
   if (typeof window === 'undefined') return 1;
   const densidad = window.devicePixelRatio || 1;
-  const horizontal = (window.innerWidth * densidad) / RESOLUCION.ancho;
-  const vertical = (window.innerHeight * densidad) / RESOLUCION.alto;
+  let ancho = window.innerWidth;
+  let alto = window.innerHeight;
+
+  // En un telefono se juega en horizontal (la botonera pide girarlo), pero la
+  // pagina suele abrirse en vertical. Si la escala se calculara con lo que se
+  // ve al abrir, el lienzo naceria con la resolucion del vertical y, al
+  // girarlo, se estiraria con el texto borroso. Se calcula siempre como si ya
+  // estuviera en horizontal (#75).
+  if (tactil.esAparatoTactil) {
+    ancho = Math.max(window.innerWidth, window.innerHeight);
+    alto = Math.min(window.innerWidth, window.innerHeight);
+  }
+
+  const horizontal = (ancho * densidad) / RESOLUCION.ancho;
+  const vertical = (alto * densidad) / RESOLUCION.alto;
   return Phaser.Math.Clamp(Math.floor(Math.min(horizontal, vertical)), 1, 6);
 }
 
@@ -96,6 +109,43 @@ export function dimensionarContenedor(id: string): void {
   contenedor.style.maxWidth = '100vw';
   contenedor.style.maxHeight = '100vh';
   enmarcar(densidad);
+}
+
+/**
+ * Reajusta el juego cuando el telefono gira (issue #75).
+ *
+ * Lo que fallaba es una carrera dentro de Phaser. Al girar, su `refresh()`
+ * se dispara antes de que el navegador haya recolocado el contenedor (que mide
+ * `100dvw x 100dvh`), asi que calcula el tamano con la medida VIEJA. Y al final
+ * de ese calculo vuelve a medir el contenedor, que ya tiene la nueva, y la
+ * guarda: desde ese momento su detector de cambios compara la medida nueva con
+ * la nueva, cree que no ha cambiado nada y no vuelve a reajustar. El lienzo se
+ * quedaba con el tamano del vertical, centrado en mitad de una pantalla
+ * apaisada, para siempre.
+ *
+ * La solucion es pedirle el reajuste DESPUES de que el navegador haya
+ * terminado de colocar las cosas: dos fotogramas tras el giro, se vuelve a
+ * medir el contenedor y se fuerza el `refresh()` con la medida buena.
+ */
+export function vigilarGiro(juego: Phaser.Game): void {
+  if (typeof window === 'undefined') return;
+
+  let pendiente = 0;
+  const reajustar = () => {
+    cancelAnimationFrame(pendiente);
+    pendiente = requestAnimationFrame(() => {
+      pendiente = requestAnimationFrame(() => {
+        juego.scale.getParentBounds();
+        juego.scale.refresh();
+      });
+    });
+  };
+
+  window.addEventListener('resize', reajustar);
+  window.addEventListener('orientationchange', reajustar);
+  // En movil la barra de direcciones aparece y desaparece sin `resize`.
+  window.visualViewport?.addEventListener('resize', reajustar);
+  document.addEventListener('fullscreenchange', reajustar);
 }
 
 /**
