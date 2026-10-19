@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { musica, type Pista } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { RangoPatrulla } from './Devoto';
@@ -11,6 +12,9 @@ type EstadoSerpiente =
 
 /** Evento de escena al vencerla: el nivel abre el ducto que guardaba. */
 export const EVENTO_SERPIENTE_VENCIDA = 'serpiente-vencida';
+
+/** Evento de escena al despertar, con (x, y): el Cuervo avisa (#101). */
+export const EVENTO_SERPIENTE_DESPIERTA = 'serpiente-despierta';
 
 /**
  * La Serpiente de Tejido (#98). El mini-jefe de los ductos.
@@ -55,6 +59,8 @@ export class SerpienteDeTejido implements Habitante, Enemigo {
   private presentada = false;
   private reiniciarAlVolver = false;
   private golpeoEnEsta = false;
+  /** La musica que sonaba antes del combate, para devolverla al acabar. */
+  private musicaDeLaZona: Pista | null = null;
 
   constructor(ctx: ContextoCriatura, x: number, y: number, arena: RangoPatrulla) {
     this.ctx = ctx;
@@ -203,6 +209,13 @@ export class SerpienteDeTejido implements Habitante, Enemigo {
       this.presentada = true;
       this.ctx.presentar('SERPIENTE DE TEJIDO', 'la que asciende sin permiso');
     }
+    // La musica del combate, como con el Reformado (#108). Se recuerda la de
+    // la zona para devolverla al vencerla o si se reinicia el combate.
+    if (musica.pista !== 'jefe') {
+      this.musicaDeLaZona = musica.pista;
+      musica.poner('jefe');
+    }
+    this.ctx.escena.events.emit(EVENTO_SERPIENTE_DESPIERTA, this.sprite.x, this.sprite.y);
     this.ctx.barraDeJefe(this.vida, c.vida, [c.vidaFase2 / c.vida]);
     this.patrullar(ahora);
   }
@@ -299,6 +312,7 @@ export class SerpienteDeTejido implements Habitante, Enemigo {
       this.ctx.soltarOfrenda(this.sprite.x + (i === 0 ? -6 : 6), this.sprite.y - 10, 'injerto');
     }
     this.ctx.avisar('el ducto queda libre');
+    this.devolverMusica();
     this.ctx.escena.events.emit(EVENTO_SERPIENTE_VENCIDA);
     this.ctx.escena.tweens.add({
       targets: this.sprite,
@@ -318,5 +332,11 @@ export class SerpienteDeTejido implements Habitante, Enemigo {
     this.sprite.setTexture('serpiente-cerrada-placeholder');
     this.sprite.setAngle(0).setScale(1).clearTint();
     this.ctx.barraDeJefe(-1, 1);
+    this.devolverMusica();
+  }
+
+  private devolverMusica(): void {
+    if (this.musicaDeLaZona) musica.poner(this.musicaDeLaZona);
+    this.musicaDeLaZona = null;
   }
 }

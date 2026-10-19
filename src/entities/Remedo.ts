@@ -39,7 +39,14 @@ export class Remedo implements Habitante, Enemigo {
   private readonly ctx: ContextoCriatura;
   private readonly ronda?: RangoPatrulla;
 
-  constructor(ctx: ContextoCriatura, x: number, y: number, ronda?: RangoPatrulla) {
+  constructor(
+    ctx: ContextoCriatura,
+    x: number,
+    y: number,
+    ronda?: RangoPatrulla,
+    /** Aparece ya huyendo: el que sale de la Zarza al cortarla (#102). */
+    huyendo = false,
+  ) {
     this.ctx = ctx;
     this.ronda = ronda;
     this.sprite = ctx.escena.physics.add.sprite(x, y, 'remedo-placeholder');
@@ -53,6 +60,8 @@ export class Remedo implements Habitante, Enemigo {
     cuerpo.setOffset(1, 1);
     cuerpo.setCollideWorldBounds(true);
     ctx.escena.physics.add.collider(this.sprite, ctx.suelos);
+
+    if (huyendo) this.huir(ctx.jugador.x);
   }
 
   private get cuerpo(): Phaser.Physics.Arcade.Body {

@@ -46,6 +46,10 @@ export type ClaseEnemigo =
   | 'flor'
   | 'tejido';
 
+/** Volumen de la Lluvia Tibia en calma y cuando arrecia con la Marea. */
+const LLUVIA_CALMA = 0.018;
+const LLUVIA_FUERTE = 0.045;
+
 class Sonido {
   private ctx: AudioContext | null = null;
   private maestro: GainNode | null = null;
@@ -56,6 +60,8 @@ class Sonido {
 
   /** Drone de ambiente; se apaga al salir de los niveles. */
   private ambienteNodos: { osciladores: OscillatorNode[]; ganancia: GainNode } | null = null;
+  /** La Lluvia Tibia: un ruido filtrado en bucle y su volumen. */
+  private lluviaNodos: { fuente: AudioBufferSourceNode; ganancia: GainNode } | null = null;
 
   /** Volumen general. Sobrio, pero tiene que oirse por encima de la musica. */
   private static readonly VOLUMEN = 0.55;
@@ -628,9 +634,10 @@ class Sonido {
   }
 
   /** Cuervo: graznido con resonancia de cable, un zumbido que se queda. */
-  cuervoGrazna(): void {
-    this.tono({ desde: 700, hasta: 520, onda: 'sawtooth', duracion: 0.16, volumen: 0.1 });
-    this.ruido({ duracion: 0.14, frecuencia: 1600, tipo: 'bandpass', volumen: 0.12 });
+  cuervoGrazna(alarma = false): void {
+    const f = alarma ? 1.8 : 1;
+    this.tono({ desde: 700, hasta: 520, onda: 'sawtooth', duracion: 0.16, volumen: 0.1 * f });
+    this.ruido({ duracion: 0.14, frecuencia: 1600, tipo: 'bandpass', volumen: 0.12 * f });
     this.tono({
       desde: 120,
       hasta: 118,
@@ -943,6 +950,65 @@ class Sonido {
     );
 
     this.ambienteNodos = { osciladores, ganancia };
+  }
+
+  /**
+   * La Lluvia Tibia (#96, #108): un siseo agudo y muy bajo, en bucle, sobre el
+   * mismo ruido de los golpes. Las gotas sueltas las pone la escena (`gota`).
+   */
+  lluviaEncendida(): void {
+    const ctx = this.obtenerContexto();
+    if (!ctx || !this.maestro || !this.bufferRuido || this.lluviaNodos) return;
+
+    const fuente = ctx.createBufferSource();
+    fuente.buffer = this.bufferRuido;
+    fuente.loop = true;
+    const agudos = ctx.createBiquadFilter();
+    agudos.type = 'highpass';
+    agudos.frequency.value = 2800;
+    const graves = ctx.createBiquadFilter();
+    graves.type = 'lowpass';
+    graves.frequency.value = 7000;
+    const ganancia = ctx.createGain();
+    ganancia.gain.setValueAtTime(0.0001, ctx.currentTime);
+    ganancia.gain.exponentialRampToValueAtTime(LLUVIA_CALMA, ctx.currentTime + 2);
+
+    fuente.connect(agudos);
+    agudos.connect(graves);
+    graves.connect(ganancia);
+    ganancia.connect(this.maestro);
+    fuente.start();
+    this.lluviaNodos = { fuente, ganancia };
+  }
+
+  /** Arrecia mientras la Marea avisa y sube: la lluvia es una de sus senales. */
+  lluviaArrecia(arrecia: boolean): void {
+    const ctx = this.obtenerContexto();
+    if (!ctx || !this.lluviaNodos) return;
+    const g = this.lluviaNodos.ganancia.gain;
+    g.cancelScheduledValues(ctx.currentTime);
+    g.setValueAtTime(Math.max(0.0001, g.value), ctx.currentTime);
+    g.exponentialRampToValueAtTime(arrecia ? LLUVIA_FUERTE : LLUVIA_CALMA, ctx.currentTime + 1.2);
+  }
+
+  lluviaApagada(): void {
+    const ctx = this.obtenerContexto();
+    const nodos = this.lluviaNodos;
+    if (!ctx || !nodos) return;
+    this.lluviaNodos = null;
+    nodos.ganancia.gain.cancelScheduledValues(ctx.currentTime);
+    nodos.ganancia.gain.setValueAtTime(
+      Math.max(0.0001, nodos.ganancia.gain.value),
+      ctx.currentTime,
+    );
+    nodos.ganancia.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
+    nodos.fuente.stop(ctx.currentTime + 0.7);
+  }
+
+  /** Una gota que cae en un charco: corta, aguda y cada una distinta. */
+  gota(): void {
+    const altura = 900 + Math.random() * 900;
+    this.tono({ desde: altura, hasta: altura * 0.6, onda: 'sine', duracion: 0.06, volumen: 0.05 });
   }
 
   ambienteApagado(): void {
