@@ -448,10 +448,17 @@ Cada zona sigue la misma regla: **el camino principal enseña, los desvíos
 premian**. Cada desvío exige una mecánica (doble salto, dash, agarre) y guarda
 una de dos cosas:
 
-- **Fragmento del Códice** — premio de lectura. Seis en total.
+- **Fragmento del Códice** — premio de lectura. Ocho en el Nivel 1 (`Codice.ts`).
 - **Reliquia** — premio de cuerpo. `Relicario de Carne` (+1 vitalidad máxima)
-  y `Frasco Consagrado` (+1 Poción). Cinco en total, persistentes entre zonas
-  (`Progreso.ts`).
+  y `Frasco Consagrado` (+1 Poción). Siete en el Nivel 1, persistentes entre
+  zonas (`Progreso.ts`).
+
+**Ningún total se escribe a mano (#94).** Las hojas salen de `Codice.ts`, las
+fichas de `Registro.ts`, las capas de `Vientre.ts` y las reliquias de
+`src/lore/Reliquias.ts`, una lista con su zona y su nivel. Los niveles colocan
+las reliquias y la lista las cuenta; `verificar-rutas` comprueba que coinciden.
+Cada cierre cuenta las de su nivel (`reliquiasDelNivel`), como con el Códice;
+la web cuenta el total.
 
 **Capas de ambiente** (`EscenaNivel`): detrás de todo, el telón de arcadas con
 parallax; encima, el **atrezo lejano** (`fondo:` en cada zona — ventanas

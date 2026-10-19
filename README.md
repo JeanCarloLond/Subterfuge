@@ -136,7 +136,7 @@ principio a fin:
 - **Cuatro zonas**: El Atrio, los Pasillos de Preparación, las Criptas de
   Espera y las Salas de Sacramento, más una pantalla de cierre.
 - **Exploración**: rutas secretas con **reliquias** (mejoras permanentes de
-  vida y pociones), ocho fragmentos del Códice que se leen en el juego, placas del
+  vida y pociones; siete), ocho fragmentos del Códice que se leen en el juego, placas del
   Registro por las paredes, y una última línea que solo aparece si se completa.
 
 - **Audio**: efectos sintetizados en tiempo real (distintos por enemigo) y

@@ -301,6 +301,49 @@ function verificarFieles(nombre, src, plataformas) {
   return false;
 }
 
+/**
+ * Las reliquias que colocan los niveles tienen que ser las de
+ * src/lore/Reliquias.ts, y en la misma zona (#94). Esa lista es la que cuenta
+ * el total del juego y de la web: si un nivel coloca una que no esta, el
+ * contador miente; si la lista tiene una que nadie coloca, el 100 % es
+ * imposible. Las dos cosas se ven tarde jugando y al instante aqui.
+ */
+function verificarReliquias(zonas) {
+  const lista = readFileSync(join(raiz, 'src/lore/Reliquias.ts'), 'utf8');
+  const declaradas = new Map(
+    [...lista.matchAll(/id: '([a-z0-9-]+)',\s*zona: '([A-Za-z]+)'/g)].map((m) => [m[1], m[2]]),
+  );
+
+  const colocadas = new Map();
+  for (const [zona, archivo] of zonas) {
+    const src = readFileSync(join(raiz, archivo), 'utf8');
+    for (const m of leerTuplas(src, 'reliquias', /\[\s*-?\d+,\s*-?\d+,\s*'([a-z0-9-]+)'/g)) {
+      colocadas.set(m[1], zona);
+    }
+  }
+
+  const errores = [];
+  for (const [id, zona] of colocadas) {
+    if (!declaradas.has(id)) errores.push(`${id} (en ${zona}) no esta en Reliquias.ts`);
+    else if (declaradas.get(id) !== zona)
+      errores.push(`${id} esta en ${zona}, pero Reliquias.ts dice ${declaradas.get(id)}`);
+  }
+  for (const [id, zona] of declaradas) {
+    if (!colocadas.has(id))
+      errores.push(`${id} (${zona}) esta en Reliquias.ts y ningun nivel la coloca`);
+  }
+
+  if (errores.length === 0) {
+    console.log(
+      `Reliquias: OK — ${declaradas.size} en la lista, las mismas que colocan los niveles`,
+    );
+    return true;
+  }
+  console.log('Reliquias: FALLO');
+  for (const e of errores) console.log(`  ${e}`);
+  return false;
+}
+
 console.log(
   `salto simple ${alturaSalto.toFixed(0)}px · con doble ${alturaDoble.toFixed(0)}px · ` +
     `dash +${avanceDash.toFixed(0)}px`,
@@ -319,5 +362,8 @@ console.log('');
 for (const [nombre, archivo] of zonas) {
   resultados.push(verificarDecorado(nombre, archivo));
 }
+
+console.log('');
+resultados.push(verificarReliquias(zonas));
 
 process.exit(resultados.every(Boolean) ? 0 : 1);

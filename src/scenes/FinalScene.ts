@@ -153,13 +153,15 @@ export class FinalScene extends Phaser.Scene {
    */
   private textoRecuento(): string {
     const total = progreso.fragmentosTotalesDelNivel(1);
-    const reliquias = progreso.reliquiasRecogidas;
+    const reliquias = progreso.reliquiasDelNivel(1);
     const codice =
       this.fragmentos === 0
         ? 'ningun fragmento del Codice'
         : `${this.fragmentos} de ${total} fragmentos del Codice`;
     const relicario =
-      reliquias === 0 ? '' : `   ·   ${reliquias} de ${progreso.reliquiasTotales} reliquias`;
+      reliquias === 0
+        ? ''
+        : `   ·   ${reliquias} de ${progreso.reliquiasTotalesDelNivel(1)} reliquias`;
     // El Registro tambien cuenta: es la mitad del libro, y catalogarlo entero
     // exige haberse cruzado con todo lo que el Vientre tiene dentro.
     const registro = `   ·   ${progreso.fichasDescubiertas} de ${progreso.fichasTotales} fichas`;
