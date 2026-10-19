@@ -402,6 +402,33 @@ una decisión. El drone de ambiente sube de tono con cada fase.
 Duerme hasta que el Cirujano se acerca, y mientras siga vivo el umbral de
 salida no existe.
 
+## Las criaturas del Vientre: tres contratos (#90)
+
+El Vientre Húmedo trae once especies y casi ninguna es un enemigo. Si todas
+entraran en el grupo de enemigos, un tajo al aire mataría al Mondador —el animal
+sagrado, casi extinto— por accidente. Por eso cada especie declara un
+**contrato**, y la escena la mete en un grupo distinto:
+
+| Contrato  | Especies                                     | Tajo        | Injerto | Hiere al rozar |
+| --------- | -------------------------------------------- | ----------- | ------- | -------------- |
+| `hostil`  | Remedo, Serpiente                            | sí          | sí      | sí             |
+| `neutral` | Mondador, Buitre, Cerdo, Cuervo, Mata, Hongo | no          | no      | no             |
+| `peligro` | Zarza, Alfombra, Vena                        | si se corta | no      | sí             |
+
+Un nivel las declara en un solo campo, `criaturas`, con un `tipo` por entrada
+(`src/entities/Criatura.ts`). **Añadir una especie no toca `EscenaNivel`**: su
+entrada en `CriaturaDef`, su clase (cumple `Habitante`, y `Enemigo` si se puede
+herir) y su fábrica en `FABRICAS`.
+
+De momento `FABRICAS` está vacío: cada especie entra con su issue (#97 a #104).
+Un nivel que declare una criatura sin clase **falla al cargar**, a propósito: un
+nivel al que le falta su depredador sin que nadie lo note es peor que uno que no
+arranca. El Nivel 1 no declara ninguna y no cambia.
+
+Se catalogan al verlas (a menos de 170 px), como los Devotos, pero solo si su
+ficha del Registro ya está escrita (#88): un id sin ficha contaría en la web
+como algo descubierto sin texto que leer.
+
 ## La Injertadora: un arma a distancia que no se come al bisturí
 
 El mecanismo con el que se encajaban las prótesis a presión, en pocos
