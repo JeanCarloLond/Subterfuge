@@ -409,6 +409,24 @@ class Sonido {
     this.tono({ desde: 140, hasta: 50, onda: 'triangle', duracion: 0.16, volumen: 0.3 });
   }
 
+  /**
+   * Aviso de la Marea del Hambre: el Latido se acelera (dos golpes graves cada
+   * vez mas juntos) y algo grande se mueve en los ductos.
+   */
+  mareaAviso(): void {
+    for (const [i, retardo] of [0, 0.42, 0.74, 0.98].entries()) {
+      this.tono({
+        desde: 70,
+        hasta: 40,
+        onda: 'sine',
+        duracion: 0.18,
+        volumen: 0.3 + i * 0.06,
+        retardo,
+      });
+    }
+    this.ruido({ duracion: 1.6, frecuencia: 220, barridoHasta: 600, volumen: 0.18, retardo: 0.4 });
+  }
+
   /** Reja de la arena cayendo: hierro contra piedra, y el eco. */
   reja(): void {
     this.ruido({ duracion: 0.35, frecuencia: 900, barridoHasta: 120, volumen: 0.5 });

@@ -616,3 +616,26 @@ export const ESPECIES = {
     fervor: 10,
   },
 } as const;
+
+/**
+ * Las Mareas del Hambre (#91). La biblia: "cuando los Viscerales digieren, los
+ * ductos expulsan fluidos tibios que inundan las criptas bajas. Esas crecidas
+ * fertilizan todo, pero tambien arrastran a quien este abajo".
+ *
+ * Un fenomeno del edificio, no un castigo: avisa con tiempo, sube despacio,
+ * hiere sin matar y baja. Si cubre al Cirujano entero, el Vientre lo devuelve
+ * al ultimo Altar con un punto menos, como al caer al vacio.
+ */
+export const MAREAS = {
+  periodoMs: 18000,
+  /** Lo minimo para ganar altura desde el fondo de una sala. */
+  avisoMs: 2600,
+  subidaMs: 4200,
+  crecidaMs: 6200,
+  bajadaMs: 4200,
+  /** Cuanto sube sobre su nivel de reposo (px). */
+  alturaMaxima: 220,
+  danoPorContacto: 1,
+  /** Empujon hacia arriba al tocar el agua, para salir de ella (px/s). */
+  empuje: 44,
+} as const;

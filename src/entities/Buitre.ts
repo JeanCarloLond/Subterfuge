@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { EVENTO_MAREA, type EstadoMarea } from '../systems/Marea';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -10,8 +11,9 @@ import type { Habitante } from './Habitante';
  * tajo cerca, se va volando y vuelve al rato a la misma percha: no bloquea
  * nada y no se pierde nada por espantarlo.
  *
- * El presagio de la issue (irse del Altar cuando va a subir la Marea) espera a
- * que exista la Marea (#91); este es el animal sin el.
+ * Es tambien el presagio: cuando la Marea del Hambre empieza a avisar, se va,
+ * y no vuelve hasta que el agua ha bajado. Quien aprende a mirarlo sabe que
+ * viene la crecida antes de oirla.
  */
 export class Buitre implements Habitante {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
@@ -22,6 +24,8 @@ export class Buitre implements Habitante {
   readonly estaMuerto = false;
 
   private posado = true;
+  /** Se fue por la Marea: no vuelve hasta que el agua baje. */
+  private esperaMarea = false;
 
   private readonly ctx: ContextoCriatura;
   private readonly x: number;
@@ -37,6 +41,18 @@ export class Buitre implements Habitante {
     const cuerpo = this.sprite.body as Phaser.Physics.Arcade.Body;
     cuerpo.setAllowGravity(false);
     cuerpo.setImmovable(true);
+
+    const alCambiarMarea = (estado: EstadoMarea) => {
+      if (estado === 'aviso') {
+        this.esperaMarea = true;
+        this.volar();
+      } else if (estado === 'reposo' && this.esperaMarea) {
+        this.esperaMarea = false;
+        if (!this.posado) this.volver();
+      }
+    };
+    ctx.escena.events.on(EVENTO_MAREA, alCambiarMarea);
+    ctx.escena.events.once('shutdown', () => ctx.escena.events.off(EVENTO_MAREA, alCambiarMarea));
   }
 
   actualizar(xJugador: number, yJugador: number): void {
@@ -71,7 +87,7 @@ export class Buitre implements Habitante {
   }
 
   private volver(): void {
-    if (!this.sprite.active) return;
+    if (!this.sprite.active || this.esperaMarea || this.posado) return;
     this.ctx.escena.tweens.add({
       targets: this.sprite,
       y: this.y,

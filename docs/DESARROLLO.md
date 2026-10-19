@@ -449,7 +449,21 @@ HUD por su cuenta.
 
 Un nivel con `lluvia: true` tiene **Lluvia Tibia** (#96): gotas finas de agua
 oxidada, fijas a la cámara como el polvo y detrás de todo. Es ambiente, no moja.
-Que arrecie con la Marea queda para cuando exista la Marea (#91).
+Arrecia mientras la Marea avisa y sube.
+
+Un nivel con `mareas` tiene **Mareas del Hambre** (#91), el fenómeno de la
+biblia: "cuando los Viscerales digieren, los ductos expulsan fluidos tibios que
+inundan las criptas bajas". Es un temporizador (`src/systems/Marea.ts`):
+reposo → aviso → subiendo → crecida → bajando. El aviso se oye (el Latido que
+se acelera), se lee ("sube el agua"), se ve (arrecia la lluvia) y lo anuncian
+los animales: el **Buitre se va** y no vuelve hasta que baja el agua, y el
+**Cuervo grazna** tres veces. Tocar el agua hiere y empuja hacia arriba; si
+cubre al Cirujano entero, lo devuelve al último Altar con un punto menos, como
+la caída al vacío. Nunca mata de golpe. Se para sola con la pausa y el Códice.
+
+**El nivel decide hasta dónde sube** (`alturaMaxima`): nunca hasta el Altar de
+la entrada ni el umbral de salida, y siempre con una repisa a salvo por encima.
+La Vena como compuerta al ritmo del Latido sigue pendiente.
 
 **Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
 por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo

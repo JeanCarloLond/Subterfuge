@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { EVENTO_MAREA, type EstadoMarea } from '../systems/Marea';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -14,8 +15,8 @@ import type { Habitante } from './Habitante';
  * ataca, tambien se adelanta al siguiente posadero. Es un heraldo del culto, y
  * la Diocesis no deja que el pueblo lo toque.
  *
- * Los avisos de la issue (graznar mas fuerte con la Serpiente o la Marea
- * cerca) esperan a que existan; de momento grazna solo, cada poco.
+ * Cuando la Marea del Hambre empieza a avisar, grazna tres veces seguidas. El
+ * aviso de la Serpiente cerca espera a que exista la Serpiente (#98).
  */
 export class Cuervo implements Habitante {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
@@ -42,6 +43,13 @@ export class Cuervo implements Habitante {
     const cuerpo = this.sprite.body as Phaser.Physics.Arcade.Body;
     cuerpo.setAllowGravity(false);
     cuerpo.setImmovable(true);
+
+    const alCambiarMarea = (estado: EstadoMarea) => {
+      if (estado !== 'aviso') return;
+      for (let i = 0; i < 3; i += 1) ctx.escena.time.delayedCall(i * 260, () => this.graznar());
+    };
+    ctx.escena.events.on(EVENTO_MAREA, alCambiarMarea);
+    ctx.escena.events.once('shutdown', () => ctx.escena.events.off(EVENTO_MAREA, alCambiarMarea));
   }
 
   /** En que posadero esta, o hacia cual vuela. */

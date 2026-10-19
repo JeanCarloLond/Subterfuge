@@ -20,13 +20,22 @@ import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
 import { Ofrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
-import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
+import {
+  CAIDA,
+  DEVOTO,
+  MAREAS,
+  OFRENDA,
+  REFORMADO,
+  RESOLUCION,
+  VITALIDAD,
+} from '../config/Sacramento';
 import { fijo } from '../systems/Nitidez';
 import { Impacto } from '../systems/Impacto';
 import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
+import { EVENTO_MAREA, Marea, type DefinicionMarea, type EstadoMarea } from '../systems/Marea';
 import { sonido, type ClaseEnemigo } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
 import { VOCES, type ClaveVoz } from '../lore/Voces';
@@ -151,6 +160,11 @@ export interface DefinicionNivel {
    * Vientre Humedo. Ambiente puro: no moja ni cambia la fisica.
    */
   lluvia?: boolean;
+  /**
+   * Mareas del Hambre (#91): el agua de los ductos sube, hiere y baja. Sin
+   * esto, la zona no tiene marea. Ver src/systems/Marea.ts.
+   */
+  mareas?: DefinicionMarea;
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -207,6 +221,12 @@ export interface DefinicionNivel {
 
 /** Lado del tile. */
 const T = 16;
+
+/**
+ * Altura de la cabeza del Cirujano sobre sus pies (px): la capucha, no la caja
+ * de colision. La Marea lo "cubre entero" cuando el agua pasa de aqui.
+ */
+const ALTO_CIRUJANO = 34;
 
 /**
  * Lado de la casilla del mapa, en pixeles del mundo.
@@ -289,6 +309,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private ofrendas: Ofrenda[] = [];
   private fieles: Fiel[] = [];
   private criaturas: Habitante[] = [];
+  private marea?: Marea;
+  private lluvia?: Phaser.GameObjects.Particles.ParticleEmitter;
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
@@ -351,6 +373,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.crearLuces();
     this.crearPolvo();
     if (this.definicion.lluvia) this.crearLluvia();
+    if (this.definicion.mareas) this.crearMarea(this.definicion.mareas);
     this.crearVineta();
 
     this.cameras.main.startFollow(this.cirujano.sprite, true, 0.12, 0.12);
@@ -395,6 +418,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.catalogarLoQueSeVe();
     this.anotarCasillaDelMapa();
+    this.actualizarMarea();
 
     this.actualizarJefe();
 
@@ -447,6 +471,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.ofrendas = [];
     this.fieles = [];
     this.criaturas = [];
+    this.marea = undefined;
+    this.lluvia = undefined;
     this.placas = [];
     this.grupoEnemigos = undefined;
     this.grupoNeutrales = undefined;
@@ -605,6 +631,57 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
     emisor.setScrollFactor(0);
     emisor.setDepth(-2);
+    this.lluvia = emisor;
+  }
+
+  /**
+   * La Marea del Hambre. Arrecia la lluvia mientras avisa y sube: es la senal
+   * que se ve, ademas del Latido que se oye y del aviso del HUD.
+   */
+  private crearMarea(def: DefinicionMarea): void {
+    const marea = new Marea(this, def, this.definicion.mundo.ancho, this.definicion.mundo.alto);
+    this.marea = marea;
+    const alCambiar = (estado: EstadoMarea) => {
+      if (estado === 'aviso') this.game.events.emit(EVENTOS_HUD.aviso, 'sube el agua');
+      const arrecia = estado === 'aviso' || estado === 'subiendo';
+      this.lluvia?.setFrequency(arrecia ? 30 : 70);
+    };
+    this.events.on(EVENTO_MAREA, alCambiar);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off(EVENTO_MAREA, alCambiar));
+  }
+
+  /**
+   * El agua hiere al tocarla y, si cubre al Cirujano entero, el Vientre lo
+   * devuelve al ultimo Altar con un punto menos: como caer al vacio, nunca una
+   * muerte de golpe. Tocarla es un golpe normal, con su invulnerabilidad, y
+   * empuja hacia arriba para salir.
+   */
+  private actualizarMarea(): void {
+    const marea = this.marea;
+    if (!marea) return;
+    marea.actualizar(this.time.now);
+    if (!marea.haySubida || this.cirujano.estaMuerto || this.reapareciendo) return;
+
+    const pies = this.cirujano.sprite.y;
+    const cabeza = pies - ALTO_CIRUJANO;
+    const superficie = marea.superficie;
+
+    if (cabeza > superficie) {
+      const destino = this.altarActivo?.puntoReaparicion ?? this.definicion.inicio;
+      this.cirujano.recibirCaida(1, destino.x, destino.y);
+      this.cameras.main.flash(200, 11, 9, 11);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'la Marea te arrastra');
+      return;
+    }
+
+    if (pies > superficie + 2) {
+      const resultado = this.cirujano.recibirDano(MAREAS.danoPorContacto, this.cirujano.sprite.x);
+      if (resultado === 'herido') {
+        this.impacto.danoRecibido();
+        // Hacia arriba y no de lado: el retroceso lateral lo meteria mas al fondo.
+        this.cirujano.cuerpo.setVelocity(0, -VITALIDAD.retrocesoY - MAREAS.empuje);
+      }
+    }
   }
 
   private crearPolvo(): void {
