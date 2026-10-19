@@ -599,6 +599,19 @@ export const ESPECIES = {
     danoRemedo: 1,
   },
   /**
+   * La Vena Trepadora como compuerta (#101): cierra un paso y solo se abre en
+   * el pico del Latido. Con la Marea en marcha el Latido se acelera, y la
+   * ventana se acorta: cruzarla durante una crecida cuesta mas.
+   */
+  vena: {
+    cicloMs: 2600,
+    abiertaMs: 800,
+    cicloMareaMs: 1500,
+    abiertaMareaMs: 450,
+    /** El golpe que anuncia que se va a abrir (ms antes). */
+    avisoMs: 320,
+  },
+  /**
    * El Hongo de Lampara (#96). Se come: la biblia lo da como alimento ademas
    * de luz, asi que cura y no da Fervor. Comido, se apaga para la partida.
    */

@@ -12,6 +12,7 @@ import { Mata } from './Mata';
 import { Mondador } from './Mondador';
 import { PuenteTejido } from './PuenteTejido';
 import { Remedo } from './Remedo';
+import { Vena } from './Vena';
 import { Zarza } from './Zarza';
 
 /**
@@ -144,9 +145,8 @@ type Fabrica<T extends TipoCriatura> = (
 /**
  * Una fabrica por especie. Cada especie entra con su issue (#96 a #104, #125).
  *
- * Faltan dos, a proposito: la Serpiente es un mini-jefe con arena propia y
- * pide la Marea (#98, #91), y la Vena es una compuerta al ritmo del Latido
- * (#101, #91). Un nivel que las declare falla al cargar.
+ * Falta una, a proposito: la Serpiente es un mini-jefe con arena propia en el
+ * nido del Nivel 2 (#98). Un nivel que la declare falla al cargar.
  */
 const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   remedo: (ctx, d) => new Remedo(ctx, d.x, d.y, d.ronda),
@@ -155,6 +155,7 @@ const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   cerdo: (ctx, d) => new Cerdo(ctx, d.x, d.y, d.ronda),
   cuervo: (ctx, d) => new Cuervo(ctx, d.posaderos),
   zarza: (ctx, d) => new Zarza(ctx, d.x, d.y, d.altoTiles, d.anchoTiles),
+  vena: (ctx, d) => new Vena(ctx, d.x, d.y, d.altoTiles),
   alfombra: (ctx, d) => new Alfombra(ctx, d.x, d.y, d.anchoTiles),
   mata: (ctx, d) => new Mata(ctx, d.x, d.y),
   hongo: (ctx, d) => new Hongo(ctx, d.x, d.y),

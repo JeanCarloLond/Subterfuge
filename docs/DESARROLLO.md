@@ -420,27 +420,28 @@ Un nivel las declara en un solo campo, `criaturas`, con un `tipo` por entrada
 entrada en `CriaturaDef`, su clase (cumple `Habitante`, y `Enemigo` si se puede
 herir) y su fábrica en `FABRICAS`.
 
-Tienen ya su clase: Remedo, Mondador, Buitre, Cerdo, Cuervo, Zarza, Alfombra,
-Mata, Hongo y la Flor de hueso (#96, #97, #99 a #104, #125). Faltan dos, a
-propósito: la **Serpiente** es un mini-jefe con arena propia y necesita la
-Marea, y la **Vena** es una compuerta al ritmo del Latido (#91). Un nivel
+Tienen ya su clase todas menos una: Remedo, Mondador, Buitre, Cerdo, Cuervo,
+Zarza, Alfombra, Mata, Vena, Hongo y la Flor de hueso (#96, #97, #99 a #104,
+#125). Falta la **Serpiente**, a propósito: es un mini-jefe con arena propia en
+el nido del Nivel 2 (#98). Un nivel
 que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
 su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
 declara ninguna y no cambia.
 
-| Especie  | Qué hace                                                                                                                                                   |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Remedo   | Quieto y gris, parece instrumental. Tiembla si te acercas (el tell). Pegado, muerde 1 y huye; no acosa.                                                    |
-| Mondador | Recorre su ruta y se para a comer. Si le lanzas un tajo cerca, huye y no vuelve en esa visita.                                                             |
-| Buitre   | Posado. Si llegas corriendo o le tiras un tajo, se va y vuelve al rato.                                                                                    |
-| Cerdo    | Pasea y come dentro de su corral; se asusta si llegas corriendo.                                                                                           |
-| Cuervo   | Salta al siguiente posadero cuando te acercas: seguirlo lleva a donde el nivel quiera.                                                                     |
-| Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.                                                       |
-| Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola.                                          |
-| Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                                                            |
-| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.                                            |
-| Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.                                                    |
-| Tejido   | Nódulo al borde de un hueco (#95). `E` gasta un injerto y crece un puente de carne que pasa a ser suelo. Sin injertos, avisa y no gasta. Siempre opcional. |
+| Especie  | Qué hace                                                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Remedo   | Quieto y gris, parece instrumental. Tiembla si te acercas (el tell). Pegado, muerde 1 y huye; no acosa.                                                                              |
+| Mondador | Recorre su ruta y se para a comer. Si le lanzas un tajo cerca, huye y no vuelve en esa visita.                                                                                       |
+| Buitre   | Posado. Si llegas corriendo o le tiras un tajo, se va y vuelve al rato.                                                                                                              |
+| Cerdo    | Pasea y come dentro de su corral; se asusta si llegas corriendo.                                                                                                                     |
+| Cuervo   | Salta al siguiente posadero cuando te acercas: seguirlo lleva a donde el nivel quiera.                                                                                               |
+| Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.                                                                                 |
+| Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola.                                                                    |
+| Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                                                                                      |
+| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.                                                                      |
+| Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.                                                                              |
+| Vena     | Cortina de carne que cierra un paso (#101). No hiere: bloquea. Se abre en el pico del Latido (0,8 s de cada 2,6 s), con un golpe que lo anuncia; con la Marea, 0,45 s de cada 1,5 s. |
+| Tejido   | Nódulo al borde de un hueco (#95). `E` gasta un injerto y crece un puente de carne que pasa a ser suelo. Sin injertos, avisa y no gasta. Siempre opcional.                           |
 
 Las criaturas no reciben la escena entera, sino un **contexto** con lo justo
 (`ContextoCriatura`): dónde está el Cirujano, herirlo, curarlo, avisar en el
@@ -463,7 +464,7 @@ la caída al vacío. Nunca mata de golpe. Se para sola con la pausa y el Códice
 
 **El nivel decide hasta dónde sube** (`alturaMaxima`): nunca hasta el Altar de
 la entrada ni el umbral de salida, y siempre con una repisa a salvo por encima.
-La Vena como compuerta al ritmo del Latido sigue pendiente.
+La **Vena** late más rápido mientras dura: la ventana para cruzarla se acorta.
 
 **Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
 por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo
