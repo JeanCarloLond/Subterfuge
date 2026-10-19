@@ -12,7 +12,7 @@
  */
 
 import { CODICE, ROMANOS, numeroEnLetras } from '../../../src/lore/Codice';
-import { type Folio, montarLibro } from '../libro';
+import { type Folio, irAFolio, montarLibro } from '../libro';
 import { fragmentoAbierto } from '../memoria';
 import { acentuar, elemento, html, parrafos } from '../texto';
 import { montarVela } from '../vela';
@@ -73,6 +73,9 @@ const MANUAL: Readonly<Record<string, readonly string[]>> = {
   ],
 };
 
+const QUIETO =
+  typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 /** El ejemplar de la web es el Códice entero: aquí las hojas son doctrina, no botín. */
 const HOJAS = numeroEnLetras(CODICE.length);
 
@@ -101,6 +104,20 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
 
       <p class="vigilia-nota" id="vigilia-nota" aria-live="polite"></p>
 
+      <nav class="indice" aria-label="Índice del Códice">
+        <div class="indice-titulo">Índice</div>
+        <ol class="indice-lista">
+          ${CODICE.map(
+            (f, i) => `
+            <li><button type="button" data-ir="${i}" class="${fragmentoAbierto(f.id) ? 'ganada' : ''}">
+              <span class="indice-num">${ROMANOS[i] ?? i + 1}</span>
+              <span class="indice-nombre">${html(f.titulo)}</span>
+              <span class="indice-cita">${html(acentuar(f.cita))}${fragmentoAbierto(f.id) ? '' : ' · sin margen'}</span>
+            </button></li>`,
+          ).join('')}
+        </ol>
+      </nav>
+
       <div id="libro"></div>
     </article>
   `);
@@ -126,7 +143,22 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
            <div class="margen arrancado"><p>Margen no disponible en esta edición.</p></div>`,
     };
   });
-  const cerrarLibro = montarLibro(raiz.querySelector('#libro') as HTMLElement, folios);
+  // El índice (#114) no duplica el texto: cita, título y número. Cualquier
+  // folio es navegable, ganado o no: la escritura es pública; el margen, no.
+  const libro = raiz.querySelector('#libro') as HTMLElement;
+  const entradas = [...raiz.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+  for (const b of entradas) {
+    b.addEventListener('click', () => {
+      irAFolio(libro, Number(b.dataset.ir));
+      libro.scrollIntoView({ behavior: QUIETO ? 'auto' : 'smooth', block: 'start' });
+    });
+  }
+  const cerrarLibro = montarLibro(libro, folios, (actual) => {
+    entradas.forEach((b, i) => {
+      if (i === actual) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+  });
 
   contenedor.append(raiz);
 

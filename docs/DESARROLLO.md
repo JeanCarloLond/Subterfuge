@@ -674,6 +674,25 @@ Con `prefers-reduced-motion` no hay polvo animado, la vela no sigue al
 puntero y no hay transiciones. En un teléfono la escena se encuadra solo en
 sus figuras y el título va debajo.
 
+### Cuando llegue el arte final, la web no puede quedarse sin láminas (#115)
+
+La web no carga PNG del juego: `npm run exportar-arte` lee las figuras de
+`ArteProvisional.ts` y las vuelca en `web/generado/arte.json`, y de ahí pinta
+cada lámina (`pintarFigura`). Las once especies del Vientre Húmedo ya están
+ahí con su clave (`mondador`, `remedo`, `serpiente`, `buitre`, `cerdo`,
+`cuervo`, `zarza`, `mata`, `alfombra`, `vena`, `hongo`).
+
+El día que el equipo entregue el PNG definitivo de una especie:
+
+1. Se carga en `PreloadScene` con la **misma clave** (sin `-placeholder`) y el
+   juego lo usa.
+2. **La figura provisional no se borra hasta que la web tenga otra fuente**:
+   si se borra, `pintarFigura` devuelve `false` y el Registro enseña la vitrina
+   con la cruz de lámina pendiente. No se rompe, pero se pierde el dibujo.
+3. Para pasar la web al PNG, `exportar-arte` tiene que aprender a copiar ese
+   PNG a `web/generado/` y `pintarFigura` a dibujarlo como imagen. Es un cambio
+   pequeño, pero va en su propio PR, no colado con el arte.
+
 ## Linaje y El Vientre: dos exploradores, no dos posters
 
 Las dos secciones con diagrama (`web/src/paginas/linaje.ts` y `vientre.ts`)

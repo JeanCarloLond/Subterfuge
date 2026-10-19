@@ -1385,6 +1385,80 @@ button:disabled {
   display: block;
 }
 
+/* -- Índices de Doctrina y del Registro (#114) ---------------------------------- */
+
+/* Solo número, título y cita: el índice no repite el texto del folio. */
+.indice {
+  margin: 26px 0 30px;
+}
+.indice-titulo {
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 8px;
+}
+.indice-lista {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+.indice-lista button {
+  --bisel: 3px;
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: baseline;
+  padding: 8px 12px;
+  text-align: left;
+  color: var(--tinta-2);
+  border-color: rgba(179, 165, 150, 0.4);
+  background: transparent;
+}
+.indice-num {
+  grid-row: span 2;
+  min-width: 2.4em;
+  font-family: var(--f-pixel);
+  font-size: 12px;
+  color: var(--tinta-2);
+}
+.indice-nombre {
+  font-family: var(--f-texto);
+  font-size: 16px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--tinta);
+}
+.indice-cita {
+  font-family: var(--f-pixel);
+  font-size: 9px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+/* Folio ganado: el mismo oro que su cinta en el libro. */
+.indice-lista button.ganada .indice-num {
+  color: var(--oro);
+}
+.indice-lista button[aria-current='page'] {
+  background: var(--sangre-honda);
+  border-color: var(--sangre);
+}
+.indice-lista button[aria-current='page'] .indice-num,
+.indice-lista button[aria-current='page'] .indice-nombre {
+  color: #fff;
+}
+.seccion:focus {
+  outline: none;
+}
+
 /* -- Registro: fichas con su lámina en vitrina ------------------------------------- */
 
 .fichas {

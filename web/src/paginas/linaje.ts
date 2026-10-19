@@ -14,7 +14,7 @@
  * gane bajando o presente una clave.
  */
 
-import { descensoAbierto, hitoAbierto } from '../memoria';
+import { descensoAbierto, fichaAbierta, hitoAbierto } from '../memoria';
 import { elemento, html } from '../texto';
 
 type Tipo = 'origen' | 'dios' | 'clero' | 'oficio' | 'fiel' | 'ofrenda' | 'destino' | 'margen';
@@ -32,6 +32,8 @@ interface Nodo {
   x: number;
   descripcion: string;
   requiere?: Requisito;
+  /** Se abre al habilitar esta ficha del Registro, no por un hito. */
+  requiereFicha?: string;
 }
 
 interface Arista {
@@ -253,15 +255,30 @@ const NODOS: readonly Nodo[] = [
       'Resultado parcial del sacramento: el Elegido sobrevive sin completarse. La doctrina establece que se le honra; el procedimiento es alojarlo en los Niveles Reformados, sin visitas. Un sacramento a medias deja media persona, y a esa media se la trata con respeto.',
   },
   {
+    // El id se queda: es el nombre con el que nació en el portal y lo usan las
+    // aristas. El nombre es el de la biblia y el del juego (#110).
     id: 'diezmado',
-    nombre: 'El Diezmado',
+    nombre: 'El Mondador',
     tipo: 'destino',
     rango: 'Animal del Vientre',
     autoridad: 'Ninguna. Está casi extinto.',
     nivel: 6,
     x: 780,
     descripcion:
-      'Fauna del Vientre. Se alimenta de los restos de carne que el sacramento rechaza; su boca es un conjunto de bisturís óseos que perforan sin destruir. Su caparazón adquiere un brillo dorado idéntico al de las reliquias y se aprovecha como ornamento de altar. Las Vestales lo cazan para hacer máscaras. Especie casi extinta.',
+      'Fauna del Vientre, antes registrada como el Diezmado. Felino de pelaje dorado, con una cresta de hueso en la espalda; se alimenta de los restos de carne que el sacramento rechaza, y por eso el culto lo tiene por sagrado. Su caparazón adquiere un brillo idéntico al de las reliquias: las Vestales lo cazan para hacer máscaras. El último del Atrio nació en el año 62. Especie casi extinta.',
+  },
+  {
+    id: 'frontera',
+    nombre: 'La frontera porosa',
+    nombreCerrado: 'Lo que se filtró',
+    tipo: 'margen',
+    rango: 'Ley alterada del Vientre Húmedo',
+    autoridad: 'Ninguna. Ocurre sola, en los desagües.',
+    nivel: 2,
+    x: 150,
+    requiereFicha: 'mondador',
+    descripcion:
+      'El vector genético de Genesis Vestal se filtró durante tres generaciones hacia los desechos y los drenajes. Por eso, en el Vientre Húmedo, el tejido de una especie puede prender en otra: animal, planta, hongo y humano dejan de estar separados. De ahí salen el Mondador, la Serpiente de Tejido, los Remedos, las Zarzas, las Matas, las Alfombras… Es el único cambio de física del mundo; lo demás obedece las leyes conocidas.',
   },
 ];
 
@@ -294,6 +311,9 @@ const ARISTAS: readonly Arista[] = [
   { de: 'elegidos', a: 'reformado', verbo: 'sacramento a medias' },
   { de: 'elegidos', a: 'diezmado', verbo: 'restos rechazados' },
   { de: 'ascendido', a: 'mil', verbo: 'se integra' },
+  { de: 'genesis', a: 'frontera', verbo: 'el vector se filtró' },
+  { de: 'frontera', a: 'diezmado', verbo: 'de ahí sale el limpiador' },
+  { de: 'frontera', a: 'reformado', verbo: 'la carne que no se completa también sirve' },
 ];
 
 const ANCHO_NODO = 184;
@@ -302,6 +322,7 @@ const PASO_NIVEL = 96;
 const MARGEN_SUPERIOR = 44;
 
 function abierto(nodo: Nodo): boolean {
+  if (nodo.requiereFicha) return fichaAbierta(nodo.requiereFicha);
   if (!nodo.requiere) return true;
   if (nodo.requiere === 'descenso') return descensoAbierto();
   return hitoAbierto(nodo.requiere);

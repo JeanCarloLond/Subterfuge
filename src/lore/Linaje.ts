@@ -118,6 +118,18 @@ export const LINAJE: readonly Rama[] = [
     abierto: () => progreso.estaDescubierto('reformado'),
   },
   {
+    // La biblia, Naturaleza: "el vector genetico de Genesis Vestal se filtro
+    // durante tres generaciones hacia los desechos y los drenajes" (#110).
+    nombre: 'La frontera porosa',
+    viene: 'de Genesis Vestal',
+    descripcion: [
+      'El vector de los Mil se filtró tres generaciones por los',
+      'desagües. Abajo, el tejido de una especie prende en otra:',
+      'de ahí el Mondador, la Serpiente, la Mata y las Zarzas.',
+    ],
+    abierto: () => progreso.estaDescubierto('mondador') || progreso.estaPisada('VientreHumedo'),
+  },
+  {
     nombre: 'La ofrenda de hoy',
     viene: 'de una casa con deuda',
     descripcion: [
