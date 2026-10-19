@@ -156,8 +156,8 @@ export class FinalScene extends Phaser.Scene {
     const reliquias = progreso.reliquiasDelNivel(1);
     const codice =
       this.fragmentos === 0
-        ? 'ningun fragmento del Codice'
-        : `${this.fragmentos} de ${total} fragmentos del Codice`;
+        ? 'ningún fragmento del Códice'
+        : `${this.fragmentos} de ${total} fragmentos del Códice`;
     const relicario =
       reliquias === 0
         ? ''

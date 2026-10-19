@@ -1751,7 +1751,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.cirujano.reponerEnAltar();
       this.game.events.emit(
         EVENTOS_HUD.aviso,
-        'cuerpo y frasco repuestos  ·  aqui volveras si caes',
+        'cuerpo y frasco repuestos  ·  aquí volverás si caes',
       );
     });
   }
