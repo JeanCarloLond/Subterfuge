@@ -43,7 +43,8 @@ export type ClaseEnemigo =
   | 'mata'
   | 'vena'
   | 'hongo'
-  | 'flor';
+  | 'flor'
+  | 'tejido';
 
 class Sonido {
   private ctx: AudioContext | null = null;

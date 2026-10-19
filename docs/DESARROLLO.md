@@ -428,18 +428,19 @@ que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
 su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
 declara ninguna y no cambia.
 
-| Especie  | Qué hace                                                                                                          |
-| -------- | ----------------------------------------------------------------------------------------------------------------- |
-| Remedo   | Quieto y gris, parece instrumental. Tiembla si te acercas (el tell). Pegado, muerde 1 y huye; no acosa.           |
-| Mondador | Recorre su ruta y se para a comer. Si le lanzas un tajo cerca, huye y no vuelve en esa visita.                    |
-| Buitre   | Posado. Si llegas corriendo o le tiras un tajo, se va y vuelve al rato.                                           |
-| Cerdo    | Pasea y come dentro de su corral; se asusta si llegas corriendo.                                                  |
-| Cuervo   | Salta al siguiente posadero cuando te acercas: seguirlo lleva a donde el nivel quiera.                            |
-| Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.              |
-| Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola. |
-| Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                   |
-| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.   |
-| Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.           |
+| Especie  | Qué hace                                                                                                                                                   |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Remedo   | Quieto y gris, parece instrumental. Tiembla si te acercas (el tell). Pegado, muerde 1 y huye; no acosa.                                                    |
+| Mondador | Recorre su ruta y se para a comer. Si le lanzas un tajo cerca, huye y no vuelve en esa visita.                                                             |
+| Buitre   | Posado. Si llegas corriendo o le tiras un tajo, se va y vuelve al rato.                                                                                    |
+| Cerdo    | Pasea y come dentro de su corral; se asusta si llegas corriendo.                                                                                           |
+| Cuervo   | Salta al siguiente posadero cuando te acercas: seguirlo lleva a donde el nivel quiera.                                                                     |
+| Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.                                                       |
+| Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola.                                          |
+| Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                                                            |
+| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.                                            |
+| Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.                                                    |
+| Tejido   | Nódulo al borde de un hueco (#95). `E` gasta un injerto y crece un puente de carne que pasa a ser suelo. Sin injertos, avisa y no gasta. Siempre opcional. |
 
 Las criaturas no reciben la escena entera, sino un **contexto** con lo justo
 (`ContextoCriatura`): dónde está el Cirujano, herirlo, curarlo, avisar en el

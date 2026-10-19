@@ -987,6 +987,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
         cirujano.vitalidad.recibirDano(cantidad);
         this.impacto.danoRecibido();
       },
+      gastarInjerto: () => {
+        if (cirujano.gastarInjerto()) return true;
+        this.game.events.emit(EVENTOS_HUD.aviso, 'sin injertos  ·  los sueltan los fieles');
+        return false;
+      },
       frenarJugador: () => cirujano.cuerpo.setVelocityX(0),
       zona: this.scene.key,
     };

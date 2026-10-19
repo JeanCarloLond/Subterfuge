@@ -10,6 +10,7 @@ import type { Contrato, Habitante } from './Habitante';
 import { Hongo } from './Hongo';
 import { Mata } from './Mata';
 import { Mondador } from './Mondador';
+import { PuenteTejido } from './PuenteTejido';
 import { Remedo } from './Remedo';
 import { Zarza } from './Zarza';
 
@@ -39,7 +40,9 @@ export type CriaturaDef =
   | { tipo: 'mata'; x: number; y: number }
   | { tipo: 'vena'; x: number; y: number; altoTiles: number }
   | { tipo: 'hongo'; x: number; y: number }
-  | { tipo: 'flor'; x: number; y: number };
+  | { tipo: 'flor'; x: number; y: number }
+  /** (x, y): borde izquierdo del hueco, a la altura del suelo; crece a la derecha. */
+  | { tipo: 'tejido'; x: number; y: number; anchoTiles: number };
 
 export type TipoCriatura = CriaturaDef['tipo'];
 
@@ -61,6 +64,7 @@ export const CONTRATO: Readonly<Record<TipoCriatura, Contrato>> = {
   mata: 'neutral',
   hongo: 'neutral',
   flor: 'neutral',
+  tejido: 'neutral',
   zarza: 'peligro',
   alfombra: 'peligro',
   vena: 'peligro',
@@ -83,6 +87,9 @@ export const FICHA_DE_CRIATURA: Readonly<Record<TipoCriatura, string>> = {
   vena: 'vena',
   hongo: 'hongo',
   flor: 'flor-de-hueso',
+  // Sin ficha: es la Injertadora haciendo su oficio, no una especie. El id no
+  // existe en el Registro, asi que verlo no cataloga nada.
+  tejido: 'tejido',
 };
 
 /**
@@ -118,6 +125,11 @@ export interface ContextoCriatura {
    * golpe con retroceso soltaria al Cirujano al primer mordisco.
    */
   desgastar(cantidad: number): void;
+  /**
+   * Gasta un injerto de la Injertadora. Si no hay, avisa y devuelve false:
+   * pulsar y que no pase nada se lee como un boton roto.
+   */
+  gastarInjerto(): boolean;
   /** Anula el avance horizontal del Cirujano este fotograma. */
   frenarJugador(): void;
   /** Clave de la escena, para que lo que se corta siga cortado al volver. */
@@ -147,6 +159,7 @@ const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   mata: (ctx, d) => new Mata(ctx, d.x, d.y),
   hongo: (ctx, d) => new Hongo(ctx, d.x, d.y),
   flor: (ctx, d) => new FlorDeHueso(ctx, d.x, d.y),
+  tejido: (ctx, d) => new PuenteTejido(ctx, d.x, d.y, d.anchoTiles),
 };
 
 /**

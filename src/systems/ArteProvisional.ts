@@ -2146,6 +2146,52 @@ const FLOR_HUESO: Figura = {
   ],
 };
 
+// Puentes de tejido (#95). El nodulo que late al borde de un hueco: ahi se
+// injerta, y de ahi crece el puente.
+const NODULO: Figura = {
+  paleta: {
+    n: 0x2a0e12,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    L: 0xd4564a,
+    v: 0x4a2a4a,
+  },
+  // prettier-ignore
+  filas: [
+    '...nnnn...',
+    '..nCCCcn..',
+    '.nCLLCccn.',
+    'nCLLCccvcn',
+    'nCCCcvcccn',
+    'ncccvcccvn',
+    'nccvccCccn',
+    '.ncccccvn.',
+    '..ncvccn..',
+    '.nnnnnnnn.',
+  ],
+};
+// Un tramo del puente ya crecido. Se repite a lo ancho; por debajo cuelgan
+// hebras, para que se lea como carne tendida y no como una tabla.
+const PUENTE_TEJIDO: Figura = {
+  paleta: {
+    n: 0x2a0e12,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    v: 0x4a2a4a,
+    s: 0x5c1f24,
+  },
+  // prettier-ignore
+  filas: [
+    'nCCnCCCnnCCnCCCn',
+    'CccCcccCCccCcccC',
+    'ccvccccvcccvcccc',
+    'cvcccvcccvcccvcc',
+    'sccsccscsccsccsc',
+    'nsnnsnnsnnsnnsnn',
+    '.n..n..n..n..n..',
+    '................',
+  ],
+};
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -2204,6 +2250,8 @@ const FIGURAS: Record<string, Figura> = {
   alfombra: ALFOMBRA,
   'alfombra-erizada': ALFOMBRA_ERIZADA,
   'flor-hueso': FLOR_HUESO,
+  nodulo: NODULO,
+  'puente-tejido': PUENTE_TEJIDO,
   vena: VENA,
   hongo: HONGO,
 };
