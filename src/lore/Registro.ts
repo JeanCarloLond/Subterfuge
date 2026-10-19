@@ -22,7 +22,7 @@
  */
 
 /** En que apartado del Registro cae cada ficha. */
-export type Familia = 'fieles' | 'oficio' | 'aparato';
+export type Familia = 'fieles' | 'oficio' | 'aparato' | 'fauna' | 'flora';
 
 export interface FichaRegistro {
   id: string;
@@ -159,6 +159,154 @@ export const REGISTRO: readonly FichaRegistro[] = [
     ],
   },
 
+  // -- La fauna del Vientre Humedo ------------------------------------------
+  //
+  // Contrastadas con la biblia del 16 de octubre (Naturaleza). Donde la propuesta
+  // de la issue #88 inventaba algo que la biblia contradice, manda la biblia.
+  {
+    id: 'mondador',
+    familia: 'fauna',
+    nombre: 'Mondador',
+    textura: 'mondador-placeholder',
+    hallazgo: 'visto en el Vientre Húmedo',
+    descripcion: [
+      'Felino de pelaje dorado y escaso, con una cresta de hueso',
+      'en la espalda. Come la carne que los dioses rechazaron,',
+      'y por eso el culto lo tiene por sagrado. Las Vestales',
+      'llevan su caparazón por máscara. Quedan pocos.',
+    ],
+  },
+  {
+    id: 'remedo',
+    familia: 'fauna',
+    nombre: 'Remedo',
+    textura: 'remedo-placeholder',
+    hallazgo: 'visto entre el instrumental',
+    descripcion: [
+      'Bicho blando del tamaño de un dedo que se endurece y',
+      'copia la forma de un instrumento. La imitación no da',
+      'calor: por eso el dicho «un bisturí tibio es un Remedo».',
+      'Si se agarra por error, se retuerce y muerde.',
+    ],
+  },
+  {
+    id: 'serpiente',
+    familia: 'fauna',
+    nombre: 'Serpiente de Tejido',
+    textura: 'serpiente-placeholder',
+    hallazgo: 'vista en los ductos',
+    descripcion: [
+      'Sin esqueleto y de escamas duras. Se traga la presa de un',
+      'bocado y, si no cabe, rompe su propio tejido para abrirse.',
+      'Es el depredador de los ductos y el emblema del Rebaño',
+      'Hueco: su injerto promete volverse dios sin el clero.',
+    ],
+  },
+  {
+    id: 'buitre',
+    familia: 'fauna',
+    nombre: 'Buitre ritual',
+    textura: 'buitre-placeholder',
+    hallazgo: 'visto en el altar',
+    descripcion: [
+      'Músculo expuesto y ornamento de catedral. Si se posa',
+      'sobre el altar-camilla, la ofrenda saldrá Reformada y no',
+      'Elegida. Es el Buitre de la Quietud: nadie lo espanta,',
+      'porque se espera su veredicto.',
+    ],
+  },
+  {
+    id: 'cerdo',
+    familia: 'fauna',
+    nombre: 'Cerdo de Protocolo',
+    textura: 'cerdo-placeholder',
+    hallazgo: 'visto en los corrales',
+    descripcion: [
+      'Descendiente de los cerdos del primer diezmo. Vive con',
+      'tubos e injertos, y su carne engastada va a las mesas de',
+      'los linajes injertados: se cree más parecida a la de los',
+      'dioses. Es alimento de lujo y marca de clase.',
+    ],
+  },
+  {
+    id: 'cuervo',
+    familia: 'fauna',
+    nombre: 'Cuervo de Ermita',
+    textura: 'cuervo-placeholder',
+    hallazgo: 'visto en las bóvedas',
+    descripcion: [
+      'Alas cubiertas de carne y plumas trenzadas con cable.',
+      'Anida en las bóvedas y lleva mensajes entre las Ermitas',
+      'y el Atrio. El pueblo lo tiene por heraldo del culto.',
+    ],
+  },
+
+  // -- La flora del Vientre Humedo ------------------------------------------
+  {
+    id: 'zarza',
+    familia: 'flora',
+    nombre: 'Zarza Cosedora',
+    textura: 'zarza-placeholder',
+    hallazgo: 'vista en el zarzal',
+    descripcion: [
+      'Trepadora de tallos oscuros y púas ganchudas. Clava a lo',
+      'que la roza y lo seca despacio. Las Vestales la dejan',
+      'crecer como muralla; los suturadores le sacan agujas.',
+      'Los Remedos se esconden entre sus púas.',
+    ],
+  },
+  {
+    id: 'mata',
+    familia: 'flora',
+    nombre: 'Mata de Retazos',
+    textura: 'mata-placeholder',
+    hallazgo: 'vista en los desagües',
+    descripcion: [
+      'Arbusto de frutos que son manos, dedos, orejas y labios.',
+      'Echa raíces junto a los desagües del tejido rechazado.',
+      'Los pobres ofrecen sus frutos en lugar de carne propia;',
+      'las Vestales lo toleran solo para ofrendas menores.',
+    ],
+  },
+  {
+    id: 'alfombra',
+    familia: 'flora',
+    nombre: 'Alfombra Devota',
+    textura: 'alfombra-placeholder',
+    hallazgo: 'vista en los pasillos',
+    descripcion: [
+      'Filamentos cortos y suaves, del color de las alfombras',
+      'litúrgicas. No se mueve hasta que la pisan: entonces se',
+      'eriza y digiere despacio. Por eso al pueblo le está',
+      'prohibido pisar alfombra, y existen los tanteadores.',
+    ],
+  },
+  {
+    id: 'vena',
+    familia: 'flora',
+    nombre: 'Vena Trepadora',
+    textura: 'vena-placeholder',
+    hallazgo: 'vista en los muros',
+    descripcion: [
+      'Enredadera de carne que late al ritmo del Latido. Las',
+      'Vestales leen su pulso para anunciar un Hambre. Crece',
+      'sobre la piedra como si la piedra tuviera venas.',
+    ],
+  },
+  {
+    id: 'hongo',
+    familia: 'flora',
+    nombre: 'Hongo de Lámpara',
+    textura: 'hongo-placeholder',
+    hallazgo: 'visto en la oscuridad',
+    descripcion: [
+      'Hongo que da luz y marca las horas de toda la ciudad.',
+      'Los hongueros lo cultivan en las terrazas del Atrio;',
+      'abajo crece solo, sobre lo que sueltan los dioses.',
+      'La Diócesis lo llama un regalo del Latido.',
+    ],
+  },
+
   // -- Aparato de Genesis Vestal --------------------------------------------
   {
     id: 'camilla',
@@ -233,5 +381,7 @@ export function fichaPorId(id: string): FichaRegistro | undefined {
 export const FAMILIAS: Readonly<Record<Familia, string>> = {
   fieles: 'LOS FIELES',
   oficio: 'EL OFICIO',
+  fauna: 'LA FAUNA',
+  flora: 'LA FLORA',
   aparato: 'EL APARATO',
 };
