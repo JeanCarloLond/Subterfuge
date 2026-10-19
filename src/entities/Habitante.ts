@@ -36,6 +36,12 @@ export interface Habitante {
   readonly estaMuerto: boolean;
 
   actualizar(xJugador: number, yJugador: number): void;
+
+  /**
+   * El tajo del Cirujano le ha pasado cerca. Solo para neutrales: no reciben
+   * dano, pero si se dan cuenta (el Mondador huye, el Cuervo se va).
+   */
+  alSerAmenazado?(origenX: number): void;
 }
 
 /** Recupera el habitante asociado a un sprite, si lo hay. */

@@ -1,6 +1,15 @@
 import type Phaser from 'phaser';
+import type { EstadoCirujano } from './CirujanoSacerdote';
 import type { RangoPatrulla } from './Devoto';
+import { Alfombra } from './Alfombra';
+import { Buitre } from './Buitre';
+import { Cerdo } from './Cerdo';
+import { Cuervo } from './Cuervo';
 import type { Contrato, Habitante } from './Habitante';
+import { Mata } from './Mata';
+import { Mondador } from './Mondador';
+import { Remedo } from './Remedo';
+import { Zarza } from './Zarza';
 
 /**
  * Como declara un nivel lo que lo habita (issue #90).
@@ -71,11 +80,43 @@ export const FICHA_DE_CRIATURA: Readonly<Record<TipoCriatura, string>> = {
   hongo: 'hongo',
 };
 
+/**
+ * Lo que una criatura puede saber del Cirujano. Solo lectura: la criatura
+ * reacciona a el, no lo mueve (salvo la Alfombra, por `frenarJugador`).
+ */
+export interface VistaJugador {
+  readonly x: number;
+  readonly y: number;
+  readonly velocidadX: number;
+  readonly estado: EstadoCirujano;
+  readonly estaMuerto: boolean;
+  /** Ha pulsado E este fotograma. */
+  readonly interactuar: boolean;
+}
+
 /** Lo que una fabrica necesita del nivel para colocar su criatura. */
 export interface ContextoCriatura {
   escena: Phaser.Scene;
   /** La piedra, para las que andan o se posan. */
   suelos: Phaser.Physics.Arcade.StaticGroup;
+  jugador: VistaJugador;
+  /** Hiere al Cirujano como un golpe: respeta la invulnerabilidad y el dash. */
+  herir(cantidad: number, origenX: number): void;
+  curar(cantidad: number): void;
+  ganarFervor(cantidad: number): void;
+  /** Un aviso en el HUD, como los del Registro. */
+  avisar(texto: string): void;
+  /** Hace solido un objeto para el Cirujano: la Zarza cierra el paso. */
+  bloquear(objeto: Phaser.GameObjects.GameObject): Phaser.Physics.Arcade.Collider;
+  /**
+   * Quita vida sin empujon ni aturdimiento: la Alfombra digiere despacio, y un
+   * golpe con retroceso soltaria al Cirujano al primer mordisco.
+   */
+  desgastar(cantidad: number): void;
+  /** Anula el avance horizontal del Cirujano este fotograma. */
+  frenarJugador(): void;
+  /** Clave de la escena, para que lo que se corta siga cortado al volver. */
+  readonly zona: string;
 }
 
 type Fabrica<T extends TipoCriatura> = (
@@ -84,10 +125,22 @@ type Fabrica<T extends TipoCriatura> = (
 ) => Habitante;
 
 /**
- * Una fabrica por especie. Vacio a proposito: cada especie entra con su issue
- * (#97 a #104), y con ella su fabrica.
+ * Una fabrica por especie. Cada especie entra con su issue (#97 a #104).
+ *
+ * Faltan tres, a proposito: la Serpiente es un mini-jefe con arena propia y
+ * pide la Marea (#98, #91); la Vena es una compuerta al ritmo del Latido (#101,
+ * #91); y el Hongo es luz (#96). Un nivel que las declare falla al cargar.
  */
-const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {};
+const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
+  remedo: (ctx, d) => new Remedo(ctx, d.x, d.y, d.ronda),
+  mondador: (ctx, d) => new Mondador(ctx, d.ruta),
+  buitre: (ctx, d) => new Buitre(ctx, d.x, d.y),
+  cerdo: (ctx, d) => new Cerdo(ctx, d.x, d.y, d.ronda),
+  cuervo: (ctx, d) => new Cuervo(ctx, d.posaderos),
+  zarza: (ctx, d) => new Zarza(ctx, d.x, d.y, d.altoTiles, d.anchoTiles),
+  alfombra: (ctx, d) => new Alfombra(ctx, d.x, d.y, d.anchoTiles),
+  mata: (ctx, d) => new Mata(ctx, d.x, d.y),
+};
 
 /**
  * Crea la criatura que describe `def`.

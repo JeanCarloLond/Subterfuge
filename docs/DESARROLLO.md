@@ -420,10 +420,34 @@ Un nivel las declara en un solo campo, `criaturas`, con un `tipo` por entrada
 entrada en `CriaturaDef`, su clase (cumple `Habitante`, y `Enemigo` si se puede
 herir) y su fábrica en `FABRICAS`.
 
-De momento `FABRICAS` está vacío: cada especie entra con su issue (#97 a #104).
-Un nivel que declare una criatura sin clase **falla al cargar**, a propósito: un
-nivel al que le falta su depredador sin que nadie lo note es peor que uno que no
-arranca. El Nivel 1 no declara ninguna y no cambia.
+Ocho especies tienen ya su clase: Remedo, Mondador, Buitre, Cerdo, Cuervo,
+Zarza, Alfombra y Mata (#97, #99 a #104). Faltan tres, a propósito: la
+**Serpiente** es un mini-jefe con arena propia y necesita la Marea; la **Vena**
+es una compuerta al ritmo del Latido (#91); y el **Hongo** es luz (#96). Un nivel
+que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
+su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
+declara ninguna y no cambia.
+
+| Especie  | Qué hace                                                                                                          |
+| -------- | ----------------------------------------------------------------------------------------------------------------- |
+| Remedo   | Quieto y gris, parece instrumental. Tiembla si te acercas (el tell). Pegado, muerde 1 y huye; no acosa.           |
+| Mondador | Recorre su ruta y se para a comer. Si le lanzas un tajo cerca, huye y no vuelve en esa visita.                    |
+| Buitre   | Posado. Si llegas corriendo o le tiras un tajo, se va y vuelve al rato.                                           |
+| Cerdo    | Pasea y come dentro de su corral; se asusta si llegas corriendo.                                                  |
+| Cuervo   | Salta al siguiente posadero cuando te acercas: seguirlo lleva a donde el nivel quiera.                            |
+| Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.              |
+| Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola. |
+| Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                   |
+
+Las criaturas no reciben la escena entera, sino un **contexto** con lo justo
+(`ContextoCriatura`): dónde está el Cirujano, herirlo, curarlo, avisar en el
+HUD, hacerse sólidas para él. Así ninguna especie acaba tocando la cámara o el
+HUD por su cuenta.
+
+**Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
+por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo
+reactiva. Por eso las criaturas entran con `meterSinPisar`, que los conserva.
+Sin eso la Zarza dejaba de ser un muro y lo posado se caía del mundo.
 
 Se catalogan al verlas (a menos de 170 px), como los Devotos, pero solo si su
 ficha del Registro ya está escrita (#88): un id sin ficha contaría en la web

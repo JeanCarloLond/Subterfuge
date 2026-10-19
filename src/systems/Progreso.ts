@@ -21,6 +21,12 @@ export type TipoReliquia = 'relicario' | 'frasco';
 class Progreso {
   private recogidos = new Set<string>();
   private leidos = new Set<string>();
+  /**
+   * Cambios que el Cirujano deja en el Vientre y que siguen ahi al volver a una
+   * zona: una Zarza cortada no vuelve a crecer en la partida (#102). Solo vive
+   * lo que dura la partida; no se recuerda entre visitas a la web.
+   */
+  private huellas = new Set<string>();
   private reliquias = new Map<string, TipoReliquia>();
   /** Fichas del Registro ya vistas o tocadas. */
   private fichas = new Set<string>();
@@ -51,6 +57,14 @@ class Progreso {
    * la munición que costo pelear se perderia en la puerta.
    */
   private cargaInjertadora: number = INJERTADORA.cargaInicial;
+
+  dejarHuella(id: string): void {
+    this.huellas.add(id);
+  }
+
+  hayHuella(id: string): boolean {
+    return this.huellas.has(id);
+  }
 
   /** @returns true si es la primera vez que se recoge este fragmento. */
   recogerFragmento(id: string): boolean {
@@ -240,6 +254,7 @@ class Progreso {
   reiniciar(): void {
     this.recogidos.clear();
     this.leidos.clear();
+    this.huellas.clear();
     this.reliquias.clear();
     this.fichas.clear();
     this.capas.clear();

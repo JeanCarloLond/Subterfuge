@@ -1945,8 +1945,8 @@ const CUERVO: Figura = {
 const ZARZA: Figura = {
   paleta: {
     n: 0x120a0c,
-    t: 0x2a1a1c,
-    T: 0x46302e,
+    t: 0x4a2a28,
+    T: 0x7a4a40,
     h: 0xc9bda8,
     r: 0x7a1e22,
   },
@@ -2094,6 +2094,27 @@ const HONGO: Figura = {
   ],
 };
 
+// La Alfombra Devota cuando se cierra: los mismos colores, pero los filamentos
+// de pie y sin fleco. El aviso es la FORMA, no el tono: tiene que leerse
+// tambien sin distinguir el rojo.
+const ALFOMBRA_ERIZADA: Figura = {
+  paleta: {
+    n: 0x2a0e14,
+    v: 0x6e1e2c,
+    V: 0x8a2a3a,
+    w: 0x521420,
+  },
+  // prettier-ignore
+  filas: [
+    'V.v.V..v.V.v..V.',
+    'vVv.VvvVvVv.vVvV',
+    'VvwvvVvwvvVvvwvv',
+    'vvVvwvvVvvwvvVvw',
+    'vVvvVvvvVvvVvvvV',
+    'wvwwvwwvwwvwwvww',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -2150,6 +2171,7 @@ const FIGURAS: Record<string, Figura> = {
   zarza: ZARZA,
   mata: MATA,
   alfombra: ALFOMBRA,
+  'alfombra-erizada': ALFOMBRA_ERIZADA,
   vena: VENA,
   hongo: HONGO,
 };

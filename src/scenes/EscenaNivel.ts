@@ -2,7 +2,12 @@ import Phaser from 'phaser';
 import { CirujanoSacerdote } from '../entities/CirujanoSacerdote';
 import { Devoto } from '../entities/Devoto';
 import { enemigoDe } from '../entities/Enemigo';
-import { CONTRATO, crearCriatura, type CriaturaDef } from '../entities/Criatura';
+import {
+  CONTRATO,
+  crearCriatura,
+  type ContextoCriatura,
+  type CriaturaDef,
+} from '../entities/Criatura';
 import { habitanteDe, type Habitante } from '../entities/Habitante';
 import { Reformado } from '../entities/Reformado';
 import { Sello } from '../entities/Sello';
@@ -866,23 +871,34 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const definiciones = this.definicion.criaturas ?? [];
     if (definiciones.length === 0) return;
 
+    const contexto = this.contextoDeCriaturas();
     for (const def of definiciones) {
-      const criatura = crearCriatura({ escena: this, suelos: this.suelos }, def);
+      const criatura = crearCriatura(contexto, def);
       this.criaturas.push(criatura);
 
       switch (CONTRATO[def.tipo]) {
         case 'hostil':
           // Mismo grupo que Devotos y Vestales: el tajo, el injerto, el sello
           // devuelto y el roce ya lo tratan, porque cumple `Enemigo`.
-          this.obtenerGrupoEnemigos().add(criatura.sprite);
+          meterSinPisar(this.obtenerGrupoEnemigos(), criatura.sprite);
           break;
         case 'neutral':
-          this.obtenerGrupoNeutrales().add(criatura.sprite);
+          meterSinPisar(this.obtenerGrupoNeutrales(), criatura.sprite);
           break;
         case 'peligro':
-          this.obtenerGrupoPeligros().add(criatura.sprite);
+          meterSinPisar(this.obtenerGrupoPeligros(), criatura.sprite);
           break;
       }
+    }
+
+    // Los neutrales no reciben el tajo, pero se enteran de el: el Mondador
+    // huye, el Cuervo se va. Es lo que hace que no sean decorado.
+    if (this.grupoNeutrales) {
+      this.physics.add.overlap(this.cirujano.hitbox, this.grupoNeutrales, (_h, neutral) =>
+        habitanteDe(neutral as Phaser.GameObjects.GameObject)?.alSerAmenazado?.(
+          this.cirujano.sprite.x,
+        ),
+      );
     }
 
     // Los peligros hieren al rozarlos, y los que se pueden cortar reciben el
@@ -895,6 +911,55 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.resolverGolpeDelCirujano(peligro as Phaser.GameObjects.GameObject),
       );
     }
+  }
+
+  /**
+   * Lo que las criaturas pueden hacer con el Cirujano y con el nivel, y nada
+   * mas. Se les da esto y no la escena entera para que ninguna especie acabe
+   * tocando el HUD o la camara por su cuenta.
+   */
+  private contextoDeCriaturas(): ContextoCriatura {
+    const cirujano = this.cirujano;
+    const controles = this.controles;
+    return {
+      escena: this,
+      suelos: this.suelos,
+      jugador: {
+        get x() {
+          return cirujano.sprite.x;
+        },
+        get y() {
+          return cirujano.sprite.y;
+        },
+        get velocidadX() {
+          return cirujano.cuerpo.velocity.x;
+        },
+        get estado() {
+          return cirujano.estadoActual;
+        },
+        get estaMuerto() {
+          return cirujano.estaMuerto;
+        },
+        get interactuar() {
+          return controles.interactuarPresionado;
+        },
+      },
+      herir: (cantidad, origenX) => {
+        if (cirujano.estaMuerto) return;
+        if (cirujano.recibirDano(cantidad, origenX) === 'herido') this.impacto.danoRecibido();
+      },
+      curar: (cantidad) => cirujano.vitalidad.curar(cantidad),
+      ganarFervor: (cantidad) => cirujano.fervor.ganar(cantidad),
+      avisar: (texto) => this.game.events.emit(EVENTOS_HUD.aviso, texto),
+      bloquear: (objeto) => this.physics.add.collider(cirujano.sprite, objeto),
+      desgastar: (cantidad) => {
+        if (cirujano.estaMuerto || cirujano.esInvulnerable) return;
+        cirujano.vitalidad.recibirDano(cantidad);
+        this.impacto.danoRecibido();
+      },
+      frenarJugador: () => cirujano.cuerpo.setVelocityX(0),
+      zona: this.scene.key,
+    };
   }
 
   private obtenerGrupoNeutrales(): Phaser.Physics.Arcade.Group {
@@ -2141,4 +2206,31 @@ export abstract class EscenaNivel extends Phaser.Scene {
       },
     });
   }
+}
+
+/**
+ * Mete un cuerpo en un grupo de Arcade sin perder como estaba configurado.
+ *
+ * `group.add` le reaplica al cuerpo los valores por defecto del grupo: lo
+ * vuelve movible, le devuelve la gravedad y lo reactiva. Con los Devotos no se
+ * nota, porque andan por el suelo; con las criaturas si. La Zarza dejaba de ser
+ * un muro (el Cirujano la empujaba), y lo que estaba posado —la Mata, el
+ * Cuervo— se caia por el suelo y se salia del mundo.
+ */
+function meterSinPisar(
+  grupo: Phaser.Physics.Arcade.Group,
+  sprite: Phaser.Physics.Arcade.Sprite,
+): void {
+  const cuerpo = sprite.body as Phaser.Physics.Arcade.Body;
+  const antes = {
+    gravedad: cuerpo.allowGravity,
+    inamovible: cuerpo.immovable,
+    activo: cuerpo.enable,
+    bordes: cuerpo.collideWorldBounds,
+  };
+  grupo.add(sprite);
+  cuerpo.setAllowGravity(antes.gravedad);
+  cuerpo.setImmovable(antes.inamovible);
+  cuerpo.setEnable(antes.activo);
+  cuerpo.setCollideWorldBounds(antes.bordes);
 }

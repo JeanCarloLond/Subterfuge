@@ -513,3 +513,89 @@ export const REFORMADO = {
   /** Pausa vulnerable tras fallar una embestida. La ventana de castigo. */
   aturdimientoTrasFalloMs: 1100,
 } as const;
+
+/**
+ * La fauna y la flora del Vientre Humedo (#97 a #104).
+ *
+ * Casi nada de esto es un enemigo. Los numeros estan puestos para que cada
+ * especie se entienda en el primer encuentro y no castigue mas de la cuenta:
+ * el Vientre es hostil por lo que es, no por lo que persigue al jugador.
+ */
+export const ESPECIES = {
+  /** El instrumento tibio: muerde una vez y huye; no acosa. */
+  remedo: {
+    vida: 2,
+    dano: 1,
+    /** A esta distancia del Cirujano, muerde (px). */
+    radioMordisco: 20,
+    /** Desde aqui ya tiembla: es el tell que se aprende (px). */
+    radioTemblor: 72,
+    /** Cada cuanto tiembla mientras el Cirujano esta cerca (ms). */
+    cadaTemblorMs: 1400,
+    velocidadHuida: 110,
+    huidaMs: 1300,
+    /** Tras huir vuelve a quedarse quieto y a parecer un objeto. */
+    reposoMs: 2600,
+  },
+  /** El limpiador sagrado: no hiere, no se mata, y huye si se le amenaza. */
+  mondador: {
+    velocidad: 34,
+    velocidadHuida: 150,
+    /** Se para a comer en cada punto de su ruta (ms). */
+    comerMs: 1600,
+    /** Llegar a un punto de la ruta, con este margen (px). */
+    margen: 4,
+  },
+  /** El Buitre de la Quietud: se espanta y vuelve. */
+  buitre: {
+    /** Se espanta si el Cirujano se le acerca a esta distancia corriendo (px). */
+    radioEspanto: 44,
+    velocidadQueEspanta: 120,
+    ausenciaMs: 6000,
+  },
+  /** Cria de los linajes: ambienta el corral. */
+  cerdo: {
+    velocidad: 18,
+    velocidadHuida: 90,
+    radioSusto: 64,
+    velocidadQueAsusta: 120,
+    comerMs: 2200,
+    pasoMs: 1800,
+  },
+  /** El mensajero: salta de posadero en posadero por delante del Cirujano. */
+  cuervo: {
+    radioPartida: 56,
+    vueloMs: 900,
+    /** Altura del arco de vuelo (px). */
+    arco: 26,
+    graznidoCadaMs: 4200,
+  },
+  /** Barrera viva: hiere al rozarla, se corta y no vuelve a crecer. */
+  zarza: {
+    vidaPorTile: 2,
+    /** Fervor por abrir el paso. Medio sello: es una planta, no un fiel. */
+    fervorAlCortar: 10,
+  },
+  /** La trampa que parece liturgia. */
+  alfombra: {
+    /** Golpes que hacen falta para cortar los filamentos. */
+    vida: 2,
+    /** Dano mientras se esta atrapado, cada tanto (ms). */
+    cadaDanoMs: 1200,
+    /** Tras soltarse, este tiempo no vuelve a cerrarse: salir no es otra trampa. */
+    graciaMs: 900,
+    /** Desde aqui respira, para quien se fija (px). */
+    radioRespiracion: 56,
+    cadaRespiracionMs: 1500,
+  },
+  /** Cosecha con riesgo. No es una fuente infinita de curacion. */
+  mata: {
+    frutos: 3,
+    radio: 26,
+    /** Probabilidades acumuladas: comestible, amargo; el resto es un Remedo. */
+    comestible: 0.65,
+    amargo: 0.25,
+    curacion: 1,
+    danoRemedo: 1,
+  },
+} as const;
