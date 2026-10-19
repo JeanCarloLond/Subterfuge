@@ -95,7 +95,7 @@ pararlo, `Ctrl + C` en la terminal.
 | Parry                 | `K`, `V` o clic derecho       |
 | Lanzar un injerto     | `F` o `R`                     |
 | Poción de Carne       | `Q`                           |
-| Rezar / descender     | `E`                           |
+| Rezar / hablar / usar | `E`                           |
 | Leer el Códice        | `L`                           |
 | Trepar (colgado)      | `W` / flecha arriba           |
 | Soltarse (colgado)    | `S` / flecha abajo            |
@@ -120,33 +120,57 @@ Vestal, además, no solo paras su sello — se lo devuelves con el triple de da�
 
 ## Estado del Proyecto
 
-Subterfuge se encuentra en fase de desarrollo. El equipo está trabajando en la definición de mecánicas, el diseño de niveles y la producción de arte.
+**Fase 4 — en curso.** El juego pasa a tener dos niveles. El **Nivel 1** es el
+teaser que ya se puede jugar de principio a fin; el **Nivel 2, El Vientre
+Húmedo**, está en preparación.
 
-**Fase 3 (Pulido y contenido) — en curso.** El bucle del teaser ya cierra de
-principio a fin:
+### Nivel 1 — El Sacramento (jugable)
 
 - **Movimiento completo**: salto, doble salto, dash con invulnerabilidad y
   agarre de bordes.
-- **Combate**: ataque, ataque cargado (gasta Fervor) y parry que aturde.
-- **Sistemas**: Fervor, Poción de Carne, Altares de guardado y fragmentos del
-  Códice de la Carne.
+- **Combate**: ataque, ataque cargado (gasta Fervor), parry que aturde y la
+  Injertadora, que lanza las prótesis que sueltan los fieles.
+- **Sistemas**: Fervor, Poción de Carne, Altares de guardado y el Códice de la
+  Carne, un libro que se abre con `L` (Códice, Registro, mapa, capas, jerarquía,
+  linaje y cronología).
 - **Tres enemigos**: el Devoto (cuerpo a cuerpo), el Vestal (a distancia, y sus
   sellos se le pueden devolver con el parry) y el Reformado, el jefe, con tres
   fases.
-- **Cuatro zonas**: El Atrio, los Pasillos de Preparación, las Criptas de
+- **Cuatro zonas**: el Atrio, los Pasillos de Preparación, las Criptas de
   Espera y las Salas de Sacramento, más una pantalla de cierre.
-- **Exploración**: rutas secretas con **reliquias** (mejoras permanentes de
-  vida y pociones; siete), ocho fragmentos del Códice que se leen en el juego, placas del
-  Registro por las paredes, y una última línea que solo aparece si se completa.
+- **Exploración**: rutas secretas con siete **reliquias** (mejoras permanentes
+  de vida y pociones), ocho hojas del Códice, placas del Registro por las
+  paredes, fieles con los que se puede hablar y una última línea que solo
+  aparece si se completa.
+- **Audio**: efectos sintetizados en tiempo real (cada enemigo suena a su
+  materia) y banda sonora CC0 por zona, con tema propio para el jefe y el cierre.
+- **Táctil**: se puede jugar en el móvil, con mando en pantalla.
 
-- **Audio**: efectos sintetizados en tiempo real (distintos por enemigo) y
-  banda sonora CC0 por zona, con tema propio para el jefe y el cierre.
+### Nivel 2 — El Vientre Húmedo (en preparación)
 
-Pendiente: los sprites de personajes y escribir el gancho final.
+El ecosistema que vive de lo que el sacramento rechaza. Ya está hecho, a la
+espera de construir el nivel:
 
-- **Arte**: la sillería de las cuatro zonas ya es arte del equipo, dibujado a
-  mano. Cada nivel la tiñe y la desgasta a su manera, así que la misma piedra se
-  va cerrando conforme se baja.
+- **Fauna y flora** con su comportamiento: el Mondador, el Remedo, el Cerdo de
+  Protocolo, el Buitre ritual, el Cuervo de Ermita, la Zarza Cosedora, la
+  Alfombra Devota, la Mata de Retazos, la Vena Trepadora, el Hongo de Lámpara y
+  la Flor de hueso. Y la **Serpiente de Tejido**, el mini-jefe de los ductos.
+- **Fenómenos**: las Mareas del Hambre y la Lluvia Tibia.
+- **La Injertadora como llave**: puentes de tejido que crecen gastando un
+  injerto.
+- **Fieles nuevos**: el Tanteador y la Honguera.
+- **Dos hojas más del Códice** (diez en total) y el Registro con su fauna y su
+  flora.
+
+Falta la geometría del nivel y su cierre, que esperan a que el equipo narrativo
+apruebe el canon de la fase.
+
+### El portal de la Diócesis
+
+La web es parte del juego: Doctrina (el Códice, con índice), el Registro (con
+láminas), el plano del Vientre, el Linaje, y dos minijuegos (el Examen de Pureza
+y la práctica del Sacramento). Lo que el visitante encuentra en el juego se le
+habilita en la web.
 
 > **Sobre el arte que se ve ahora:** la piedra es del equipo (las piezas están en
 > `docs/arte/piezas/`). Todo lo demás —personajes, objetos, decorado— sigue
@@ -207,22 +231,23 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 
 ### Comandos disponibles
 
-| Comando                   | Para qué sirve                                      |
-| ------------------------- | --------------------------------------------------- |
-| `npm run dev`             | Servidor local con recarga automática               |
-| `npm run build`           | Build de producción en `dist/`                      |
-| `npm run preview`         | Sirve el build de producción para probarlo          |
-| `npm run verificar`       | **Todas** las comprobaciones del CI, de una vez     |
-| `npm run format`          | Aplica el formato de Prettier                       |
-| `npm run lint`            | Reglas de código (ESLint)                           |
-| `npm run typecheck`       | Comprobación de tipos sin generar build             |
-| `npm run verificar-arte`  | Comprueba las figuras del pixel art y los tilesets  |
-| `npm run verificar-rutas` | Comprueba que en cada nivel se pueda volver a subir |
-| `npm run exportar-arte`   | Saca los sprites a JSON para las láminas de la web  |
-| `npm run probar-tactil`   | Prueba el mando táctil con toques reales en Chrome  |
+| Comando                    | Para qué sirve                                      |
+| -------------------------- | --------------------------------------------------- |
+| `npm run dev`              | Servidor local con recarga automática               |
+| `npm run build`            | Build de producción en `dist/`                      |
+| `npm run preview`          | Sirve el build de producción para probarlo          |
+| `npm run verificar`        | **Todas** las comprobaciones del CI, de una vez     |
+| `npm run format`           | Aplica el formato de Prettier                       |
+| `npm run lint`             | Reglas de código (ESLint)                           |
+| `npm run typecheck`        | Comprobación de tipos sin generar build             |
+| `npm run verificar-arte`   | Comprueba las figuras del pixel art y los tilesets  |
+| `npm run verificar-rutas`  | Comprueba que en cada nivel se pueda volver a subir |
+| `npm run verificar-textos` | Léxico del mundo y tildes en los textos visibles    |
+| `npm run exportar-arte`    | Saca los sprites a JSON para las láminas de la web  |
+| `npm run probar-tactil`    | Prueba el mando táctil con toques reales en Chrome  |
 
-`npm run dev` sirve el juego en `/` y el portal en `/web/`. Los tres últimos
-son propios del proyecto y no los cubre ningún linter.
+`npm run dev` sirve el juego en `/` y el portal en `/web/`. Los `verificar-*` y
+los dos últimos son propios del proyecto y no los cubre ningún linter.
 `verificar-rutas` existe porque el Atrio llegó a publicarse sin ruta de vuelta, y
 al caer al fondo el jugador quedaba encallado; ahora eso no puede colarse.
 
