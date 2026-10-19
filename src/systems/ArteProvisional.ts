@@ -2115,6 +2115,37 @@ const ALFOMBRA_ERIZADA: Figura = {
   ],
 };
 
+// La Flor de hueso (#125). Blanca, con el centro de carne: la que se deja en
+// el asiento vacio de la Cena de la Ausencia. La biblia la pone entre las
+// plantas de su bolsa de palabras y entre los artefactos culturales.
+const FLOR_HUESO: Figura = {
+  paleta: {
+    n: 0x2a2024,
+    h: 0xe6ddc8,
+    H: 0xf6f0e0,
+    s: 0xb3a68c,
+    c: 0x9a5a54,
+    r: 0x7a1e22,
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnn....',
+    '..nnhHHhnn..',
+    '.nhHnhhnHhn.',
+    '.nhhhrrhhhn.',
+    'nhHhrccrhHhn',
+    '.nhhhrrhhhn.',
+    '.nhHnhhnHhn.',
+    '..nnhssHnn..',
+    '....nshn....',
+    '..nn.nsn....',
+    '.nhsnnsn....',
+    '..nnhssn....',
+    '....nshn....',
+    '..nnnssnnn..',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -2172,6 +2203,7 @@ const FIGURAS: Record<string, Figura> = {
   mata: MATA,
   alfombra: ALFOMBRA,
   'alfombra-erizada': ALFOMBRA_ERIZADA,
+  'flor-hueso': FLOR_HUESO,
   vena: VENA,
   hongo: HONGO,
 };

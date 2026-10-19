@@ -146,6 +146,11 @@ export interface DefinicionNivel {
   fondo?: readonly Decorado[];
   /** Color del polvo en suspension. Calido arriba, frio y gris abajo. */
   polvo?: number;
+  /**
+   * Lluvia Tibia (#96): el goteo de agua oxidada que cae de las bovedas en el
+   * Vientre Humedo. Ambiente puro: no moja ni cambia la fisica.
+   */
+  lluvia?: boolean;
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -345,6 +350,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.crearLuces();
     this.crearPolvo();
+    if (this.definicion.lluvia) this.crearLluvia();
     this.crearVineta();
 
     this.cameras.main.startFollow(this.cirujano.sprite, true, 0.12, 0.12);
@@ -577,6 +583,30 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * Polvo en suspension, fijo a la camara. Muy poco y muy lento: se nota como
    * aire, no como nieve. Es la senal mas barata de que el espacio tiene volumen.
    */
+  /**
+   * La Lluvia Tibia. Gotas finas fijas a la camara, como el polvo, para que
+   * llueva en toda la pantalla sin sembrar el mundo entero de particulas.
+   * Van detras del Cirujano y de las criaturas: es el fondo, no un obstaculo.
+   */
+  private crearLluvia(): void {
+    const { ancho, alto } = RESOLUCION;
+    const emisor = this.add.particles(0, 0, 'chispa-placeholder', {
+      x: { min: fijo(0, 0).x, max: fijo(ancho, 0).x },
+      y: fijo(0, -4).y,
+      lifespan: { min: (alto / 170) * 1000, max: (alto / 120) * 1000 },
+      speedY: { min: 120, max: 170 },
+      speedX: { min: -4, max: 4 },
+      scaleX: 0.5,
+      scaleY: { min: 1.5, max: 2.5 },
+      alpha: { start: 0.35, end: 0.1 },
+      tint: 0x9a8a72,
+      frequency: 70,
+      maxAliveParticles: 40,
+    });
+    emisor.setScrollFactor(0);
+    emisor.setDepth(-2);
+  }
+
   private crearPolvo(): void {
     const { ancho, alto } = RESOLUCION;
     const color = this.definicion.polvo ?? 0xc9b48a;

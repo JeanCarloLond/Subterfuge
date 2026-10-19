@@ -5,7 +5,9 @@ import { Alfombra } from './Alfombra';
 import { Buitre } from './Buitre';
 import { Cerdo } from './Cerdo';
 import { Cuervo } from './Cuervo';
+import { FlorDeHueso } from './FlorDeHueso';
 import type { Contrato, Habitante } from './Habitante';
+import { Hongo } from './Hongo';
 import { Mata } from './Mata';
 import { Mondador } from './Mondador';
 import { Remedo } from './Remedo';
@@ -36,7 +38,8 @@ export type CriaturaDef =
   | { tipo: 'alfombra'; x: number; y: number; anchoTiles: number }
   | { tipo: 'mata'; x: number; y: number }
   | { tipo: 'vena'; x: number; y: number; altoTiles: number }
-  | { tipo: 'hongo'; x: number; y: number };
+  | { tipo: 'hongo'; x: number; y: number }
+  | { tipo: 'flor'; x: number; y: number };
 
 export type TipoCriatura = CriaturaDef['tipo'];
 
@@ -57,6 +60,7 @@ export const CONTRATO: Readonly<Record<TipoCriatura, Contrato>> = {
   cuervo: 'neutral',
   mata: 'neutral',
   hongo: 'neutral',
+  flor: 'neutral',
   zarza: 'peligro',
   alfombra: 'peligro',
   vena: 'peligro',
@@ -78,6 +82,7 @@ export const FICHA_DE_CRIATURA: Readonly<Record<TipoCriatura, string>> = {
   mata: 'mata',
   vena: 'vena',
   hongo: 'hongo',
+  flor: 'flor-de-hueso',
 };
 
 /**
@@ -125,11 +130,11 @@ type Fabrica<T extends TipoCriatura> = (
 ) => Habitante;
 
 /**
- * Una fabrica por especie. Cada especie entra con su issue (#97 a #104).
+ * Una fabrica por especie. Cada especie entra con su issue (#96 a #104, #125).
  *
- * Faltan tres, a proposito: la Serpiente es un mini-jefe con arena propia y
- * pide la Marea (#98, #91); la Vena es una compuerta al ritmo del Latido (#101,
- * #91); y el Hongo es luz (#96). Un nivel que las declare falla al cargar.
+ * Faltan dos, a proposito: la Serpiente es un mini-jefe con arena propia y
+ * pide la Marea (#98, #91), y la Vena es una compuerta al ritmo del Latido
+ * (#101, #91). Un nivel que las declare falla al cargar.
  */
 const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   remedo: (ctx, d) => new Remedo(ctx, d.x, d.y, d.ronda),
@@ -140,6 +145,8 @@ const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   zarza: (ctx, d) => new Zarza(ctx, d.x, d.y, d.altoTiles, d.anchoTiles),
   alfombra: (ctx, d) => new Alfombra(ctx, d.x, d.y, d.anchoTiles),
   mata: (ctx, d) => new Mata(ctx, d.x, d.y),
+  hongo: (ctx, d) => new Hongo(ctx, d.x, d.y),
+  flor: (ctx, d) => new FlorDeHueso(ctx, d.x, d.y),
 };
 
 /**

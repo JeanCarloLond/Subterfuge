@@ -307,6 +307,22 @@ export const REGISTRO: readonly FichaRegistro[] = [
     ],
   },
 
+  {
+    // La biblia la pone entre las plantas (bolsa de palabras) y entre los
+    // artefactos culturales; aqui va con la flora, con su uso en la ficha.
+    id: 'flor-de-hueso',
+    familia: 'flora',
+    nombre: 'Flor de hueso',
+    textura: 'flor-hueso-placeholder',
+    hallazgo: 'vista en el Vientre Húmedo',
+    descripcion: [
+      'Flor blanca que crece de hueso y del tejido que el',
+      'sacramento rechaza. En la Cena de la Ausencia se deja',
+      'una sobre el asiento vacío del que fue subido.',
+      'La Diócesis la tiene por adorno menor, no por sacramento.',
+    ],
+  },
+
   // -- Aparato de Genesis Vestal --------------------------------------------
   {
     id: 'camilla',

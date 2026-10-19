@@ -598,4 +598,21 @@ export const ESPECIES = {
     curacion: 1,
     danoRemedo: 1,
   },
+  /**
+   * El Hongo de Lampara (#96). Se come: la biblia lo da como alimento ademas
+   * de luz, asi que cura y no da Fervor. Comido, se apaga para la partida.
+   */
+  hongo: {
+    radio: 24,
+    curacion: 1,
+  },
+  /**
+   * La Flor de hueso (#125). Una sola por nivel, y se recoge una vez. La issue
+   * pide "+1 Fervor"; en una escala de 100 eso no se nota, asi que da lo mismo
+   * que abrir una Zarza: un gesto, no una recompensa.
+   */
+  flor: {
+    radio: 24,
+    fervor: 10,
+  },
 } as const;

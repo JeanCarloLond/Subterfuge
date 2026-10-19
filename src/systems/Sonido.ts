@@ -42,7 +42,8 @@ export type ClaseEnemigo =
   | 'alfombra'
   | 'mata'
   | 'vena'
-  | 'hongo';
+  | 'hongo'
+  | 'flor';
 
 class Sonido {
   private ctx: AudioContext | null = null;

@@ -420,10 +420,10 @@ Un nivel las declara en un solo campo, `criaturas`, con un `tipo` por entrada
 entrada en `CriaturaDef`, su clase (cumple `Habitante`, y `Enemigo` si se puede
 herir) y su fábrica en `FABRICAS`.
 
-Ocho especies tienen ya su clase: Remedo, Mondador, Buitre, Cerdo, Cuervo,
-Zarza, Alfombra y Mata (#97, #99 a #104). Faltan tres, a propósito: la
-**Serpiente** es un mini-jefe con arena propia y necesita la Marea; la **Vena**
-es una compuerta al ritmo del Latido (#91); y el **Hongo** es luz (#96). Un nivel
+Tienen ya su clase: Remedo, Mondador, Buitre, Cerdo, Cuervo, Zarza, Alfombra,
+Mata, Hongo y la Flor de hueso (#96, #97, #99 a #104, #125). Faltan dos, a
+propósito: la **Serpiente** es un mini-jefe con arena propia y necesita la
+Marea, y la **Vena** es una compuerta al ritmo del Latido (#91). Un nivel
 que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
 su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
 declara ninguna y no cambia.
@@ -438,11 +438,17 @@ declara ninguna y no cambia.
 | Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.              |
 | Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola. |
 | Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                   |
+| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.   |
+| Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.           |
 
 Las criaturas no reciben la escena entera, sino un **contexto** con lo justo
 (`ContextoCriatura`): dónde está el Cirujano, herirlo, curarlo, avisar en el
 HUD, hacerse sólidas para él. Así ninguna especie acaba tocando la cámara o el
 HUD por su cuenta.
+
+Un nivel con `lluvia: true` tiene **Lluvia Tibia** (#96): gotas finas de agua
+oxidada, fijas a la cámara como el polvo y detrás de todo. Es ambiente, no moja.
+Que arrecie con la Marea queda para cuando exista la Marea (#91).
 
 **Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
 por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo
