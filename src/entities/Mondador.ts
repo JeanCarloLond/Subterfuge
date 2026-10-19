@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -86,6 +87,7 @@ export class Mondador implements Habitante {
     if (this.estado === 'huyendo' || this.estado === 'oculto') return;
     this.estado = 'huyendo';
     this.finEstado = this.ctx.escena.time.now + 1600;
+    sonido.mondadorHuye();
     const lejos = this.sprite.x >= origenX ? 1 : -1;
     this.cuerpo.setVelocityX(lejos * ESPECIES.mondador.velocidadHuida);
     this.sprite.setFlipX(lejos < 0);
@@ -107,6 +109,7 @@ export class Mondador implements Habitante {
   private empezarAComer(ahora: number): void {
     this.estado = 'comiendo';
     this.finEstado = ahora + ESPECIES.mondador.comerMs;
+    if (this.ctx.oye(this.sprite.x, this.sprite.y)) sonido.mondadorRonronea();
     this.cuerpo.setVelocityX(0);
     this.ctx.escena.tweens.add({
       targets: this.sprite,

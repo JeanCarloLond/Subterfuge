@@ -103,6 +103,7 @@ export class Marea {
         break;
       case 'aviso':
         this.cambiar('subiendo', ahora + MAREAS.subidaMs);
+        sonido.mareaSube();
         this.mover(this.alturaMaxima, MAREAS.subidaMs, 'Sine.easeIn');
         break;
       case 'subiendo':
@@ -110,6 +111,7 @@ export class Marea {
         break;
       case 'crecida':
         this.cambiar('bajando', ahora + MAREAS.bajadaMs);
+        sonido.mareaBaja();
         this.mover(0, MAREAS.bajadaMs, 'Sine.easeOut');
         break;
       default:

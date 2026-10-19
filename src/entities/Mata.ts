@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -69,6 +70,7 @@ export class Mata implements Habitante {
   private cosechar(): void {
     const c = ESPECIES.mata;
     this.frutos -= 1;
+    sonido.mataCosecha();
 
     // El fruto se encoge al tocarlo.
     this.ctx.escena.tweens.add({

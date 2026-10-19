@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Enemigo } from './Enemigo';
 import type { Habitante } from './Habitante';
@@ -115,6 +116,7 @@ export class Alfombra implements Habitante, Enemigo {
       ) < c.radioRespiracion;
     if (cerca && ahora >= this.proximaRespiracion) {
       this.proximaRespiracion = ahora + c.cadaRespiracionMs;
+      sonido.alfombraSusurra();
       this.tapiz.setTexture('alfombra-erizada-placeholder');
       this.ctx.escena.time.delayedCall(160, () => {
         if (!this.atrapado && !this.cortada) this.tapiz.setTexture('alfombra-placeholder');
@@ -141,6 +143,7 @@ export class Alfombra implements Habitante, Enemigo {
     this.proximoDano = ahora + ESPECIES.alfombra.cadaDanoMs;
     this.tapiz.setTexture('alfombra-erizada-placeholder');
     this.ctx.frenarJugador();
+    sonido.alfombraCierra();
   }
 
   private soltar(ahora: number): void {

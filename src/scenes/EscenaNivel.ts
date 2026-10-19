@@ -18,7 +18,7 @@ import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { Fiel } from '../entities/Fiel';
 import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
-import { Ofrenda } from '../objetos/Ofrenda';
+import { Ofrenda, type TipoOfrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
 import {
   CAIDA,
@@ -227,6 +227,9 @@ const T = 16;
  * de colision. La Marea lo "cubre entero" cuando el agua pasa de aqui.
  */
 const ALTO_CIRUJANO = 34;
+
+/** Hasta donde se oye una criatura (px): algo mas de media pantalla. */
+const RADIO_OIDO = 260;
 
 /**
  * Lado de la casilla del mapa, en pixeles del mundo.
@@ -1052,9 +1055,20 @@ export abstract class EscenaNivel extends Phaser.Scene {
         },
       },
       herir: (cantidad, origenX) => {
-        if (cirujano.estaMuerto) return;
-        if (cirujano.recibirDano(cantidad, origenX) === 'herido') this.impacto.danoRecibido();
+        if (cirujano.estaMuerto) return 'ignorado';
+        const resultado = cirujano.recibirDano(cantidad, origenX);
+        if (resultado === 'herido') this.impacto.danoRecibido();
+        if (resultado === 'parado') {
+          sonido.parry();
+          this.impacto.parryLogrado(cirujano.sprite.x, cirujano.sprite.y - 20);
+        }
+        return resultado;
       },
+      soltarOfrenda: (x, y, tipo) => this.soltarOfrendaDeTipo(x, y, tipo),
+      barraDeJefe: (puntos, maximo, cortes) =>
+        this.game.events.emit(EVENTOS_HUD.jefe, puntos, maximo, cortes),
+      presentar: (titulo, subtitulo) =>
+        this.game.events.emit(EVENTOS_HUD.presentacion, titulo, subtitulo),
       curar: (cantidad) => cirujano.vitalidad.curar(cantidad),
       ganarFervor: (cantidad) => cirujano.fervor.ganar(cantidad),
       avisar: (texto) => this.game.events.emit(EVENTOS_HUD.aviso, texto),
@@ -1071,6 +1085,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
       },
       frenarJugador: () => cirujano.cuerpo.setVelocityX(0),
       zona: this.scene.key,
+      oye: (x, y) =>
+        Phaser.Math.Distance.Between(x, y, cirujano.sprite.x, cirujano.sprite.y) < RADIO_OIDO,
     };
   }
 
@@ -1556,8 +1572,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
   /** Un enemigo cae y deja algo, segun su clase y la suerte. */
   private soltarOfrenda(x: number, y: number, clase: ClaseEnemigo): void {
     const tipo = Ofrenda.sortear(clase);
-    if (!tipo) return;
+    if (tipo) this.soltarOfrendaDeTipo(x, y, tipo);
+  }
 
+  private soltarOfrendaDeTipo(x: number, y: number, tipo: TipoOfrenda): void {
     const ofrenda = new Ofrenda(this, x, y, tipo);
     this.ofrendas.push(ofrenda);
 
@@ -1956,6 +1974,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const primeraVez = !fiel.yaHablado;
     fiel.marcarHablado();
 
+    // Los fieles con ficha propia (el Tanteador, la Honguera) entran en el
+    // Registro al hablar con ellos: se los conoce por lo que dicen.
+    if (fichaPorId(fiel.clave)) this.anotar(fiel.clave);
+
     if (primeraVez && fiel.clave === 'reformado-viejo') {
       if (this.cirujano.cargarInjerto(INJERTOS_DEL_REFORMADO)) {
         this.anotar('injerto');
@@ -2008,12 +2030,21 @@ export abstract class EscenaNivel extends Phaser.Scene {
     sonido.altar();
     this.cameras.main.flash(260, 232, 200, 120);
 
-    this.game.events.emit(EVENTOS_HUD.aviso, 'ALTAR: descenso guardado');
+    // El presagio del Buitre (#100): si se ha ido porque viene la Marea, el
+    // Altar lo dice. No cambia nada del guardado: es una senal, no un castigo.
+    const enDuda =
+      this.marea !== undefined &&
+      this.marea.estado !== 'reposo' &&
+      this.criaturas.some((c) => c.clase === 'buitre');
+    this.game.events.emit(
+      EVENTOS_HUD.aviso,
+      enDuda ? 'ALTAR: descenso guardado  ·  ofrenda en duda' : 'ALTAR: descenso guardado',
+    );
     this.time.delayedCall(700, () => {
       this.cirujano.reponerEnAltar();
       this.game.events.emit(
         EVENTOS_HUD.aviso,
-        'cuerpo y frasco repuestos  ·  aqui volveras si caes',
+        'cuerpo y frasco repuestos  ·  aquí volverás si caes',
       );
     });
   }

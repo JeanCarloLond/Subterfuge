@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
 import { EVENTO_MAREA, type EstadoMarea } from '../systems/Marea';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -72,6 +73,7 @@ export class Buitre implements Habitante {
     if (!this.posado) return;
     this.posado = false;
     (this.sprite.body as Phaser.Physics.Arcade.Body).enable = false;
+    if (this.ctx.oye(this.x, this.y)) sonido.buitreAlas();
     const escena = this.ctx.escena;
 
     escena.tweens.add({
@@ -96,6 +98,7 @@ export class Buitre implements Habitante {
       ease: 'Quad.easeOut',
       onComplete: () => {
         this.posado = true;
+        if (this.ctx.oye(this.x, this.y)) sonido.buitreClac();
         (this.sprite.body as Phaser.Physics.Arcade.Body).enable = true;
       },
     });

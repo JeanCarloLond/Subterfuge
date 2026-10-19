@@ -528,6 +528,35 @@ export const REFORMADO = {
  * el Vientre es hostil por lo que es, no por lo que persigue al jugador.
  */
 export const ESPECIES = {
+  /**
+   * La Serpiente de Tejido (#98): el mini-jefe de los ductos. Todo telegrafia
+   * 500 ms o mas; se gana con la vida y el equipo iniciales.
+   */
+  serpiente: {
+    vida: 20,
+    /** Por debajo de esto abre la boca y empieza a tragar (fase 2). */
+    vidaFase2: 10,
+    velocidad: 40,
+    velocidadEmbestida: 230,
+    anticipacionMs: 640,
+    /** Fase 2: menos aviso, pero nunca menos de 500 ms. */
+    anticipacionFase2Ms: 520,
+    /**
+     * Tope de seguridad, no la duracion normal: la embestida sigue hasta el
+     * jugador o hasta el borde de la arena. Si se cortara por tiempo, fallar no
+     * acabaria nunca en choque y la ventana de castigo no existiria.
+     */
+    embestidaMs: 2400,
+    enfriamientoMs: 1300,
+    /** Fallar y chocar con el borde de la arena: la ventana de castigo. */
+    aturdidaMs: 900,
+    /** Las escamas: fuera de la ventana, el tajo entra a medias. */
+    factorEscamas: 0.5,
+    /** Tragado: lo que dura dentro antes de escupirlo (y de quitarle 1). */
+    retenerMs: 900,
+    dano: 1,
+    injertosAlMorir: 2,
+  },
   /** El instrumento tibio: muerde una vez y huye; no acosa. */
   remedo: {
     vida: 2,

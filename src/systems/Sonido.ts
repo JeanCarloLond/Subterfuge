@@ -243,6 +243,42 @@ class Sonido {
         this.tono({ desde: 240, hasta: 120, onda: 'triangle', duracion: 0.1, volumen: 0.2 });
         break;
 
+      case 'zarza':
+        // Tallo seco que se parte, y debajo algo que sangra.
+        this.ruido({ duracion: 0.08, frecuencia: 2600, tipo: 'highpass', volumen: 0.3 });
+        this.ruido({
+          duracion: 0.14,
+          frecuencia: 800,
+          barridoHasta: 200,
+          volumen: 0.22,
+          retardo: 0.04,
+        });
+        break;
+
+      case 'alfombra':
+        // Filamentos cortados: un rasgado corto y blando.
+        this.ruido({ duracion: 0.12, frecuencia: 1800, tipo: 'bandpass', volumen: 0.26 });
+        break;
+
+      case 'serpiente':
+        // Escama dura: el golpe rebota antes de entrar.
+        this.ruido({ duracion: 0.08, frecuencia: 2600, tipo: 'bandpass', volumen: 0.24 });
+        this.ruido({
+          duracion: 0.16,
+          frecuencia: 900,
+          barridoHasta: 200,
+          volumen: 0.3,
+          retardo: 0.03,
+        });
+        break;
+
+      case 'remedo':
+      case 'cerdo':
+        // Blando: carne sin hueso que la sostenga.
+        this.ruido({ duracion: 0.1, frecuencia: 1100, barridoHasta: 260, volumen: 0.3 });
+        this.tono({ desde: 160, hasta: 90, onda: 'sine', duracion: 0.1, volumen: 0.2 });
+        break;
+
       case 'reformado':
         // Humedo y hondo, con un crujido debajo.
         this.ruido({ duracion: 0.2 * fuerza, frecuencia: 900, barridoHasta: 120, volumen: 0.45 });
@@ -341,6 +377,35 @@ class Sonido {
   /** Cada enemigo cae a su manera. */
   muerteEnemigo(clase: ClaseEnemigo = 'devoto'): void {
     switch (clase) {
+      case 'serpiente':
+        // Larga y humeda, sin campana: es un animal, no un sacramento.
+        this.tono({ desde: 100, hasta: 25, onda: 'sawtooth', duracion: 1.2, volumen: 0.35 });
+        this.ruido({ duracion: 1.1, frecuencia: 700, barridoHasta: 60, volumen: 0.35 });
+        break;
+      case 'zarza':
+        // Se abre y suelta su savia, que es sangre: un chorro corto y humedo.
+        this.ruido({ duracion: 0.35, frecuencia: 600, barridoHasta: 120, volumen: 0.3 });
+        this.tono({ desde: 120, hasta: 70, onda: 'sine', duracion: 0.3, volumen: 0.18 });
+        break;
+      case 'alfombra':
+        this.ruido({
+          duracion: 0.4,
+          frecuencia: 2000,
+          barridoHasta: 300,
+          tipo: 'bandpass',
+          volumen: 0.2,
+        });
+        break;
+      case 'remedo':
+        // Un bicho del tamano de un dedo: un chasquido pequeno.
+        this.ruido({ duracion: 0.07, frecuencia: 3000, tipo: 'highpass', volumen: 0.22 });
+        this.tono({ desde: 400, hasta: 120, onda: 'triangle', duracion: 0.12, volumen: 0.14 });
+        break;
+      case 'cerdo':
+        // Un chillido corto que se apaga. Sin regodeo.
+        this.tono({ desde: 900, hasta: 300, onda: 'sawtooth', duracion: 0.35, volumen: 0.16 });
+        this.ruido({ duracion: 0.3, frecuencia: 700, barridoHasta: 100, volumen: 0.22 });
+        break;
       case 'vestal':
         // Se quiebra como un objeto de vidrio y suena una campanilla al caer.
         this.ruido({ duracion: 0.25, frecuencia: 4200, tipo: 'highpass', volumen: 0.3 });
@@ -425,6 +490,213 @@ class Sonido {
       });
     }
     this.ruido({ duracion: 1.6, frecuencia: 220, barridoHasta: 600, volumen: 0.18, retardo: 0.4 });
+  }
+
+  // -- Fauna y flora del Vientre Humedo (#108) ------------------------------
+  //
+  // Cada una suena a su materia, y ninguna es metalica y limpia: eso es solo
+  // del parry. Son cortas y bajas, porque se repiten mientras se juega.
+
+  /** Serpiente: el silbido grave que anuncia que va a embestir. */
+  serpienteSilba(): void {
+    this.ruido({
+      duracion: 0.6,
+      frecuencia: 2400,
+      barridoHasta: 900,
+      tipo: 'bandpass',
+      volumen: 0.16,
+    });
+    this.tono({ desde: 70, hasta: 55, onda: 'sawtooth', duracion: 0.6, volumen: 0.1 });
+  }
+
+  /** Serpiente: escamas duras contra la piedra, al embestir. */
+  serpienteEmbiste(): void {
+    this.ruido({
+      duracion: 0.5,
+      frecuencia: 600,
+      barridoHasta: 1800,
+      tipo: 'bandpass',
+      volumen: 0.22,
+    });
+  }
+
+  /** Serpiente: la boca que se abre mas de lo que deberia, rompiendose. */
+  serpienteBoca(): void {
+    this.ruido({ duracion: 0.08, frecuencia: 2000, tipo: 'highpass', volumen: 0.2 });
+    this.tono({
+      desde: 140,
+      hasta: 50,
+      onda: 'sawtooth',
+      duracion: 0.5,
+      volumen: 0.2,
+      retardo: 0.05,
+    });
+  }
+
+  /** Serpiente: tragar, y escupir. */
+  serpienteTraga(): void {
+    this.tono({ desde: 90, hasta: 40, onda: 'sine', duracion: 0.4, volumen: 0.3 });
+    this.ruido({ duracion: 0.4, frecuencia: 400, barridoHasta: 120, volumen: 0.25 });
+  }
+
+  /** Serpiente: el choque contra el muro y el aturdimiento. */
+  serpienteAturdida(): void {
+    this.ruido({ duracion: 0.2, frecuencia: 900, barridoHasta: 120, volumen: 0.4 });
+    this.tono({ desde: 120, hasta: 45, onda: 'square', duracion: 0.3, volumen: 0.25 });
+  }
+
+  /** Remedo: el tick humedo de algo blando que se retuerce. */
+  remedoTiembla(): void {
+    this.ruido({ duracion: 0.05, frecuencia: 1400, tipo: 'bandpass', volumen: 0.12 });
+    this.ruido({ duracion: 0.04, frecuencia: 1700, tipo: 'bandpass', volumen: 0.1, retardo: 0.08 });
+  }
+
+  /** Remedo: una mordida pequena y la huida. */
+  remedoMuerde(): void {
+    this.ruido({ duracion: 0.05, frecuencia: 3200, tipo: 'highpass', volumen: 0.24 });
+    this.tono({ desde: 700, hasta: 300, onda: 'triangle', duracion: 0.08, volumen: 0.12 });
+    this.ruido({
+      duracion: 0.25,
+      frecuencia: 900,
+      barridoHasta: 2000,
+      tipo: 'bandpass',
+      volumen: 0.08,
+      retardo: 0.08,
+    });
+  }
+
+  /** Mondador: un ronroneo seco mientras come. */
+  mondadorRonronea(): void {
+    for (let i = 0; i < 6; i += 1) {
+      this.tono({
+        desde: 38,
+        hasta: 34,
+        onda: 'sawtooth',
+        duracion: 0.07,
+        volumen: 0.1,
+        retardo: i * 0.09,
+      });
+    }
+  }
+
+  /** Mondador: garras en la piedra al salir corriendo. */
+  mondadorHuye(): void {
+    for (let i = 0; i < 4; i += 1) {
+      this.ruido({
+        duracion: 0.03,
+        frecuencia: 2800,
+        tipo: 'highpass',
+        volumen: 0.14,
+        retardo: i * 0.07,
+      });
+    }
+  }
+
+  /** Buitre: alas secas, como pergamino sacudido. */
+  buitreAlas(): void {
+    for (let i = 0; i < 3; i += 1) {
+      this.ruido({
+        duracion: 0.12,
+        frecuencia: 500,
+        barridoHasta: 1400,
+        tipo: 'bandpass',
+        volumen: 0.16,
+        retardo: i * 0.16,
+      });
+    }
+  }
+
+  /** Buitre: un clac de hueso al posarse. */
+  buitreClac(): void {
+    this.tono({ desde: 1100, hasta: 700, onda: 'triangle', duracion: 0.05, volumen: 0.12 });
+    this.ruido({ duracion: 0.03, frecuencia: 2400, tipo: 'bandpass', volumen: 0.1 });
+  }
+
+  /** Cerdo: un grunido y los tubos que burbujean. */
+  cerdoGrune(): void {
+    this.tono({ desde: 110, hasta: 85, onda: 'sawtooth', duracion: 0.22, volumen: 0.12 });
+    for (let i = 0; i < 3; i += 1) {
+      this.tono({
+        desde: 600 + i * 90,
+        hasta: 900,
+        onda: 'sine',
+        duracion: 0.04,
+        volumen: 0.05,
+        retardo: 0.25 + i * 0.07,
+      });
+    }
+  }
+
+  /** Cuervo: graznido con resonancia de cable, un zumbido que se queda. */
+  cuervoGrazna(): void {
+    this.tono({ desde: 700, hasta: 520, onda: 'sawtooth', duracion: 0.16, volumen: 0.1 });
+    this.ruido({ duracion: 0.14, frecuencia: 1600, tipo: 'bandpass', volumen: 0.12 });
+    this.tono({
+      desde: 120,
+      hasta: 118,
+      onda: 'square',
+      duracion: 0.3,
+      volumen: 0.03,
+      retardo: 0.05,
+    });
+  }
+
+  /** Alfombra: un susurro de filamentos que se ponen de pie. */
+  alfombraSusurra(): void {
+    this.ruido({
+      duracion: 0.25,
+      frecuencia: 4000,
+      barridoHasta: 2500,
+      tipo: 'highpass',
+      volumen: 0.06,
+    });
+  }
+
+  /** Alfombra: el chasquido al cerrarse sobre el pie. */
+  alfombraCierra(): void {
+    this.ruido({ duracion: 0.06, frecuencia: 2200, tipo: 'bandpass', volumen: 0.3 });
+    this.tono({ desde: 200, hasta: 90, onda: 'triangle', duracion: 0.12, volumen: 0.18 });
+  }
+
+  /** Mata: la contraccion humeda del fruto y el desprenderse. */
+  mataCosecha(): void {
+    this.ruido({ duracion: 0.12, frecuencia: 700, barridoHasta: 300, volumen: 0.2 });
+    this.tono({
+      desde: 300,
+      hasta: 520,
+      onda: 'sine',
+      duracion: 0.05,
+      volumen: 0.1,
+      retardo: 0.12,
+    });
+  }
+
+  /** Vena: un pulso humedo, al ritmo del Latido. */
+  venaPulso(): void {
+    this.tono({ desde: 60, hasta: 42, onda: 'sine', duracion: 0.16, volumen: 0.2 });
+    this.ruido({ duracion: 0.1, frecuencia: 400, volumen: 0.08 });
+  }
+
+  /** Hongo: un pop suave y la nube de esporas. */
+  hongoPop(): void {
+    this.tono({ desde: 420, hasta: 240, onda: 'sine', duracion: 0.07, volumen: 0.14 });
+    this.ruido({ duracion: 0.4, frecuencia: 5000, tipo: 'highpass', volumen: 0.04, retardo: 0.05 });
+  }
+
+  /** Puente de tejido: carne que se estira y se cierra. */
+  tejidoCrece(): void {
+    this.ruido({ duracion: 0.6, frecuencia: 300, barridoHasta: 900, volumen: 0.18 });
+    this.tono({ desde: 80, hasta: 140, onda: 'sawtooth', duracion: 0.6, volumen: 0.06 });
+  }
+
+  /** Marea: el agua que sube por los ductos. */
+  mareaSube(): void {
+    this.ruido({ duracion: 3.5, frecuencia: 160, barridoHasta: 500, volumen: 0.16 });
+  }
+
+  /** Marea: el agua que se retira, mas suave. */
+  mareaBaja(): void {
+    this.ruido({ duracion: 3, frecuencia: 450, barridoHasta: 120, volumen: 0.1 });
   }
 
   /** Reja de la arena cayendo: hierro contra piedra, y el eco. */
