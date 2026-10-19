@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { CAIDA, FERVOR, INJERTADORA, POCION, RESOLUCION, VITALIDAD } from '../config/Sacramento';
-import { CODICE } from '../lore/Codice';
+import { progreso } from '../systems/Progreso';
 import { sonido } from '../systems/Sonido';
 import { tactil } from '../input/Tactil';
 
@@ -329,7 +329,7 @@ export class HudScene extends Phaser.Scene {
     if (this.jefeVida >= 0) this.dibujarJefe();
 
     this.textoCodice.setText(
-      this.fragmentos > 0 ? `códice  ${this.fragmentos}/${CODICE.length}   L` : '',
+      this.fragmentos > 0 ? `códice  ${this.fragmentos}/${progreso.fragmentosTotales}   L` : '',
     );
   }
 

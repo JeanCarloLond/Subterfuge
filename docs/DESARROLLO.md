@@ -747,6 +747,17 @@ jugador quiere, sobre el juego en pausa. El índice muestra los huecos de lo que
 falta, así que se sabe cuántos hay sin saber dónde. Lo recogido sobrevive al
 cambio de zona (`Progreso.ts`) y se reinicia al volver al Atrio desde el cierre.
 
+**Diez hojas, contadas por nivel (#127).** Cada fragmento declara su `nivel`: ocho
+son del Nivel 1 y dos (IX y X) del Nivel 2. El cierre de cada nivel cuenta **las
+suyas** (`progreso.fragmentosDelNivel`), así que el Nivel 1 sigue premiando su
+8/8 con la línea oculta aunque el Códice entero tenga más.
+
+Mientras el Nivel 2 no exista, **el juego no enseña la IX ni la X**: serían dos
+hojas «arrancadas» imposibles de conseguir. Lo controla `NIVEL_MAS_HONDO` en
+`Codice.ts`; al construir el Nivel 2 pasa a 2 y aparecen solas en el índice y en
+el HUD. La web sí publica las diez: allí los versículos son doctrina pública y
+el margen se sigue ganando como siempre.
+
 ## Audio
 
 Dos capas, con criterios distintos:

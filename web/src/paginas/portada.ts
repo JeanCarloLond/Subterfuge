@@ -7,6 +7,7 @@
  * se hurga todavía: todo lo que dice esta página es lo que la Diócesis diría.
  */
 
+import { CODICE, numeroEnLetras } from '../../../src/lore/Codice';
 import { memoriaDelDescenso, descensoAbierto } from '../memoria';
 import { elemento } from '../texto';
 import { montarEscena } from '../escena';
@@ -56,7 +57,7 @@ export function renderPortada(contenedor: HTMLElement): () => void {
             <canvas class="lamina" data-figura="codice" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa I · superficie</span>
             <h3>Doctrina</h3>
-            <p>Los ocho folios del Códice de la Carne, en edición para el fiel. Se recomienda leer con una vela encendida.</p>
+            <p>Los ${numeroEnLetras(CODICE.length)} folios del Códice de la Carne, en edición para el fiel. Se recomienda leer con una vela encendida.</p>
           </a>
           <a class="tarjeta" href="#/registro">
             <canvas class="lamina" data-figura="devoto" width="72" height="72" aria-hidden="true"></canvas>
@@ -107,7 +108,7 @@ export function renderPortada(contenedor: HTMLElement): () => void {
         <div class="eyebrow">Su expediente</div>
         <div class="expediente">
           <div><b>Capas pisadas</b><span>${m.capas.length} / 6</span></div>
-          <div><b>Hojas del Códice</b><span>${m.fragmentos.length} / 8</span></div>
+          <div><b>Hojas del Códice</b><span>${m.fragmentos.length} / ${CODICE.length}</span></div>
           <div><b>Fichas</b><span>${m.fichas.length}</span></div>
           <div><b>Reliquias</b><span>${m.reliquias.length} / 7</span></div>
         </div>
