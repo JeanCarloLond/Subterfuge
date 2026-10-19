@@ -118,6 +118,12 @@ scripts/
 
 ## Flujo de escenas
 
+> **Fase 4 en curso.** El juego pasa a tener dos niveles: lo que hay hoy es el **Nivel 1**,
+> y el **Nivel 2 — El Vientre Húmedo · La escapatoria** empieza con la decisión del
+> Cirujano en el cierre. Antes de tocar escenas, niveles o lore de esta fase, lee el
+> [acta de canon](canon/nivel-2-vientre-humedo.md): fija qué cubre cada nivel, qué no se
+> muestra y qué queda pendiente de decidir.
+
 ```
 Boot ──► Preload ──► Atrio ──► Pasillos ──► Criptas ──► Salas ──► Final
                        │          │            │          │
