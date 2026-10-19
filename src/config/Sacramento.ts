@@ -330,6 +330,12 @@ export const CONTACTO = {
  */
 export const OFRENDA = {
   curacionCarne: 1,
+  /**
+   * La carne engastada del Cerdo de Protocolo (#100): cura el doble, porque es
+   * la de las mesas de los linajes. Solo hay un cerdo por corral y muere una
+   * vez, asi que no sustituye a los Altares.
+   */
+  curacionCarneEngastada: 2,
   fervorSello: 20,
   /** Injertos que repone un injerto recogido. */
   cargaInjerto: 1,
@@ -555,6 +561,8 @@ export const ESPECIES = {
   },
   /** Cria de los linajes: ambienta el corral. */
   cerdo: {
+    /** Dos tajos normales: no es un enemigo, pero tampoco es de papel. */
+    vida: 3,
     velocidad: 18,
     velocidadHuida: 90,
     radioSusto: 64,

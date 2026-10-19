@@ -51,16 +51,18 @@ export type TipoCriatura = CriaturaDef['tipo'];
  * A que contrato pertenece cada especie. Esta aqui, y no solo en la clase,
  * para que se lea de un vistazo quien se puede matar y quien no.
  *
- * Remedo y Serpiente son las unicas que mueren. La Zarza y la Alfombra son
- * peligros: se cortan, no se matan. El resto no se toca, y el Mondador menos
- * que nadie (el culto lo tiene por sagrado y casi no quedan).
+ * Mueren el Remedo, la Serpiente y el Cerdo; el Cerdo no ataca, pero es ganado
+ * y se puede matar (#100). La Zarza y la Alfombra son peligros: se cortan, no se
+ * matan. El resto no se toca, y el Mondador menos que nadie (el culto lo tiene
+ * por sagrado y casi no quedan).
  */
 export const CONTRATO: Readonly<Record<TipoCriatura, Contrato>> = {
   remedo: 'hostil',
   serpiente: 'hostil',
   mondador: 'neutral',
   buitre: 'neutral',
-  cerdo: 'neutral',
+  // Se puede matar (#100): es ganado de los linajes. No ataca ni hiere al rozarlo.
+  cerdo: 'hostil',
   cuervo: 'neutral',
   mata: 'neutral',
   hongo: 'neutral',

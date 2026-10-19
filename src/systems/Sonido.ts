@@ -572,7 +572,7 @@ class Sonido {
   }
 
   /** Recoger una ofrenda del suelo: corto, humedo si es carne, tintineo si es sello. */
-  ofrenda(tipo: 'carne' | 'sello' | 'injerto'): void {
+  ofrenda(tipo: 'carne' | 'carne-engastada' | 'sello' | 'injerto'): void {
     if (tipo === 'sello') {
       this.tono({ desde: 1320, hasta: 1760, onda: 'triangle', duracion: 0.12, volumen: 0.16 });
       return;

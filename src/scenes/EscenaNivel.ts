@@ -1572,12 +1572,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     sonido.ofrenda(ofrenda.tipo);
 
-    if (ofrenda.tipo === 'carne') {
-      this.cirujano.vitalidad.curar(OFRENDA.curacionCarne);
-      this.game.events.emit(
-        EVENTOS_HUD.aviso,
-        `${ofrenda.nombre}  ·  +${OFRENDA.curacionCarne} vida`,
-      );
+    if (ofrenda.tipo === 'carne' || ofrenda.tipo === 'carne-engastada') {
+      const cura =
+        ofrenda.tipo === 'carne' ? OFRENDA.curacionCarne : OFRENDA.curacionCarneEngastada;
+      this.cirujano.vitalidad.curar(cura);
+      this.game.events.emit(EVENTOS_HUD.aviso, `${ofrenda.nombre}  ·  +${cura} vida`);
       return;
     }
 
