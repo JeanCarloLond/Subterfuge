@@ -97,6 +97,12 @@ interface EntradaPagina {
  * (Jerarquia), de quien viene cada uno (Linaje) y en que orden ocurrio todo
  * (Cronologia). Cada una contesta una pregunta que deja abierta la anterior.
  */
+/**
+ * Filas que caben en la columna de una seccion, entre el titulo y las
+ * pestanas: de folioY + 34 a folioY + folioAlto - 36, a 12 px por fila.
+ */
+const FILAS_VISIBLES = 17;
+
 const SECCIONES = [
   'codice',
   'registro',
@@ -702,17 +708,30 @@ export class CodiceScene extends Phaser.Scene {
     const pie = pagina.getData('pie') as Phaser.GameObjects.Text;
     const lamina = pagina.getData('lamina') as Phaser.GameObjects.Image | undefined;
 
-    datos.forEach((e, i) => {
+    // La ventana se mueve lo justo para que la fila elegida quede dentro, con
+    // una fila de margen: asi se ve la cabecera de familia al llegar a ella.
+    let primera = pagina.getData('primera') as number;
+    const ultimaPosible = Math.max(0, datos.length - lista.length);
+    if (fila - 1 < primera) primera = fila - 1;
+    if (fila + 1 >= primera + lista.length) primera = fila + 2 - lista.length;
+    primera = Phaser.Math.Clamp(primera, 0, ultimaPosible);
+    pagina.setData('primera', primera);
+
+    lista.forEach((texto, k) => {
+      const i = primera + k;
+      const e = datos[i];
       const abierta = e.abierta();
-      lista[i].setText(`${i === fila ? '>' : ' '} ${abierta ? e.nombre : '- - - - -'}`);
-      lista[i].setColor(i === fila ? COLOR.rubrica : abierta ? COLOR.tinta : COLOR.tenue);
+      texto.setText(`${i === fila ? '>' : ' '} ${abierta ? e.nombre : '- - - - -'}`);
+      texto.setColor(i === fila ? COLOR.rubrica : abierta ? COLOR.tinta : COLOR.tenue);
     });
+    (pagina.getData('masArriba') as Phaser.GameObjects.Text).setVisible(primera > 0);
+    (pagina.getData('masAbajo') as Phaser.GameObjects.Text).setVisible(primera < ultimaPosible);
 
     const e = datos[fila];
     const abierta = e.abierta();
     titulo.setText(abierta ? e.nombre.toUpperCase() : 'SIN CATALOGAR');
     titulo.setColor(abierta ? COLOR.rubrica : COLOR.tenue);
-    cuerpo.setText(abierta ? e.descripcion.join('\n') : 'Nadie ha traido noticia de esto todavia.');
+    cuerpo.setText(abierta ? e.descripcion.join('\n') : 'Nadie ha traído noticia de esto todavía.');
     pie.setText(abierta ? e.pie : '');
 
     if (!lamina) return;
@@ -752,13 +771,33 @@ export class CodiceScene extends Phaser.Scene {
     filete.lineStyle(1, COLOR.oro, 0.7);
     filete.lineBetween(separadorX, folioY + 26, separadorX, folioY + folioAlto - 36);
 
-    const lista = entradas.map((_, i) =>
+    // Solo caben FILAS_VISIBLES filas en la columna. Con la fauna y la flora
+    // del Vientre Humedo el Registro pasa de 30 entradas y se salia del folio,
+    // asi que la columna es una ventana que se desplaza con la seleccion.
+    const lista = entradas.slice(0, FILAS_VISIBLES).map((_, i) =>
       this.add.text(folioX + 14, folioY + 34 + i * 12, '', {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: COLOR.tenue,
       }),
     );
+    // Avisos de que hay mas arriba o mas abajo, en el margen del filete.
+    const masArriba = this.add
+      .text(separadorX - 6, folioY + 30, '▲', {
+        fontFamily: 'monospace',
+        fontSize: '7px',
+        color: COLOR.tenue,
+      })
+      .setOrigin(1, 0)
+      .setVisible(false);
+    const masAbajo = this.add
+      .text(separadorX - 6, folioY + 34 + FILAS_VISIBLES * 12 - 8, '▼', {
+        fontFamily: 'monospace',
+        fontSize: '7px',
+        color: COLOR.tenue,
+      })
+      .setOrigin(1, 0)
+      .setVisible(false);
 
     const lamina = conLamina
       ? this.add.image(lecturaX + 24, folioY + 62, 'chispa-placeholder').setOrigin(0.5, 0.5)
@@ -782,12 +821,23 @@ export class CodiceScene extends Phaser.Scene {
       wordWrap: { width: ancho },
     });
 
-    const hijos: Phaser.GameObjects.GameObject[] = [filete, ...lista, titulo, pie, cuerpo];
+    const hijos: Phaser.GameObjects.GameObject[] = [
+      filete,
+      ...lista,
+      masArriba,
+      masAbajo,
+      titulo,
+      pie,
+      cuerpo,
+    ];
     if (lamina) hijos.push(lamina);
 
     const pagina = this.add.container(0, 0, hijos);
     pagina.setData('entradas', entradas);
     pagina.setData('lista', lista);
+    pagina.setData('masArriba', masArriba);
+    pagina.setData('masAbajo', masAbajo);
+    pagina.setData('primera', 0);
     pagina.setData('titulo', titulo);
     pagina.setData('cuerpo', cuerpo);
     pagina.setData('pie', pie);
