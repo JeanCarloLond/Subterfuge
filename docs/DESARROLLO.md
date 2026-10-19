@@ -977,6 +977,21 @@ Cada nivel declara `tinte` y `desgaste` en su `DefinicionNivel`, al lado de
 misma piedra baja de tono y se agrieta más según se cierra el Vientre, y el musgo
 se apaga del todo en las Criptas, donde ya no llega nada vivo.
 
+### El Vientre Húmedo (#105)
+
+Provisional, a mano en `ArteProvisional.ts`, como los muros de Pasillos,
+Criptas y Salas: `muro-humedo-a` y `muro-humedo-b`. La biblia dice que la capa V
+son «pasillos de hospital vueltos santuario» y que el suelo es «hormigón,
+azulejo, acero, cera, óxido y hueso»: azulejo de quirófano con la junta negra y
+mojada, una mancha de agua, óxido, y en la variante una vena que cruza las
+juntas y una gota de cera. Un nivel lo usa con
+`muro: ['muro-humedo-a-placeholder', 'muro-humedo-b-placeholder']`.
+
+Decorado nuevo, con su sitio en `verificar-rutas`: `membrana` (embutida en el
+muro), `raiz` (cuelga), `nido` (la boca del ducto entre huesos) y `charco-vivo`
+(en el suelo). El set definitivo en Aseprite sigue siendo del equipo y entra con
+las mismas claves.
+
 ### Si el arte cambia
 
 Se reemplazan los PNG de `docs/arte/piezas/` y se vuelve a ejecutar:

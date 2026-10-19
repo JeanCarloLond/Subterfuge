@@ -84,7 +84,12 @@ export type TipoDecorado =
   | 'luz-hospital'
   | 'tanque'
   | 'bandeja'
-  | 'goteo';
+  | 'goteo'
+  // El Vientre Humedo (#105): lo que el ecosistema deja en el hospital.
+  | 'membrana'
+  | 'raiz'
+  | 'nido'
+  | 'charco-vivo';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -584,7 +589,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private crearDecorado(): void {
     for (const [x, y, tipo] of this.definicion.decorado ?? []) {
       const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
-      const cuelga = tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo';
+      const cuelga =
+        tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo' || tipo === 'raiz';
       pieza.setOrigin(0.5, cuelga ? 0 : 1);
       pieza.setDepth(-5);
 

@@ -144,14 +144,14 @@ function verificar(nombre, archivo) {
  * embutidas en el muro se excluyen a propósito.
  */
 /** Se apoyan en el muro, no en el suelo: no se les pide ni techo ni piso. */
-const EN_MURO = new Set(['reja', 'ventana', 'durmiente', 'radiografia']);
+const EN_MURO = new Set(['reja', 'ventana', 'durmiente', 'radiografia', 'membrana']);
 
 /**
  * Cuelgan hacia abajo, asi que necesitan algo ARRIBA de donde colgar. Una
  * lampara de quirofano flotando en mitad del aire canta tanto como una
  * terminal levitando, y el primer comprobador no las miraba.
  */
-const COLGANTES = new Set(['exvoto', 'cadena', 'luz-hospital', 'goteo']);
+const COLGANTES = new Set(['exvoto', 'cadena', 'luz-hospital', 'goteo', 'raiz']);
 
 /**
  * Extrae el array `nombre: [...]` contando corchetes.
