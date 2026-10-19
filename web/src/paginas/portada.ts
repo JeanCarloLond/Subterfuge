@@ -63,7 +63,7 @@ export function renderPortada(contenedor: HTMLElement): () => void {
             <canvas class="lamina" data-figura="devoto" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa II · Pasillos</span>
             <h3>Registro</h3>
-            <p>Catálogo de fieles, oficio y aparato del Vientre, con lámina. Actualizado según lo que cada visitante haya visto.</p>
+            <p>Catálogo de fieles, oficio, especies y aparato del Vientre, con lámina. Actualizado según lo que cada visitante haya visto.</p>
           </a>
           <a class="tarjeta" href="#/vientre">
             <canvas class="lamina" data-figura="reja" width="72" height="72" aria-hidden="true"></canvas>
@@ -82,6 +82,14 @@ export function renderPortada(contenedor: HTMLElement): () => void {
             <span class="profundidad">capa V · Reformados</span>
             <h3>Sacramentos</h3>
             <p>Trámites para aspirantes: el Examen de Pureza y una práctica del Sacramento. Sin cita previa.</p>
+          </a>
+          <!-- El Vientre Húmedo (#111): una lámina, no un Mondador en la escena del
+               Atrio; la cronología dice que la especie ya no cría arriba. -->
+          <a class="tarjeta" href="#/registro">
+            <canvas class="lamina" data-figura="mondador" width="72" height="72" aria-hidden="true"></canvas>
+            <span class="profundidad">capa V · Vientre Húmedo</span>
+            <h3>Bestiario</h3>
+            <p>Especies de residuo. No se alimentan a mano. No se espantan.</p>
           </a>
           <a class="tarjeta" href="${import.meta.env.BASE_URL}">
             <canvas class="lamina" data-figura="cirujano" width="72" height="72" aria-hidden="true"></canvas>

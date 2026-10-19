@@ -567,7 +567,8 @@ ambigüedad y deja en paz las demás.
 que responde cosas que no deberías saber de ti": sabe cuántas veces lo has
 hecho, hasta dónde has bajado y qué hora es; se rellena a tinta en un expediente
 del Registro y la resolución se sella con lacre), el Sacramento ("precisión
-quirúrgica, tipo Operation pero litúrgico"; a pixel, seis pasos que acaban a
+quirúrgica, tipo Operation pero litúrgico"; a pixel, siete pasos —uno es apartar
+de la bandeja el bisturí que tiembla, porque es un Remedo (#113)— que acaban a
 corazón abierto, con el injerto dado entre latido y latido; fallar deja una
 mancha en el portal que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
 al apagarse se ve lo que la luz tapaba; la vela vive en la esquina, a pixel, y se
