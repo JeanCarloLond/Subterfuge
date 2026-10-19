@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { generarArteProvisional } from '../systems/ArteProvisional';
 import { ponerCursor } from '../ui/Cursor';
-import { PISTAS } from '../systems/Musica';
+import { PISTAS, SIN_PRECARGA, type Pista } from '../systems/Musica';
 
 /**
  * Preload: carga de assets y pantalla de espera.
@@ -57,7 +57,8 @@ export class PreloadScene extends Phaser.Scene {
     // decodificar y el juego se queda en la barra de carga. Musica.ts ya
     // tolera que una pista no exista.
     const sinAudio = import.meta.env.VITE_SIN_AUDIO === '1';
-    for (const archivo of sinAudio ? [] : Object.values(PISTAS)) {
+    const aCargar = (Object.keys(PISTAS) as Pista[]).filter((p) => !SIN_PRECARGA.has(p));
+    for (const archivo of sinAudio ? [] : aCargar.map((p) => PISTAS[p])) {
       this.load.audio(archivo, [
         `assets/audio/musica/${archivo}.ogg`,
         `assets/audio/musica/${archivo}.mp3`,
