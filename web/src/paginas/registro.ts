@@ -24,6 +24,16 @@ const FAMILIAS: ReadonlyArray<{ clave: Familia; titulo: string; nota: string }> 
     nota: 'Instrumental y enseres de las Manos del Sacramento. Inventario de la Sala.',
   },
   {
+    clave: 'fauna',
+    titulo: 'La fauna',
+    nota: 'Especies que comen de lo que el Sacramento rechaza. No se alimentan a mano.',
+  },
+  {
+    clave: 'flora',
+    titulo: 'La flora',
+    nota: 'Vegetación de residuo. Se tolera mientras no invada una sala de turno.',
+  },
+  {
     clave: 'aparato',
     titulo: 'Aparato',
     nota: 'Equipamiento heredado del Vientre. En servicio. No se dispone de manual.',

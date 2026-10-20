@@ -1736,6 +1736,364 @@ const CURSOR_ACTIVO: Figura = {
   ],
 };
 
+// -- El Vientre Humedo: fauna ------------------------------------------------
+//
+// Las especies de la fase 4 (#88, #106, #107). Provisionales como todo lo de
+// este archivo: el arte final llega en Aseprite con las mismas claves. Por ahora
+// sirven de lamina en el Registro, del juego y de la web.
+
+// El Mondador. Felino dorado y escaso de pelo, con la cresta de hueso en la
+// espalda que lo protege de la Zarza. Tiene que leerse como animal sagrado y
+// no como enemigo: anda erguido, sin garras a la vista, y el oro de su pelaje
+// es el mismo de las reliquias, que es por lo que el culto lo venera.
+const MONDADOR: Figura = {
+  paleta: {
+    n: 0x1e1410,
+    d: 0xc9a44c,
+    D: 0xf2dc8c,
+    o: 0x8a6a2a,
+    p: 0x9a6250,
+    h: 0xe6ddc8,
+    H: 0xa89c84,
+    r: 0x5c1f24,
+    w: 0xf4efe0,
+  },
+  // prettier-ignore
+  filas: [
+    '.........h...h...h...h..........',
+    '........nhn.nhn.nhn.nhn...n..n..',
+    '.......nHhHnHhHnHhHnHhHn.ndnndn.',
+    '......ndDDDDDDDDDDDDDDDDnndDDDdn',
+    '.....ndDDdddddddddddddddddddDnDn',
+    '..n..nddddpddddddddpdddddddddddn',
+    '.ndn.ndddpppddddddpppdddddddrwwn',
+    '.nd..nddddddddddddddddddddddrrrn',
+    'nd...noddddddddddddddddddddnnnn.',
+    'nd...nooddddddddddddddddddn.....',
+    '.nd..noooddddddddddoooddddn.....',
+    '..nddnoooooooooooooooooooon.....',
+    '......nddn.ndn......nddn.ndn....',
+    '......ndn..ndn......ndn..ndn....',
+    '......ndn..ndn......ndn..ndn....',
+    '......ndn...ndn.....ndn...ndn...',
+    '.....nddn...nddn...nddn...nddn..',
+    '.....nnn....nnn....nnn....nnn...',
+  ],
+};
+
+// El Remedo. Bicho blando a medio imitar: la mitad izquierda ya es metal de
+// instrumental, la derecha sigue siendo carne con pigmentos que cambian. Una
+// sola base; las imitaciones se resuelven con tinte, no con veinte dibujos.
+const REMEDO: Figura = {
+  paleta: {
+    n: 0x2a1a1e,
+    p: 0xc98a8a,
+    P: 0xe0b0a8,
+    m: 0x9ca193,
+    M: 0xe4e9ee,
+    v: 0x6a8a7a,
+    a: 0x8a6aa0,
+  },
+  // prettier-ignore
+  filas: [
+    '..nnnnnn..',
+    '.nMMmmpPn.',
+    'nMmmmpPPPn',
+    'nmmmpPpvPn',
+    'npppPPapPn',
+    '.npppppvn.',
+    '..n.n.n.n.',
+  ],
+};
+
+// La Serpiente de Tejido. Sin esqueleto, carne con escamas duras por encima
+// y la boca abierta mas de lo que deberia poder. Sin ojos: no es un dragon ni
+// un dios, es el depredador de los ductos.
+const SERPIENTE: Figura = {
+  paleta: {
+    n: 0x1a0e10,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    o: 0x5c1f24,
+    e: 0x6a5a4a,
+    E: 0x9a8a72,
+    r: 0x2a080c,
+    w: 0xe6ddc8,
+  },
+  // prettier-ignore
+  filas: [
+    '...............................nnnnnnn..',
+    '..............................nEeEeEeEn.',
+    '..nnnnn......................nEeEeEeEEn.',
+    '.nEeEeEn.....nnnnnnn........nccCCCCCCwn.',
+    'nEeEeEeEn...nEeEeEeEn.......ncccccccw.wn',
+    'ncccccccn..nEeEeEeEeEn......nrrrrrrr....',
+    'ncCCCCccn.ncccccccccccn....nrrrrrrrrr...',
+    '.nccccccnnccCCCCCcccccn...nrrrrrrrrrr...',
+    '..nccccccccccccccccccccnnncccccccw.w....',
+    '...nooccccccooooooccccccccccccccwwwn....',
+    '....nnoooooonnnnnnooooooooocccccccn.....',
+    '......nnnnnn......nnnnnnnnnoooooon......',
+    '...........................nnnnnn.......',
+  ],
+};
+
+// El Buitre ritual, el de la Quietud. Musculo expuesto, cabeza calva de hueso
+// y un remate dorado de catedral, posado sobre ornamento. Sin gore gratuito:
+// es un heraldo, y se queda quieto.
+const BUITRE: Figura = {
+  paleta: {
+    n: 0x1a1012,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    o: 0x5c1f24,
+    g: 0xc9a44c,
+    G: 0xf2dc8c,
+    h: 0xe6ddc8,
+    k: 0x3a2a2a,
+    K: 0x5a4646,
+  },
+  // prettier-ignore
+  filas: [
+    '.........nnn....',
+    '........ngGgn...',
+    '.......nGgggn...',
+    '.......nhhhhn...',
+    '......nhhnhhhn..',
+    '......nhhhhhhkn.',
+    '.......nchhhkkn.',
+    '......ncCcnnkn..',
+    '.....nkcCCcn....',
+    '....nkKkcCcon...',
+    '...nkKKkcccon...',
+    '..nkKKKkcccoon..',
+    '..nkKKkkccoooon.',
+    '.nkKKkkkocooooon',
+    '.nkKkkkkoocoooon',
+    '.nkkkkknoooccon.',
+    '..nkkkn.nooooon.',
+    '...nnn...nhnhn..',
+    '.........gGgGg..',
+    '........ngggggn.',
+  ],
+};
+
+// El Cerdo de Protocolo. Rosa de cria, con el tubo que lo alimenta y una
+// placa de oro injertada en el lomo: carne engastada para los linajes.
+const CERDO: Figura = {
+  paleta: {
+    n: 0x1e1214,
+    p: 0xc08a80,
+    P: 0xdcaa9e,
+    o: 0x8a5a54,
+    m: 0x9ca193,
+    M: 0xe4e9ee,
+    g: 0xc9a44c,
+    t: 0x4a5450,
+  },
+  // prettier-ignore
+  filas: [
+    '.....ttt............',
+    '....t..tnnnnnnnn....',
+    '...t..nmMPPPPPPPnnn.',
+    '..t..nPPmPPPPPPPPPPn',
+    '..t.nPPPmgPPPPPPPnPn',
+    '.n.nPPPPPgPPPPPPPPPP',
+    'nPnPpppppppppPPPPPop',
+    '.nnppppppppppppppppn',
+    '..nopppppppppppppon.',
+    '..nooopppppppppoon..',
+    '...noooooooooooon...',
+    '...nono.....nono....',
+    '...nono.....nono....',
+    '...nnnn.....nnnn....',
+  ],
+};
+
+// El Cuervo de Ermita. Negro, con el ala de carne y las plumas trenzadas con
+// cable. Pico de oro: es mensajero del culto.
+const CUERVO: Figura = {
+  paleta: {
+    n: 0x120c10,
+    k: 0x2a2230,
+    K: 0x4a4052,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    w: 0x6a6a5a,
+    g: 0xc9a44c,
+  },
+  // prettier-ignore
+  filas: [
+    '........nn..',
+    '.......nkKn.',
+    '......nkkkgg',
+    '..nn.nkkkkn.',
+    '.ncCnkKkkn..',
+    'ncCcCwKkkn..',
+    'nccwcwkKkn..',
+    '.nnccwkkkn..',
+    '...nnkkkn...',
+    '.....g.g....',
+  ],
+};
+
+// -- El Vientre Humedo: flora ------------------------------------------------
+
+// La Zarza Cosedora. Un segmento de tallo oscuro con puas ganchudas color
+// hueso; se repite para cubrir un pasillo. Lleva una gota de sangre: la planta
+// sangra en vez de dar savia.
+const ZARZA: Figura = {
+  paleta: {
+    n: 0x120a0c,
+    t: 0x2a1a1c,
+    T: 0x46302e,
+    h: 0xc9bda8,
+    r: 0x7a1e22,
+  },
+  // prettier-ignore
+  filas: [
+    '.h......h.....h.',
+    '.nt....tn....tn.',
+    '..tTh.tT....tT..',
+    '...tTtT..h.tT...',
+    '..h.tTt..ntT....',
+    '...ntTtTttT..h..',
+    '...tT..tTTtTtn..',
+    '.htT....tT..tT..',
+    '.tT..h.tTr...tTh',
+    'tT....ntT.....tT',
+    'T..h.tT.t..h...T',
+    '...ntT..tT.n....',
+    '..tT.....tTt.h..',
+    '.tT..h....tTtn..',
+    'tT.........tTT..',
+    'T...........tT..',
+  ],
+};
+
+// La Mata de Retazos. Arbusto palido cuyos frutos son partes humanas: manos
+// que cuelgan con los dedos hacia abajo, una oreja, unos labios. Se tiene que
+// entender sin gore: es una planta, y la piel es solo el color de la fruta.
+const MATA: Figura = {
+  paleta: {
+    n: 0x1e1416,
+    b: 0xb89a90,
+    B: 0xd8c0b4,
+    o: 0x7a5a54,
+    p: 0xd09a8a,
+    P: 0xeac0b0,
+    l: 0xa04a4e,
+    g: 0x4a3a2a,
+  },
+  // prettier-ignore
+  filas: [
+    '........................',
+    '..nnnnn.........nnnnn...',
+    '.nbbbbbn.......nbbbbbbn.',
+    'nbn...nbn.....nbn...nbbn',
+    'nbn....nbn...nbn.....nbn',
+    'nPn.....nbn.nbn......nPn',
+    'nPPn.....nbnbn......nPPn',
+    'nPpPn....nbbbn.....nPpPn',
+    'nPpPn.nnnnbBbn.....nPpPn',
+    '.PpP.nPPn.bBb.nnn..PpPp.',
+    '.P.P.nPpn.bBb.nlln.P.P.P',
+    '.P.Pn.nPn.bBbnlPPln.....',
+    '.....nPn.nbBbn.nnn......',
+    '.....nn..nbBbn..........',
+    '.........nbBbbn.........',
+    '........nbbBbbbn........',
+    '.......nbbbBbbobn.......',
+    '.......nboobBooobn......',
+    '.....nggnoooooooggn.....',
+    '...nggggggggggggggggn...',
+  ],
+};
+
+// La Alfombra Devota, calmada. Tiene que confundirse con una alfombra del
+// culto de verdad: color vino, trama y fleco dorado. Se repite a lo ancho.
+const ALFOMBRA: Figura = {
+  paleta: {
+    n: 0x2a0e14,
+    v: 0x6e1e2c,
+    V: 0x8a2a3a,
+    w: 0x521420,
+    g: 0xa8843c,
+    G: 0xc9a44c,
+  },
+  // prettier-ignore
+  filas: [
+    'GgGgGgGgGgGgGgGg',
+    'vVvvVvvvVvvVvvvV',
+    'VvwvvVvwvvVvvwvv',
+    'vvVvwvvVvvwvvVvw',
+    'vVvvVvvvVvvVvvvV',
+    'gGgGgGgGgGgGgGgG',
+  ],
+};
+
+// La Vena Trepadora. Enredadera de carne que sube por la piedra; se repite en
+// vertical y encaja arriba con abajo. Late con el Latido.
+const VENA: Figura = {
+  paleta: {
+    n: 0x2a0a10,
+    r: 0x7a1e22,
+    R: 0xa83236,
+    L: 0xd4564a,
+  },
+  // prettier-ignore
+  filas: [
+    '......nRn.......',
+    '......nRrn......',
+    '.......nRn......',
+    '.......nRrn.....',
+    '..nn...nRLn.....',
+    '...nRn.nRRn.....',
+    '....nRnRrn......',
+    '.....nRRrn......',
+    '......nRrn......',
+    '......nRLn...nn.',
+    '......nRRn..nRn.',
+    '.......nRrnnRn..',
+    '.......nRRRRn...',
+    '........nRrn....',
+    '........nRn.....',
+    '.......nRrn.....',
+  ],
+};
+
+// El Hongo de Lampara. El unico verde frio del Vientre: la bioluminiscencia.
+// Da luz y marca las horas de la ciudad.
+const HONGO: Figura = {
+  paleta: {
+    n: 0x14141a,
+    s: 0x5a6a5a,
+    S: 0x8aa08a,
+    l: 0x7ad0a8,
+    L: 0xc8f4dc,
+    b: 0x3a4a3a,
+  },
+  // prettier-ignore
+  filas: [
+    '................',
+    '.....nnnnn......',
+    '...nnlLLLlnn....',
+    '..nlLLLLLLLln...',
+    '.nllLlLLlLllln..',
+    '.nnnlllllllnnn..',
+    '....nnSSnn......',
+    '.....nSsn..nnn..',
+    '.....nSsn.nlLln.',
+    '.....nSsnnllllln',
+    '....nSSsn.nnSnn.',
+    '....nSssn..nSn..',
+    '....nSssn..nSn..',
+    '..nnbSssbnnbsbn.',
+    '.nbbbbbbbbbbbbbn',
+    '................',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -1783,6 +2141,17 @@ const FIGURAS: Record<string, Figura> = {
   injertadora: INJERTADORA,
   cursor: CURSOR,
   'cursor-activo': CURSOR_ACTIVO,
+  mondador: MONDADOR,
+  remedo: REMEDO,
+  serpiente: SERPIENTE,
+  buitre: BUITRE,
+  cerdo: CERDO,
+  cuervo: CUERVO,
+  zarza: ZARZA,
+  mata: MATA,
+  alfombra: ALFOMBRA,
+  vena: VENA,
+  hongo: HONGO,
 };
 
 /**
