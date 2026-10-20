@@ -1,4 +1,5 @@
 import { CODICE_EN_JUEGO } from '../lore/Codice';
+import { RELIQUIAS } from '../lore/Reliquias';
 import { REGISTRO } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
 import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
@@ -243,12 +244,18 @@ class Progreso {
     return this.reliquias.size;
   }
 
-  /**
-   * Cuantas reliquias hay repartidas por el Vientre. Se mantiene a mano: dos en
-   * el Atrio, dos en los Pasillos, dos en las Criptas y una en las Salas.
-   */
+  /** Cuantas reliquias hay repartidas por el Vientre: las de src/lore/Reliquias.ts. */
   get reliquiasTotales(): number {
-    return 7;
+    return RELIQUIAS.length;
+  }
+
+  /** Las recogidas de un nivel: cada cierre cuenta las suyas, como el Codice. */
+  reliquiasDelNivel(nivel: 1 | 2): number {
+    return RELIQUIAS.filter((r) => r.nivel === nivel && this.reliquias.has(r.id)).length;
+  }
+
+  reliquiasTotalesDelNivel(nivel: 1 | 2): number {
+    return RELIQUIAS.filter((r) => r.nivel === nivel).length;
   }
 
   private contar(tipo: TipoReliquia): number {

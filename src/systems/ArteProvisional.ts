@@ -2390,6 +2390,182 @@ const VESTAL_CAZADORA: Figura = {
     '..ccc....cccc....cc...',
   ],
 };
+
+// -- El Vientre Humedo: muro y decorado (#105) --------------------------------
+//
+// La capa V son "pasillos de hospital vueltos santuario" y el suelo es
+// "hormigon, azulejo, acero, cera, oxido y hueso" (biblia). Azulejo de quirofano
+// con la junta negra y mojada: una mancha de agua que baja y oxido. Provisional,
+// como el resto: el set de Aseprite del equipo entra con las mismas claves.
+const MURO_HUMEDO_A: Figura = {
+  paleta: {
+    j: 0x1c1a1a,
+    a: 0x8a8478,
+    b: 0x76705f,
+    A: 0xa49d8c,
+    w: 0x3a4a48,
+    o: 0x7a4a22,
+    c: 0x8c2f2f,
+    C: 0xd4564a,
+    e: 0xd8cdbe,
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jAaaaaajAaaaaaaj',
+    'jaaaaaajaaaaaabj',
+    'jaaaaabjaaaaaabj',
+    'jaaaaabjaawaaabj',
+    'jaaaaabjaawaaabj',
+    'jabbbbbjabwbbbbj',
+    'jjjjjjjjjjwjjjjj',
+    'jAaaaaajAawaaaaj',
+    'jaaaaaajaawaaaoj',
+    'jaaaaabjaawaaaoj',
+    'jaaaaabjaaaaaoaj',
+    'jaaaaabjaaaaaabj',
+    'jaaaaabjaaaaaabj',
+    'jabbbbbjabbbbbbj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+// La variante, con una vena que cruza las juntas y una gota de cera: la
+// arquitectura empezando a ser carne.
+const MURO_HUMEDO_B: Figura = {
+  paleta: {
+    j: 0x1c1a1a,
+    a: 0x8a8478,
+    b: 0x76705f,
+    A: 0xa49d8c,
+    w: 0x3a4a48,
+    o: 0x7a4a22,
+    c: 0x8c2f2f,
+    C: 0xd4564a,
+    e: 0xd8cdbe,
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jAaaeaajAaaaaaaj',
+    'jaaaeaajaaaaaabj',
+    'jaaaaabjaaaaaabj',
+    'jaaaaabjaaaaCcbj',
+    'jaacaabjaaaCcabj',
+    'jabbCcbjabCcbbbj',
+    'jjjjjCcjjCcjjjjj',
+    'jAaaaaCcCcaaaaaj',
+    'jaaaaaajccaaaaaj',
+    'jaaaaabjaaaaaabj',
+    'jawaaabjaaaaaabj',
+    'jawaaabjaaoaaabj',
+    'jawaaabjaaoaaabj',
+    'jabbbbbjabbbbbbj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+// Membrana de tejido tapando un boqueton del muro. Va embutida en la pared.
+const MEMBRANA: Figura = {
+  paleta: {
+    n: 0x3a1418,
+    m: 0xb06a66,
+    M: 0xd0908a,
+    v: 0x6a2a3a,
+    h: 0x14100f,
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnnnnnn....',
+    '..nnmmmmmmmmnn..',
+    '.nmmMMmmmmvmmmn.',
+    '.nmMMmmmmvmmmmn.',
+    'nmmMmmmvvmmmmmmn',
+    'nmmmmmvmmmmmMmmn',
+    'nmmmmvmmhmmMMmmn',
+    'nmmmvmmhhhmmmmmn',
+    'nmmmvmmhhhmmmvmn',
+    'nmmmmvmmhmmmvmmn',
+    'nmmmmmvmmmmvmmmn',
+    'nmMmmmmvvvvmmmmn',
+    '.nmMmmmmmmmmmmn.',
+    '.nmmmmmmmmmmmmn.',
+    '..nnmmmmmmmmnn..',
+    '....nnnnnnnn....',
+  ],
+};
+// Raices que cuelgan de la boveda. Necesitan algo arriba de donde colgar.
+const RAIZ: Figura = {
+  paleta: {
+    n: 0x1e1410,
+    r: 0x5a4030,
+    R: 0x7a5a40,
+    c: 0x8c3a3a,
+  },
+  // prettier-ignore
+  filas: [
+    'nRRRrrRRn',
+    '.nRrnrRn.',
+    '.nRn.nRn.',
+    '.nRn.nrn.',
+    '..nRnnrn.',
+    '..nRn.rn.',
+    '..nrn.nrn',
+    '..nRn..rn',
+    '.nRn...rn',
+    '.nrn...nc',
+    '.nrn....n',
+    '..nRn....',
+    '..nrn....',
+    '...nc....',
+    '...n.....',
+  ],
+};
+// La boca de un ducto entre huesos: el nido de la Serpiente. Se apoya en el suelo.
+const NIDO: Figura = {
+  paleta: {
+    n: 0x14100f,
+    M: 0x7f8a85,
+    S: 0x4a5450,
+    o: 0x7a4a22,
+    h: 0xe6ddc8,
+    H: 0xb3a68c,
+    c: 0x8c2f2f,
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnnnnnnnnnnnnnnnnnnnnnn....',
+    '...nMMMMMMMMMMMMMMMMMMMMMMMMn...',
+    '..nMSSSSSSSSSSSSSSSSSSSSSSSSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMonnnnnnnnnnnnnnnnnnnnnnoMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnccnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '.hnMSnhHnnnnnnnnnnnnnHhnnnnSMnh.',
+    'hHnMShHhHnnnnnnnnnnHhHhnnnnSMnHh',
+    'HhHMShhHhHhnnnnnnHhHhhHhnnnSMHhH',
+    'hHhHhHhHHhHhhHhHhHhHHhHhHhHhHhHh',
+    'nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn',
+  ],
+};
+// Lo que deja la Marea: un charco tibio con algo dentro. En el suelo.
+const CHARCO_VIVO: Figura = {
+  paleta: {
+    d: 0x3a1418,
+    r: 0x6a2a2a,
+    R: 0x8c3a3a,
+    L: 0xc06060,
+  },
+  // prettier-ignore
+  filas: [
+    '...dddddddddddddddd.....',
+    '.ddrrRrrrLrrrrRrrrrdd...',
+    'drrRrrrrrrrrLrrrrrRrrdd.',
+    '.ddrrrrRrrrrrrrrrrrrrrdd',
+  ],
+};
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -2402,6 +2578,12 @@ const FIGURAS: Record<string, Figura> = {
   'muro-criptas-b': MURO_CRIPTAS_B,
   'muro-salas-a': MURO_SALAS_A,
   'muro-salas-b': MURO_SALAS_B,
+  'muro-humedo-a': MURO_HUMEDO_A,
+  'muro-humedo-b': MURO_HUMEDO_B,
+  membrana: MEMBRANA,
+  raiz: RAIZ,
+  nido: NIDO,
+  'charco-vivo': CHARCO_VIVO,
   vestal: VESTAL,
   'vestal-cazadora': VESTAL_CAZADORA,
   sello: SELLO,
