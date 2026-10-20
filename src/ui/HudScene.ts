@@ -91,6 +91,26 @@ export class HudScene extends Phaser.Scene {
   }
 
   create(): void {
+    // Phaser reutiliza esta instancia cada vez que se relanza el HUD (al
+    // volver al Atrio desde el cierre o la pausa), y lo que se guarde en sus
+    // campos sobrevive. Los iconos de la vez anterior ya estan destruidos:
+    // pintar sobre ellos reventaba el HUD y, con el, la segunda partida
+    // entera (#148). Cada descenso empieza de cero.
+    this.iconos = [];
+    this.iconosUsados = 0;
+    this.vitalidadActual = VITALIDAD.maxima;
+    this.vitalidadMaxima = VITALIDAD.maxima;
+    this.fervorActual = FERVOR.inicial;
+    this.pocionesActuales = POCION.cargasMaximas;
+    this.pocionesMaximas = POCION.cargasMaximas;
+    this.injertosActuales = INJERTADORA.cargaInicial;
+    this.injertosMaximos = INJERTADORA.cargaMaxima;
+    this.injertadoraDescubierta = false;
+    this.fragmentos = 0;
+    this.jefeVida = -1;
+    this.jefeMaximo = 1;
+    this.jefeCortes = [1 / 3, 2 / 3];
+
     // El marco va primero: queda detras de los iconos y del texto.
     this.marco = this.add.graphics();
     this.grafico = this.add.graphics();
