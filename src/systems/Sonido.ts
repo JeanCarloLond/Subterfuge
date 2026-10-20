@@ -23,7 +23,26 @@
 type Onda = 'sine' | 'square' | 'sawtooth' | 'triangle';
 
 /** Quien recibe el golpe. Cada uno suena distinto: carne, tela y hueso. */
-export type ClaseEnemigo = 'devoto' | 'vestal' | 'reformado';
+/**
+ * De que esta hecho lo que se golpea. Las especies del Vientre Humedo (#90)
+ * ya tienen su clase, aunque de momento suenan como un Devoto: su voz propia
+ * llega con el sonido de la fase 4 (#108).
+ */
+export type ClaseEnemigo =
+  | 'devoto'
+  | 'vestal'
+  | 'reformado'
+  | 'remedo'
+  | 'serpiente'
+  | 'mondador'
+  | 'buitre'
+  | 'cerdo'
+  | 'cuervo'
+  | 'zarza'
+  | 'alfombra'
+  | 'mata'
+  | 'vena'
+  | 'hongo';
 
 class Sonido {
   private ctx: AudioContext | null = null;

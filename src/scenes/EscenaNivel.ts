@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { CirujanoSacerdote } from '../entities/CirujanoSacerdote';
 import { Devoto } from '../entities/Devoto';
 import { enemigoDe } from '../entities/Enemigo';
+import { CONTRATO, crearCriatura, type CriaturaDef } from '../entities/Criatura';
+import { habitanteDe, type Habitante } from '../entities/Habitante';
 import { Reformado } from '../entities/Reformado';
 import { Sello } from '../entities/Sello';
 import { Vestal } from '../entities/Vestal';
@@ -20,7 +22,7 @@ import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
-import { sonido } from '../systems/Sonido';
+import { sonido, type ClaseEnemigo } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
 import { VOCES, type ClaveVoz } from '../lore/Voces';
 import { EVENTOS_HUD } from '../ui/HudScene';
@@ -126,6 +128,11 @@ export interface DefinicionNivel {
   inscripciones?: readonly Inscripcion[];
   /** Fieles con los que se puede hablar. No atacan ni se les puede golpear. */
   fieles?: ReadonlyArray<readonly [number, number, ClaveVoz]>;
+  /**
+   * Fauna, flora y peligros del Vientre (#90). Un solo campo para todas las
+   * especies: ver src/entities/Criatura.ts.
+   */
+  criaturas?: readonly CriaturaDef[];
   /**
    * Atrezo LEJANO: detras de todo, mas oscuro y con parallax. Da profundidad;
    * el jugador nunca lo toca. Las posiciones son aproximadas: al moverse la
@@ -271,12 +278,22 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private reliquias: Reliquia[] = [];
   private ofrendas: Ofrenda[] = [];
   private fieles: Fiel[] = [];
+  private criaturas: Habitante[] = [];
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
     aviso: Phaser.GameObjects.Text;
   }[] = [];
+  /**
+   * Los hostiles: todo lo que el tajo, el injerto y el sello pueden herir. Es
+   * el "grupoHostiles" de #90; se queda con su nombre porque Devoto, Vestal y
+   * el jefe ya viven aqui.
+   */
   private grupoEnemigos?: Phaser.Physics.Arcade.Group;
+  /** Lo que no recibe el ataque: el Mondador, el Cuervo, la Mata... */
+  private grupoNeutrales?: Phaser.Physics.Arcade.Group;
+  /** Lo que hiere al rozarlo y no se mueve: la Zarza, la Alfombra, la Vena. */
+  private grupoPeligros?: Phaser.Physics.Arcade.Group;
   /** Esquina superior izquierda de cada tile de piedra, como "x,y". */
   private tilesSolidos = new Set<string>();
 
@@ -319,6 +336,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.crearCirujano(inicio.x, inicio.y);
     this.poblarNivel();
+    this.poblarCriaturas();
 
     this.crearLuces();
     this.crearPolvo();
@@ -358,6 +376,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     for (const vestal of this.vestales) {
       vestal.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
+    }
+
+    for (const criatura of this.criaturas) {
+      criatura.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
     }
 
     this.catalogarLoQueSeVe();
@@ -413,8 +435,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.reliquias = [];
     this.ofrendas = [];
     this.fieles = [];
+    this.criaturas = [];
     this.placas = [];
     this.grupoEnemigos = undefined;
+    this.grupoNeutrales = undefined;
+    this.grupoPeligros = undefined;
     this.tilesSolidos = new Set();
     this.altarActivo = null;
     this.reapareciendo = false;
@@ -818,7 +843,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   }
 
   private resolverContacto(spriteEnemigo: Phaser.GameObjects.GameObject): void {
-    const enemigo = enemigoDe(spriteEnemigo);
+    // Un enemigo o un peligro: los dos dicen si hieren y desde donde.
+    const enemigo = enemigoDe(spriteEnemigo) ?? habitanteDe(spriteEnemigo);
     if (!enemigo || !enemigo.hiereAlContacto || this.cirujano.estaMuerto) return;
 
     const resultado = this.cirujano.recibirContacto(enemigo.sprite.x);
@@ -828,6 +854,57 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private obtenerGrupoEnemigos(): Phaser.Physics.Arcade.Group {
     if (!this.grupoEnemigos) this.grupoEnemigos = this.physics.add.group();
     return this.grupoEnemigos;
+  }
+
+  /**
+   * Coloca las criaturas del nivel, cada una en el grupo de su contrato.
+   *
+   * Los grupos de neutrales y peligros solo se crean si el nivel tiene alguno:
+   * el Nivel 1 no declara criaturas y queda exactamente como estaba.
+   */
+  private poblarCriaturas(): void {
+    const definiciones = this.definicion.criaturas ?? [];
+    if (definiciones.length === 0) return;
+
+    for (const def of definiciones) {
+      const criatura = crearCriatura({ escena: this, suelos: this.suelos }, def);
+      this.criaturas.push(criatura);
+
+      switch (CONTRATO[def.tipo]) {
+        case 'hostil':
+          // Mismo grupo que Devotos y Vestales: el tajo, el injerto, el sello
+          // devuelto y el roce ya lo tratan, porque cumple `Enemigo`.
+          this.obtenerGrupoEnemigos().add(criatura.sprite);
+          break;
+        case 'neutral':
+          this.obtenerGrupoNeutrales().add(criatura.sprite);
+          break;
+        case 'peligro':
+          this.obtenerGrupoPeligros().add(criatura.sprite);
+          break;
+      }
+    }
+
+    // Los peligros hieren al rozarlos, y los que se pueden cortar reciben el
+    // tajo. El injerto NO: gastar municion contra una planta no tiene sentido.
+    if (this.grupoPeligros) {
+      this.physics.add.overlap(this.cirujano.sprite, this.grupoPeligros, (_j, peligro) =>
+        this.resolverContacto(peligro as Phaser.GameObjects.GameObject),
+      );
+      this.physics.add.overlap(this.cirujano.hitbox, this.grupoPeligros, (_h, peligro) =>
+        this.resolverGolpeDelCirujano(peligro as Phaser.GameObjects.GameObject),
+      );
+    }
+  }
+
+  private obtenerGrupoNeutrales(): Phaser.Physics.Arcade.Group {
+    if (!this.grupoNeutrales) this.grupoNeutrales = this.physics.add.group();
+    return this.grupoNeutrales;
+  }
+
+  private obtenerGrupoPeligros(): Phaser.Physics.Arcade.Group {
+    if (!this.grupoPeligros) this.grupoPeligros = this.physics.add.group();
+    return this.grupoPeligros;
   }
 
   private poblarNivel(): void {
@@ -1300,7 +1377,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   // -- Ofrendas ------------------------------------------------------------
 
   /** Un enemigo cae y deja algo, segun su clase y la suerte. */
-  private soltarOfrenda(x: number, y: number, clase: 'devoto' | 'vestal' | 'reformado'): void {
+  private soltarOfrenda(x: number, y: number, clase: ClaseEnemigo): void {
     const tipo = Ofrenda.sortear(clase);
     if (!tipo) return;
 
@@ -1528,6 +1605,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.anotar('vestal');
         break;
       }
+    }
+
+    for (const criatura of this.criaturas) {
+      if (progreso.estaDescubierto(criatura.idFicha)) continue;
+      // Sin ficha escrita todavia (#88) no se apunta: un id suelto en la
+      // memoria del juego contaria como ficha en la web sin tener texto.
+      if (!fichaPorId(criatura.idFicha)) continue;
+      const { x: cx, y: cy } = criatura.sprite;
+      if (Phaser.Math.Distance.Between(x, y, cx, cy) < RADIO_VISTA) this.anotar(criatura.idFicha);
     }
   }
 
@@ -1904,6 +1990,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private limpiarDevotosMuertos(): void {
     this.devotos = this.devotos.filter((devoto) => !devoto.estaMuerto);
     this.vestales = this.vestales.filter((vestal) => !vestal.estaMuerto);
+    this.criaturas = this.criaturas.filter((criatura) => !criatura.estaMuerto);
     this.sellos = this.sellos.filter((sello) => sello.estaVivo);
     this.ofrendas = this.ofrendas.filter((ofrenda) => ofrenda.estaViva);
   }
