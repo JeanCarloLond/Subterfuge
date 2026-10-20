@@ -11,6 +11,19 @@ const VACIO: ReadonlySet<string> = new Set();
 /** Tipos de reliquia. Cada una mejora algo del Cirujano de forma permanente. */
 export type TipoReliquia = 'relicario' | 'frasco';
 
+/** El Progreso en datos planos, tal como se guarda (ver Guardado.ts). */
+export interface ProgresoGuardado {
+  recogidos: string[];
+  leidos: string[];
+  huellas: string[];
+  reliquias: [string, TipoReliquia][];
+  fichas: string[];
+  capas: string[];
+  casillas: [string, string[]][];
+  mundos: [string, { ancho: number; alto: number }][];
+  cargaInjertadora: number;
+}
+
 /**
  * Estado de la partida que sobrevive a los cambios de escena.
  *
@@ -270,6 +283,41 @@ class Progreso {
   /** Cargas de Pocion extra acumuladas por Frascos Consagrados. */
   get pocionesExtra(): number {
     return this.contar('frasco') * RELIQUIA.pocionExtra;
+  }
+
+  /**
+   * El estado entero, en datos planos que caben en un JSON. Es lo que se
+   * guarda al rezar en un Altar (#149): todo lo que se gana y se conserva.
+   */
+  serializar(): ProgresoGuardado {
+    return {
+      recogidos: [...this.recogidos],
+      leidos: [...this.leidos],
+      huellas: [...this.huellas],
+      reliquias: [...this.reliquias],
+      fichas: [...this.fichas],
+      capas: [...this.capas],
+      casillas: [...this.casillas].map(([zona, casillas]) => [zona, [...casillas]]),
+      mundos: [...this.mundos],
+      cargaInjertadora: this.cargaInjertadora,
+    };
+  }
+
+  /** Lo contrario: deja la partida como estaba al guardarla. */
+  restaurar(datos: ProgresoGuardado): void {
+    this.reiniciar();
+    for (const id of datos.recogidos) this.recogidos.add(id);
+    for (const id of datos.leidos) this.leidos.add(id);
+    for (const id of datos.huellas) this.huellas.add(id);
+    for (const [id, tipo] of datos.reliquias) this.reliquias.set(id, tipo);
+    for (const id of datos.fichas) this.fichas.add(id);
+    for (const id of datos.capas) this.capas.add(id);
+    for (const [zona, casillas] of datos.casillas) this.casillas.set(zona, new Set(casillas));
+    for (const [zona, medidas] of datos.mundos) this.mundos.set(zona, medidas);
+    this.cargaInjertadora = Math.min(
+      INJERTADORA.cargaMaxima,
+      Math.max(0, Math.round(datos.cargaInjertadora)),
+    );
   }
 
   /** Volver al Atrio desde el cierre empieza una partida limpia. */

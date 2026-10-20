@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
+import { guardado } from '../systems/Guardado';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import {
@@ -349,6 +350,7 @@ export class PausaScene extends Phaser.Scene {
   private volverAlAtrio(): void {
     this.input.keyboard?.removeAllListeners();
     progreso.reiniciar();
+    guardado.borrar();
     musica.atenuar(false);
 
     if (this.scene.isActive('Hud')) this.scene.stop('Hud');

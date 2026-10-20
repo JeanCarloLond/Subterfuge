@@ -33,6 +33,7 @@ import { fijo } from '../systems/Nitidez';
 import { Impacto } from '../systems/Impacto';
 import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
+import { guardado } from '../systems/Guardado';
 import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
 import { EVENTO_MAREA, Marea, type DefinicionMarea, type EstadoMarea } from '../systems/Marea';
@@ -144,6 +145,12 @@ export interface Umbral {
 }
 
 /** Todo lo que distingue a un nivel de otro. La logica es comun. */
+/** Lo que recibe una zona al arrancar. Vacío al bajar por un umbral. */
+export interface DatosZona {
+  /** Altar desde el que se continúa un descenso guardado. */
+  altar?: number;
+}
+
 /** Un charco del decorado, para saber cuándo se pisa. */
 interface Charco {
   x: number;
@@ -391,7 +398,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
   /** Cada zona describe aqui su contenido. */
   protected abstract definirNivel(): DefinicionNivel;
 
-  create(): void {
+  /**
+   * `datos.altar` viene de «Continuar» en la pantalla de inicio (#149): el
+   * descenso guardado arranca en ese Altar y no en la entrada de la zona.
+   */
+  create(datos: DatosZona = {}): void {
     this.reiniciarEstado();
 
     this.definicion = this.definirNivel();
@@ -413,6 +424,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.crearCirujano(inicio.x, inicio.y);
     this.poblarNivel();
     this.poblarCriaturas();
+    this.continuarEnAltar(datos.altar);
 
     this.crearLuces();
     this.crearPolvo();
@@ -436,6 +448,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.emitirEstadoInicial();
 
     this.catalogarZona();
+    // Entrar en una zona enciende su primer Altar: eso tambien es un punto de
+    // guardado. Va despues de catalogar, para que la capa ya conste pisada.
+    if (this.altarActivo) guardado.guardar(this.scene.key, this.altares.indexOf(this.altarActivo));
     this.crearAyudaControles(this.definicion.mostrarAyuda === true);
   }
 
@@ -2198,8 +2213,24 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * pasado algo y de que: el Cirujano se arrodilla, el Altar responde con luz
    * y sonido, y el aviso dice con palabras que ES el punto de guardado.
    */
+  /**
+   * Coloca al Cirujano en el Altar guardado y lo deja encendido. Sin altar, o
+   * con uno que ya no existe en la zona, se empieza en la entrada.
+   */
+  private continuarEnAltar(indice?: number): void {
+    const altar = indice === undefined ? undefined : this.altares[indice];
+    if (altar) {
+      altar.rezar();
+      this.altarActivo = altar;
+      const destino = altar.puntoReaparicion;
+      this.cirujano.sprite.setPosition(destino.x, destino.y);
+      (this.cirujano.sprite.body as Phaser.Physics.Arcade.Body).reset(destino.x, destino.y);
+    }
+  }
+
   private rezarEn(altar: Altar): void {
     this.anotar('altar');
+    guardado.guardar(this.scene.key, this.altares.indexOf(altar));
     const DURACION_REZO_MS = 1100;
 
     altar.rezar();

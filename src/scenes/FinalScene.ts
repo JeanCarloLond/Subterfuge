@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
+import { guardado } from '../systems/Guardado';
 import { recordar } from '../systems/Memoria';
 import { tactil } from '../input/Tactil';
 import { toques } from '../input/Toques';
@@ -38,6 +39,8 @@ export class FinalScene extends Phaser.Scene {
 
   create(): void {
     recordar('hitos', 'final');
+    // El descenso ha terminado: no queda nada que continuar (#149).
+    guardado.borrar();
     this.fragmentos = progreso.fragmentosDelNivel(1);
 
     this.cameras.main.setBackgroundColor('#0b090b');
