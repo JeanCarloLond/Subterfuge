@@ -188,7 +188,24 @@ export class AtrioScene extends EscenaNivel {
       ],
 
       // Placas del Registro: la burocracia del diezmo empieza en la calle.
-      fieles: [[96, 288, 'inscriptor']],
+      fieles: [
+        [96, 288, 'inscriptor'],
+        // La biblia pone las terrazas de hongos en el Atrio: aqui trabaja ella.
+        [330, 848, 'honguera'],
+      ],
+
+      // La vida del Vientre que la biblia pone en el Atrio (revision del
+      // equipo: "no se ven los animales"). Nada de esto cierra la ruta.
+      criaturas: [
+        { tipo: 'hongo', x: 200, y: 848 },
+        { tipo: 'hongo', x: 236, y: 848 },
+        // "Corrales de las Ermitas y pabellones altos".
+        { tipo: 'cerdo', x: 470, y: 928, ronda: { izquierda: 352, derecha: 520 } },
+        // "Salas vedadas cubiertas de Alfombra Devota": delante de la capilla
+        // de las velas, en el desvio del fondo. Se salta o se rodea.
+        { tipo: 'alfombra', x: 650, y: 1008, anchoTiles: 2 },
+      ],
+      apariciones: [{ tipo: 'cuervo', y: 70, desde: -20, hasta: 980, cadaMs: 15000 }],
 
       inscripciones: [
         [170, 288, 'CASA POR CASA. Inscriban a los suyos. El Registro no elige: sortea.'],

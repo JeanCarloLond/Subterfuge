@@ -475,6 +475,9 @@ export class CirujanoSacerdote {
     this.finAccion = ahora + POCION.duracionMs;
     this.vitalidad.curar(POCION.curacion);
     this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
+    // La carne que entra: gotas rojas que suben por el cuerpo mientras bebe, y
+    // un pulso de color al terminar. Sin esto, beber era quedarse quieto.
+    this.eventos.emit('bebe', this.sprite.x, this.sprite.y);
   }
 
   /** Coloca y activa/desactiva la zona de dano segun la fase del golpe. */
@@ -1120,6 +1123,20 @@ export class CirujanoSacerdote {
    * si corrieras. Es el detalle que separa un ciclo de andar de un gif.
    */
   private actualizarPaso(enSuelo: boolean): void {
+    // Las dos poses que no son andar: la guardia del parry y beber. Un gesto
+    // que se ve, no solo un color (revision del equipo).
+    const pose =
+      this.estado === 'parry'
+        ? 'cirujano-guardia-placeholder'
+        : this.estado === 'bebiendo'
+          ? 'cirujano-bebe-placeholder'
+          : null;
+    if (pose) {
+      this.recorridoPaso = 0;
+      if (this.sprite.texture.key !== pose) this.sprite.setTexture(pose);
+      return;
+    }
+
     const quieto =
       !enSuelo ||
       this.estado === 'atacando' ||

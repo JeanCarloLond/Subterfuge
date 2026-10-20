@@ -202,7 +202,26 @@ export class PasillosScene extends EscenaNivel {
         [700, 540, 'columna'],
       ],
 
-      fieles: [[176, 248, 'registradora']],
+      fieles: [
+        [176, 248, 'registradora'],
+        // Los tanteadores van "por todo el Vientre" (biblia).
+        [560, 248, 'tanteador'],
+      ],
+
+      // "Pasillos y bovedas": el Cuervo de Ermita salta de poste en poste por
+      // delante del Cirujano. Y un Remedo entre el instrumental de la bandeja.
+      criaturas: [
+        {
+          tipo: 'cuervo',
+          posaderos: [
+            [448, 108],
+            [940, 160],
+            [1060, 64],
+          ],
+        },
+        { tipo: 'remedo', x: 852, y: 168, ronda: { izquierda: 806, derecha: 860 } },
+      ],
+      apariciones: [{ tipo: 'cuervo', y: 30, desde: -20, hasta: 1140, cadaMs: 17000 }],
 
       inscripciones: [
         [150, 160, 'OFICINA DEL DIEZMO. Deudas de casa se saldan en carne de casa.'],

@@ -206,6 +206,23 @@ export class CriptasScene extends EscenaNivel {
       // Placas del Registro. Burocracia hasta aqui abajo.
       fieles: [[112, 880, 'reformado-viejo']],
 
+      // La biblia: el ultimo Mondador del Atrio nacio en el 62 y "la especie
+      // queda relegada a las Criptas". Recorre el suelo comiendo lo que queda.
+      // La Mata, junto a los charcos, donde se descarta el tejido.
+      criaturas: [
+        {
+          tipo: 'mondador',
+          ruta: [
+            [220, 880],
+            [560, 880],
+          ],
+        },
+        { tipo: 'mata', x: 650, y: 880 },
+      ],
+      // Y abajo, por detras de la pared, algo largo que se arrastra: la
+      // Serpiente de los ductos, que es del Nivel 2. Solo se la ve pasar.
+      apariciones: [{ tipo: 'serpiente', y: 760, desde: 380, hasta: 720, cadaMs: 22000 }],
+
       inscripciones: [
         [140, 160, 'REGISTRO DE ESPERA. Turno por sorteo. No despertar a los inscritos.'],
         [340, 480, 'Sedación administrada. Carne serena, carne grata.'],

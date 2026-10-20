@@ -189,6 +189,14 @@ export class SalasScene extends EscenaNivel {
       // otro lado de la reja y por que sigue ahi.
       fieles: [[160, 288, 'sedante']],
 
+      // "Salas de Sacramento": el Buitre de la Quietud posado encima de la
+      // arena, sin bajar a ella; y un Remedo entre el instrumental del piso de
+      // arriba. Nada dentro de la arena del jefe.
+      criaturas: [
+        { tipo: 'buitre', x: 290, y: 152 },
+        { tipo: 'remedo', x: 975, y: 96, ronda: { izquierda: 962, derecha: 1020 } },
+      ],
+
       inscripciones: [
         [60, 288, 'SALA DEL SACRAMENTO N.o 7. Manos: una. Ofrendas de hoy: una.'],
         [

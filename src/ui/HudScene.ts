@@ -51,6 +51,10 @@ const COLOR = {
  */
 export class HudScene extends Phaser.Scene {
   private grafico!: Phaser.GameObjects.Graphics;
+  private marco!: Phaser.GameObjects.Graphics;
+  /** Iconos de vida, frascos e injertos: se reutilizan entre redibujados. */
+  private iconos: Phaser.GameObjects.Image[] = [];
+  private iconosUsados = 0;
   private textoCodice!: Phaser.GameObjects.Text;
   private textoPocion!: Phaser.GameObjects.Text;
   private textoInjertos!: Phaser.GameObjects.Text;
@@ -87,6 +91,8 @@ export class HudScene extends Phaser.Scene {
   }
 
   create(): void {
+    // El marco va primero: queda detras de los iconos y del texto.
+    this.marco = this.add.graphics();
     this.grafico = this.add.graphics();
 
     // La tecla junto a los frascos: sin ella nadie sabia que se bebian (issue #26).
@@ -317,43 +323,117 @@ export class HudScene extends Phaser.Scene {
 
   private redibujar(): void {
     this.grafico.clear();
+    this.iconosUsados = 0;
 
-    this.dibujarVitalidad(8, 8);
-    this.dibujarFervor(8, 22);
-    this.dibujarPociones(8, 32);
-    // A la derecha del ultimo frasco, con el nombre del recurso y su tecla.
-    this.textoPocion.setX(8 + this.pocionesMaximas * 8 + 4);
+    // Iconos a pixel en vez de cuadrados planos (revision del equipo): un
+    // corazon de carne por punto, un frasco por Pocion, la pieza de metal por
+    // injerto. El texto va a la derecha de cada fila, con su tecla.
+    const x0 = 9;
+    const anchoVida = this.dibujarIconos(
+      x0,
+      7,
+      this.vitalidadMaxima,
+      this.vitalidadActual,
+      'hud-carne-placeholder',
+      'hud-carne-vacia-placeholder',
+      10,
+    );
+    this.dibujarFervor(x0, 18);
+    const anchoPociones = this.dibujarIconos(
+      x0,
+      27,
+      this.pocionesMaximas,
+      this.pocionesActuales,
+      'hud-frasco-placeholder',
+      'hud-frasco-vacio-placeholder',
+      9,
+    );
+    this.textoPocion.setPosition(x0 + anchoPociones + 4, 28);
     this.textoPocion.setText(this.pocionesActuales > 0 ? 'Q  Poción de Carne' : 'sin Poción');
 
+    let fondo = 38;
     if (this.injertadoraDescubierta) {
-      this.dibujarInjertos(8, 41);
-      this.textoInjertos.setX(8 + this.injertosMaximos * 6 + 4);
+      const anchoInjertos = this.dibujarIconos(
+        x0,
+        39,
+        this.injertosMaximos,
+        this.injertosActuales,
+        'hud-injerto-placeholder',
+        'hud-injerto-vacio-placeholder',
+        7,
+      );
+      this.textoInjertos.setPosition(x0 + anchoInjertos + 4, 39);
       this.textoInjertos.setText(this.injertosActuales > 0 ? 'F  Injertadora' : 'sin injertos');
+      fondo = 49;
     } else {
       this.textoInjertos.setText('');
     }
-    if (this.jefeVida >= 0) this.dibujarJefe();
 
+    this.textoCodice.setPosition(x0, fondo + 2);
     this.textoCodice.setText(
       this.fragmentos > 0 ? `códice  ${this.fragmentos}/${progreso.fragmentosTotales}   L` : '',
     );
+    if (this.fragmentos > 0) fondo += 12;
+
+    // Los iconos que sobran de una vida maxima anterior se esconden.
+    for (let i = this.iconosUsados; i < this.iconos.length; i += 1)
+      this.iconos[i].setVisible(false);
+
+    // El marco: una placa oscura con filo de oro detras de todo, para que el
+    // HUD no flote sobre la piedra. Mide lo que mide su contenido.
+    const ancho =
+      Math.max(
+        anchoVida,
+        64,
+        anchoPociones + 4 + this.textoPocion.width,
+        this.injertadoraDescubierta ? this.textoInjertos.x - x0 + this.textoInjertos.width : 0,
+        this.textoCodice.width,
+      ) + 10;
+    this.marco.clear();
+    this.marco.fillStyle(0x0b090b, 0.62);
+    this.marco.fillRect(3, 3, ancho, fondo);
+    this.marco.lineStyle(1, 0x6b5a3a, 0.9);
+    this.marco.strokeRect(3.5, 3.5, ancho - 1, fondo - 1);
+    this.marco.fillStyle(0xc9a44c, 1);
+    for (const [cx, cy] of [
+      [3, 3],
+      [ancho + 1, 3],
+      [3, fondo + 1],
+      [ancho + 1, fondo + 1],
+    ]) {
+      this.marco.fillRect(cx, cy, 2, 2);
+    }
+
+    if (this.jefeVida >= 0) this.dibujarJefe();
   }
 
-  /** Carne: un segmento por punto. El cuerpo del Cirujano tambien es moneda. */
-  private dibujarVitalidad(x: number, y: number): void {
-    const ancho = 9;
-    const alto = 8;
-    const separacion = 2;
-
-    for (let i = 0; i < this.vitalidadMaxima; i += 1) {
-      const lleno = i < this.vitalidadActual;
-      const px = x + i * (ancho + separacion);
-
-      this.grafico.fillStyle(lleno ? COLOR.carne : COLOR.carneVacia, 1);
-      this.grafico.fillRect(px, y, ancho, alto);
-      this.grafico.lineStyle(1, COLOR.borde, 1);
-      this.grafico.strokeRect(px, y, ancho, alto);
+  /**
+   * Una fila de iconos: los llenos hasta `actuales`, vacios hasta `maximo`.
+   * @returns el ancho que ocupa la fila.
+   */
+  private dibujarIconos(
+    x: number,
+    y: number,
+    maximo: number,
+    actuales: number,
+    lleno: string,
+    vacio: string,
+    paso: number,
+  ): number {
+    for (let i = 0; i < maximo; i += 1) {
+      const icono = this.siguienteIcono();
+      icono.setTexture(i < actuales ? lleno : vacio);
+      icono.setPosition(x + i * paso, y);
+      icono.setVisible(true);
     }
+    return maximo * paso;
+  }
+
+  private siguienteIcono(): Phaser.GameObjects.Image {
+    if (this.iconosUsados >= this.iconos.length) {
+      this.iconos.push(this.add.image(0, 0, 'hud-carne-placeholder').setOrigin(0, 0).setDepth(2));
+    }
+    return this.iconos[this.iconosUsados++];
   }
 
   /** Fervor: barra continua. Se gana con el cuerpo, no con el tiempo. */
@@ -375,52 +455,6 @@ export class HudScene extends Phaser.Scene {
     const umbral = x + ancho * 0.3;
     this.grafico.lineStyle(1, COLOR.borde, 1);
     this.grafico.lineBetween(umbral, y, umbral, y + alto);
-  }
-
-  private dibujarPociones(x: number, y: number): void {
-    const lado = 5;
-    const separacion = 3;
-
-    for (let i = 0; i < this.pocionesMaximas; i += 1) {
-      const disponible = i < this.pocionesActuales;
-      const px = x + i * (lado + separacion);
-
-      if (disponible) {
-        this.grafico.fillStyle(COLOR.frasco, 1);
-        this.grafico.fillRect(px, y, lado, lado);
-      } else {
-        // Vacia: solo contorno. Distinguible sin depender del color.
-        this.grafico.fillStyle(COLOR.frascoVacio, 1);
-        this.grafico.fillRect(px, y, lado, lado);
-        this.grafico.lineStyle(1, COLOR.frasco, 1);
-        this.grafico.strokeRect(px, y, lado, lado);
-      }
-    }
-  }
-
-  /**
-   * Injertos: barritas verticales, no cuadrados.
-   *
-   * La forma importa tanto como el color — los frascos justo encima son
-   * cuadrados, y con daltonismo el color no separa el metal de la sangre.
-   */
-  private dibujarInjertos(x: number, y: number): void {
-    const ancho = 2;
-    const alto = 6;
-    const separacion = 4;
-
-    for (let i = 0; i < this.injertosMaximos; i += 1) {
-      const cargado = i < this.injertosActuales;
-      const px = x + i * (ancho + separacion);
-
-      this.grafico.fillStyle(cargado ? COLOR.injerto : COLOR.injertoVacio, 1);
-      this.grafico.fillRect(px, y, ancho, alto);
-
-      if (!cargado) {
-        this.grafico.lineStyle(1, COLOR.injerto, 0.5);
-        this.grafico.strokeRect(px, y, ancho, alto);
-      }
-    }
   }
 
   /**

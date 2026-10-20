@@ -36,7 +36,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   // mundo creyendo que le esta explicando un tramite.
   inscriptor: {
     rotulo: 'E  hablar',
-    textura: 'devoto-placeholder',
+    textura: 'fiel-placeholder',
     quien: 'FIEL EN LA COLA',
     cuadros: [
       'Buenos días, Manos. Vengo a inscribir a los míos.',
@@ -51,7 +51,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   // el jugador es la misma: le dice cuanto Codice lleva.
   registradora: {
     rotulo: 'E  consultar el Registro',
-    textura: 'vestal-placeholder',
+    textura: 'registradora-placeholder',
     quien: 'VESTAL DE REGISTRO',
     cuadros: [
       'Manos siete. Su sala está anotada para hoy.',
@@ -65,7 +65,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   // lo dice sin queja, que es lo que lo vuelve insoportable.
   'reformado-viejo': {
     rotulo: 'E  hablar',
-    textura: 'reformado-placeholder',
+    textura: 'reformado-sentado-placeholder',
     quien: 'REFORMADO',
     cuadros: [
       'No se acerque tanto. Ya sé cómo me ve.',
@@ -79,7 +79,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   // mirarla. Aqui el jugador se entera de que la niña ya esta arriba.
   sedante: {
     rotulo: 'E  hablar',
-    textura: 'devoto-b-placeholder',
+    textura: 'auxiliar-placeholder',
     quien: 'AUXILIAR DE CRIPTAS',
     cuadros: [
       'La dosis de la Sala 7 se administró anoche. Doble.',
