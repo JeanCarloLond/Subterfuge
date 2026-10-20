@@ -7,15 +7,17 @@ import { toques } from '../input/Toques';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
 import { cursorActivo } from '../ui/Cursor';
+import { GANCHO_FINAL } from '../lore/Cinematicas';
 
 /**
- * Cierre del teaser: el gancho.
+ * Cierre del Nivel 1.
  *
- * ATENCION AL EQUIPO NARRATIVO: el texto de abajo es un MARCADOR DE POSICION,
- * no lore aprobado. Esta escrito al minimo a proposito para que se note que hay
- * que sustituirlo. El gancho real debe apoyarse en la situacion disparadora del
- * mundo —la nina que se ofrece voluntariamente y el tejido que responde distinto—
- * y lo escribe el equipo, no la herramienta.
+ * Primero la cinematica del sacramento (#147): la nina, el tejido que responde
+ * y la decision del Cirujano. Despues, sobre negro, la linea que queda, el
+ * titulo y el recuento de lo que encontro el jugador.
+ *
+ * La escena se queda en pausa mientras dura la cinematica, asi que las
+ * entradas escalonadas de abajo esperan solas y empiezan al volver.
  *
  * Restriccion del universo que cualquier texto aqui debe respetar: los
  * Primigenios son ciegos. No pueden "mirar", "observar" ni "ver" nada. Conocen
@@ -23,6 +25,12 @@ import { cursorActivo } from '../ui/Cursor';
  */
 export class FinalScene extends Phaser.Scene {
   private fragmentos = 0;
+  /**
+   * Desde cuando valen los toques. Hasta que acaba la cinematica, ninguno:
+   * el dedo que la salta manteniendo pulsado no puede, al levantarse, devolver
+   * al jugador al Atrio.
+   */
+  private listoDesde = Infinity;
 
   constructor() {
     super({ key: 'Final' });
@@ -35,23 +43,27 @@ export class FinalScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#0b090b');
     this.cameras.main.fadeIn(900, 11, 9, 11);
 
-    // El HUD no pinta en una pantalla de cierre, y el Vientre deja de respirar.
+    // Ni HUD ni botonera en una pantalla de cierre, y el Vientre deja de
+    // respirar: en la cinematica solo suena el Latido.
     if (this.scene.isActive('Hud')) this.scene.stop('Hud');
+    if (this.scene.isActive('Tactil')) this.scene.stop('Tactil');
     sonido.ambienteApagado();
-    musica.poner('final');
 
     // El cierre de la historia va ANTES del recuento: primero se acaba lo que
-    // le pasa al Cirujano, y luego se cuenta lo que encontro el jugador. La
-    // escena queda en pausa mientras habla, asi que las entradas escalonadas
-    // de abajo esperan solas y entran al terminar.
+    // le pasa al Cirujano, y luego se cuenta lo que encontro el jugador.
+    this.listoDesde = Infinity;
+    this.events.once(Phaser.Scenes.Events.RESUME, () => {
+      this.listoDesde = performance.now();
+      musica.poner('final');
+    });
     this.scene.pause();
-    this.scene.launch('Dialogo', { escenaJuego: this.scene.key, clave: 'cierre' });
+    this.scene.launch('Cinematica', { escenaJuego: this.scene.key });
 
     const centroX = RESOLUCION.ancho / 2;
 
-    // --- MARCADOR DE POSICION: sustituir por el gancho real del equipo ---
+    // La linea que queda despues de la cinematica (ver Cinematicas.ts).
     const gancho = this.add
-      .text(centroX, 120, 'El descenso apenas ha empezado.', {
+      .text(centroX, 120, GANCHO_FINAL ?? '', {
         fontFamily: 'monospace',
         fontSize: '11px',
         color: '#d6cfc4',
@@ -99,9 +111,8 @@ export class FinalScene extends Phaser.Scene {
     // no es una forma de cerrar un juego (#75).
     if (tactil.esAparatoTactil) {
       reinicio.setText('toca para volver al Atrio');
-      const nacido = performance.now();
       const soltar = toques.alSoltar((_punto, inicio) => {
-        if (inicio >= nacido) this.volverAlAtrio();
+        if (inicio >= this.listoDesde) this.volverAlAtrio();
       });
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, soltar);
     }

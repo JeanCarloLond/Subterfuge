@@ -720,6 +720,58 @@ class Sonido {
     });
   }
 
+  // -- La cinematica del sacramento (#147) -----------------------------------
+
+  /**
+   * Un latido: dos golpes graves, el segundo mas flojo. Es el pulso de toda
+   * la cinematica; la escena decide el ritmo, aqui solo suena uno.
+   */
+  latido(fuerza = 1): void {
+    this.tono({ desde: 62, hasta: 36, onda: 'sine', duracion: 0.2, volumen: 0.36 * fuerza });
+    this.ruido({ duracion: 0.12, frecuencia: 140, volumen: 0.16 * fuerza });
+    this.tono({
+      desde: 54,
+      hasta: 34,
+      onda: 'sine',
+      duracion: 0.18,
+      volumen: 0.24 * fuerza,
+      retardo: 0.24,
+    });
+  }
+
+  /**
+   * El bisturi contra la piedra: el golpe, un rebote y el metal que se queda
+   * sonando. La decision del Cirujano se cuenta solo con esto, a oscuras, asi
+   * que tiene que ser limpio y reconocible.
+   */
+  bisturiCae(): void {
+    this.ruido({ duracion: 0.05, frecuencia: 5200, tipo: 'highpass', volumen: 0.3 });
+    this.tono({ desde: 2900, hasta: 2500, onda: 'triangle', duracion: 0.08, volumen: 0.2 });
+    this.ruido({
+      duracion: 0.04,
+      frecuencia: 4800,
+      tipo: 'highpass',
+      volumen: 0.16,
+      retardo: 0.17,
+    });
+    this.tono({
+      desde: 2700,
+      hasta: 2600,
+      onda: 'triangle',
+      duracion: 0.06,
+      volumen: 0.1,
+      retardo: 0.17,
+    });
+    this.tono({
+      desde: 3320,
+      hasta: 3300,
+      onda: 'sine',
+      duracion: 1.4,
+      volumen: 0.07,
+      retardo: 0.02,
+    });
+  }
+
   /** La misma reja subiendo: cadena y contrapeso. */
   rejaAbre(): void {
     this.ruido({ duracion: 0.6, frecuencia: 500, barridoHasta: 1500, volumen: 0.2 });

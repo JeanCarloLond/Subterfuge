@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { generarArteProvisional } from '../systems/ArteProvisional';
 import { generarRetratos } from '../systems/RetratosProvisionales';
+import { generarCinematica } from '../systems/CinematicaProvisional';
 import { ponerCursor } from '../ui/Cursor';
 import { PISTAS, SIN_PRECARGA, type Pista } from '../systems/Musica';
 
@@ -83,7 +84,10 @@ export class PreloadScene extends Phaser.Scene {
     // y antes de esta linea todavia no existe.
     ponerCursor(this);
 
-    this.scene.start('Atrio');
+    // `?cinematica` salta directo al cierre para ver la cinematica del
+    // sacramento sin jugar el Nivel 1 (#147). Como `?tactil`, es un banco de
+    // pruebas: sin el parametro, el juego empieza en el Atrio.
+    this.scene.start(location.search.includes('cinematica') ? 'Final' : 'Atrio');
   }
 
   private dibujarBarraDeCarga(): void {
@@ -108,5 +112,6 @@ export class PreloadScene extends Phaser.Scene {
   private generarPlaceholders(): void {
     generarArteProvisional(this);
     generarRetratos(this);
+    generarCinematica(this);
   }
 }

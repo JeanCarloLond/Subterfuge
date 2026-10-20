@@ -40,6 +40,11 @@ function leer(): Memoria {
   }
 }
 
+/** Si ese descubrimiento ya se hizo alguna vez, en cualquier partida. */
+export function recuerda(categoria: CategoriaMemoria, id: string): boolean {
+  return leer()[categoria].includes(id);
+}
+
 /** Apunta un descubrimiento. Idempotente y silencioso si no se puede guardar. */
 export function recordar(categoria: CategoriaMemoria, id: string): void {
   try {

@@ -137,7 +137,8 @@ Húmedo**, está en preparación.
   sellos se le pueden devolver con el parry) y el Reformado, el jefe, con tres
   fases.
 - **Cuatro zonas**: el Atrio, los Pasillos de Preparación, las Criptas de
-  Espera y las Salas de Sacramento, más una pantalla de cierre.
+  Espera y las Salas de Sacramento, y un cierre con la cinemática del
+  sacramento: la niña, por fin, en pantalla.
 - **Exploración**: rutas secretas con siete **reliquias** (mejoras permanentes
   de vida y pociones), ocho hojas del Códice, placas del Registro por las
   paredes, fieles con los que se puede hablar y una última línea que solo

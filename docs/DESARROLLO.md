@@ -97,7 +97,8 @@ src/
     PasillosScene.ts             Zona 2: Pasillos de Preparación (solo datos)
     CriptasScene.ts              Zona 3: Criptas de Espera (solo datos)
     SalasScene.ts                Zona 4: Salas de Sacramento, el jefe (solo datos)
-    FinalScene.ts                Cierre del teaser con gancho
+    FinalScene.ts                Cierre del Nivel 1: lanza la cinemática y cuenta lo hallado
+    CinematicaScene.ts           La cinemática del sacramento: la niña en pantalla
 public/assets/
   tilesets/
     vientre.png                  Sillería 16x16 que embaldosa sin costura
@@ -274,7 +275,7 @@ posición, para que las colisiones no se enteren.
 - [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
 - [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
 - [ ] Sustituir el resto de placeholders por el arte del equipo
-- [ ] **Escribir el gancho real** de `FinalScene` (hoy es un marcador de posición)
+- [x] Cierre con la cinemática del sacramento y su línea final (#147)
 - [ ] Segundo tipo de enemigo
 - [ ] Jefe o evento narrativo clave
 - [ ] Audio
@@ -730,6 +731,47 @@ retrato y una placa con el nombre.
   llaman `retrato-<clave>` y `retrato-<clave>-<fotograma>`: si PreloadScene
   carga un PNG con esa clave, se usa el PNG y no se pinta el provisional. Así el
   arte del equipo entra sin tocar código.
+
+## La cinemática del sacramento (#147)
+
+Al caer el Reformado y cruzar el umbral, `FinalScene` se pone en pausa y lanza
+`CinematicaScene`: la primera vez que se ve a la niña. No es gameplay —ni HUD,
+ni botonera, ni control del Cirujano— y las **bandas panorámicas** que entran
+deslizándose son la señal de que ahora no se juega. Al acabar, el cierre sigue
+con su línea, el título y el recuento.
+
+- **El guion** vive en `lore/Cinematicas.ts`: orden de los planos, cuánto dura
+  cada uno, el subtítulo y cuándo entra, y el ritmo del Latido (fijo, o un par
+  `[desde, hasta]` que lo acelera). Narrativa ajusta ahí sin tocar la escena.
+  Los subtítulos son los cuatro pensamientos que antes salían sobre negro en el
+  diálogo `cierre`, que ya no existe.
+- **Lo que hay dentro de cada plano** está en `CinematicaScene`, una función por
+  plano. Cada corte vacía la capa entera: son cortes, no transiciones.
+- **Cortes, no zoom.** El arte se ve a escala entera (Nitidez) y un zoom
+  fraccionario hace temblar el pixel. Un plano general es el arte del juego a
+  x2; un primer plano es otro dibujo, más grande, a x5.
+- **Dos actos.** El I es el instante (abre los ojos, el tejido va hacia el
+  filo, el bisturí en alto). El II es la decisión: a oscuras se oye caer el
+  bisturí, ella baja de la camilla y huyen por el desagüe de la Sala 7.
+  `ACTO_II` lo apaga con un solo cambio y la cinemática acaba con el bisturí en
+  alto.
+- **El sonido manda**: un solo bucle de Latido para toda la escena (un corte no
+  reinicia el corazón), silencio en el contraplano de la máscara y
+  `sonido.bisturiCae()` como único sonido de la decisión.
+- **Saltar** es mantener pulsado un segundo (ESC, ratón o dedo), con un aro que
+  se llena. Un toque suelto no la corta. La primera vez el aviso espera cuatro
+  segundos; si ya se vio (hito `nina` en `Memoria`), sale desde el principio.
+  El dedo que la salta no puede, al levantarse, devolver al Atrio: el cierre no
+  acepta toques hasta que vuelve.
+- **El arte** es provisional y a mano, en `systems/CinematicaProvisional.ts`
+  (texturas `cine-<clave>` y `cine-<clave>-<fotograma>`), más tres poses del
+  Cirujano en `ArteProvisional` (`cirujano-alza` y `cirujano-sin-bisturi`, con
+  sus pasos). La niña sale del arte conceptual del equipo: melena corta, túnica
+  blanca, descalza, con el anillo de luz detrás. **Sin cruces**: los rayos del
+  anillo van desfasados de los ejes. Un PNG con la misma clave sustituye al
+  dibujo sin tocar código.
+- **Para verla sin jugar**: `?cinematica` en la URL arranca directamente en el
+  cierre.
 
 ## El mando de los dedos
 

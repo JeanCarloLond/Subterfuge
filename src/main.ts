@@ -16,6 +16,7 @@ import { PasillosScene } from './scenes/PasillosScene';
 import { CriptasScene } from './scenes/CriptasScene';
 import { SalasScene } from './scenes/SalasScene';
 import { FinalScene } from './scenes/FinalScene';
+import { CinematicaScene } from './scenes/CinematicaScene';
 import { HudScene } from './ui/HudScene';
 import { CodiceScene } from './ui/CodiceScene';
 import { DialogoScene } from './ui/DialogoScene';
@@ -73,6 +74,9 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     CriptasScene,
     SalasScene,
     FinalScene,
+    // Despues de Final: las escenas se pintan en el orden de esta lista, y la
+    // cinematica va encima del cierre que la lanza.
+    CinematicaScene,
     HudScene,
     CodiceScene,
     PausaScene,

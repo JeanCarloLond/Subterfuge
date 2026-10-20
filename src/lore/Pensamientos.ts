@@ -34,8 +34,7 @@
 import type { ClaveRetrato } from './Retratos';
 
 /** Cada momento del descenso que se detiene a hablar. */
-export type ClavePensamiento =
-  'atrio' | 'pasillos' | 'criptas' | 'salas' | 'manos-anteriores' | 'cierre';
+export type ClavePensamiento = 'atrio' | 'pasillos' | 'criptas' | 'salas' | 'manos-anteriores';
 
 export interface Pensamiento {
   /**
@@ -96,19 +95,8 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
     ],
   },
 
-  /**
-   * El cierre. La nina despierta, el tejido que responde, y la primera vez que
-   * mira a un ofrendado — que es exactamente lo que el Codice VI prohibe:
-   * "mirar es preguntar". Acaba con el bisturi en alto y sin decidir.
-   */
-  cierre: {
-    cuadros: [
-      'Está despierta. Nadie entra despierto.',
-      'Le pongo la mano encima y el tejido responde. No se aparta.',
-      'Los dioses no miran. Ella sí.',
-      'Levanto el bisturí. Y por primera vez me paro a mirarla.',
-    ],
-  },
+  // El cierre ya no es un dialogo: es la cinematica del sacramento (#147), y
+  // sus pensamientos viven en Cinematicas.ts.
 };
 
 export function pensamiento(clave: ClavePensamiento): Pensamiento {

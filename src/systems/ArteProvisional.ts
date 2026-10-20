@@ -3241,6 +3241,92 @@ const REFORMADO_ZARPA = pose(REFORMADO, {
   39: '....oooooooo...oooooooo.....................',
 });
 
+// El Cirujano con el bisturi en alto, para la cinematica del sacramento
+// (issue #147). Se ve a contraluz: lo que tiene que leerse es la silueta, el
+// pico entero y la hoja por encima de la cabeza.
+// prettier-ignore
+const CIRUJANO_ALZA = pose(CIRUJANO, {
+  0: '.......qppppq.......Yj..',
+  1: '.....qppPPPPppq.....YKj.',
+  2: '....qppPPPPPPppq....YKj.',
+  3: '....qppPPPPPPPppq...YKj.',
+  4: '....qppPnnnnnPppq..kKKk.',
+  5: '....qppnkkkkknPpq..mmmm.',
+  6: '....qppnkKKKKkkjq..NmmN.',
+  7: '....qppnkKYnKKkkjj.NNN..',
+  8: '....qppnkKKnKKkkkjjNNN..',
+  9: '....qppnkkKKkkkkjjjNNN..',
+  10: '....qppnnkkkkkjjjjNNN...',
+  11: '....qppnnmkkkjjj.NNN....',
+  12: '....qppqnmmkjj..NNN.....',
+  13: '....qppq.mmjj..NNN......',
+  14: '...qpppppppqNNNN........',
+  15: '..qppPPPPPPPppqNN.......',
+  24: '.....NNNNKNNNNN.........',
+  25: '.....NNNNnNNNNm.........',
+  26: '.....NNNNKNNNNm.........',
+  27: '....NpppppppppN.........',
+  28: '....NkKYKkppppN.........',
+  29: '....NpppppppppN.........',
+  30: '....NNNNNNNNNNN.........',
+  31: '....NNNNNNNNNNN.........',
+  32: '....NNNNnNNNNNN.........',
+  33: '....NNNnnNNNNNN.........',
+  34: '...NNNNnnnNNNNNN........',
+  35: '...NNNnnnnnNNNNN........',
+  36: '...NNNnnnnnNNNNN........',
+});
+
+// El Cirujano sin el bisturi: lo ha dejado caer (cinematica, issue #147).
+// Los tres cuadros de andar, para que se vaya con las manos vacias.
+// prettier-ignore
+const CIRUJANO_SIN_BISTURI = pose(CIRUJANO, {
+  25: '.....NNNNnNNNNmm........',
+  26: '.....NNNNKNNNNm.........',
+  27: '....NpppppppppN.........',
+  28: '....NkKYKkppppN.........',
+  29: '....NpppppppppN.........',
+  30: '....NNNNNNNNNNN.........',
+  31: '....NNNNNNNNNNN.........',
+  32: '....NNNNnNNNNNN.........',
+  33: '....NNNnnNNNNNN.........',
+  34: '...NNNNnnnNNNNNN........',
+  35: '...NNNnnnnnNNNNN........',
+  36: '...NNNnnnnnNNNNN........',
+});
+
+// prettier-ignore
+const CIRUJANO_SIN_BISTURI_PASO_A = pose(CIRUJANO_PASO_A, {
+  25: '.....NNNNnNNNNmm........',
+  26: '.....NNNNKNNNNm.........',
+  27: '....NpppppppppN.........',
+  28: '....NkKYKkppppN.........',
+  29: '....NpppppppppN.........',
+  30: '....NNNNNNNNNNN.........',
+  31: '....NNNNNNNNNNN.........',
+  32: '....NNNNnNNNNNN.........',
+  33: '....NNNnnNNNNNN.........',
+  34: '...NNNNnnnNNNNNN........',
+  35: '...NNNnnnnnNNNNN........',
+  36: '...NNNnnnnnNNNNN........',
+});
+
+// prettier-ignore
+const CIRUJANO_SIN_BISTURI_PASO_B = pose(CIRUJANO_PASO_B, {
+  25: '.....NNNNnNNNNmm........',
+  26: '.....NNNNKNNNNm.........',
+  27: '....NpppppppppN.........',
+  28: '....NkKYKkppppN.........',
+  29: '....NpppppppppN.........',
+  30: '....NNNNNNNNNNN.........',
+  31: '....NNNNNNNNNNN.........',
+  32: '....NNNNnNNNNNN.........',
+  33: '....NNNnnNNNNNN.........',
+  34: '...NNNNnnnNNNNNN........',
+  35: '...NNNnnnnnNNNNN........',
+  36: '...NNNnnnnnNNNNN........',
+});
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -3338,6 +3424,11 @@ const FIGURAS: Record<string, Figura> = {
   'vestal-cazadora-lanza': VESTAL_CAZADORA_LANZA,
   'reformado-zarpa-alza': REFORMADO_ZARPA_ALZA,
   'reformado-zarpa': REFORMADO_ZARPA,
+  // Cinematica del sacramento (issue #147).
+  'cirujano-alza': CIRUJANO_ALZA,
+  'cirujano-sin-bisturi': CIRUJANO_SIN_BISTURI,
+  'cirujano-sin-bisturi-paso-a': CIRUJANO_SIN_BISTURI_PASO_A,
+  'cirujano-sin-bisturi-paso-b': CIRUJANO_SIN_BISTURI_PASO_B,
 };
 
 /**
