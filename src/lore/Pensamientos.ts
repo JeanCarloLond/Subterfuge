@@ -31,6 +31,8 @@
  * entera sin leer una sola linea.
  */
 
+import type { ClaveRetrato } from './Retratos';
+
 /** Cada momento del descenso que se detiene a hablar. */
 export type ClavePensamiento =
   'atrio' | 'pasillos' | 'criptas' | 'salas' | 'manos-anteriores' | 'cierre';
@@ -41,6 +43,8 @@ export interface Pensamiento {
    * es, y repetirlo en cada cuadro lo convertiria en un letrero.
    */
   quien?: string;
+  /** Cara que se ve en el dialogo (#145). Sin ella, es el Cirujano. */
+  retrato?: ClaveRetrato;
   /** Un cuadro por pantalla. Se avanza con E, clic o espacio. */
   cuadros: readonly string[];
 }
@@ -50,7 +54,7 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
   atrio: {
     quien: 'MANOS DEL SACRAMENTO N.o 7',
     cuadros: [
-      'Manos del Sacramento numero siete. No tengo otro nombre.',
+      'Manos del Sacramento número siete. No tengo otro nombre.',
       'Hoy hay una ofrenda de casa. Deuda vieja, se salda en carne.',
       'No salió sorteada. Vino ella sola y firmó de su puño.',
       'Cuadra sin que nadie llore. Esos son los buenos días.',
@@ -102,7 +106,7 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
       'Está despierta. Nadie entra despierto.',
       'Le pongo la mano encima y el tejido responde. No se aparta.',
       'Los dioses no miran. Ella sí.',
-      'Levanto el bisturi. Y por primera vez me paro a mirarla.',
+      'Levanto el bisturí. Y por primera vez me paro a mirarla.',
     ],
   },
 };

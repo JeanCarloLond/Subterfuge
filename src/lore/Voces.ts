@@ -1,4 +1,5 @@
 import type { Pensamiento } from './Pensamientos';
+import type { ClaveRetrato } from './Retratos';
 
 /**
  * Los fieles con los que se puede hablar. Gente que NO ataca.
@@ -29,6 +30,8 @@ export interface Voz extends Pensamiento {
   rotulo: string;
   /** Textura del sprite. Reutiliza el arte que ya existe. */
   textura: string;
+  /** Su cara en el dialogo (#145). */
+  retrato: ClaveRetrato;
 }
 
 export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
@@ -37,6 +40,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   inscriptor: {
     rotulo: 'E  hablar',
     textura: 'fiel-placeholder',
+    retrato: 'fiel',
     quien: 'FIEL EN LA COLA',
     cuadros: [
       'Buenos días, Manos. Vengo a inscribir a los míos.',
@@ -52,6 +56,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   registradora: {
     rotulo: 'E  consultar el Registro',
     textura: 'registradora-placeholder',
+    retrato: 'registradora',
     quien: 'VESTAL DE REGISTRO',
     cuadros: [
       'Manos siete. Su sala está anotada para hoy.',
@@ -66,6 +71,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   'reformado-viejo': {
     rotulo: 'E  hablar',
     textura: 'reformado-sentado-placeholder',
+    retrato: 'reformado-sentado',
     quien: 'REFORMADO',
     cuadros: [
       'No se acerque tanto. Ya sé cómo me ve.',
@@ -80,6 +86,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   sedante: {
     rotulo: 'E  hablar',
     textura: 'auxiliar-placeholder',
+    retrato: 'auxiliar',
     quien: 'AUXILIAR DE CRIPTAS',
     cuadros: [
       'La dosis de la Sala 7 se administró anoche. Doble.',
@@ -95,6 +102,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   tanteador: {
     rotulo: 'E  hablar',
     textura: 'tanteador-placeholder',
+    retrato: 'tanteador',
     quien: 'TANTEADOR',
     cuadros: [
       'No pise la alfombra. Ninguna.',
@@ -112,6 +120,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
   honguera: {
     rotulo: 'E  hablar',
     textura: 'honguera-placeholder',
+    retrato: 'honguera',
     quien: 'HONGUERA',
     cuadros: [
       'El hongo crece de lo que sueltan los dioses. Todo aquí.',

@@ -2,6 +2,7 @@ import { VOCES_DE_ESFUERZO } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { generarArteProvisional } from '../systems/ArteProvisional';
+import { generarRetratos } from '../systems/RetratosProvisionales';
 import { ponerCursor } from '../ui/Cursor';
 import { PISTAS, SIN_PRECARGA, type Pista } from '../systems/Musica';
 
@@ -106,5 +107,6 @@ export class PreloadScene extends Phaser.Scene {
    */
   private generarPlaceholders(): void {
     generarArteProvisional(this);
+    generarRetratos(this);
   }
 }

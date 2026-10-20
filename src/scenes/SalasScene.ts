@@ -95,7 +95,7 @@ export class SalasScene extends EscenaNivel {
         izquierda: 280,
         derecha: 1000,
         presentacion: { titulo: 'MANOS DEL SACRAMENTO N.o 7', subtitulo: 'las anteriores' },
-        alDespertar: 'reconozco esas manos: ensenaron a las mias',
+        alDespertar: 'reconozco esas manos: enseñaron a las mías',
         alCaer: 'manos-anteriores',
       },
 

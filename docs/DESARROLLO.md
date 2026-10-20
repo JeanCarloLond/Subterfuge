@@ -691,6 +691,29 @@ termina en Reformado: ningún Elegido ha llegado entero en tres generaciones.
 estado vive en el navegador de cada visitante. No hay cuentas ni base de datos
 que pagar ni mantener.
 
+## Diálogos con retrato
+
+Desde #145 cada diálogo enseña la cara de quien habla, al estilo de Stardew
+Valley: el texto a la izquierda y, a la derecha, un nicho con filete de oro, el
+retrato y una placa con el nombre.
+
+- **Quién habla.** Las voces de `src/lore/Voces.ts` llevan su `retrato`; los
+  pensamientos de `Pensamientos.ts` son del Cirujano salvo que digan otra cosa.
+  El nombre de la placa y los fotogramas que usa cada uno están en
+  `src/lore/Retratos.ts`.
+- **Cómo se mueve.** Mientras se escribe la línea, la boca alterna los
+  fotogramas de habla cada dos letras y se cierra en los espacios y los signos.
+  Con la línea entera, la cara se queda quieta y parpadea de vez en cuando. El
+  Cirujano no habla con la boca: lleva la máscara de pico, así que solo respira
+  y la luz le corre por el pico. La Vestal de Registro y la auxiliar mueven la
+  mascarilla; el tanteador lleva venda y no parpadea; el Reformado respira.
+- **El arte.** Los retratos son de 32×32 y se ven al doble. Ahora son
+  provisionales y están escritos a mano en `src/systems/RetratosProvisionales.ts`
+  (base y fotogramas que solo reescriben las filas que cambian). Las texturas se
+  llaman `retrato-<clave>` y `retrato-<clave>-<fotograma>`: si PreloadScene
+  carga un PNG con esa clave, se usa el PNG y no se pinta el provisional. Así el
+  arte del equipo entra sin tocar código.
+
 ## El mando de los dedos
 
 `src/ui/TactilScene.ts` dibuja la botonera y `src/input/Tactil.ts` guarda el
