@@ -339,7 +339,11 @@ export class TactilScene extends Phaser.Scene {
     const tapado =
       this.scene.isActive('Dialogo') ||
       this.scene.isActive('Codice') ||
-      this.scene.isActive('Pausa');
+      this.scene.isActive('Pausa') ||
+      // Con las opciones abiertas la pausa queda en pausa debajo: ya no
+      // cuenta como activa, pero sigue tapando (#151).
+      this.scene.isPaused('Pausa') ||
+      this.scene.isActive('Opciones');
 
     if (tapado === this.tapado) return;
     this.tapado = tapado;

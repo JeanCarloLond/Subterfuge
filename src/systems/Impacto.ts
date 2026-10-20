@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { destellar, sacudir } from './Ajustes';
 import { IMPACTO } from '../config/Sacramento';
 import { esfuerzo } from './Esfuerzo';
 import { sonido, type ClaseEnemigo } from './Sonido';
@@ -49,7 +50,8 @@ export class Impacto {
     esfuerzo.enemigo(clase, 'herida');
     sonido.golpe(cargado, clase);
     this.congelar(cargado ? IMPACTO.hitstopCargadoMs : IMPACTO.hitstopGolpeMs);
-    this.escena.cameras.main.shake(
+    sacudir(
+      this.escena.cameras.main,
       cargado ? 140 : 90,
       cargado ? IMPACTO.sacudidaCargado : IMPACTO.sacudidaGolpe,
     );
@@ -67,8 +69,8 @@ export class Impacto {
     this.congelar(IMPACTO.hitstopParryMs);
 
     const camara = this.escena.cameras.main;
-    camara.flash(120, 232, 217, 160);
-    camara.shake(120, 0.006);
+    destellar(camara, 120, 232, 217, 160);
+    sacudir(camara, 120, 0.006);
 
     // Doble anillo dorado: se distingue de un golpe normal de un vistazo.
     this.anillo(x, y, 34, 0xe8d9a0, 300);
@@ -119,8 +121,8 @@ export class Impacto {
     esfuerzo.cirujano('herida');
     sonido.dano();
     this.congelar(IMPACTO.hitstopGolpeMs);
-    this.escena.cameras.main.shake(160, IMPACTO.sacudidaRecibir);
-    this.escena.cameras.main.flash(90, 140, 40, 40);
+    sacudir(this.escena.cameras.main, 160, IMPACTO.sacudidaRecibir);
+    destellar(this.escena.cameras.main, 90, 140, 40, 40);
   }
 
   /** El Cirujano se estrella contra el suelo. Mas largo y mas grave que un golpe. */
@@ -128,14 +130,14 @@ export class Impacto {
     esfuerzo.cirujano('caida');
     sonido.danoPorCaida(dano);
     this.congelar(IMPACTO.hitstopCargadoMs);
-    this.escena.cameras.main.shake(220, IMPACTO.sacudidaRecibir * 1.4);
-    this.escena.cameras.main.flash(120, 140, 40, 40);
+    sacudir(this.escena.cameras.main, 220, IMPACTO.sacudidaRecibir * 1.4);
+    destellar(this.escena.cameras.main, 120, 140, 40, 40);
   }
 
   /** Una piedra del techo que se rompe contra el suelo (o contra el Cirujano). */
   escombro(x: number, y: number): void {
     sonido.escombro();
-    this.escena.cameras.main.shake(70, IMPACTO.sacudidaGolpe);
+    sacudir(this.escena.cameras.main, 70, IMPACTO.sacudidaGolpe);
     this.chispas(x, y, 0, 8, 0x51473d);
   }
 
@@ -143,7 +145,7 @@ export class Impacto {
   ondaSuelo(x: number, y: number, alcance: number): void {
     sonido.ondaJefe();
     this.congelar(IMPACTO.hitstopCargadoMs);
-    this.escena.cameras.main.shake(260, IMPACTO.sacudidaMuerte);
+    sacudir(this.escena.cameras.main, 260, IMPACTO.sacudidaMuerte);
 
     this.anillo(x, y, alcance, 0xe8a03a, 420);
     this.chispas(x, y - 4, 1, 10, 0x8c4f4f);
@@ -165,8 +167,8 @@ export class Impacto {
     // que se ve es la pantalla ponerse roja y el cuerpo cae sin que nadie lo
     // vea. Primero el golpe, y enseguida el sitio para mirar lo que queda.
     const camara = this.escena.cameras.main;
-    camara.flash(260, 120, 20, 24);
-    camara.shake(420, IMPACTO.sacudidaMuerte * 1.4);
+    destellar(camara, 260, 120, 20, 24);
+    sacudir(camara, 420, IMPACTO.sacudidaMuerte * 1.4);
 
     this.chispas(x, y - 12, 0, 22, 0x8c2f2f);
     this.anillo(x, y - 12, 46, 0x8c2f2f, 620);
@@ -176,7 +178,7 @@ export class Impacto {
     esfuerzo.enemigo(clase, 'muerte');
     sonido.muerteEnemigo(clase);
     this.congelar(IMPACTO.hitstopMuerteMs);
-    this.escena.cameras.main.shake(180, IMPACTO.sacudidaMuerte);
+    sacudir(this.escena.cameras.main, 180, IMPACTO.sacudidaMuerte);
     this.chispas(x, y, 0, 18, 0x8c2f2f);
   }
 

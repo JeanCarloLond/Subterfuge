@@ -302,6 +302,21 @@ posición, para que las colisiones no se enteren.
 | Trepar (colgado)      | `W` / flecha arriba           |
 | Soltarse (colgado)    | `S` / flecha abajo            |
 
+### Opciones (#151)
+
+Desde la pausa, **Opciones** abre una escena encima (`OpcionesScene`) con lo que
+se recuerda en el navegador (`systems/Ajustes.ts`):
+
+- **Sacudidas y destellos:** normal, suaves (sin destellos y sacudidas a un
+  tercio) o apagados. Arranca en suaves si el sistema pide menos movimiento.
+- **Música** y **efectos**, por separado, en cinco pasos.
+- **Texto:** normal, rápido o al instante.
+- **Sonido** (silencio) y **cursor**, que antes estaban sueltos en la pausa.
+
+Toda sacudida de cámara pasa por `sacudir()` y todo destello a pantalla
+completa por `destellar()`: un efecto nuevo que llame a `camera.shake` o
+`camera.flash` directamente se salta el ajuste.
+
 ### El cursor es el bisturí
 
 El ratón no es un accesorio aquí: el clic izquierdo corta y el derecho para. La

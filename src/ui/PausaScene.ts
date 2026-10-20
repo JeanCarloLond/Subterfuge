@@ -12,7 +12,7 @@ import {
   CONTROLES_SISTEMA,
   CONTROLES_SISTEMA_TACTIL,
 } from './TextoControles';
-import { alternarCursor, cursorActivo, cursorEncendido } from './Cursor';
+import { cursorActivo } from './Cursor';
 import { tactil } from '../input/Tactil';
 import { botonTactil } from './BotonTactil';
 
@@ -21,7 +21,7 @@ interface DatosPausa {
   escenaJuego: string;
 }
 
-type Opcion = 'continuar' | 'controles' | 'sonido' | 'cursor' | 'atrio';
+type Opcion = 'continuar' | 'controles' | 'opciones' | 'atrio';
 
 const COLOR = {
   velo: 0x0b090b,
@@ -37,9 +37,10 @@ const COLOR = {
  * Menu de pausa.
  *
  * Se abre con ESC o P sobre la escena de juego, que queda en pausa debajo
- * (fisica, temporizadores y entrada incluidos). Cinco opciones, las justas:
- * continuar, ver los controles, sonido, cursor, y volver al Atrio para empezar
- * de nuevo. No hay "salir": es un juego de navegador.
+ * (fisica, temporizadores y entrada incluidos). Cuatro opciones, las justas:
+ * continuar, ver los controles, las opciones (sonido, cursor, sacudidas y
+ * texto, #151), y volver al Atrio para empezar de nuevo. No hay "salir": es
+ * un juego de navegador.
  *
  * El cursor esta aqui y no escondido en ningun sitio porque quien juega con
  * teclado no mira el raton en toda la partida: para esa persona el bisturi
@@ -60,8 +61,7 @@ export class PausaScene extends Phaser.Scene {
   private static readonly OPCIONES: readonly Opcion[] = [
     'continuar',
     'controles',
-    'sonido',
-    'cursor',
+    'opciones',
     'atrio',
   ];
 
@@ -255,10 +255,8 @@ export class PausaScene extends Phaser.Scene {
         return 'Continuar';
       case 'controles':
         return 'Controles';
-      case 'sonido':
-        return sonido.estaSilenciado ? 'Sonido: apagado' : 'Sonido: encendido';
-      case 'cursor':
-        return cursorEncendido() ? 'Cursor: bisturí' : 'Cursor: del sistema';
+      case 'opciones':
+        return 'Opciones';
       default:
         return 'Volver al Atrio';
     }
@@ -301,14 +299,11 @@ export class PausaScene extends Phaser.Scene {
       case 'controles':
         this.mostrarControles();
         break;
-      case 'sonido':
-        sonido.alternarSilencio();
-        this.refrescar();
-        break;
-      case 'cursor':
-        alternarCursor();
-        sonido.interfazMover();
-        this.refrescar();
+      case 'opciones':
+        // Las opciones salen encima y la pausa espera debajo, sin cerrarse.
+        sonido.interfazAbrir();
+        this.scene.launch('Opciones', { volverA: this.scene.key });
+        this.scene.pause();
         break;
       case 'atrio':
         this.volverAlAtrio();

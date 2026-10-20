@@ -21,6 +21,7 @@ import { HudScene } from './ui/HudScene';
 import { CodiceScene } from './ui/CodiceScene';
 import { DialogoScene } from './ui/DialogoScene';
 import { PausaScene } from './ui/PausaScene';
+import { OpcionesScene } from './ui/OpcionesScene';
 import { TactilScene } from './ui/TactilScene';
 
 /**
@@ -80,6 +81,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     HudScene,
     CodiceScene,
     PausaScene,
+    OpcionesScene,
     DialogoScene,
     TactilScene,
   ],

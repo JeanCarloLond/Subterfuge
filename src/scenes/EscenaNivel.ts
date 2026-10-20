@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { destellar, sacudir } from '../systems/Ajustes';
 import { CirujanoSacerdote } from '../entities/CirujanoSacerdote';
 import { Devoto } from '../entities/Devoto';
 import { enemigoDe } from '../entities/Enemigo';
@@ -1422,7 +1423,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       ease: 'Quad.easeIn',
       onComplete: () => {
         (cuerpo.body as Phaser.Physics.Arcade.StaticBody).enable = true;
-        this.cameras.main.shake(160, 0.006);
+        sacudir(this.cameras.main, 160, 0.006);
         sonido.reja();
       },
     });
@@ -1485,7 +1486,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
 
     jefe.eventos.on('fase', (fase: number) => {
-      this.cameras.main.flash(180, 140, 60, 60);
+      destellar(this.cameras.main, 180, 140, 60, 60);
       this.game.events.emit(EVENTOS_HUD.aviso, `fase ${fase}`);
       sonido.jefeFase();
     });
@@ -1495,7 +1496,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Estrellarse contra el muro: el momento en que se le puede castigar.
     jefe.eventos.on('choque', (x: number, y: number) => {
       this.impacto.golpeAsestado(x, y - 20, 0, true);
-      this.cameras.main.shake(220, 0.01);
+      sacudir(this.cameras.main, 220, 0.01);
     });
 
     jefe.eventos.on('impacto-suelo', (x: number, y: number, alcance: number) => {
@@ -1954,7 +1955,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.cirujano.aplicarReliquia(reliquia.tipo);
     sonido.reliquia();
-    this.cameras.main.flash(160, 232, 217, 160);
+    destellar(this.cameras.main, 160, 232, 217, 160);
     this.game.events.emit(EVENTOS_HUD.aviso, `${reliquia.nombre}  ·  ${reliquia.efecto}`);
   }
 
@@ -2238,7 +2239,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.altarActivo = altar;
     this.cirujano.rezar(DURACION_REZO_MS);
     sonido.altar();
-    this.cameras.main.flash(260, 232, 200, 120);
+    destellar(this.cameras.main, 260, 232, 200, 120);
 
     // El presagio del Buitre (#100): si se ha ido porque viene la Marea, el
     // Altar lo dice. No cambia nada del guardado: es una senal, no un castigo.

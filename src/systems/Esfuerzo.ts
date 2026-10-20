@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { ajustes } from './Ajustes';
 import { sonido, type ClaseEnemigo } from './Sonido';
 
 /**
@@ -113,7 +114,7 @@ class Esfuerzo {
     // Un poco de variacion de tono en cada toma: dos golpes seguidos no
     // suenan identicos.
     this.gestor.play(`voz-${clave}`, {
-      volume: 0.55,
+      volume: 0.55 * ajustes.volumenSonido,
       rate: tono * Phaser.Math.FloatBetween(0.94, 1.06),
     });
   }

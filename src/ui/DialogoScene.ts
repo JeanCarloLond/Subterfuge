@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { ajustes } from '../systems/Ajustes';
 import { RESOLUCION } from '../config/Sacramento';
 import { pensamiento, type ClavePensamiento, type Pensamiento } from '../lore/Pensamientos';
 import { RETRATOS, texturaRetrato, type ClaveRetrato } from '../lore/Retratos';
@@ -28,9 +29,6 @@ const COLOR = {
   texto: '#d6cfc4',
   tenue: '#6b5f55',
 } as const;
-
-/** Milisegundos por caracter. Un hombre cansado no habla deprisa. */
-const MS_POR_LETRA = 28;
 
 /** Alto de la banda inferior (px). Cabe el retrato con su placa. */
 const ALTO_BANDA = 100;
@@ -247,9 +245,17 @@ export class DialogoScene extends Phaser.Scene {
     this.texto.setText('');
     this.avisoAvance.setText('');
 
+    // La velocidad la elige quien juega (#151). Por defecto, la de un hombre
+    // cansado, que no habla deprisa; "al instante", la linea entera de golpe.
+    const ritmo = ajustes.msPorLetra;
+    if (ritmo === 0) {
+      this.terminarCuadro();
+      return;
+    }
+
     let n = 0;
     this.maquina = this.time.addEvent({
-      delay: MS_POR_LETRA,
+      delay: ritmo,
       repeat: Math.max(0, linea.length - 1),
       callback: () => {
         n += 1;

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { ajustes } from './Ajustes';
 
 /**
  * Pistas disponibles. La clave es la que se usa en las escenas; el archivo
@@ -117,7 +118,14 @@ class Musica {
   }
 
   private volumenObjetivo(pista: Pista): number {
-    return VOLUMEN[pista] * (this.atenuada ? Musica.ATENUACION : 1);
+    return VOLUMEN[pista] * ajustes.volumenMusica * (this.atenuada ? Musica.ATENUACION : 1);
+  }
+
+  /** Lleva la pista que suena al volumen nuevo del ajuste de musica (#151). */
+  aplicarVolumen(): void {
+    if (this.actual && this.pistaActual) {
+      this.fundir(this.actual, this.volumenObjetivo(this.pistaActual), 200);
+    }
   }
 
   /**
@@ -168,3 +176,4 @@ class Musica {
 
 /** Instancia unica, como `sonido`: la banda sonora no es estado de escena. */
 export const musica = new Musica();
+ajustes.alCambiar(() => musica.aplicarVolumen());

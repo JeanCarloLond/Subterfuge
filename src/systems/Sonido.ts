@@ -1,3 +1,4 @@
+import { ajustes } from './Ajustes';
 /**
  * Audio del teaser, sintetizado en tiempo real con la Web Audio API.
  *
@@ -100,7 +101,7 @@ class Sonido {
     if (this.ctx === ctx) return;
     this.ctx = ctx;
     this.maestro = ctx.createGain();
-    this.maestro.gain.value = this.silenciado ? 0 : Sonido.VOLUMEN;
+    this.maestro.gain.value = this.ganancia;
     this.maestro.connect(ctx.destination);
     this.bufferRuido = this.crearBufferRuido(ctx);
   }
@@ -117,7 +118,7 @@ class Sonido {
     try {
       this.ctx = new AudioContext();
       this.maestro = this.ctx.createGain();
-      this.maestro.gain.value = this.silenciado ? 0 : Sonido.VOLUMEN;
+      this.maestro.gain.value = this.ganancia;
       this.maestro.connect(this.ctx.destination);
       this.bufferRuido = this.crearBufferRuido(this.ctx);
     } catch {
@@ -128,6 +129,16 @@ class Sonido {
     return this.ctx;
   }
 
+  /** El volumen del maestro: el ajuste de efectos (#151), o nada si esta silenciado. */
+  private get ganancia(): number {
+    return this.silenciado ? 0 : Sonido.VOLUMEN * ajustes.volumenSonido;
+  }
+
+  /** Vuelve a leer el ajuste de volumen. Lo llama Ajustes al cambiar. */
+  aplicarVolumen(): void {
+    if (this.maestro) this.maestro.gain.value = this.ganancia;
+  }
+
   get estaSilenciado(): boolean {
     return this.silenciado;
   }
@@ -135,7 +146,7 @@ class Sonido {
   alternarSilencio(): boolean {
     this.silenciado = !this.silenciado;
     if (this.maestro) {
-      this.maestro.gain.value = this.silenciado ? 0 : Sonido.VOLUMEN;
+      this.maestro.gain.value = this.ganancia;
     }
     return this.silenciado;
   }
@@ -1088,3 +1099,4 @@ class Sonido {
  * constructores: el audio no es estado de juego y no merece ese cableado.
  */
 export const sonido = new Sonido();
+ajustes.alCambiar(() => sonido.aplicarVolumen());
