@@ -30,7 +30,7 @@
  */
 
 import { VIENTRE } from '../../../src/lore/Vientre';
-import { capaPisada, descensoAbierto } from '../memoria';
+import { capaPisada, descensoAbierto, hitoAbierto } from '../memoria';
 import { elemento, html } from '../texto';
 
 type TipoSala = 'principal' | 'desvio' | 'sellada';
@@ -48,7 +48,9 @@ type Glifo =
   | 'altar'
   | 'instrumental'
   | 'medio-cuerpo'
-  | 'organo';
+  | 'organo'
+  | 'lluvia'
+  | 'puerta';
 type TipoPaso = 'umbral' | 'escalera' | 'conducto' | 'pozo' | 'grieta';
 
 interface Sala {
@@ -62,6 +64,8 @@ interface Sala {
   x: number;
   ancho: number;
   descripcion: string;
+  /** Lo que el Registro añade cuando la Sala N.º 7 se queda vacía (hito `nina`). */
+  trasLaHuida?: string;
 }
 
 interface Paso {
@@ -70,6 +74,8 @@ interface Paso {
   tipo: TipoPaso;
   /** Qué es, dicho en una línea. Sale al pulsar cualquiera de sus dos salas. */
   nota: string;
+  /** Por aquí se fueron la niña y las Manos. Se marca solo tras el hito `nina`. */
+  huida?: boolean;
 }
 
 /** Cómo se llama cada clase de paso en la leyenda y en el panel. */
@@ -217,6 +223,8 @@ const SALAS: readonly Sala[] = [
     ancho: 140,
     descripcion:
       'Quirófano convertido en altar. Aquí ya no queda piedra: la máquina no se disimula, es el altar. Es la sala de las Manos del Sacramento número siete, y las Manos anteriores siguen dentro.',
+    trasLaHuida:
+      'Al cierre del último turno se encontró vacía: sin ofrenda y sin Manos. La rejilla del desagüe estaba fuera de su sitio.',
   },
   {
     id: 'quirofanos',
@@ -241,6 +249,31 @@ const SALAS: readonly Sala[] = [
     ancho: 200,
     descripcion:
       'Donde se guarda a los Elegidos que no se completaron. La doctrina dice que se les honra; la arquitectura dice dónde. De esta capa hacia abajo el edificio ya es carne.',
+  },
+  {
+    id: 'humedo',
+    glifo: 'lluvia',
+    nombre: 'El Vientre Húmedo',
+    capa: 4,
+    tipo: 'desvio',
+    x: 540,
+    ancho: 160,
+    descripcion:
+      'El bioma de residuo de los Niveles Reformados: lo que las Salas tiran y nadie viene a recoger. Llueve por dentro, una lluvia tibia. Aquí viven el Mondador, la Serpiente de Tejido y la Mata de Retazos, parientes lejanos de los dioses, y cuando los Viscerales digieren, las Mareas del Hambre lo inundan todo.',
+    trasLaHuida:
+      'Rastro anotado por los tanteadores: pisadas de dos en el barro, unas pequeñas, hacia el ducto de subida.',
+  },
+  {
+    id: 'puerta',
+    glifo: 'puerta',
+    nombre: 'La Puerta del Cuerpo',
+    capa: 5,
+    tipo: 'sellada',
+    x: 540,
+    ancho: 160,
+    descripcion:
+      'El acceso de servicio al templo, sellado. Es la única salida que la Diócesis no vigila, porque no lleva fuera: lleva hacia dentro.',
+    trasLaHuida: 'Los tanteadores no han pasado de aquí.',
   },
   {
     id: 'santuario',
@@ -362,6 +395,32 @@ const CAMINOS: readonly Paso[] = [
     nota: 'Lo que no se completa baja. No hay puerta: hay desagüe.',
   },
   {
+    de: 'sala7',
+    a: 'humedo',
+    tipo: 'pozo',
+    nota: 'El desagüe de servicio, detrás de la Sala. Por aquí se tira lo que el dios rechaza. Dentro llueve.',
+    huida: true,
+  },
+  {
+    de: 'reformados',
+    a: 'humedo',
+    tipo: 'grieta',
+    nota: 'La frontera porosa: aquí el tejido de una especie prende en otra.',
+  },
+  {
+    de: 'humedo',
+    a: 'puerta',
+    tipo: 'conducto',
+    nota: 'El ducto de subida. Acaba en una puerta que no se abre desde fuera.',
+    huida: true,
+  },
+  {
+    de: 'puerta',
+    a: 'santuario',
+    tipo: 'umbral',
+    nota: 'Al otro lado está el templo.',
+  },
+  {
     de: 'conductos',
     a: 'reformados',
     tipo: 'conducto',
@@ -431,6 +490,12 @@ const GLIFOS: Readonly<Record<Glifo, string>> = {
   // Una masa con su pulso: el organo que gano.
   organo:
     '<path d="M12 20s-8-5-8-10a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5-8 10-8 10z"/><path d="M4 12h4l1.5-3 2 6 1.5-3h7"/>',
+  // Bóveda que gotea sobre un charco: llueve por dentro.
+  lluvia:
+    '<path d="M3 7c3-4 15-4 18 0"/><path d="M7 10v3M12 9v5M17 10v3"/><path d="M4 20c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 4-1.5"/>',
+  // Una puerta de dos hojas con su cierre en medio.
+  puerta:
+    '<path d="M5 21V8a7 7 0 0114 0v13"/><path d="M12 4v17"/><rect x="10" y="12" width="4" height="3"/><path d="M3 21h18"/>',
 };
 
 /**
@@ -496,6 +561,7 @@ export function renderVientre(contenedor: HTMLElement): void {
         <span class="l-origen">desvío</span>
         <span class="l-cerrado">no se visita</span>
         <span class="l-dios">conducto · pozo · grieta: se salta el trámite</span>
+        ${hitoAbierto('nina') ? '<span class="l-huida">el rastro de la Sala N.º 7</span>' : ''}
       </div>
     </article>
   `);
@@ -539,8 +605,9 @@ export function renderVientre(contenedor: HTMLElement): void {
       ? `M ${p.x} ${p.y + ALTO_SALA / 2} C ${p.x} ${p.y + 40}, ${q.x} ${q.y + 40}, ${q.x} ${q.y + ALTO_SALA / 2}`
       : `M ${p.x} ${y1} C ${p.x} ${(y1 + y2) / 2}, ${q.x} ${(y1 + y2) / 2}, ${q.x} ${y2}`;
 
+    const huida = paso.huida === true && hitoAbierto('nina');
     const linea = svg(
-      `<path class="arista ${salta || paso.tipo === 'conducto' ? 'atajo' : ''}" d="${ruta}" data-de="${paso.de}" data-a="${paso.a}"></path>`,
+      `<path class="arista ${salta || paso.tipo === 'conducto' ? 'atajo' : ''} ${huida ? 'huida' : ''}" d="${ruta}" data-de="${paso.de}" data-a="${paso.a}"></path>`,
     );
     lienzo.append(linea);
     lineas.set(linea, paso);
@@ -597,6 +664,7 @@ export function renderVientre(contenedor: HTMLElement): void {
             : 'Consta en el plano. Sin visita registrada.'
       }</p>
       <p>${html(esta ? sala.descripcion : 'El Registro tiene constancia de esta sala y de su ubicación. La descripción se facilita únicamente a quien la ha visitado.')}</p>
+      ${esta && sala.trasLaHuida && hitoAbierto('nina') ? `<p class="nota-decano">${html(sala.trasLaHuida)}</p>` : ''}
       <p class="rango-texto">${salidas.length} ${salidas.length === 1 ? 'salida' : 'salidas'}</p>
       <div class="relaciones">${salidas.join('')}</div>
     `;

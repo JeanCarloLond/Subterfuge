@@ -2303,3 +2303,616 @@ body[data-profundidad='5'] .cabecera .marca-nombre {
     transition: none !important;
   }
 }
+
+/* -- Pabellón 9 (#79) ----------------------------------------------------------
+ *
+ * El Atrio por dentro: cuarenta alvéolos a los lados de un pasillo, como una
+ * sala de hospital, que es lo que fue. La jornada cambia la luz del plano
+ * (`data-momento`): al alba tiembla, a mediodía se enciende la capilla, de
+ * noche las velas se apagan una a una.
+ */
+
+.pabellon-lema {
+  font-family: var(--f-titulo);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin: 6px 0 12px;
+}
+.pabellon-guia {
+  font-size: 16px;
+  color: var(--tinta-2);
+  margin-bottom: 12px;
+}
+.pabellon-vista {
+  height: auto;
+  min-height: 380px;
+}
+.pabellon-vista .linaje-lienzo {
+  padding: 18px 14px;
+  /* Con la ficha de la 22 abierta el panel crece: el plano se queda arriba. */
+  place-items: start center;
+}
+
+.plano-pabellon {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) 74px;
+  gap: 10px;
+  align-items: stretch;
+  width: 100%;
+}
+.sala-camillas {
+  display: grid;
+  grid-template-rows: auto 34px auto;
+  gap: 6px;
+  min-width: 0;
+}
+.fila-camillas {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 5px;
+}
+.pasillo {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(90deg, rgba(236, 226, 207, 0.06) 1px, transparent 1px) 0 0 / 18px 100%,
+    rgba(236, 226, 207, 0.05);
+  border-top: 1px solid rgba(236, 226, 207, 0.12);
+  border-bottom: 1px solid rgba(236, 226, 207, 0.12);
+}
+.pasillo span {
+  font-family: var(--f-pixel);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(236, 226, 207, 0.35);
+}
+
+.alveolo {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  aspect-ratio: 3 / 4;
+  min-height: 34px;
+  padding: 0 0 4px;
+  background: #1c1519;
+  border: 1px solid rgba(179, 165, 150, 0.55);
+  color: var(--tinta-2);
+  font-family: var(--f-pixel);
+  font-size: 9px;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+  transition:
+    border-color 0.15s,
+    background-color 0.3s;
+}
+.alveolo:hover,
+.alveolo.activo {
+  border-color: var(--oro-2);
+  color: var(--tinta);
+}
+.alveolo.activo {
+  background: #2a2026;
+  box-shadow: 0 0 0 2px rgba(209, 173, 88, 0.35);
+}
+/* La vela de la casa: una brasa en lo alto del alvéolo. */
+.alveolo-luz {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 4px;
+  height: 6px;
+  margin-left: -2px;
+  background: transparent;
+  transition:
+    background-color 0.6s,
+    box-shadow 0.6s;
+}
+.est-deudora {
+  border-color: var(--sangre);
+}
+.est-cosida {
+  border: 3px double var(--oro);
+}
+.est-subio .alveolo-num::after {
+  content: '·';
+  color: #f2ead8;
+  margin-left: 2px;
+}
+.est-reformado {
+  background: linear-gradient(180deg, #1c1519 55%, #3a2a33 55%);
+}
+.est-seguimiento {
+  border-style: dashed;
+}
+.est-vacia {
+  opacity: 0.35;
+}
+
+.lugar {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+  background: rgba(28, 21, 25, 0.9);
+  border: 1px solid rgba(209, 173, 88, 0.45);
+  padding: 10px 4px;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+}
+.lugar.activo {
+  border-color: var(--oro-2);
+  color: var(--tinta);
+}
+.lugar-icono {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--oro);
+}
+.lugar[data-lugar='capilla'] .lugar-icono {
+  border-radius: 13px 13px 2px 2px;
+  background: radial-gradient(circle at 50% 70%, rgba(209, 173, 88, 0.5), transparent 60%);
+}
+.lugar[data-lugar='oficina'] .lugar-icono {
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 5px,
+    rgba(209, 173, 88, 0.55) 5px 6px
+  );
+}
+
+/* La luz de la jornada. */
+.plano-pabellon[data-momento='alba'] {
+  animation: latido-pabellon 1.6s ease-in-out infinite;
+}
+.plano-pabellon[data-momento='mediodia'] .lugar[data-lugar='capilla'],
+.plano-pabellon[data-momento='entrega'] .lugar[data-lugar='oficina'] {
+  border-color: var(--oro-2);
+  box-shadow: 0 0 18px rgba(209, 173, 88, 0.35);
+}
+.plano-pabellon[data-momento='taller'] [data-camilla='14'] .alveolo-luz,
+.plano-pabellon[data-momento='cena'] .alveolo:not(.est-vacia) .alveolo-luz,
+.plano-pabellon[data-momento='noche'] .alveolo:not(.est-vacia) .alveolo-luz {
+  background: #f2c766;
+  box-shadow: 0 0 8px 2px rgba(242, 199, 102, 0.55);
+}
+.plano-pabellon[data-momento='noche'] .alveolo:nth-child(3n) .alveolo-luz {
+  background: transparent;
+  box-shadow: none;
+}
+/* La Cena de la Ausencia: la 22 es la más encendida del pasillo. */
+.plano-pabellon[data-momento='cena'] .es-22 {
+  background: #3a2a24;
+}
+.plano-pabellon[data-momento='cena'] .es-22 .alveolo-luz {
+  width: 8px;
+  margin-left: -4px;
+  box-shadow: 0 0 14px 4px rgba(242, 199, 102, 0.7);
+}
+/* Después de la Letanía: todo a oscuras. La 22, vacía. */
+.plano-pabellon[data-momento='apagado'] .alveolo {
+  background: #120d10;
+}
+.plano-pabellon[data-momento='apagado'] .es-22 {
+  border-style: dotted;
+}
+
+@keyframes latido-pabellon {
+  0%,
+  100% {
+    transform: none;
+  }
+  8% {
+    transform: translateY(1px);
+  }
+  16% {
+    transform: none;
+  }
+  24% {
+    transform: translateY(1px);
+  }
+}
+
+/* Si el Colegio ha dado el aviso, el pabellón late deprisa y en rojo. */
+.en-alarma .plano-pabellon[data-momento='alba'] {
+  animation-duration: 0.8s;
+}
+.en-alarma .es-22 {
+  border-color: var(--sangre-2);
+  box-shadow: 0 0 10px rgba(224, 106, 95, 0.45);
+}
+.aviso-colegio {
+  margin: 4px 0 26px;
+  padding: 18px 22px;
+  border-left: 4px solid var(--sangre);
+}
+.aviso-colegio p {
+  font-size: 17px;
+}
+.aviso-colegio .firma {
+  font-style: italic;
+  text-align: right;
+  color: var(--tinta-2);
+}
+
+.leyenda .l-deudora::before {
+  border-color: var(--sangre);
+}
+.leyenda .l-cosida::before {
+  border: 3px double var(--oro);
+}
+.leyenda .l-subio::before {
+  background: radial-gradient(circle, #f2ead8 1.5px, transparent 2px);
+}
+.leyenda .l-seguimiento::before {
+  border-style: dashed;
+}
+
+/* La cuota: una parte por casa. */
+.cuota-barra {
+  display: grid;
+  grid-template-columns: repeat(40, minmax(0, 1fr));
+  gap: 2px;
+  height: 18px;
+  margin: 8px 0 12px;
+}
+.cuota-parte {
+  background: var(--oro);
+  opacity: 0.85;
+}
+.parte-falta {
+  background: var(--sangre);
+  animation: parte-falta 1.6s ease-in-out infinite;
+}
+.parte-suspenso {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--sangre-honda) 0 3px,
+    rgba(201, 84, 76, 0.25) 3px 6px
+  );
+  opacity: 1;
+}
+@keyframes parte-falta {
+  50% {
+    opacity: 0.35;
+  }
+}
+.cuota .salto {
+  max-width: 420px;
+}
+
+/* El Libro: notas del Decano y los sellos de la camilla 22. */
+.nota-decano {
+  font-style: italic;
+  color: var(--tinta-2);
+}
+.sellos-libro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+.sello-libro {
+  font-family: var(--f-titulo);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border: 2px solid currentColor;
+  transform: rotate(-3deg);
+}
+.sello-libro.deuda,
+.sello-libro.suspenso {
+  color: var(--sangre);
+}
+.sello-libro.saldada {
+  color: var(--oro);
+}
+.sello-libro.tachada {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.6;
+}
+.asientos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--regla);
+}
+.asientos li {
+  padding: 0 0 10px 14px;
+  font-size: 15px;
+  position: relative;
+}
+.asientos li::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  background: var(--sangre);
+}
+.asientos li.pendiente {
+  color: var(--tinta-2);
+  font-style: italic;
+}
+.asientos li.pendiente::before {
+  background: transparent;
+  border: 1px solid var(--tinta-2);
+}
+.asiento-cuando {
+  display: block;
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--oro);
+}
+
+.muro-dientes {
+  display: grid;
+  grid-template-columns: repeat(10, 12px);
+  gap: 5px;
+  margin: 6px 0 14px;
+}
+.diente {
+  width: 12px;
+  height: 14px;
+  background: linear-gradient(180deg, #f2ead8 60%, var(--oro) 60%);
+  border-radius: 5px 5px 2px 2px;
+  opacity: 0.8;
+}
+.diente-22 {
+  outline: 2px solid var(--sangre);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+/* La jornada. */
+.momentos {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  margin: 12px 0 14px;
+}
+.momento {
+  font-family: var(--f-texto);
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  color: var(--tinta);
+  background: rgba(20, 14, 17, 0.6);
+  border: 1px solid rgba(179, 165, 150, 0.4);
+  padding: 8px 10px;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+}
+.momento[aria-selected='true'] {
+  border-color: var(--oro-2);
+  background: rgba(209, 173, 88, 0.12);
+}
+.momento-hora {
+  display: block;
+  font-family: var(--f-pixel);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--oro);
+}
+.momento-cuerpo {
+  padding: 20px 24px;
+  min-height: 220px;
+}
+.momento-cuerpo p {
+  font-size: 17px;
+  max-width: 68ch;
+}
+.momento-gesto {
+  margin-top: 14px;
+}
+.gesto-nota {
+  font-size: 15px;
+  color: var(--tinta-2);
+}
+.cena-respuesta {
+  min-height: 1.4em;
+}
+
+.cuenco {
+  position: relative;
+  width: 90px;
+  height: 46px;
+  border: 2px solid var(--tinta-2);
+  border-top: 0;
+  border-radius: 0 0 45px 45px;
+  overflow: hidden;
+}
+.cuenco span {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 10px;
+  height: 4px;
+  margin-left: -5px;
+  border: 1px solid rgba(42, 26, 30, 0.6);
+  border-radius: 50%;
+  animation: onda-cuenco 1.6s ease-out infinite;
+}
+.cuenco span + span {
+  animation-delay: 0.32s;
+}
+@keyframes onda-cuenco {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(7, 4);
+    opacity: 0;
+  }
+}
+
+.velas-hechas {
+  display: flex;
+  gap: 6px;
+  min-height: 30px;
+  align-items: end;
+  margin-bottom: 6px;
+}
+.vela-hecha {
+  width: 7px;
+  height: 24px;
+  background: linear-gradient(180deg, #2a1a1e 0 3px, #e8dcc0 3px);
+}
+
+.piedra-tibia {
+  position: relative;
+  overflow: hidden;
+}
+.piedra-calor {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(201, 84, 76, 0.35), rgba(242, 199, 102, 0.35));
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+.piedra-tibia.apoyada .piedra-calor {
+  transform: scaleX(1);
+  transition: transform 1.4s linear;
+}
+.piedra-tibia.tocada .piedra-calor {
+  transform: scaleX(1);
+}
+
+.mesa {
+  position: relative;
+  width: 160px;
+  height: 56px;
+  border-bottom: 3px solid var(--tinta-2);
+  margin-bottom: 10px;
+}
+.pan {
+  position: absolute;
+  left: 18px;
+  bottom: 0;
+  width: 44px;
+  height: 18px;
+  border-radius: 22px 22px 3px 3px;
+  background: #c9a46a;
+}
+.pan.mordido {
+  clip-path: polygon(0 0, 78% 0, 70% 40%, 84% 55%, 100% 50%, 100% 100%, 0 100%);
+}
+.vela-mesa {
+  position: absolute;
+  right: 30px;
+  bottom: 0;
+  width: 10px;
+  height: 34px;
+  background: #e8dcc0;
+}
+.vela-mesa.encendida::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: -14px;
+  width: 8px;
+  height: 12px;
+  border-radius: 50% 50% 40% 40%;
+  background: #f2c766;
+  box-shadow: 0 0 12px 4px rgba(242, 199, 102, 0.6);
+  animation: llama-mesa 0.9s ease-in-out infinite alternate;
+}
+@keyframes llama-mesa {
+  to {
+    transform: scaleY(0.85) translateX(1px);
+  }
+}
+.opciones-cena {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.letania .verso {
+  font-style: italic;
+  margin: 0 0 4px;
+  animation: verso-entra 1.2s ease-out both;
+}
+@keyframes verso-entra {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 880px) {
+  /* El plano de un pabellón cabe a lo ancho: no hace falta arrastrarlo. */
+  .pabellon-vista .linaje-lienzo {
+    max-height: none;
+    overflow: visible;
+  }
+  .plano-pabellon {
+    grid-template-columns: 1fr;
+  }
+  .lugar {
+    grid-auto-flow: column;
+    justify-content: start;
+    padding: 8px 12px;
+  }
+  .momentos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .fila-camillas {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .momentos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plano-pabellon[data-momento='alba'],
+  .parte-falta,
+  .cuenco span,
+  .vela-mesa.encendida::after {
+    animation: none;
+  }
+}
+
+/* El rastro de la Sala N.º 7 en el plano del Vientre (#79): sale tras el
+   hito `nina`, por el desague y el ducto de subida. */
+.arista.huida {
+  stroke: var(--sangre-2);
+  stroke-dasharray: 3 5;
+  opacity: 0.9;
+  animation: rastro 1.2s linear infinite;
+}
+@keyframes rastro {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.leyenda .l-huida::before {
+  border-color: var(--sangre-2);
+  border-style: dashed;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arista.huida {
+    animation: none;
+  }
+}

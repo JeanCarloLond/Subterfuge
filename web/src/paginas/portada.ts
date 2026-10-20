@@ -10,7 +10,7 @@
 import { CODICE, numeroEnLetras } from '../../../src/lore/Codice';
 import { RELIQUIAS } from '../../../src/lore/Reliquias';
 import { VIENTRE } from '../../../src/lore/Vientre';
-import { memoriaDelDescenso, descensoAbierto } from '../memoria';
+import { memoriaDelDescenso, descensoAbierto, hitoAbierto } from '../memoria';
 import { elemento } from '../texto';
 import { montarEscena } from '../escena';
 
@@ -55,6 +55,13 @@ export function renderPortada(contenedor: HTMLElement): () => void {
       <section class="seccion">
         <div class="eyebrow">Consulta</div>
         <div class="rejilla">
+          <!-- El Atrio por dentro (#79): donde vive la gente que paga el diezmo. -->
+          <a class="tarjeta" href="#/pabellon">
+            <canvas class="lamina" data-figura="fiel" width="72" height="72" aria-hidden="true"></canvas>
+            <span class="profundidad">capa I · Atrio</span>
+            <h3>Su pabellón</h3>
+            <p>El Libro de Diezmos del Pabellón 9, abierto a consulta de sus casas. Cuarenta casas, una cuota.</p>
+          </a>
           <a class="tarjeta" href="#/doctrina">
             <canvas class="lamina" data-figura="codice" width="72" height="72" aria-hidden="true"></canvas>
             <span class="profundidad">capa I · superficie</span>
@@ -111,6 +118,12 @@ export function renderPortada(contenedor: HTMLElement): () => void {
           <tr><td>Examen de Pureza</td><td><a href="#/examen">Desde este portal</a></td><td>Sin cita. Se recuerda que el resultado es vinculante.</td></tr>
           <tr><td>Visitas a Reformados</td><td>—</td><td>No se autorizan. Las familias pueden honrarlos desde el Atrio.</td></tr>
           <tr><td>Reclamaciones sobre el peso</td><td>—</td><td>El Registro no admite reclamaciones. Las dos cifras son definitivas.</td></tr>
+          <tr><td>Consulta del Libro de Diezmos</td><td>Oficina del Decano de cada pabellón</td><td>Cualquier día. <a href="#/pabellon">Pabellón 9, en línea.</a></td></tr>
+          ${
+            hitoAbierto('nina')
+              ? '<tr><td>Sala de Sacramento N.º 7</td><td>—</td><td>Cerrada hasta nuevo aviso. Los turnos anotados pasan a otras Salas.</td></tr>'
+              : ''
+          }
         </table>
       </section>
 

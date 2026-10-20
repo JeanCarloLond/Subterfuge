@@ -665,6 +665,7 @@ iglesia; los Sacramentos ya no.
 | Sección     | Profundidad | Qué enseña                                                                   |
 | ----------- | ----------- | ---------------------------------------------------------------------------- |
 | Portada     | 0           | La fachada institucional: horarios, trámites, tu expediente.                 |
+| Pabellón 9  | 0           | El Atrio por dentro: un pabellón, su Libro de Diezmos y una jornada (#79).   |
 | Doctrina    | 1           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.            |
 | Registro    | 2           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.    |
 | El Vientre  | 3           | El corte de las seis capas.                                                  |
@@ -673,8 +674,8 @@ iglesia; los Sacramentos ya no.
 
 **Lo que se gana bajando.** El juego apunta en `localStorage` (clave
 `diocesis.memoria`, ver `src/systems/Memoria.ts`) lo que el jugador ha
-descubierto alguna vez: fragmentos, fichas, capas, reliquias y dos hitos (el
-jefe y el cierre). Es la unión de todas las partidas y nunca se borra desde el
+descubierto alguna vez: fragmentos, fichas, capas, reliquias y tres hitos (el
+jefe, el cierre y la cinemática del sacramento, `nina`). Es la unión de todas las partidas y nunca se borra desde el
 juego. Como juego y web comparten dominio, la web lo lee y abre lo que la
 Diócesis no publica: los márgenes del Códice y el manual de Genesis Vestal
 debajo, las fichas con nombre, las capas cerradas, y los expedientes del Linaje
@@ -772,6 +773,32 @@ con su línea, el título y el recuento.
   dibujo sin tocar código.
 - **Para verla sin jugar**: `?cinematica` en la URL arranca directamente en el
   cierre.
+
+### Pabellón 9: el universo desde el suelo (#79)
+
+El resto del portal mira el Vientre desde arriba. `#/pabellon` baja a donde vive
+la gente: cuarenta casas que comparten cuota, con el Libro de Diezmos que lleva
+su Decano. Lo que el bible cuenta como "prácticas culturales" no se enumera: se
+usa.
+
+- **El plano** es la sala de hospital que fue: cuarenta alvéolos a los lados de
+  un pasillo, con la capilla (el Muro de los Dientes, la Piedra Tibia) a un
+  extremo y la Oficina del Decano al otro. Cada camilla abre su línea del Libro.
+  Las que tienen nota son una ley o una costumbre puesta en una dirección: la
+  casa cosida, el Primer Tacto, la que subió, la que está en seguimiento.
+- **La camilla 22 es la casa de la niña.** Sus asientos cuentan la noche del
+  Sacramento como la escribiría un Decano, y se completan con lo jugado: con el
+  cierre, el Registro da la deuda por saldada; con el hito `nina`, el Colegio la
+  suspende, la cuota del pabellón entero vuelve a no estar cubierta y aparece el
+  aviso de la Sala vacía. Si una casa falla, deben todas.
+- **La jornada** es la de Tomás, cerero de la 14, la víspera del sacramento, en
+  seis momentos que cambian la luz del plano y tienen su gesto: moldear velas y
+  entregarlas, apoyar la palma en la Piedra Tibia, dejar el bocado del Hambre,
+  apagar la vela (soplarla es falta y queda anotado) y rezar la Letanía.
+- **Lo que deja en el resto del portal:** el plano del Vientre gana el Vientre
+  Húmedo y la Puerta del Cuerpo, y tras el hito `nina` dibuja el rastro de la
+  Sala N.º 7 por el desagüe; la ficha de la niña en el Linaje lleva a su casa
+  (`#/pabellon/22`); la portada anuncia la Sala N.º 7 cerrada.
 
 ## El mando de los dedos
 

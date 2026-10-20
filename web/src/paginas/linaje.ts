@@ -34,6 +34,10 @@ interface Nodo {
   requiere?: Requisito;
   /** Se abre al habilitar esta ficha del Registro, no por un hito. */
   requiereFicha?: string;
+  /** Lo que el Registro añade después de la Sala vacía (hito `nina`, #79). */
+  posdata?: string;
+  /** Su casa en el Libro del Pabellón 9, si la tiene. */
+  casa?: number;
 }
 
 interface Arista {
@@ -231,6 +235,9 @@ const NODOS: readonly Nodo[] = [
     requiere: 'final',
     descripcion:
       'Expediente reservado. Ofrenda voluntaria, sin número de sorteo: se presentó para liquidar la deuda de su casa y firmó de su puño. Durante el sacramento su tejido respondió de forma no documentada; es compatible con lo que a los Mil les falta y podría darles la vista. Los Cerebrales la reclaman para ver; los Cordiales, para ser mirados. La consulta sigue abierta.',
+    posdata:
+      'Al cierre del turno la ofrenda no consta en la Sala N.º 7, ni las Manos que debían operarla. El Colegio suspende el saldo de su casa y pide a los pabellones que señalen a las Manos si las ven.',
+    casa: 22,
   },
   {
     id: 'ascendido',
@@ -525,7 +532,13 @@ export function renderLinaje(contenedor: HTMLElement): void {
       <h3>${html(nodo.nombre)}</h3>
       <div class="rango-texto">${html(nodo.rango)}</div>
       <p>${html(nodo.descripcion)}</p>
+      ${nodo.posdata && hitoAbierto('nina') ? `<p class="nota-decano">${html(nodo.posdata)}</p>` : ''}
       <p><b>Autoridad.</b> ${html(nodo.autoridad)}</p>
+      ${
+        nodo.casa
+          ? `<a class="salto" href="#/pabellon/${nodo.casa}"><span class="flecha">→</span><b>Pabellón 9, camilla ${nodo.casa}</b><span class="verbo"> · su casa, en el Libro de Diezmos</span></a>`
+          : ''
+      }
       <div class="rango-texto" style="margin-top:14px">Relaciones</div>
       <div class="relaciones">${relaciones.join('')}</div>
     `;

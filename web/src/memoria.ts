@@ -33,9 +33,10 @@ export function normalizar(texto: string): string {
 /** Las claves y lo que abre cada una. */
 const CLAVES: Readonly<Record<string, readonly string[]>> = {
   // La del código fuente. Abre todo: es la que encuentra quien hurga.
-  'no vengas': ['descenso', 'manos-anteriores', 'final'],
-  // La última línea del Cirujano en el cierre del juego.
-  'los dioses no miran ella si': ['final'],
+  'no vengas': ['descenso', 'manos-anteriores', 'final', 'nina'],
+  // La última línea del Cirujano en el cierre del juego. Abre lo que pasó
+  // con la niña: el final y lo que vino después (la Sala vacía, #79).
+  'los dioses no miran ella si': ['final', 'nina'],
   // El lema de la Diócesis. La sabe cualquier fiel: no abre nada secreto,
   // pero responde, para que quien la prueba sepa que el sistema escucha.
   'los dioses no miran son mirados': [],
@@ -104,7 +105,14 @@ export function descensoAbierto(): boolean {
   );
 }
 
-export function hitoAbierto(hito: 'manos-anteriores' | 'final'): boolean {
+/**
+ * Los hitos del juego: vencer a las Manos anteriores, llegar al cierre y ver
+ * la cinemática del sacramento (`nina`, #147), que es lo que cuenta que la
+ * Sala N.º 7 se quedó vacía.
+ */
+export type Hito = 'manos-anteriores' | 'final' | 'nina';
+
+export function hitoAbierto(hito: Hito): boolean {
   return memoriaDelDescenso().hitos.includes(hito) || abiertoPorClaves().has(hito);
 }
 

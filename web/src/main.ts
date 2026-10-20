@@ -18,6 +18,7 @@ import { renderLinaje } from './paginas/linaje';
 import { renderSacramentos } from './paginas/sacramentos';
 import { renderExamen } from './paginas/examen';
 import { renderSacramento } from './paginas/sacramento';
+import { renderPabellon } from './paginas/pabellon';
 import { presentarClave } from './memoria';
 import { actualizarPie } from './pie';
 import { ambienteDe, arrancarAmbiente } from './ambiente';
@@ -35,6 +36,9 @@ interface Ruta {
 
 const RUTAS: Readonly<Record<string, Ruta>> = {
   '': { pagina: renderPortada, profundidad: 0, titulo: 'Diócesis de la Carne', ancha: true },
+  // El Atrio por dentro: un pabellón y su Libro (#79). Está a la altura de la
+  // portada, en la superficie, porque ahí vive la gente.
+  pabellon: { pagina: renderPabellon, profundidad: 0, titulo: 'Pabellón 9', ancha: true },
   doctrina: { pagina: renderDoctrina, profundidad: 1, titulo: 'Doctrina' },
   registro: { pagina: renderRegistro, profundidad: 2, titulo: 'Registro', ancha: true },
   vientre: { pagina: renderVientre, profundidad: 3, titulo: 'El Vientre', ancha: true },
@@ -56,6 +60,11 @@ function rutaActual(): string {
   return location.hash.replace(/^#\/?/, '').split('?')[0].replace(/\/$/, '');
 }
 
+/** La sección es el primer tramo: `#/pabellon/22` es el Pabellón, abierto por la 22. */
+function seccionActual(): string {
+  return rutaActual().split('/')[0];
+}
+
 /**
  * Una clave puede venir en la URL (`#/doctrina?clave=...`): es lo que llevaría
  * un código QR pegado en un pasillo. Se presenta una vez y se quita de la
@@ -71,7 +80,7 @@ function presentarClaveDeLaUrl(): void {
 
 function navegar(): void {
   presentarClaveDeLaUrl();
-  const clave = rutaActual();
+  const clave = seccionActual();
   const ruta = RUTAS[clave] ?? RUTAS[''];
   const contenedor = document.getElementById('pagina');
   if (!contenedor) return;
