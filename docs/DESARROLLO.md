@@ -343,9 +343,26 @@ error**. Ninguno pide reflejos; todos piden leer.
 
 | Enemigo   | Papel           | Aviso                          | Cómo se castiga                   |
 | --------- | --------------- | ------------------------------ | --------------------------------- |
-| Devoto    | Cuerpo a cuerpo | 420 ms tensándose en rojo      | Parry → 900 ms aturdido           |
-| Vestal    | A distancia     | 520 ms irguiéndose en dorado   | Parry al sello → se lo devuelve   |
-| Reformado | Jefe, 3 fases   | 380-620 ms, color por maniobra | Embestida fallida → 1,1 s abierto |
+| Devoto    | Cuerpo a cuerpo | 420 ms con el brazo en alto    | Parry → 900 ms aturdido           |
+| Vestal    | A distancia     | 520 ms alzando el sello        | Parry al sello → se lo devuelve   |
+| Reformado | Jefe, 3 fases   | 380-620 ms, gesto por maniobra | Embestida fallida → 1,1 s abierto |
+
+**Atacan con el cuerpo** (issue #146). El color solo ya no avisa: cada ataque
+tiene una pose de carga, que es la ventana del parry y se tiene que leer de
+lejos, y una de golpe, más un rastro en el aire (`systems/GolpeEnemigo.ts`).
+
+| Enemigo   | Carga                                                     | Golpe                                    |
+| --------- | --------------------------------------------------------- | ---------------------------------------- |
+| Devoto    | `devoto[-b]-alza`: brazo sobre la cabeza                  | `devoto[-b]-golpe` + tajo en media luna  |
+| Vestal    | `vestal[-cazadora]-alza`: sello en la mano, encendiéndose | `-lanza`: el sello sale de la mano       |
+| Reformado | `reformado-zarpa-alza`: pata junto a la cabeza            | `reformado-zarpa` + tres garras de hueso |
+
+La embestida baja la cabeza (el cuerpo entero se inclina) y deja polvo; el salto
+levanta polvo al despegar y al caer. Las poses miden lo mismo que su figura base
+porque la caja de física se calcula sobre el cuadro, y la pose de golpe se queda
+un poco más que el daño: solo se ve, la ventana no cambia. El tajo enemigo
+**nunca es dorado**: el oro es el bisturí del Cirujano. Al arte final le bastan
+PNG con esas claves; si falta una pose, el enemigo usa su figura base.
 
 **El Vestal** no es un Devoto que dispara: tiene la mitad de vida y retrocede si
 te acercas, así que el problema no es matarlo sino llegar hasta él. Su sello

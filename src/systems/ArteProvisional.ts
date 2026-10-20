@@ -3061,6 +3061,186 @@ const HUD_INJERTO_VACIO: Figura = {
     '.nnn.',
   ],
 };
+// -- Poses de ataque (issue #146) --------------------------------------------
+//
+// Antes el ataque de un enemigo era un cambio de color y nada mas: se ponia
+// rojo y el dano llegaba sin que nada saliera de su cuerpo. Cada ataque tiene
+// ahora dos cuadros: la CARGA, que se tiene que leer de lejos porque es la
+// ventana del parry, y el GOLPE, que dura poco y deja el rastro en el aire
+// (ver GolpeEnemigo).
+//
+// Una pose solo reescribe las filas que cambian respecto a su base, y mide lo
+// mismo que ella: la caja de fisica se calcula sobre el cuadro, y si una pose
+// creciera, el enemigo daria un salto al atacar.
+
+function pose(base: Figura, cambios: Readonly<Record<number, string>>): Figura {
+  return { paleta: base.paleta, filas: base.filas.map((fila, y) => cambios[y] ?? fila) };
+}
+
+// Devoto: el mazo de aparato por encima de la cabeza...
+// prettier-ignore
+const DEVOTO_ALZA = pose(DEVOTO, {
+  0: '.......dddddd..ddddd..',
+  1: '......dhhhhhhd.dMMMMd.',
+  2: '.....dhhhhhhhhdMMttMd.',
+  3: '.....dvvvvvvMMdMttttMd',
+  4: '.....dvvvvvvMSdMMttMd.',
+  5: '.....dhhhhhhMSddMMMd..',
+  6: '......dccccctSddSSd...',
+  7: '.....dcCCccctSSSd.....',
+  9: '...dcCCRRCccccSd......',
+  10: '...dcCRRRRCcccd.......',
+  11: '...dcCRRRRCcccd.......',
+  12: '..vdcCRRRRCcccd.......',
+  13: '..vdcCCRRCcccd........',
+  14: '...dccCCCccccd........',
+  15: '...dgccCCccccd........',
+  16: '...dggcccccccgd.......',
+});
+
+// ...y descargado al frente, con el brazo entero.
+// prettier-ignore
+const DEVOTO_GOLPE = pose(DEVOTO, {
+  8: '....dcCCCccccSSddddd..',
+  9: '...dcCCRRCccccSSMMMMd.',
+  10: '...dcCRRRRCcccSMMttMMd',
+  11: '...dcCRRRRCcccSMttttMd',
+  12: '..vdcCRRRRCccccdMMttMd',
+  13: '..vdcCCRRCccccd.dMMMd.',
+  14: '...dccCCCccccd........',
+  15: '...dgccCCcccccd.......',
+  16: '...dggcccccccgd.......',
+});
+
+// La variante B golpea con lo que le revento del costado.
+// prettier-ignore
+const DEVOTO_B_ALZA = pose(DEVOTO_B, {
+  0: '.......dddddd..dccd...',
+  1: '......dhhhhhhddcRRCd..',
+  2: '.....dhhhhhhhhdCRRRCd.',
+  3: '.....dvvvvvvvhdCRRRCd.',
+  4: '.....dvvvvvvvhddCCCd..',
+  5: '.....dMMMMMMMSd.dcd...',
+  6: '......dMSSSSMd.dcd....',
+  7: '.......dttSMddccd.....',
+  8: '.....ddgggggtdcd......',
+  11: '...dgGGGGGGggd........',
+  12: '..vdgGGGGGGggd........',
+  13: '..vdggGGGGgggd........',
+  14: '...dgggGGGgggd........',
+  15: '...dggggGGgggd........',
+  16: '...dgggggggggd........',
+  17: '...dggggggggdd........',
+});
+
+// prettier-ignore
+const DEVOTO_B_GOLPE = pose(DEVOTO_B, {
+  10: '...dggGGGGGGgcdddd....',
+  11: '...dgGGGGGGgcCCCCCCd..',
+  12: '..vdgGGGGGGcCRRRRRRCd.',
+  13: '..vdggGGGGcCRRRRRRCCd.',
+  14: '...dgggGGGGcCCCCCCd...',
+  15: '...dggggGGGGgcddd.....',
+  16: '...dggggggggggd.......',
+  17: '...dggggggggggd.......',
+});
+
+// Vestal: un brazo de aparato le sale del hombro y alza el sello del diezmo
+// sobre la mascara. Al lanzar, la mano se queda abierta al frente.
+// prettier-ignore
+const VESTAL_ALZA = pose(VESTAL, {
+  3: '.........oo.......oo..',
+  4: '.......MMMMMM....oOOo.',
+  5: '......MMSSSSMM...oOOo.',
+  6: '.....MMSSSSSSMM...oo..',
+  7: '.....MSSttttSSM...MS..',
+  8: '.....MSTtTTtTSSM..MS..',
+  9: '.....MSSttttSSMt..MS..',
+  10: '.....MMSSSSSSMtt.MS...',
+  11: '......MMSSSSMMt.MS....',
+  12: '......oocccccotMS.....',
+});
+
+// prettier-ignore
+const VESTAL_LANZA = pose(VESTAL, {
+  11: '......MMSSSSMMt.....MM',
+  12: '......oocccccotMMMMMSM',
+  13: '.....oocCCCCCcooSSSSMM',
+  14: '....rrcCRRRRRCcrr...MM',
+});
+
+// La cazadora tiene el mismo cuerpo: el mismo brazo.
+// prettier-ignore
+const VESTAL_CAZADORA_ALZA = pose(VESTAL_CAZADORA, {
+  3: '.........oo.......oo..',
+  4: '......h.h.h.h....oOOo.',
+  5: '.....hHhHhHhHh...oOOo.',
+  6: '.....dooOOOOood...oo..',
+  7: '....doOOOoOOOood..MS..',
+  8: '....doOOndOndOod..MS..',
+  9: '....dooOOOOOOood..MS..',
+  10: '.....dooOooOood..MS...',
+  11: '......ddoooodd..MS....',
+  12: '......oocccccotMS.....',
+});
+
+// prettier-ignore
+const VESTAL_CAZADORA_LANZA = pose(VESTAL_CAZADORA, {
+  11: '......ddoooodd......MM',
+  12: '......oocccccotMMMMMSM',
+  13: '.....oocCCCCCcooSSSSMM',
+  14: '....rrcCRRRRRCcrr...MM',
+});
+
+// Reformado: recoge la pata delantera junto a la cabeza, unas de hueso al
+// frente, y la deja caer estirada. El contorno oscuro la separa del cuerpo:
+// sin el, la pata era un bulto mas de la misma carne.
+// prettier-ignore
+const REFORMADO_ZARPA_ALZA = pose(REFORMADO, {
+  13: '.mmcccccccccccccccccccccccccccccccccccchch.h',
+  14: '.mmccccccccccccccccccccrrcccccccchnhnhnhch.h',
+  15: '.mmcccccccccccccccccccrnrcccccccccnnnnnhnhnh',
+  16: '.mmmccccccccccccccccccrnnrccccccoccccnCCCCCn',
+  17: '..mccccccccccccccccccccrnrcccccccooonCcccccn',
+  18: '...cccccccccccccccccccccrcccccoooocnCccccco.',
+  19: '...ccccooooocccccccccccccccccccggcnCcccccon.',
+  20: '...cccooocccooocccccccccccccccgGGnCcccccon..',
+  21: '...ccccccccccccoooccccccccccccgGnCcccccon...',
+  22: '....ccccccccccccccccoooooocooccgcccccccnc...',
+  23: '....oocccoooocccccccccccccccccccccccccncc...',
+  24: '.....ooooccccccccccccccccccccccccccccncc....',
+  27: '......cccccc.....cccccc.....................',
+  28: '......cccccc.....cccccc.....................',
+  29: '......cccccc.....cccccc.....................',
+  30: '......cccccc.....cccccc.....................',
+  31: '.......cccco......cccco.....................',
+  32: '.......cccco......cccco.....................',
+  33: '.......cccco......cccco.....................',
+  34: '.......cccco......cccco.....................',
+  35: '.......cccco......cccco.....................',
+  36: '.......cccco......cccco.....................',
+  37: '.....occccccc...ccccccco....................',
+  38: '....ooccccccc..occcccccc....................',
+  39: '....oooooooo...oooooooo.....................',
+});
+
+// prettier-ignore
+const REFORMADO_ZARPA = pose(REFORMADO, {
+  27: '......cccccc.....cccccc..........nCCCCn.....',
+  28: '......cccccc.....cccccc...........nCccCn....',
+  29: '......cccccc.....cccccc............nCcccn...',
+  30: '......cccccc.....cccccc.............nCcccn..',
+  31: '.......cccco......cccco..............nCcccn.',
+  32: '.......cccco......cccco..............nccccn.',
+  33: '.......cccco......cccco..............nhnhnh.',
+  34: '.......cccco......cccco..............h.h.h..',
+  35: '.......cccco......cccco..............h.h.h..',
+  36: '.......cccco......cccco.....................',
+  37: '.....occccccc...ccccccco....................',
+  38: '....ooccccccc..occcccccc....................',
+  39: '....oooooooo...oooooooo.....................',
+});
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -3147,6 +3327,17 @@ const FIGURAS: Record<string, Figura> = {
   'serpiente-cerrada': SERPIENTE_CERRADA,
   vena: VENA,
   hongo: HONGO,
+  // Poses de ataque (issue #146).
+  'devoto-alza': DEVOTO_ALZA,
+  'devoto-golpe': DEVOTO_GOLPE,
+  'devoto-b-alza': DEVOTO_B_ALZA,
+  'devoto-b-golpe': DEVOTO_B_GOLPE,
+  'vestal-alza': VESTAL_ALZA,
+  'vestal-lanza': VESTAL_LANZA,
+  'vestal-cazadora-alza': VESTAL_CAZADORA_ALZA,
+  'vestal-cazadora-lanza': VESTAL_CAZADORA_LANZA,
+  'reformado-zarpa-alza': REFORMADO_ZARPA_ALZA,
+  'reformado-zarpa': REFORMADO_ZARPA,
 };
 
 /**

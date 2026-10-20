@@ -3,7 +3,11 @@ import Phaser from 'phaser';
 import { COMBATE, DEVOTO, MOVIMIENTO } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
+import { polvo, tajoEnemigo } from '../systems/GolpeEnemigo';
 import { BarraVida } from '../ui/BarraVida';
+
+/** Los dos cuadros del ataque (issue #146). Sin pose: de pie. */
+type PoseDevoto = 'alza' | 'golpe';
 
 export type EstadoDevoto =
   'patrulla' | 'persecucion' | 'anticipando' | 'atacando' | 'aturdido' | 'muerto';
@@ -40,6 +44,10 @@ export class Devoto implements Enemigo {
   private yaGolpeoEnSwing = false;
   private tweenTelegrafia?: Phaser.Tweens.Tween;
 
+  /** 'devoto' o 'devoto-b': de ahi salen las texturas de sus poses. */
+  private readonly figura: string;
+  private pose: PoseDevoto | null = null;
+
   private readonly escena: Phaser.Scene;
   private readonly patrulla: RangoPatrulla;
 
@@ -60,11 +68,8 @@ export class Devoto implements Enemigo {
     h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d);
     h = Math.imul(h ^ (h >>> 12), 0x297a2d39);
     const variante = ((h ^ (h >>> 15)) >>> 0) % 2;
-    this.sprite = escena.physics.add.sprite(
-      x,
-      y,
-      variante === 0 ? 'devoto-placeholder' : 'devoto-b-placeholder',
-    );
+    this.figura = variante === 0 ? 'devoto' : 'devoto-b';
+    this.sprite = escena.physics.add.sprite(x, y, `${this.figura}-placeholder`);
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setData('devoto', this);
     this.sprite.setData('enemigo', this);
@@ -195,12 +200,15 @@ export class Devoto implements Enemigo {
    *
    * Sin esto el parry es adivinar, no leer: la ventana de 140 ms solo es justa
    * si el jugador puede ver la intencion durante los 420 ms previos. El Devoto
-   * se tensa hacia atras y se tine de rojo antes de descargar.
+   * levanta el brazo por encima de la cabeza, se echa hacia atras y se tine de
+   * rojo antes de descargar. El rojo es mas claro que antes: ahora lo que avisa
+   * es el brazo en alto, y un tinte oscuro se lo comia.
    */
   private telegrafiarGolpe(): void {
     const direccion = this.mirandoDerecha ? 1 : -1;
 
-    this.sprite.setTint(0xc94f4f);
+    this.posar('alza');
+    this.sprite.setTint(0xe58a80);
 
     this.tweenTelegrafia?.remove();
     this.tweenTelegrafia = this.escena.tweens.add({
@@ -245,6 +253,33 @@ export class Devoto implements Enemigo {
       duration: DEVOTO.duracionAtaqueMs,
       ease: 'Quad.easeOut',
     });
+
+    // El brazo cae al frente y deja el tajo en el aire, del color de lo que
+    // golpea: el aparato de la variante A, la carne de la B.
+    this.posar('golpe');
+    tajoEnemigo(this.escena, this.sprite.x + direccion * 2, this.sprite.y - 13, direccion, {
+      radio: DEVOTO.rangoAtaque + 4,
+      alto: 20,
+      color: this.figura === 'devoto' ? 0xc9d1c4 : 0xd4564a,
+      duracionMs: 240,
+    });
+    polvo(this.escena, this.sprite.x - direccion * 3, this.sprite.y, { cantidad: 4, direccion });
+
+    // El dano dura 120 ms, el brazo se queda abajo un poco mas: es lo que da
+    // tiempo a ver con que te ha dado. Solo se ve; la ventana no cambia.
+    this.escena.time.delayedCall(DEVOTO.duracionAtaqueMs + 160, () => {
+      if (this.pose === 'golpe' && !this.estaMuerto) this.posar();
+    });
+  }
+
+  /** Cambia de cuadro. Sin pose vuelve a estar de pie. */
+  private posar(pose?: PoseDevoto): void {
+    if (!this.sprite.active) return;
+    this.pose = pose ?? null;
+    const clave = pose ? `${this.figura}-${pose}-placeholder` : `${this.figura}-placeholder`;
+    this.sprite.setTexture(
+      this.escena.textures.exists(clave) ? clave : `${this.figura}-placeholder`,
+    );
   }
 
   private actualizarAtaque(ahora: number): void {
@@ -307,6 +342,7 @@ export class Devoto implements Enemigo {
     (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
     this.cuerpo.setVelocityX(0);
     this.limpiarTelegrafia();
+    this.posar();
 
     // Aturdido: se tambalea y queda tintado hasta recuperarse. El jugador debe
     // ver de un vistazo que esta abierto.
@@ -341,6 +377,7 @@ export class Devoto implements Enemigo {
     this.tweenTelegrafia?.remove();
     this.escena.tweens.killTweensOf(this.sprite);
     this.sprite.setScale(1);
+    this.posar();
 
     // Se desploma. Sin fanfarria: aqui morir es rutina.
     this.escena.tweens.add({

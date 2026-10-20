@@ -46,6 +46,17 @@ for (const m of fuente.matchAll(patronFigura)) {
   figuras[nombre] = { paleta, filas: leerFilas(filasSrc) };
 }
 
+// Las poses de ataque (issue #146) no repiten la figura: son su base con
+// algunas filas reescritas, `const X = pose(BASE, { 9: '...', ... });`.
+const patronPose = /const (\w+) = pose\((\w+), \{([\s\S]*?)\}\);/g;
+for (const m of fuente.matchAll(patronPose)) {
+  const [, nombre, base, cambiosSrc] = m;
+  if (!figuras[base]) throw new Error(`La pose ${nombre} parte de ${base}, que no se pudo leer`);
+  const filas = [...figuras[base].filas];
+  for (const c of cambiosSrc.matchAll(/(\d+): '([^']*)'/g)) filas[Number(c[1])] = c[2];
+  figuras[nombre] = { paleta: figuras[base].paleta, filas };
+}
+
 // El mapa de claves de textura -> figura, tal como lo usa el juego.
 const mapa = {};
 const bloqueMapa = fuente.match(/const FIGURAS: Record<string, Figura> = \{([\s\S]*?)\n\};/);

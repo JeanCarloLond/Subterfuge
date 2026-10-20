@@ -5,6 +5,9 @@ import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
 import { BarraVida } from '../ui/BarraVida';
 
+/** Los dos cuadros del lanzamiento (issue #146). Sin pose: quieta. */
+type PoseVestal = 'alza' | 'lanza';
+
 export type EstadoVestal = 'espera' | 'reposicion' | 'invocando' | 'aturdido' | 'muerto';
 
 /** Limites del tramo por el que se mueve, en coordenadas de mundo. */
@@ -39,6 +42,12 @@ export class Vestal implements Enemigo {
   private ultimoAvistamiento = -Infinity;
   private tweenTelegrafia?: Phaser.Tweens.Tween;
 
+  /** 'vestal' o 'vestal-cazadora': de ahi salen las texturas de sus poses. */
+  private readonly figura: string;
+  private pose: PoseVestal | null = null;
+  /** El sello encendiendose en la mano mientras invoca. */
+  private resplandor?: Phaser.GameObjects.Image;
+
   private readonly escena: Phaser.Scene;
   private readonly rango: RangoVestal;
 
@@ -53,6 +62,7 @@ export class Vestal implements Enemigo {
     this.escena = escena;
     this.rango = rango;
     this.vitalidad = new Vitalidad(VESTAL.vida);
+    this.figura = textura.replace(/-placeholder$/, '');
 
     this.sprite = escena.physics.add.sprite(x, y, textura);
     this.sprite.setOrigin(0.5, 1);
@@ -166,8 +176,11 @@ export class Vestal implements Enemigo {
     this.cuerpo.setVelocityX(0);
     this.finAccion = ahora + VESTAL.anticipacionMs;
 
-    // Se yergue y se ilumina: el aviso de que el sello va a salir.
-    this.sprite.setTint(0xe8d9a0);
+    // Se yergue y alza el sello sobre la mascara, y el sello se enciende en
+    // la mano hasta que sale: el aviso esta en el sello, que es lo que hay
+    // que parar, no en el cuerpo entero.
+    this.posar('alza');
+    this.sprite.setTint(0xf2e8c4);
     this.tweenTelegrafia?.remove();
     this.tweenTelegrafia = this.escena.tweens.add({
       targets: this.sprite,
@@ -175,22 +188,66 @@ export class Vestal implements Enemigo {
       duration: VESTAL.anticipacionMs * 0.8,
       ease: 'Quad.easeOut',
     });
+
+    this.resplandor?.destroy();
+    const mano = this.manoAlzada();
+    this.resplandor = this.escena.add
+      .image(mano.x, mano.y, 'brillo-placeholder')
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setTint(0xe8d9a0)
+      .setScale(0.08)
+      .setAlpha(0.3)
+      .setDepth(this.sprite.depth + 1);
+    this.escena.tweens.add({
+      targets: this.resplandor,
+      scale: 0.3,
+      alpha: 0.95,
+      duration: VESTAL.anticipacionMs,
+      ease: 'Quad.easeIn',
+    });
+  }
+
+  /** Donde queda el sello con el brazo en alto (ver VESTAL_ALZA). */
+  private manoAlzada(): { x: number; y: number } {
+    const lado = this.mirandoDerecha ? 1 : -1;
+    return { x: this.sprite.x + lado * 8, y: this.sprite.y - this.sprite.displayHeight + 5 };
+  }
+
+  /** Cambia de cuadro. Sin pose vuelve a estar quieta. */
+  private posar(pose?: PoseVestal): void {
+    if (!this.sprite.active) return;
+    this.pose = pose ?? null;
+    const clave = pose ? `${this.figura}-${pose}-placeholder` : `${this.figura}-placeholder`;
+    this.sprite.setTexture(
+      this.escena.textures.exists(clave) ? clave : `${this.figura}-placeholder`,
+    );
   }
 
   private actualizarInvocacion(ahora: number): void {
     this.cuerpo.setVelocityX(0);
+    if (this.resplandor) {
+      const mano = this.manoAlzada();
+      this.resplandor.setPosition(mano.x, mano.y);
+    }
     if (ahora < this.finAccion) return;
 
     this.limpiarTelegrafia();
     this.finEnfriamiento = ahora + VESTAL.enfriamientoMs;
     this.estado = 'espera';
 
+    // El brazo baja al frente y suelta el sello desde la mano. Se queda
+    // tendido un momento: lo justo para ver de donde ha salido.
+    this.posar('lanza');
+    this.escena.time.delayedCall(260, () => {
+      if (this.pose === 'lanza' && !this.estaMuerto) this.posar();
+    });
+
     // La escena crea el sello: la entidad no conoce el grupo de proyectiles.
     esfuerzo.enemigo('vestal', 'ataque');
     this.eventos.emit('lanzar', {
       x: this.sprite.x + (this.mirandoDerecha ? 10 : -10),
-      // A la altura del sello del pecho, no de la cintura.
-      y: this.sprite.y - 22,
+      // A la altura de la mano tendida (ver VESTAL_LANZA).
+      y: this.sprite.y - 24,
       direccion: this.mirandoDerecha ? 1 : -1,
     });
   }
@@ -200,6 +257,22 @@ export class Vestal implements Enemigo {
     this.tweenTelegrafia = undefined;
     this.sprite.setScale(1);
     if (!this.estaMuerto) this.sprite.clearTint();
+    this.apagarResplandor();
+  }
+
+  /** El sello de la mano se apaga deprisa: ha salido o se ha cortado. */
+  private apagarResplandor(): void {
+    const resplandor = this.resplandor;
+    if (!resplandor) return;
+    this.resplandor = undefined;
+    this.escena.tweens.killTweensOf(resplandor);
+    this.escena.tweens.add({
+      targets: resplandor,
+      alpha: 0,
+      scale: resplandor.scale * 1.4,
+      duration: 120,
+      onComplete: () => resplandor.destroy(),
+    });
   }
 
   // -- Reacciones ----------------------------------------------------------
@@ -215,6 +288,7 @@ export class Vestal implements Enemigo {
     // Recibir un golpe le corta la invocacion a medias.
     if (this.estado === 'invocando') {
       this.limpiarTelegrafia();
+      this.posar();
       this.finEnfriamiento = this.escena.time.now + VESTAL.enfriamientoMs * 0.6;
     }
 
@@ -235,6 +309,8 @@ export class Vestal implements Enemigo {
     this.tweenTelegrafia?.remove();
     this.escena.tweens.killTweensOf(this.sprite);
     this.sprite.setScale(1);
+    this.apagarResplandor();
+    this.posar();
     this.cuerpo.setVelocityX(0);
     this.cuerpo.enable = false;
 
@@ -259,6 +335,7 @@ export class Vestal implements Enemigo {
   destruir(): void {
     this.barra.destruir();
     this.eventos.removeAllListeners();
+    this.resplandor?.destroy();
     this.sprite.destroy();
   }
 }

@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { MOVIMIENTO, REFORMADO } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
+import { garras, polvo } from '../systems/GolpeEnemigo';
 
 export type EstadoReformado =
   | 'dormido'
@@ -16,6 +17,12 @@ export type EstadoReformado =
 
 /** Ataque que el Reformado esta preparando o ejecutando. */
 type Maniobra = 'embestida' | 'salto' | 'zarpazo' | 'doble';
+
+/** Los dos cuadros del zarpazo (issue #146). Sin pose: respira. */
+type PoseReformado = 'zarpa-alza' | 'zarpa';
+
+/** Lo que baja la cabeza al embestir (grados). Como un toro, no como un perro. */
+const INCLINACION_EMBESTIDA = 6;
 
 /**
  * El Reformado: jefe del teaser.
@@ -50,6 +57,9 @@ export class Reformado implements Enemigo {
   private finEnfriamiento = -Infinity;
   private yaGolpeoEnSwing = false;
   private tweenTelegrafia?: Phaser.Tweens.Tween;
+  private pose: PoseReformado | null = null;
+  /** Ultima nube de polvo de la embestida: una cada pocos pasos, no cada frame. */
+  private ultimoPolvo = -Infinity;
   /** Tras la primera embestida de una doble, queda la vuelta pendiente. */
   private vueltaPendiente = false;
 
@@ -176,7 +186,9 @@ export class Reformado implements Enemigo {
 
     // Se inclina hacia donde va y rebota al apoyarse. Amplitudes cortas: es
     // una tonelada de carne, no un muneco de goma.
-    this.sprite.setAngle(Math.sin(fase) * 2.6);
+    const carga =
+      this.estado === 'embistiendo' ? INCLINACION_EMBESTIDA * (this.mirandoDerecha ? 1 : -1) : 0;
+    this.sprite.setAngle(carga + Math.sin(fase) * 2.6);
     this.sprite.setScale(1 + Math.cos(fase) * 0.03, 1 - Math.cos(fase) * 0.045);
   }
 
@@ -388,14 +400,17 @@ export class Reformado implements Enemigo {
     this.sprite.setTint(color);
     this.tweenTelegrafia?.remove();
 
+    // El zarpazo recoge la pata junto a la cabeza: la garra en alto es el
+    // aviso, el color solo lo acompana.
+    if (maniobra === 'zarpazo') this.posar('zarpa-alza');
+
     const direccion = this.mirandoDerecha ? 1 : -1;
+    const embiste = maniobra === 'embestida' || maniobra === 'doble';
     this.tweenTelegrafia = this.escena.tweens.add({
       targets: this.sprite,
-      // La embestida se echa atras; el salto se agacha.
-      x:
-        maniobra === 'embestida' || maniobra === 'doble'
-          ? this.sprite.x - direccion * 6
-          : this.sprite.x,
+      // La embestida se echa atras y agacha la cabeza; el salto se agacha.
+      x: embiste ? this.sprite.x - direccion * 6 : this.sprite.x,
+      angle: embiste ? direccion * INCLINACION_EMBESTIDA : 0,
       scaleY: maniobra === 'salto' ? 0.82 : 1.1,
       scaleX: maniobra === 'salto' ? 1.15 : 1,
       duration: duracion * 0.8,
@@ -416,6 +431,12 @@ export class Reformado implements Enemigo {
         this.estado = 'embistiendo';
         this.finAccion = ahora + REFORMADO.embestida.duracionMs * this.factorVelocidad;
         this.cuerpo.setVelocityX(direccion * REFORMADO.embestida.velocidad);
+        // Arranca de golpe: las patas de atras escupen el suelo.
+        polvo(this.escena, this.sprite.x - direccion * 14, this.sprite.y, {
+          cantidad: 8,
+          direccion,
+        });
+        this.ultimoPolvo = ahora;
         break;
 
       case 'salto':
@@ -423,13 +444,54 @@ export class Reformado implements Enemigo {
         this.finAccion = ahora + 2000; // tope de seguridad si no aterriza
         this.cuerpo.setVelocityY(-REFORMADO.salto.impulso);
         this.cuerpo.setVelocityX(Math.sign(objetivoX - this.sprite.x) * 90);
+        polvo(this.escena, this.sprite.x, this.sprite.y, { cantidad: 8 });
         break;
 
-      default:
+      default: {
         this.estado = 'zarpazo';
         this.finAccion = ahora + REFORMADO.zarpazo.duracionMs;
+        // La pata cae estirada y deja las tres unas en el aire, justo donde
+        // hiere la zona del zarpazo.
+        this.posar('zarpa');
+        const alcance = REFORMADO.zarpazo.alcance;
+        garras(
+          this.escena,
+          this.sprite.x + direccion * (alcance / 2 + 8),
+          this.sprite.y - 17,
+          direccion,
+          0xe6ddc8,
+          240,
+        );
+        polvo(this.escena, this.sprite.x + direccion * 18, this.sprite.y, { cantidad: 5 });
+        // La pata se queda abajo un momento mas que el dano: solo se ve.
+        this.escena.time.delayedCall(REFORMADO.zarpazo.duracionMs + 160, () => {
+          if (this.pose === 'zarpa') this.posar();
+        });
         break;
+      }
     }
+  }
+
+  /**
+   * Cambia de cuadro. Con pose para la respiracion, que tambien es un cambio
+   * de cuadro y lo pisaria; sin pose la retoma, si sigue despierto.
+   */
+  private posar(pose?: PoseReformado): void {
+    if (!this.sprite.active) return;
+    this.pose = pose ?? null;
+    if (pose) {
+      const clave = `reformado-${pose}-placeholder`;
+      if (!this.escena.textures.exists(clave)) return;
+      this.sprite.stop();
+      this.sprite.setTexture(clave);
+      return;
+    }
+    if (this.estado === 'dormido' || this.estado === 'muerto') {
+      this.sprite.stop();
+      this.sprite.setTexture('reformado-placeholder');
+      return;
+    }
+    if (!this.sprite.anims.isPlaying) this.sprite.play('reformado-respira');
   }
 
   private actualizarEmbestida(ahora: number): void {
@@ -446,6 +508,16 @@ export class Reformado implements Enemigo {
       this.quedarAturdido(ahora, REFORMADO.aturdimientoTrasFalloMs);
       this.eventos.emit('choque', this.sprite.x, this.sprite.y);
       return;
+    }
+
+    // Deja un rastro de polvo a su espalda mientras cruza la sala.
+    if (ahora - this.ultimoPolvo >= 90) {
+      this.ultimoPolvo = ahora;
+      const direccion = this.mirandoDerecha ? 1 : -1;
+      polvo(this.escena, this.sprite.x - direccion * 16, this.sprite.y, {
+        cantidad: 3,
+        direccion,
+      });
     }
 
     if (ahora >= this.finAccion) {
@@ -473,6 +545,9 @@ export class Reformado implements Enemigo {
       this.cuerpo.setVelocityX(0);
       this.finEnfriamiento = ahora + REFORMADO.salto.enfriamientoMs * this.factorVelocidad;
       this.estado = 'acecho';
+      // Cae con todo el peso: polvo a los dos lados.
+      polvo(this.escena, this.sprite.x - 12, this.sprite.y, { cantidad: 7, direccion: 1 });
+      polvo(this.escena, this.sprite.x + 12, this.sprite.y, { cantidad: 7, direccion: -1 });
       // La escena convierte esto en onda de impacto y sacudida.
       this.eventos.emit('impacto-suelo', this.sprite.x, this.sprite.y, REFORMADO.salto.alcanceOnda);
 
@@ -531,6 +606,7 @@ export class Reformado implements Enemigo {
     (this.hitbox.body as Phaser.Physics.Arcade.Body).enable = false;
 
     this.limpiarTelegrafia();
+    this.posar();
     this.sprite.setTint(0xe8d9a0);
     this.escena.tweens.add({
       targets: this.sprite,
@@ -580,6 +656,7 @@ export class Reformado implements Enemigo {
 
   private morir(): void {
     this.estado = 'muerto';
+    this.posar();
     this.tweenTelegrafia?.remove();
     this.escena.tweens.killTweensOf(this.sprite);
     this.sprite.setScale(1);
