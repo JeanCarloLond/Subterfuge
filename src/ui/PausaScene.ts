@@ -4,14 +4,7 @@ import { progreso } from '../systems/Progreso';
 import { guardado } from '../systems/Guardado';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
-import {
-  CONTROLES_COMBATE,
-  CONTROLES_COMBATE_TACTIL,
-  CONTROLES_MOVIMIENTO,
-  CONTROLES_MOVIMIENTO_TACTIL,
-  CONTROLES_SISTEMA,
-  CONTROLES_SISTEMA_TACTIL,
-} from './TextoControles';
+import { ayudaDeControles } from './TextoControles';
 import { cursorActivo } from './Cursor';
 import { tactil } from '../input/Tactil';
 import { botonTactil } from './BotonTactil';
@@ -203,22 +196,13 @@ export class PausaScene extends Phaser.Scene {
     // alto y las posiciones a mano, anadir una linea a la ayuda desbordaba el
     // panel sin que nada se quejara.
     const conDedos = tactil.esAparatoTactil;
-    const movimiento = this.add.text(
-      12,
-      arriba,
-      (conDedos ? CONTROLES_MOVIMIENTO_TACTIL : CONTROLES_MOVIMIENTO).join('\n'),
-      estilo,
-    );
-    const combate = this.add.text(
-      236,
-      arriba,
-      (conDedos ? CONTROLES_COMBATE_TACTIL : CONTROLES_COMBATE).join('\n'),
-      estilo,
-    );
+    const ayuda = ayudaDeControles(conDedos);
+    const movimiento = this.add.text(12, arriba, ayuda.movimiento.join('\n'), estilo);
+    const combate = this.add.text(236, arriba, ayuda.combate.join('\n'), estilo);
     const sistema = this.add.text(
       12,
       arriba + movimiento.height + 10,
-      (conDedos ? CONTROLES_SISTEMA_TACTIL : CONTROLES_SISTEMA).join('\n'),
+      ayuda.sistema.join('\n'),
       estiloTenue,
     );
 

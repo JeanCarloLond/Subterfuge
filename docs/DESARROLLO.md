@@ -293,24 +293,28 @@ posición, para que las colisiones no se enteren.
 
 ## Controles
 
-| Acción                | Teclas                        |
-| --------------------- | ----------------------------- |
-| Mover                 | `A` / `D` o flechas           |
-| Saltar / doble saltar | `Espacio` o `Z`               |
-| Dash                  | `Shift` o `X`                 |
-| Atacar                | `J`, `C` o clic izquierdo     |
-| Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
-| Ataque cargado        | mantener y soltar (30 Fervor) |
-| Parry                 | `K`, `V` o clic derecho       |
-| Lanzar un injerto     | `F` o `R`                     |
-| Poción de Carne       | `Q`                           |
-| Silenciar el audio    | `M`                           |
-| Ayuda de controles    | `H` o `Tab`                   |
-| Pausa                 | `Esc` o `P`                   |
-| Rezar en un Altar     | `E`                           |
-| Leer el Códice        | `L`                           |
-| Trepar (colgado)      | `W` / flecha arriba           |
-| Soltarse (colgado)    | `S` / flecha abajo            |
+| Acción                | Teclas                        | Mando (#152)            |
+| --------------------- | ----------------------------- | ----------------------- |
+| Mover                 | `A` / `D` o flechas           | stick o cruceta         |
+| Saltar / doble saltar | `Espacio` o `Z`               | A                       |
+| Dash                  | `Shift` o `X`                 | B                       |
+| Atacar                | `J`, `C` o clic izquierdo     | X                       |
+| Golpe arriba / abajo  | mantener `W` / `S` al atacar  | mantener arriba / abajo |
+| Ataque cargado        | mantener y soltar (30 Fervor) | mantener X              |
+| Parry                 | `K`, `V` o clic derecho       | LB                      |
+| Lanzar un injerto     | `F` o `R`                     | RB                      |
+| Poción de Carne       | `Q`                           | LT o RT                 |
+| Silenciar el audio    | `M`                           | —                       |
+| Ayuda de controles    | `H` o `Tab`                   | —                       |
+| Pausa                 | `Esc` o `P`                   | Start                   |
+| Rezar en un Altar     | `E`                           | Y                       |
+| Leer el Códice        | `L`                           | Select                  |
+| Trepar (colgado)      | `W` / flecha arriba           | arriba                  |
+| Soltarse (colgado)    | `S` / flecha abajo            | abajo                   |
+
+El mando entra como teclado (`input/Mando.ts`): cada botón se traduce en la
+tecla que ya hace eso, así que vale en la partida y en todos los menús sin que
+ninguna escena lo sepa. Rezar va en Y y no en la cruceta, que ya apunta y trepa.
 
 ### Opciones (#151)
 

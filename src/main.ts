@@ -9,6 +9,7 @@ import {
   vigilarGiro,
 } from './systems/Nitidez';
 import { toques } from './input/Toques';
+import { mando } from './input/Mando';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { InicioScene } from './scenes/InicioScene';
@@ -93,6 +94,8 @@ registrarTextoNitido();
 dimensionarContenedor('juego');
 const juego = new Phaser.Game(configuracion);
 vigilarGiro(juego);
+// El mando se lee aparte y entra como teclado: vale en todas las escenas (#152).
+mando.arrancar();
 
 // Banco de pruebas del mando tactil: con `?tactil` el juego se deja tocar
 // desde fuera (scripts/probar-tactil.mjs manda dedos de verdad con el

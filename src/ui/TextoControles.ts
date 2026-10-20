@@ -1,3 +1,4 @@
+import { mando } from '../input/Mando';
 /**
  * Texto de la ayuda de controles, en un solo sitio.
  *
@@ -72,6 +73,55 @@ export const CONTROLES_SISTEMA: readonly string[] = [
   'M         sonido',
 ];
 
+/**
+ * Con mando (#152). Los nombres son los del mando de Xbox, que es el que
+ * imprime la mayoria de los genericos; en uno de PlayStation, A es la cruz.
+ */
+export const CONTROLES_MOVIMIENTO_MANDO: readonly string[] = [
+  'MOVER     stick o cruceta',
+  'SALTAR    A',
+  '          dos veces: doble salto',
+  'DASH      B  (esquiva)',
+  'TREPAR    arriba, colgado',
+  'SOLTARSE  abajo, colgado',
+];
+
+export const CONTROLES_COMBATE_MANDO: readonly string[] = [
+  'GOLPEAR   X',
+  '          +arriba   +abajo',
+  '          abajo y acertar: rebotas',
+  'CARGADO   mantener X  (30 Fervor)',
+  'PARRY     LB',
+  'INJERTAR  RB  lanzar un injerto',
+  'POCIÓN    LT o RT  (+3 vida)',
+  'REZAR     Y  junto a un Altar',
+  'CÓDICE    SELECT  leer lo recogido',
+];
+
+export const CONTROLES_SISTEMA_MANDO: readonly string[] = ['START     pausa'];
+
+/** La ayuda que toca: la del mando si hay uno, la de los dedos o la del teclado. */
+export function ayudaDeControles(conDedos: boolean): {
+  movimiento: readonly string[];
+  combate: readonly string[];
+  sistema: readonly string[];
+} {
+  if (mando.conectado) {
+    return {
+      movimiento: CONTROLES_MOVIMIENTO_MANDO,
+      combate: CONTROLES_COMBATE_MANDO,
+      sistema: CONTROLES_SISTEMA_MANDO,
+    };
+  }
+  return conDedos
+    ? {
+        movimiento: CONTROLES_MOVIMIENTO_TACTIL,
+        combate: CONTROLES_COMBATE_TACTIL,
+        sistema: CONTROLES_SISTEMA_TACTIL,
+      }
+    : { movimiento: CONTROLES_MOVIMIENTO, combate: CONTROLES_COMBATE, sistema: CONTROLES_SISTEMA };
+}
+
 // Si alguien alarga una linea, que falle aqui y no en la pantalla del jugador.
 for (const linea of [
   ...CONTROLES_MOVIMIENTO,
@@ -80,6 +130,9 @@ for (const linea of [
   ...CONTROLES_MOVIMIENTO_TACTIL,
   ...CONTROLES_COMBATE_TACTIL,
   ...CONTROLES_SISTEMA_TACTIL,
+  ...CONTROLES_MOVIMIENTO_MANDO,
+  ...CONTROLES_COMBATE_MANDO,
+  ...CONTROLES_SISTEMA_MANDO,
 ]) {
   if (linea.length > ANCHO_MAXIMO) {
     throw new Error(

@@ -42,12 +42,7 @@ import { sonido, type ClaseEnemigo } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
 import { VOCES, type ClaveVoz } from '../lore/Voces';
 import { EVENTOS_HUD } from '../ui/HudScene';
-import {
-  CONTROLES_COMBATE,
-  CONTROLES_COMBATE_TACTIL,
-  CONTROLES_MOVIMIENTO,
-  CONTROLES_MOVIMIENTO_TACTIL,
-} from '../ui/TextoControles';
+import { ayudaDeControles } from '../ui/TextoControles';
 
 /** Plataforma: [x, y, anchoEnTiles]. y crece hacia abajo. */
 export type Plataforma = readonly [x: number, y: number, anchoTiles: number];
@@ -2480,18 +2475,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // En un movil, un panel que dice "SALTAR ESPACIO" es peor que no tener
     // ayuda: nombra teclas que ahi no existen.
     const conDedos = tactil.esAparatoTactil;
-    const movimiento = this.add.text(
-      12,
-      margen,
-      (conDedos ? CONTROLES_MOVIMIENTO_TACTIL : CONTROLES_MOVIMIENTO).join('\n'),
-      estilo,
-    );
-    const combate = this.add.text(
-      236,
-      margen,
-      (conDedos ? CONTROLES_COMBATE_TACTIL : CONTROLES_COMBATE).join('\n'),
-      estilo,
-    );
+    const ayuda = ayudaDeControles(conDedos);
+    const movimiento = this.add.text(12, margen, ayuda.movimiento.join('\n'), estilo);
+    const combate = this.add.text(236, margen, ayuda.combate.join('\n'), estilo);
 
     const columnas = Math.max(movimiento.height, combate.height);
     const alto = Math.ceil(margen + columnas + 26);
