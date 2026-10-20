@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Publica en GitHub los issues de arte definidos en docs/issues/*.md
+    Publica en GitHub los encargos de arte de docs/arte/encargos/*.md
 
 .DESCRIPTION
     Lee el frontmatter YAML de cada archivo (title, labels), crea las etiquetas
@@ -33,7 +33,7 @@ if (-not $?) {
     throw "No has iniciado sesión en GitHub. Ejecuta primero: gh auth login"
 }
 
-$raizIssues = Join-Path $PSScriptRoot "..\docs\issues"
+$raizIssues = Join-Path $PSScriptRoot "..\docs\arte\encargos"
 $archivos = Get-ChildItem -Path $raizIssues -Filter "*.md" | Sort-Object Name
 
 if ($archivos.Count -eq 0) {

@@ -6,9 +6,13 @@ labels: arte, fase-2, prioridad-alta
 ## Contexto
 
 El personaje jugable es **"Manos del Sacramento N.º 7"** — el Cirujano-Sacerdote.
-No tiene nombre propio: la Diócesis lo nombra por su función. Fue entrenado desde
-niño para heredar el oficio de un progenitor que murió (o fue "reformado") en un
-sacramento fallido.
+No tiene nombre propio: la Diócesis lo nombra por su función. Lo formó desde niño
+su padre, «el que se detuvo», que se paró en mitad de un sacramento y terminó
+Reformado en su propia sala: es el jefe del Nivel 1.
+
+El diseño de referencia es el de Mariana Echeverri (capucha y muceta moradas,
+sobretodo azul noche, máscara de pico dorada) y ya está en el arte provisional
+del juego (`src/systems/ArteProvisional.ts`, figura `CIRUJANO`).
 
 **Lectura de silueta que debe transmitir:** no es un guerrero, es un **técnico**.
 Sus manos son su oficio y su condena — deben ser el elemento más legible de la

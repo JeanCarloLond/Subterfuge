@@ -12,7 +12,7 @@ llega a `main`.
 > ¿Prefieres levantarlo en tu máquina? [Ejecutar en local](#ejecutar-en-local),
 > son tres comandos.
 
-### ✠ [Portal de la Diócesis](https://jeancarlolond.github.io/Subterfuge/web/)
+### [Portal de la Diócesis](https://jeancarlolond.github.io/Subterfuge/web/)
 
 La web del universo, fuera del juego: la doctrina (el Códice con su Vigilia), el
 Registro con sus láminas, el corte del Vientre, el **Linaje** (de dónde viene
@@ -49,14 +49,14 @@ El jugador asume el rol del Cirujano-Sacerdote en una sección del Vientre, expl
 
 ### Requisitos
 
-Solo necesitas **Node.js 20 o superior**. Nada más: ni Unity, ni Godot, ni
+Solo necesitas **Node.js 22.12 o superior**. Nada más: ni Unity, ni Godot, ni
 ningún editor especial. El juego corre en el navegador.
 
 - Descárgalo en [nodejs.org](https://nodejs.org) (la versión LTS sirve).
 - Comprueba que quedó instalado:
 
   ```bash
-  node --version   # debe decir v20.x.x o superior
+  node --version   # debe decir v22.12 o superior
   npm --version
   ```
 
@@ -84,24 +84,26 @@ pararlo, `Ctrl + C` en la terminal.
 
 ### Controles
 
-| Acción                | Teclas                        |
-| --------------------- | ----------------------------- |
-| Mover                 | `A` / `D` o flechas           |
-| Saltar / doble saltar | `Espacio` o `Z`               |
-| Dash (esquiva)        | `Shift` o `X`                 |
-| Atacar                | `J`, `C` o clic izquierdo     |
-| Golpe arriba / abajo  | mantener `W` / `S` al atacar  |
-| Ataque cargado        | mantener y soltar (30 Fervor) |
-| Parry                 | `K`, `V` o clic derecho       |
-| Lanzar un injerto     | `F` o `R`                     |
-| Poción de Carne       | `Q`                           |
-| Rezar / hablar / usar | `E`                           |
-| Leer el Códice        | `L`                           |
-| Trepar (colgado)      | `W` / flecha arriba           |
-| Soltarse (colgado)    | `S` / flecha abajo            |
-| Silenciar el audio    | `M`                           |
-| Ayuda de controles    | `H` o `Tab`                   |
-| Pausa                 | `Esc` o `P`                   |
+| Acción                | Teclas                        | Mando                   |
+| --------------------- | ----------------------------- | ----------------------- |
+| Mover                 | `A` / `D` o flechas           | stick o cruceta         |
+| Saltar / doble saltar | `Espacio` o `Z`               | A                       |
+| Dash (esquiva)        | `Shift` o `X`                 | B                       |
+| Atacar                | `J`, `C` o clic izquierdo     | X                       |
+| Golpe arriba / abajo  | mantener `W` / `S` al atacar  | mantener arriba / abajo |
+| Ataque cargado        | mantener y soltar (30 Fervor) | mantener X              |
+| Parry                 | `K`, `V` o clic derecho       | LB                      |
+| Lanzar un injerto     | `F` o `R`                     | RB                      |
+| Poción de Carne       | `Q`                           | LT o RT                 |
+| Rezar / hablar / usar | `E`                           | Y                       |
+| Leer el Códice        | `L`                           | Select                  |
+| Trepar (colgado)      | `W` / flecha arriba           | arriba                  |
+| Soltarse (colgado)    | `S` / flecha abajo            | abajo                   |
+| Silenciar el audio    | `M`                           | —                       |
+| Ayuda de controles    | `H` o `Tab`                   | —                       |
+| Pausa                 | `Esc` o `P`                   | Start                   |
+
+En el móvil se juega con la botonera en pantalla, en horizontal.
 
 El **parry** es la mecánica central. Cuando un enemigo se tensa y se tiñe,
 te está avisando de que va a golpear: pulsa `K` en ese momento. Contra el
@@ -146,7 +148,10 @@ Húmedo**, está en preparación.
 - **Audio**: efectos sintetizados en tiempo real (cada enemigo suena a su
   materia), voces de esfuerzo al atacar, saltar, caer y recibir golpes, y una
   banda sonora con ritmo por zona, con tema propio para el jefe y el cierre.
-- **Táctil**: se puede jugar en el móvil, con mando en pantalla.
+- **Para cualquiera**: pantalla de inicio, el descenso se **guarda en los
+  Altares** y se puede continuar, **opciones** de accesibilidad (sacudidas y
+  destellos, volúmenes por separado, velocidad del texto), y se juega con
+  teclado, ratón, **mando** o el dedo en el móvil.
 
 ### Nivel 2 — El Vientre Húmedo (en preparación)
 
@@ -185,16 +190,15 @@ habilita en la web.
 
 El proyecto se desarrolla utilizando herramientas de código abierto y gratuitas, priorizando la accesibilidad y la sostenibilidad del desarrollo:
 
-| Área              | Herramienta            |
-| ----------------- | ---------------------- |
-| Motor de juego    | Phaser 3.90            |
-| Lenguaje          | TypeScript             |
-| Bundler           | Vite                   |
-| Calidad           | ESLint + Prettier      |
-| Diseño de niveles | Tiled Map Editor       |
-| Arte y animación  | Aseprite / LibreSprite |
-| Edición de audio  | Audacity               |
-| Publicación       | Itch.io / GitHub Pages |
+| Área              | Herramienta                                          |
+| ----------------- | ---------------------------------------------------- |
+| Motor de juego    | Phaser 3.90                                          |
+| Lenguaje          | TypeScript                                           |
+| Bundler           | Vite                                                 |
+| Calidad           | ESLint, Prettier y tests con Vitest                  |
+| Diseño de niveles | En código (`DefinicionNivel`), con `verificar-rutas` |
+| Arte              | Aseprite / LibreSprite; provisional a mano en código |
+| Publicación       | GitHub Pages (y empaquetable para itch.io)           |
 
 ## Filosofía del Proyecto
 
@@ -225,11 +229,13 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
    npm run verificar
    ```
 
-   Esto ejecuta formato, linter, tipos, las verificaciones del juego y el build
-   —lo mismo que corre el CI—. Si pasa aquí, pasa allí.
+   Esto ejecuta formato, linter, tipos, **tests**, las verificaciones del juego
+   y el build —lo mismo que corre el CI—. Si pasa aquí, pasa allí.
 
 3. Si el formato se queja, se arregla solo: `npm run format`
-4. Abre un Pull Request. El CI vuelve a comprobarlo todo.
+4. Abre un Pull Request con la plantilla rellena. El CI vuelve a comprobarlo
+   todo y, si cambias lógica, pide que traigas su test. Los detalles, en
+   [CONTRIBUTING](CONTRIBUTING.md).
 
 ### Comandos disponibles
 
@@ -239,6 +245,8 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 | `npm run build`            | Build de producción en `dist/`                      |
 | `npm run preview`          | Sirve el build de producción para probarlo          |
 | `npm run verificar`        | **Todas** las comprobaciones del CI, de una vez     |
+| `npm test`                 | Tests unitarios (Vitest), en menos de un segundo    |
+| `npm run test:vigilar`     | Los tests, repitiéndose al guardar                  |
 | `npm run format`           | Aplica el formato de Prettier                       |
 | `npm run lint`             | Reglas de código (ESLint)                           |
 | `npm run typecheck`        | Comprobación de tipos sin generar build             |
@@ -247,6 +255,7 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 | `npm run verificar-textos` | Léxico del mundo y tildes en los textos visibles    |
 | `npm run exportar-arte`    | Saca los sprites a JSON para las láminas de la web  |
 | `npm run probar-tactil`    | Prueba el mando táctil con toques reales en Chrome  |
+| `npm run exigir-tests`     | Comprueba que una rama trae tests si cambia lógica  |
 
 `npm run dev` sirve el juego en `/` y el portal en `/web/`. Los `verificar-*` y
 los dos últimos son propios del proyecto y no los cubre ningún linter.
@@ -256,9 +265,11 @@ al caer al fondo el jugador quedaba encallado; ahora eso no puede colarse.
 ### Documentación
 
 - **[docs/DESARROLLO.md](docs/DESARROLLO.md)** — estructura del proyecto, flujo
-  de escenas, arquitectura del combate, convenciones y ajuste de sensación.
-- **[docs/issues/](docs/issues/)** — encargos de arte pendientes, con formatos y
-  criterios de aceptación.
+  de escenas, combate, tests, cada sistema y por qué se hizo así.
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — cómo trabajar: ramas, PR, tests y
+  las reglas de arte, textos y canon.
+- **[docs/](docs/README.md)** — el resto: el canon, los encargos de arte, la
+  guía de pruebas con jugadores y los materiales de presentación.
 
 ## Créditos de terceros
 

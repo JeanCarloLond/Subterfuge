@@ -4,11 +4,11 @@ public
 *.docx
 
 # Documentos del equipo: se respetan tal cual se escribieron.
-docs/Propuesta-inicial.md
+docs/historico/propuesta-inicial.md
 
-# Encargos de arte: ya publicados como issues en GitHub, reformatearlos aquí
-# solo crearía diferencias con lo que el equipo ya está leyendo allí.
-docs/issues
+# Encargos de arte: el texto del equipo, tal como se escribió. Reformatearlos
+# solo crearía diferencias con lo que ya se ha leído o publicado como issue.
+docs/arte/encargos
 
 # Generado por scripts/exportar-arte.mjs
 web/generado

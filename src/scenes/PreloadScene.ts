@@ -17,7 +17,7 @@ import { PISTAS, SIN_PRECARGA, type Pista } from '../systems/Musica';
  *   - Todo lo que sigue terminando en `-placeholder` es provisional y se genera
  *     por codigo mientras el equipo produce el sprite definitivo.
  *
- * El arte definitivo es pixel art hecho a mano en Aseprite (ver docs/issues/).
+ * El arte definitivo es pixel art hecho a mano en Aseprite (ver docs/arte/encargos/).
  * No sustituir ningun placeholder por imagenes generadas con IA.
  */
 export class PreloadScene extends Phaser.Scene {

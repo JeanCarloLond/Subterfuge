@@ -1,3 +1,8 @@
+> **Documento histórico.** Es la propuesta técnica del 9 de septiembre, antes
+> de empezar. Se conserva como registro: el juego y sus herramientas cambiaron
+> después (los niveles se definen en código, no en Tiled). Lo vigente está en
+> [DESARROLLO](../DESARROLLO.md).
+
 * **DOCUMENTO TÉCNICO: PROPUESTA DE DESARROLLO PARA "SUBTERFUGE"**
 
    Fecha: 9 de septiembre de 2026

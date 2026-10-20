@@ -52,7 +52,7 @@ type DireccionAtaque = 'lateral' | 'arriba' | 'abajo';
  * Fervor, Pocion de Carne y muerte.
  *
  * El sprite sigue siendo un placeholder generado por codigo; el arte definitivo
- * es pixel art hecho a mano en Aseprite por el equipo (ver docs/issues/).
+ * es pixel art hecho a mano en Aseprite por el equipo (ver docs/arte/encargos/).
  */
 /**
  * El ciclo de caminar: contacto, paso, contacto al reves, paso. La pose de

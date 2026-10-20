@@ -29,14 +29,20 @@ La propuesta técnica se equivoca en ese punto.
 
 ## Puesta en marcha
 
+Hace falta **Node.js 22.12 o superior**.
+
 ```bash
 npm install
-npm run dev              # servidor de desarrollo con hot-reload
+npm run dev              # servidor de desarrollo: el juego en / y el portal en /web/
+npm test                 # tests unitarios (Vitest), en menos de un segundo
+npm run verificar        # todo lo que corre el CI: formato, lint, tipos, tests, verificaciones y build
 npm run build            # comprobación de tipos + build de producción en dist/
 npm run preview          # sirve el build de producción
-npm run verificar-rutas  # comprueba que todos los niveles se puedan desandar
-npm run verificar-arte   # comprueba figuras y tilesets
 ```
+
+La lista completa de comandos está en el [README](../README.md#comandos-disponibles)
+y el flujo de trabajo, con los tests que se piden a cada PR, en
+[CONTRIBUTING](../CONTRIBUTING.md).
 
 ### `verificar-rutas` — léelo antes de tocar un nivel
 
@@ -53,68 +59,35 @@ cambiar la geometría de cualquier zona, o los valores de salto.
 
 ## Estructura
 
+Por carpeta, con los archivos que conviene conocer antes de tocar nada. El resto
+se explica solo con su nombre y su comentario de cabecera.
+
 ```
 src/
-  main.ts                        Configuración del juego y registro de escenas
-  style.css
-  config/
-    Sacramento.ts                Constantes de diseño (movimiento, combate, Fervor…)
-  input/
-    Controles.ts                 Mapa de entrada centralizado
-  systems/
-    Vitalidad.ts                 Puntos de vida, daño y curación (jugador y enemigos)
-    Fervor.ts                    Recurso de devoción
-  entities/
-    Enemigo.ts                   Interfaz común a todos los enemigos
-    CirujanoSacerdote.ts         Personaje jugable: locomoción y combate
-    Devoto.ts                    Enemigo cuerpo a cuerpo (Atrio)
-    Vestal.ts                    Enemigo a distancia, lanza sellos (Pasillos)
-    Sello.ts                     Proyectil del Vestal; el parry lo devuelve
-    Reformado.ts                 Jefe del teaser, tres fases (Salas)
-  objetos/
-    Altar.ts                     Punto de guardado
-    FragmentoCodice.ts           Coleccionable de lore
-    Reliquia.ts                  Mejora permanente escondida (vida o pociones)
-    Ofrenda.ts                   Lo que suelta un enemigo al caer: carne o sello
-    Impacto.ts                   Game feel: hitstop, sacudida, chispas, destellos
-    Sonido.ts                    Efectos sintetizados con la Web Audio API
-    Musica.ts                    Banda sonora: pistas por zona con fundido cruzado
-    ArteProvisional.ts           Pixel art de relleno escrito a mano en código
-    Progreso.ts                  Estado que sobrevive al cambio de zona (Códice)
-  lore/
-    Codice.ts                    Textos de los fragmentos, derivados del world bible
-  ui/
-    HudScene.ts                  HUD como escena paralela, alimentada por eventos
-    PausaScene.ts                Menú de pausa sobre el juego detenido
-    TextoControles.ts            Texto de la ayuda, compartido por el panel y la pausa
-    BarraVida.ts                 Barra flotante de los enemigos normales
-    CodiceScene.ts               Lectura del Códice sobre el juego en pausa
-  scenes/
-    BootScene.ts                 Arranque mínimo
-    PreloadScene.ts              Carga de assets + placeholders generados por código
-    EscenaNivel.ts               Lógica común a todos los niveles del descenso
-    AtrioScene.ts                Zona 1: el Atrio (solo datos)
-    PasillosScene.ts             Zona 2: Pasillos de Preparación (solo datos)
-    CriptasScene.ts              Zona 3: Criptas de Espera (solo datos)
-    SalasScene.ts                Zona 4: Salas de Sacramento, el jefe (solo datos)
-    FinalScene.ts                Cierre del Nivel 1: lanza la cinemática y cuenta lo hallado
-    CinematicaScene.ts           La cinemática del sacramento: la niña en pantalla
-public/assets/
-  tilesets/
-    vientre.png                  Sillería 16x16 que embaldosa sin costura
-    vientre-grietas.png          Calcomanías de grieta
-    vientre-musgo.png            Calcomanías de musgo
-  sprites/  audio/  maps/        Vacíos hasta que llegue el resto del arte
-docs/
-  DESARROLLO.md                  Este archivo
-  Propuesta-inicial.md           Propuesta técnica original
-  Subterfuge-world-bible.docx    Biblia del universo
-  issues/                        Encargos de arte listos para publicar
-  arte/                          Paleta y guía de estilo (pendiente)
-    piezas/                      Piezas de muro del equipo (origen del tileset)
-scripts/
-  generar-tileset.mjs            Convierte docs/arte/piezas/ en el tileset
-  crear-issues.ps1               Publica docs/issues/*.md como issues de GitHub
+  main.ts                 Configuración de Phaser y orden de las escenas
+  config/Sacramento.ts    Todas las constantes de diseño: movimiento, combate, Fervor, especies
+  input/                  Entrada: Controles (teclado y ratón), Tactil y Toques (dedos), Mando
+  systems/                Lo que no es una escena ni una entidad
+    Progreso.ts             La partida en curso: lo recogido, lo descubierto, la Injertadora
+    Guardado.ts             El descenso guardado en los Altares (#149)
+    Memoria.ts              Lo descubierto alguna vez, para el portal; no se borra nunca
+    Ajustes.ts              Opciones: sacudidas y destellos, volúmenes, velocidad del texto
+    Impacto.ts              Game feel: hitstop, sacudida, chispas
+    Sonido.ts · Musica.ts   Efectos sintetizados y banda sonora
+    ArteProvisional.ts      Pixel art provisional escrito a mano (y los retratos y la cinemática)
+  entities/               El Cirujano, los enemigos, el jefe y las especies del Vientre
+  objetos/                Altar, fragmento del Códice, reliquia, ofrenda
+  lore/                   Textos y datos del mundo: Códice, Registro, voces, cinemática…
+  scenes/                 Inicio, las cuatro zonas (sobre EscenaNivel), el cierre y la cinemática
+  ui/                     HUD, pausa, opciones, diálogo, Códice y botonera táctil
+web/
+  index.html              El portal de la Diócesis
+  src/paginas/            Una página por sección: portada, pabellón, doctrina, registro…
+  src/*.ts                Módulos del portal: memoria, texto, láminas, ambiente
+tests/                    Tests unitarios (Vitest); `preparar.ts` simula el navegador
+scripts/                  verificar-*, exigir-tests, exportar-arte, probar-tactil, generar-tileset
+public/                   Lo que se sirve tal cual: audio, tilesets, iconos, vistas previas
+docs/                     Documentación: ver docs/README.md
 ```
 
 ## Flujo de escenas
@@ -129,6 +102,9 @@ scripts/
 Boot ──► Preload ──► Inicio ──► Atrio ──► Pasillos ──► Criptas ──► Salas ──► Final ──► Cinematica
                        │  Continuar  │          │            │          │
                        └─────────────┴──────────┴────────────┴──────────┴──► Hud  (escena paralela)
+
+Nivel 2, en construcción (#129):
+Final ──(desagüe de la Sala 7)──► VientreHumedo ──► FinalNivel2   (la Puerta del Cuerpo)
 ```
 
 **Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
@@ -217,79 +193,41 @@ poses del personaje (se recoge en la anticipación, se lanza en el impacto) y un
 impulso visual de unos píxeles hecho moviendo el origen del sprite, no su
 posición, para que las colisiones no se enteren.
 
-## Estado actual — Fase 2 (Núcleo jugable)
+## Tests
 
-**Fase 1 — Prototipo (completa):**
+`npm test` corre los tests unitarios de `tests/` con Vitest, en Node y sin
+navegador. Cubren la lógica que se puede probar sin Phaser: el guardado y el
+Progreso, los ajustes, la memoria entre juego y portal (y sus claves), el mando,
+la integridad del lore y las utilidades de texto de la web.
 
-- [x] Movimiento horizontal con aceleración/fricción diferenciada en suelo y aire
-- [x] Salto con **coyote time** (90 ms) y **buffer de salto** (120 ms)
-- [x] Salto variable (soltar el botón recorta la altura)
-- [x] Doble salto (deliberadamente más débil: el Cirujano es técnico, no acróbata)
-- [x] Dash con **i-frames** (160 ms de dash, 130 ms de invulnerabilidad)
-- [x] Agarre de bordes y trepado
-- [x] Cámara con seguimiento suave y deadzone
+- `tests/preparar.ts` da un `localStorage` en memoria y `matchMedia`, y descarga
+  los módulos entre tests: los singletons (`progreso`, `ajustes`) no arrastran
+  estado de un test a otro.
+- Un módulo que importa Phaser no se puede cargar en Node. Por eso `Ajustes`
+  solo importa sus tipos: si un sistema nuevo necesita tests, que no dependa del
+  motor más que lo justo.
+- En cada PR, `scripts/exigir-tests.mjs` pide un test si cambia
+  `src/systems/`, `src/input/` o los módulos de `web/src/`. Ver
+  [CONTRIBUTING](../CONTRIBUTING.md#tests).
 
-**Fase 2 — Núcleo jugable (completa salvo Tiled):**
+Lo que necesita el motor se prueba de otra forma: `verificar-rutas` (que cada
+nivel se pueda desandar), `verificar-arte`, `verificar-textos` y
+`probar-tactil`, que juega con dedos de verdad en Chrome.
 
-- [x] Ataque cuerpo a cuerpo con hitbox por ventanas
-- [x] Ataque cargado (mantener 450 ms, cuesta 30 de Fervor)
-- [x] Parry con ventana de 140 ms que aturde al enemigo 900 ms
-- [x] Fervor gastable: se gana golpeando (+6) y con parry (+20)
-- [x] Vitalidad, i-frames al ser herido y retroceso
-- [x] Poción de Carne (3 cargas, cura 3, deja vulnerable 600 ms)
-- [x] Devotos con IA: patrulla → persecución → telegrafía → golpe, con memoria
-- [x] Altares: guardado, reposición y reaparición al morir
-- [x] Fragmentos del Códice con aviso no intrusivo
-- [x] HUD desacoplado por eventos
-- [ ] **Tilemap de Tiled** — bloqueado hasta que lleguen los tilesets
+## Estado actual
 
-**Fase 3 — Pulido y contenido (en curso):**
+- **Nivel 1 — El Sacramento: completo.** Las cuatro zonas, el jefe, el cierre
+  con la cinemática, la pantalla de inicio, el guardado en Altares, las opciones
+  de accesibilidad, el mando y los dedos. El README lo cuenta para quien juega.
+- **Nivel 2 — El Vientre Húmedo: en construcción.** Las especies, las Mareas y
+  la Lluvia Tibia ya existen y varias se ven en el Nivel 1; falta el nivel en
+  sí (geometría, la niña como compañera y su cierre): issues #128 a #134.
+- **Arte definitivo:** el de la sillería es del equipo; el resto sigue siendo
+  provisional. Los encargos están en [`arte/encargos/`](arte/encargos/) y en las
+  issues #105 a #107.
 
-- [x] Sensación de impacto: hitstop, sacudida, chispas y anillos (`Impacto.ts`)
-- [x] Arco visible del golpe (sin él, el ataque es invisible hasta que toca algo)
-- [x] Telegrafía del Devoto: se tensa y se tiñe antes de golpear
-- [x] Segunda zona: Pasillos de Preparación
-- [x] Umbrales de transición entre zonas
-- [x] Final con gancho y recuento del Códice
-- [x] Segundo tipo de enemigo: el Vestal, a distancia
-- [x] Sellos del diezmo: proyectiles que el parry **devuelve** al remitente
-- [x] Jefe: el Reformado, tres fases (`SalasScene`)
-- [x] Tercera zona: Salas de Sacramento
-- [x] Audio: efectos y drone de ambiente, sintetizados sin archivos
-- [x] Daño por contacto: rozar a un enemigo hiere (el dash lo atraviesa)
-- [x] Barras de vida flotantes en enemigos
-- [x] Lectura del Códice (`L`) con estado persistente entre zonas
-- [x] Reliquias en rutas secretas: +vitalidad máxima, +pociones
-- [x] Decorado por zona: columnas, velas, exvotos, charcos, altar-camilla
-- [x] Cierre con línea oculta al completar el Códice
-- [x] Golpes hacia arriba y hacia abajo; el de abajo rebota al conectar
-- [x] Cuarta zona: Criptas de Espera
-- [x] Placas del Registro: lore de una línea con `E`
-- [x] Ocho fragmentos del Códice
-- [x] Rezar como acto: el Cirujano se arrodilla, el Altar responde, el aviso explica
-- [x] Menú de pausa (`Esc`/`P`): continuar, controles, sonido, volver al Atrio
-- [x] Menú contextual del navegador bloqueado en toda la página
-- [x] Efectos diferenciados por enemigo y por acción (aterrizar, agarre, poción…)
-- [x] Banda sonora por zona, tema de jefe y de cierre (CC0, con fundidos)
-- [x] Aviso en pantalla mientras el navegador tenga el audio bloqueado
-- [x] Daño por caída proporcional a la altura, con umbral por encima del doble salto
-- [x] Alcance del golpe ampliado: banda segura frente al zarpazo del jefe
-- [x] Reliquias que también curan al recogerse, y el HUD enseña la tecla de la Poción
-- [x] Campanario del Atrio sin voladizo: la primera reliquia se alcanza con doble salto
-- [x] Ofrendas: los enemigos sueltan carne (+1 vida) o sellos (+20 Fervor) al caer
-- [x] Panel de controles a todo el ancho, con líneas acotadas para que no se pisen
-- [x] Menús con ratón: pasar por encima selecciona, clic confirma
-- [x] Ambiente de fondo: atrezo lejano con parallax, luz de velas, polvo y viñeta
-- [x] Campanario a 80 px: el secreto es verlo, no una prueba de precisión
-- [x] Jefe: azar ponderado por fase, embestida doble, escombros del techo
-- [x] Arena del jefe con tres alturas y pedestal que la embestida pasa por debajo
-- [x] Sillería del equipo en las cuatro zonas, con tinte y desgaste por nivel
-- [ ] Sustituir el resto de placeholders por el arte del equipo
-- [x] Cierre con la cinemática del sacramento y su línea final (#147)
-- [ ] Segundo tipo de enemigo
-- [ ] Jefe o evento narrativo clave
-- [ ] Audio
-- [ ] Retirar la ayuda de controles antes de una build pública
+Lo que falta se sigue en las [issues](https://github.com/JeanCarloLond/Subterfuge/issues),
+no aquí: una lista en un documento se queda vieja en cuanto se cierra una.
 
 ## Controles
 
@@ -697,7 +635,7 @@ iglesia; los Sacramentos ya no.
 | Pabellón 9  | 0           | El Atrio por dentro: un pabellón, su Libro de Diezmos y una jornada (#79).   |
 | Doctrina    | 1           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.            |
 | Registro    | 2           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.    |
-| El Vientre  | 3           | El corte de las seis capas.                                                  |
+| El Vientre  | 3           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.           |
 | Linaje      | 4           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).  |
 | Sacramentos | 5           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64. |
 
@@ -1271,20 +1209,10 @@ con el fondo aplastado a negro. Están reconstruidas a su resolución nativa y e
 negro recortado por umbral, pero conviene una reentrega en **PNG con alfa** y, si
 existen, los `.aseprite` fuente.
 
-## Servidores MCP configurados
-
-Ambos son MIT y están dados de alta a nivel de proyecto:
-
-| Servidor                                 | Uso                                                                                                       |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `tiled` (`tiled-mcp-server`)             | Inspeccionar y editar mapas `.tmx`/`.tmj` sin abrir Tiled. **Versión 0.0.2 — trátalo como experimental.** |
-| `image-tiler` (`image-tiler-mcp-server`) | Analizar capturas de referencia grandes a resolución completa sin degradarlas                             |
-
-Comprobar estado con `claude mcp list`.
-
 ## Encargos de arte
 
-Los encargos viven en [`docs/issues/`](issues/) como Markdown con frontmatter.
+Los encargos de arte pendientes viven en [`docs/arte/encargos/`](arte/encargos/)
+como Markdown con frontmatter.
 Para publicarlos en GitHub:
 
 ```powershell

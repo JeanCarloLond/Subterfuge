@@ -3,7 +3,7 @@
 Lo que digo yo, de corrido, mientras alguien del equipo lleva el juego. Unos
 diez minutos hablados. Las acotaciones entre corchetes son para mí; lo demás se
 dice tal cual o se parafrasea. El recorrido detallado (qué tecla, qué escena)
-está en `GUION-PRESENTACION.md`; esto es el discurso.
+está en `guion-presentacion.md`; esto es el discurso.
 
 ---
 
