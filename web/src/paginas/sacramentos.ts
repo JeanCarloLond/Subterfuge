@@ -26,7 +26,7 @@ export function renderSacramentos(contenedor: HTMLElement): void {
           <canvas class="lamina" data-figura="placa" width="72" height="72" aria-hidden="true"></canvas>
           <span class="profundidad">trámite · vinculante</span>
           <h3>Examen de Pureza</h3>
-          <p>Diez preguntas para determinar su lugar en la Diócesis. Conteste con sinceridad; el Registro contrastará sus respuestas con lo que ya consta de usted.</p>
+          <p>Doce preguntas para determinar su lugar en la Diócesis. Conteste con sinceridad; el Registro contrastará sus respuestas con lo que ya consta de usted.</p>
         </a>
         <a class="tarjeta" href="#/sacramento">
           <canvas class="lamina" data-figura="bandeja" width="72" height="72" aria-hidden="true"></canvas>

@@ -2,7 +2,7 @@
  * El Examen de Pureza.
  *
  * Del bible: "un test vocacional que decide si eres apto como Devoto… y que
- * responde cosas que no deberías saber de ti". Diez preguntas en el tono de un
+ * responde cosas que no deberías saber de ti". Doce preguntas en el tono de un
  * trámite, cada respuesta suma a un perfil, y el veredicto es vinculante. Lo
  * inquietante no está en las preguntas: está en que el Registro sabe cuántas
  * veces lo has hecho, hasta dónde has bajado y qué hora es.
@@ -104,6 +104,26 @@ const PREGUNTAS: readonly Pregunta[] = [
       { texto: 'Lo guardaría para el clero.', suma: { vestal: 2 } },
       { texto: 'Lo estudiaría antes.', suma: { anatomista: 2 } },
       { texto: 'Me lo quedaría. Es mío.', suma: { rebano: 2, ojos: 1 } },
+    ],
+  },
+  // Las dos del Vientre Húmedo (#113). No adelantan nada que la biblia no
+  // publique: el dicho del Remedo y que el Mondador casi no existe.
+  {
+    texto: 'Encuentra un bisturí tibio sobre la bandeja. ¿Qué hace?',
+    opciones: [
+      { texto: 'Lo uso. Un bisturí es un bisturí.', suma: { devoto: 2 } },
+      { texto: 'Lo aparto y vuelvo a contar el instrumental.', suma: { manos: 3 } },
+      { texto: 'Lo pruebo en el ofrendado.', suma: { rebano: 2 } },
+      { texto: 'Le anoto la temperatura.', suma: { anatomista: 2 } },
+    ],
+  },
+  {
+    texto: '¿Cuántos Mondadores quedan en el Vientre?',
+    opciones: [
+      { texto: 'Los que el Registro diga.', suma: { devoto: 2 } },
+      { texto: 'Ninguno, o casi.', suma: { ojos: 1, anatomista: 1 } },
+      { texto: 'Los suficientes para las máscaras.', suma: { vestal: 2 } },
+      { texto: 'No es asunto del fiel.', suma: { vestal: 1, devoto: 1 } },
     ],
   },
   {
@@ -210,7 +230,7 @@ function loQueSabe(vez: number): string[] {
 
 const QUIETO =
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 const MESES = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 
 /** Cuántos exámenes constan ya, sin contar este. */
@@ -247,7 +267,7 @@ export function renderExamen(contenedor: HTMLElement): () => void {
       <h1>Examen de Pureza</h1>
       <div class="filete"></div>
       <p class="lede">
-        Cuestionario de diez preguntas. No hay respuestas correctas ni incorrectas; solo
+        Cuestionario de doce preguntas. No hay respuestas correctas ni incorrectas; solo
         respuestas. Al terminar recibirá su clasificación. Se recuerda que el resultado es
         vinculante y que las respuestas se conservan.
       </p>

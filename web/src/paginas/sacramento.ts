@@ -3,8 +3,9 @@
  *
  * Del bible: "minijuego de precisión quirúrgica, tipo Operation pero
  * litúrgico: sigue las instrucciones del Códice paso a paso; fallar tiene
- * consecuencias visuales en el resto del sitio". Seis pasos, cada uno con un
- * versículo del Códice: cubrir el rostro, pesar la ofrenda, abrir el esternón,
+ * consecuencias visuales en el resto del sitio". Siete pasos, casi todos con un
+ * versículo del Códice: cubrir el rostro, pesar la ofrenda, contar el
+ * instrumental (y apartar el Remedo, #113), abrir el esternón,
  * separar las costillas, injertar sobre el corazón entre latido y latido, y
  * sellar. Fallar deja una mancha en el portal que no se va.
  *
@@ -28,8 +29,22 @@ import { elemento } from '../texto';
 const ANCHO = 160;
 const ALTO = 100;
 
-type Paso = 'cubrir' | 'pesar' | 'incidir' | 'abrir' | 'injertar' | 'sellar' | 'fin';
-const PASOS: readonly Paso[] = ['cubrir', 'pesar', 'incidir', 'abrir', 'injertar', 'sellar'];
+type Paso = 'cubrir' | 'pesar' | 'revisar' | 'incidir' | 'abrir' | 'injertar' | 'sellar' | 'fin';
+const PASOS: readonly Paso[] = [
+  'cubrir',
+  'pesar',
+  'revisar',
+  'incidir',
+  'abrir',
+  'injertar',
+  'sellar',
+];
+
+/**
+ * Las tres filas de la bandeja donde se cuentan los bisturís en el paso de
+ * revisar. La de abajo es la del bisturí de siempre.
+ */
+const FILAS_BISTURI = [38, 43, 48] as const;
 
 interface Punto {
   x: number;
@@ -157,7 +172,7 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
       <h1>El Sacramento</h1>
       <div class="filete"></div>
       <p class="lede">
-        Práctica guiada para aspirantes a Manos. Seis pasos, cada uno con su versículo. Puede
+        Práctica guiada para aspirantes a Manos. Siete pasos, cada uno con su norma. Puede
         usar el ratón o el dedo. Lea la instrucción y hágala tal cual; el Códice no admite
         preguntas y esta práctica tampoco.
       </p>
@@ -196,6 +211,11 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
   let aguja = 0;
   let pesoFijado = false;
 
+  // Revisar: de los tres bisturís de la bandeja, uno es un Remedo. La biblia:
+  // "un bisturí tibio es un Remedo". Aquí no hay temperatura que tocar, así
+  // que el tell es el mismo que en el juego: el Remedo tiembla.
+  let remedo: number = Math.floor(Math.random() * FILAS_BISTURI.length);
+
   // Incidir: se sigue la línea sin salirse.
   let avance = 0;
   let cortando = false;
@@ -226,6 +246,8 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
       'Códice II, 4 · "Se cubrirá el rostro antes de la incisión."  Arrastra la tela de la bandeja sobre el rostro.',
     pesar:
       'Códice III, 1 · "Se pesará la ofrenda. Las dos cifras, al Registro."  Mantén pulsado para subir la aguja de la báscula y suelta dentro de la banda.',
+    revisar:
+      'Dicho de las Manos · "Un bisturí tibio es un Remedo."  Antes de cortar, aparta de la bandeja el bisturí que no está quieto.',
     incidir:
       'Códice VI, 1 · "Las Manos no eligen: ejecutan."  Sigue la línea del esternón con el bisturí, de arriba abajo, sin salirte.',
     abrir:
@@ -279,6 +301,7 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
     telaColocada = false;
     aguja = 0;
     pesoFijado = false;
+    remedo = Math.floor(Math.random() * FILAS_BISTURI.length);
     avance = 0;
     cortando = false;
     desvio = 0;
@@ -353,6 +376,17 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
     const t = performance.now();
 
     if (paso === 'cubrir' && distancia(p, tela) < 10) arrastrandoTela = true;
+    if (paso === 'revisar') {
+      // Cada bisturí ocupa una fila de x 12 a 26. Se elige el MÁS CERCANO, no
+      // el primero que cae dentro: las filas están a 5 px y con el dedo la
+      // holgura las solapa.
+      let fila = 0;
+      FILAS_BISTURI.forEach((y, i) => {
+        if (Math.abs(p.y - y) < Math.abs(p.y - FILAS_BISTURI[fila])) fila = i;
+      });
+      const cerca = Math.abs(p.y - FILAS_BISTURI[fila]) <= holgura(3, 12);
+      if (cerca && p.x > 8 && p.x < 30) avanzar(fila === remedo);
+    }
     if (paso === 'incidir' && distancia(p, INCISION[0]) < holgura(5, 22)) {
       cortando = true;
       avance = 0;
@@ -547,14 +581,18 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
     rect(6, 20, 1, 58, C.metalBorde);
     rect(37, 21, 1, 57, '#2c2522');
     rect(7, 77, 31, 1, '#2c2522');
-    // El bisturí, de mango dorado grabado, si no está en la mano.
-    if (paso !== 'incidir' && resultados.incidir === undefined) {
-      rect(13, 48, 4, 1, C.hueso);
-      px(12, 48, C.turquesa);
-      rect(17, 48, 9, 1, C.oro);
-      px(19, 47, C.oro);
-      px(23, 47, C.oro);
+    // Al revisar hay tres bisturís en la bandeja, y uno no es un bisturí.
+    if (paso === 'revisar') {
+      const t = performance.now();
+      FILAS_BISTURI.forEach((y, i) => {
+        // El Remedo se retuerce un instante cada poco: no es el color.
+        const tiembla = i === remedo && t % 900 < 120;
+        pintarBisturi(tiembla ? (t % 60 < 30 ? 1 : -1) : 0, y);
+      });
+      return;
     }
+    // El bisturí, de mango dorado grabado, si no está en la mano.
+    if (paso !== 'incidir' && resultados.incidir === undefined) pintarBisturi(0, 48);
     // El separador, hasta que se usa.
     if (resultados.abrir === undefined && paso !== 'abrir') {
       rect(14, 59, 2, 6, C.metal);
@@ -569,6 +607,14 @@ export function renderSacramento(contenedor: HTMLElement): () => void {
       px(17, 71, C.metal);
       rect(18, 72, 8, 1, C.turquesa);
     }
+  }
+
+  function pintarBisturi(dx: number, y: number): void {
+    rect(13 + dx, y, 4, 1, C.hueso);
+    px(12 + dx, y, C.turquesa);
+    rect(17 + dx, y, 9, 1, C.oro);
+    px(19 + dx, y - 1, C.oro);
+    px(23 + dx, y - 1, C.oro);
   }
 
   function pintarBascula(): void {
