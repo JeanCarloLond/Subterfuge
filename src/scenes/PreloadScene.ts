@@ -84,10 +84,13 @@ export class PreloadScene extends Phaser.Scene {
     // y antes de esta linea todavia no existe.
     ponerCursor(this);
 
-    // `?cinematica` salta directo al cierre para ver la cinematica del
-    // sacramento sin jugar el Nivel 1 (#147). Como `?tactil`, es un banco de
-    // pruebas: sin el parametro, el juego empieza en el Atrio.
-    this.scene.start(location.search.includes('cinematica') ? 'Final' : 'Atrio');
+    // Se entra por la pantalla de inicio (#150). Los dos bancos de pruebas se
+    // la saltan: `?cinematica` va directo al cierre (#147) y `?tactil`, con
+    // el que se prueban los controles de dedo, directo al Atrio. Con
+    // `?tactil&inicio` se prueba la propia pantalla de inicio.
+    const consulta = location.search;
+    const saltarInicio = consulta.includes('tactil') && !consulta.includes('inicio');
+    this.scene.start(consulta.includes('cinematica') ? 'Final' : saltarInicio ? 'Atrio' : 'Inicio');
   }
 
   private dibujarBarraDeCarga(): void {

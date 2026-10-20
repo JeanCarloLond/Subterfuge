@@ -126,10 +126,20 @@ scripts/
 > muestra y qué queda pendiente de decidir.
 
 ```
-Boot ──► Preload ──► Atrio ──► Pasillos ──► Criptas ──► Salas ──► Final
-                       │          │            │          │
-                       └──────────┴────────────┴──────────┴──► Hud  (escena paralela)
+Boot ──► Preload ──► Inicio ──► Atrio ──► Pasillos ──► Criptas ──► Salas ──► Final ──► Cinematica
+                       │  Continuar  │          │            │          │
+                       └─────────────┴──────────┴────────────┴──────────┴──► Hud  (escena paralela)
 ```
+
+**Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
+Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
+guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:
+la zona, el Altar encendido y el `Progreso` entero. Continuar restaura el
+Progreso y arranca la zona con `{ altar }`. La vida, las pociones y el Fervor
+no se guardan: rezar los repone. Volver al Atrio o llegar al cierre lo borra.
+
+Bancos de pruebas: `?tactil` va directo al Atrio, `?tactil&inicio` pasa por la
+pantalla de inicio y `?cinematica` va directo al cierre.
 
 ### Añadir una zona nueva
 

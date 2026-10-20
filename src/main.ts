@@ -11,6 +11,7 @@ import {
 import { toques } from './input/Toques';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
+import { InicioScene } from './scenes/InicioScene';
 import { AtrioScene } from './scenes/AtrioScene';
 import { PasillosScene } from './scenes/PasillosScene';
 import { CriptasScene } from './scenes/CriptasScene';
@@ -70,6 +71,7 @@ const configuracion: Phaser.Types.Core.GameConfig = {
   scene: [
     BootScene,
     PreloadScene,
+    InicioScene,
     AtrioScene,
     PasillosScene,
     CriptasScene,
