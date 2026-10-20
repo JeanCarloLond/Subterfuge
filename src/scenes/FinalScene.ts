@@ -83,6 +83,20 @@ export class FinalScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setAlpha(0);
 
+    // Lo que viene, dicho sin trailer (#153): la cinematica acaba de prometer
+    // una huida, y quien termina tiene que saber que esa parte existe y aun no
+    // se juega. Cuando exista el Nivel 2 (#129), esto pasa a ser la opcion de
+    // seguir bajando.
+    const siguiente = this.add
+      .text(centroX, 186, 'Nivel 2 · El Vientre Húmedo · en desarrollo', {
+        fontFamily: 'monospace',
+        fontSize: '7px',
+        color: '#8a7d70',
+        align: 'center',
+      })
+      .setOrigin(0.5, 0.5)
+      .setAlpha(0);
+
     const recuento = this.add
       .text(centroX, 208, this.textoRecuento(), {
         fontFamily: 'monospace',
@@ -120,6 +134,7 @@ export class FinalScene extends Phaser.Scene {
     // Entradas escalonadas: el cierre debe respirar, no soltarlo todo de golpe.
     this.aparecer(gancho, 700);
     this.aparecer(titulo, 1600);
+    this.aparecer(siguiente, 2000);
     this.aparecer(recuento, 2400);
     this.aparecer(reinicio, 3200);
 
