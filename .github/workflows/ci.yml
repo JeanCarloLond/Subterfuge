@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+    # labeled/unlabeled: poner o quitar `sin-tests` vuelve a pasar el CI.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
 
 # Si alguien empuja dos veces seguidas, cancela la ejecución anterior en vez de
@@ -40,6 +42,47 @@ jobs:
 
       - name: Comprobación de tipos (TypeScript)
         run: npm run typecheck
+
+  # Tests unitarios (Vitest): el guardado, los ajustes, la memoria del portal,
+  # el mando y la integridad del lore. Corren en Node y tardan segundos.
+  tests:
+    name: Tests unitarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Tests (Vitest)
+        run: npm test
+
+  # Solo en los PR: si cambian lógica que se puede probar (sistemas, entrada,
+  # módulos del portal) tienen que traer un test. La etiqueta `sin-tests` lo
+  # salta para los cambios que de verdad no lo necesitan. Ver CONTRIBUTING.md.
+  tests-en-el-pr:
+    name: El PR trae sus tests
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Hace falta la historia para comparar con la rama destino.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Exigir tests a la lógica nueva
+        env:
+          SIN_TESTS: ${{ contains(github.event.pull_request.labels.*.name, 'sin-tests') && '1' || '0' }}
+        run: node scripts/exigir-tests.mjs ${{ github.event.pull_request.base.sha }}
 
   # Comprobaciones propias del juego. No son linters: verifican que el
   # contenido siga siendo jugable, que es lo que un linter no puede ver.

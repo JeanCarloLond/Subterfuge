@@ -1,4 +1,6 @@
-import Phaser from 'phaser';
+// Solo tipos: este modulo no carga Phaser, asi se puede probar fuera del
+// navegador (tests/ajustes.test.ts).
+import type Phaser from 'phaser';
 
 /**
  * Los ajustes de quien juega (issue #151): se recuerdan en este navegador.
@@ -56,7 +58,7 @@ function leer(): Valores {
     if (!crudo) return base;
     const datos = JSON.parse(crudo) as Partial<Valores>;
     const paso = (v: unknown, def: number) =>
-      typeof v === 'number' ? Phaser.Math.Clamp(Math.round(v), 0, PASOS_VOLUMEN) : def;
+      typeof v === 'number' ? Math.min(PASOS_VOLUMEN, Math.max(0, Math.round(v))) : def;
     return {
       efectos: ['normal', 'suaves', 'apagados'].includes(datos.efectos as string)
         ? (datos.efectos as NivelEfectos)

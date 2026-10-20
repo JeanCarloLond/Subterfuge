@@ -12,12 +12,15 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:vigilar": "vitest",
     "verificar-rutas": "node scripts/verificar-rutas.mjs",
     "verificar-textos": "node scripts/verificar-textos.mjs",
     "verificar-arte": "node scripts/verificar-arte.mjs",
     "exportar-arte": "node scripts/exportar-arte.mjs",
     "probar-tactil": "node scripts/probar-tactil.mjs",
-    "verificar": "npm run format:check && npm run lint && npm run typecheck && npm run verificar-arte && npm run verificar-rutas && npm run verificar-textos && npm run build"
+    "verificar": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run verificar-arte && npm run verificar-rutas && npm run verificar-textos && npm run build",
+    "exigir-tests": "node scripts/exigir-tests.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -27,9 +30,13 @@
     "prettier": "^3.9.6",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.70.0",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "phaser": "^3.90.0"
+  },
+  "engines": {
+    "node": ">=22.12"
   }
 }
