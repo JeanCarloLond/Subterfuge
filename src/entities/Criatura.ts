@@ -32,13 +32,21 @@ import { Zarza } from './Zarza';
  * La escena no cambia.
  */
 export type CriaturaDef =
-  | { tipo: 'remedo'; x: number; y: number; ronda?: RangoPatrulla }
+  | { tipo: 'remedo'; x: number; y: number; ronda?: RangoPatrulla; huyendo?: boolean }
   | { tipo: 'serpiente'; x: number; y: number; arena: RangoPatrulla }
   | { tipo: 'mondador'; ruta: readonly (readonly [number, number])[] }
   | { tipo: 'buitre'; x: number; y: number }
   | { tipo: 'cerdo'; x: number; y: number; ronda: RangoPatrulla }
   | { tipo: 'cuervo'; posaderos: readonly (readonly [number, number])[] }
-  | { tipo: 'zarza'; x: number; y: number; altoTiles: number; anchoTiles?: number }
+  | {
+      tipo: 'zarza';
+      x: number;
+      y: number;
+      altoTiles: number;
+      anchoTiles?: number;
+      /** Un Remedo escondido entre las puas: sale al cortarla (#102). */
+      remedo?: boolean;
+    }
   | { tipo: 'alfombra'; x: number; y: number; anchoTiles: number }
   | { tipo: 'mata'; x: number; y: number }
   | { tipo: 'vena'; x: number; y: number; altoTiles: number }
@@ -130,6 +138,11 @@ export interface ContextoCriatura {
   presentar(titulo: string, subtitulo: string): void;
   curar(cantidad: number): void;
   ganarFervor(cantidad: number): void;
+  /**
+   * Pone otra criatura en el nivel, ya en marcha: el Remedo que sale de la
+   * Zarza al cortarla. Entra en su grupo como las del principio.
+   */
+  crear(def: CriaturaDef): void;
   /** Un aviso en el HUD, como los del Registro. */
   avisar(texto: string): void;
   /** Hace solido un objeto para el Cirujano: la Zarza cierra el paso. */
@@ -163,12 +176,12 @@ type Fabrica<T extends TipoCriatura> = (
 
 /** Una fabrica por especie. Cada especie entra con su issue (#96 a #104, #125). */
 const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
-  remedo: (ctx, d) => new Remedo(ctx, d.x, d.y, d.ronda),
+  remedo: (ctx, d) => new Remedo(ctx, d.x, d.y, d.ronda, d.huyendo),
   mondador: (ctx, d) => new Mondador(ctx, d.ruta),
   buitre: (ctx, d) => new Buitre(ctx, d.x, d.y),
   cerdo: (ctx, d) => new Cerdo(ctx, d.x, d.y, d.ronda),
   cuervo: (ctx, d) => new Cuervo(ctx, d.posaderos),
-  zarza: (ctx, d) => new Zarza(ctx, d.x, d.y, d.altoTiles, d.anchoTiles),
+  zarza: (ctx, d) => new Zarza(ctx, d.x, d.y, d.altoTiles, d.anchoTiles, d.remedo),
   serpiente: (ctx, d) => new SerpienteDeTejido(ctx, d.x, d.y, d.arena),
   vena: (ctx, d) => new Vena(ctx, d.x, d.y, d.altoTiles),
   alfombra: (ctx, d) => new Alfombra(ctx, d.x, d.y, d.anchoTiles),

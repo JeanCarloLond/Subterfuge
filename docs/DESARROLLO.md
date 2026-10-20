@@ -484,6 +484,20 @@ repite solo (graznidos, ronroneos, el pulso de la Vena) suena únicamente si la
 criatura está a menos de 260 px del Cirujano. La música del Vientre Húmedo
 espera a elegir una pista CC0.
 
+**Detalles que unen unas especies con otras.** La Zarza puede llevar un Remedo
+escondido (`remedo: true`): solo sale si se corta, y sale huyendo. La Serpiente,
+al despertar, pone la música de combate y la devuelve al vencerla o si se
+reinicia el combate; y el Cuervo que esté cerca grazna en alarma. La Vestal
+puede ser **cazadora** (`cazadora: true` en `vestales`): lleva la máscara de
+caparazón de Mondador. La Lluvia Tibia se oye: un siseo en bucle con gotas
+sueltas, que arrecia con la Marea.
+
+Una criatura puede poner otra en el nivel (`ctx.crear`). Entra en su grupo como
+las del principio; los solapes de neutrales y peligros se registran después de
+colocar las iniciales, así que una criatura nueva de esos dos contratos solo
+funciona si el nivel ya tenía alguna de su contrato. Hoy solo aparece el Remedo,
+que es hostil.
+
 **Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
 por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo
 reactiva. Por eso las criaturas entran con `meterSinPisar`, que los conserva.

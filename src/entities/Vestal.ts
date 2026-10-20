@@ -41,12 +41,19 @@ export class Vestal implements Enemigo {
   private readonly escena: Phaser.Scene;
   private readonly rango: RangoVestal;
 
-  constructor(escena: Phaser.Scene, x: number, y: number, rango: RangoVestal) {
+  constructor(
+    escena: Phaser.Scene,
+    x: number,
+    y: number,
+    rango: RangoVestal,
+    /** La cazadora de Mondadores lleva su mascara de caparazon (#99). */
+    textura = 'vestal-placeholder',
+  ) {
     this.escena = escena;
     this.rango = rango;
     this.vitalidad = new Vitalidad(VESTAL.vida);
 
-    this.sprite = escena.physics.add.sprite(x, y, 'vestal-placeholder');
+    this.sprite = escena.physics.add.sprite(x, y, textura);
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setData('vestal', this);
     this.sprite.setData('enemigo', this);
