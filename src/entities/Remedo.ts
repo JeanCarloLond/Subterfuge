@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { RangoPatrulla } from './Devoto';
 import type { Enemigo } from './Enemigo';
@@ -120,6 +121,7 @@ export class Remedo implements Habitante, Enemigo {
    * recoloca el sprite cada paso y se comeria un temblor hecho moviendolo.
    */
   private temblar(): void {
+    sonido.remedoTiembla();
     this.ctx.escena.tweens.add({
       targets: this.sprite,
       angle: { from: -9, to: 9 },
@@ -132,6 +134,7 @@ export class Remedo implements Habitante, Enemigo {
 
   private morder(xJugador: number): void {
     this.ctx.herir(ESPECIES.remedo.dano, this.sprite.x);
+    sonido.remedoMuerde();
     this.huir(xJugador);
   }
 

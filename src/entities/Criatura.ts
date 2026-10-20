@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
-import type { EstadoCirujano } from './CirujanoSacerdote';
+import type { TipoOfrenda } from '../objetos/Ofrenda';
+import type { EstadoCirujano, ResultadoDano } from './CirujanoSacerdote';
 import type { RangoPatrulla } from './Devoto';
 import { Alfombra } from './Alfombra';
 import { Buitre } from './Buitre';
@@ -12,6 +13,7 @@ import { Mata } from './Mata';
 import { Mondador } from './Mondador';
 import { PuenteTejido } from './PuenteTejido';
 import { Remedo } from './Remedo';
+import { SerpienteDeTejido } from './SerpienteDeTejido';
 import { Vena } from './Vena';
 import { Zarza } from './Zarza';
 
@@ -115,8 +117,17 @@ export interface ContextoCriatura {
   /** La piedra, para las que andan o se posan. */
   suelos: Phaser.Physics.Arcade.StaticGroup;
   jugador: VistaJugador;
-  /** Hiere al Cirujano como un golpe: respeta la invulnerabilidad y el dash. */
-  herir(cantidad: number, origenX: number): void;
+  /**
+   * Hiere al Cirujano como un golpe: respeta la invulnerabilidad, el dash y el
+   * parry. Dice como acabo, para que quien embiste sepa si se lo pararon.
+   */
+  herir(cantidad: number, origenX: number): ResultadoDano;
+  /** Deja una ofrenda en el suelo, como al caer un enemigo. */
+  soltarOfrenda(x: number, y: number, tipo: TipoOfrenda): void;
+  /** La barra de vida de un jefe: con puntos < 0 se oculta. */
+  barraDeJefe(puntos: number, maximo: number, cortes?: readonly number[]): void;
+  /** El nombre de un jefe, en grande y una vez. */
+  presentar(titulo: string, subtitulo: string): void;
   curar(cantidad: number): void;
   ganarFervor(cantidad: number): void;
   /** Un aviso en el HUD, como los del Registro. */
@@ -135,6 +146,12 @@ export interface ContextoCriatura {
   gastarInjerto(): boolean;
   /** Anula el avance horizontal del Cirujano este fotograma. */
   frenarJugador(): void;
+  /**
+   * El Cirujano esta lo bastante cerca para oir esto. Los sonidos que se
+   * repiten solos (graznidos, ronroneos, el pulso de la Vena) solo suenan asi:
+   * si no, el nivel entero seria un coro.
+   */
+  oye(x: number, y: number): boolean;
   /** Clave de la escena, para que lo que se corta siga cortado al volver. */
   readonly zona: string;
 }
@@ -144,12 +161,7 @@ type Fabrica<T extends TipoCriatura> = (
   def: Extract<CriaturaDef, { tipo: T }>,
 ) => Habitante;
 
-/**
- * Una fabrica por especie. Cada especie entra con su issue (#96 a #104, #125).
- *
- * Falta una, a proposito: la Serpiente es un mini-jefe con arena propia en el
- * nido del Nivel 2 (#98). Un nivel que la declare falla al cargar.
- */
+/** Una fabrica por especie. Cada especie entra con su issue (#96 a #104, #125). */
 const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   remedo: (ctx, d) => new Remedo(ctx, d.x, d.y, d.ronda),
   mondador: (ctx, d) => new Mondador(ctx, d.ruta),
@@ -157,6 +169,7 @@ const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   cerdo: (ctx, d) => new Cerdo(ctx, d.x, d.y, d.ronda),
   cuervo: (ctx, d) => new Cuervo(ctx, d.posaderos),
   zarza: (ctx, d) => new Zarza(ctx, d.x, d.y, d.altoTiles, d.anchoTiles),
+  serpiente: (ctx, d) => new SerpienteDeTejido(ctx, d.x, d.y, d.arena),
   vena: (ctx, d) => new Vena(ctx, d.x, d.y, d.altoTiles),
   alfombra: (ctx, d) => new Alfombra(ctx, d.x, d.y, d.anchoTiles),
   mata: (ctx, d) => new Mata(ctx, d.x, d.y),

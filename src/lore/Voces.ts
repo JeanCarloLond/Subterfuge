@@ -21,7 +21,8 @@ import type { Pensamiento } from './Pensamientos';
  */
 
 /** Quien puede estar en pie en una zona, y de que habla. */
-export type ClaveVoz = 'inscriptor' | 'registradora' | 'reformado-viejo' | 'sedante';
+export type ClaveVoz =
+  'inscriptor' | 'registradora' | 'reformado-viejo' | 'sedante' | 'tanteador' | 'honguera';
 
 export interface Voz extends Pensamiento {
   /** Lo que se lee flotando sobre el, antes de pulsar. */
@@ -85,6 +86,39 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
       'La de la línea sin número, sí. Pesa poco y entró sola.',
       'No preguntamos por qué vienen. Preguntar es de arriba.',
       'Suba ya, Manos. Lleva retraso.',
+    ],
+  },
+
+  // Vientre Humedo (#87). Un oficio de la biblia: "porteadores que golpean el
+  // suelo con varas de hierro antes de cruzar una sala". Explica la Alfombra
+  // Devota y la regla de no pisar alfombra, que es por lo que existe.
+  tanteador: {
+    rotulo: 'E  hablar',
+    textura: 'tanteador-placeholder',
+    quien: 'TANTEADOR',
+    cuadros: [
+      'No pise la alfombra. Ninguna.',
+      'La de verdad tiene fleco. La otra respira.',
+      'Yo golpeo el suelo antes de cruzar. Usted tiene ojos:',
+      'úsemelos, que a mí me quedan las manos.',
+      'Si pisa, no tire del pie. Corte los hilos y salte.',
+    ],
+  },
+
+  // Vientre Humedo (#87). Cultiva Hongo de Lampara y le deja comida al
+  // Mondador: habla de el como de un compañero de trabajo. La issue proponia
+  // que dijera que el hongo "no debe nada a los dioses"; la biblia dice que
+  // crece de sus desechos, y asi lo dice ella.
+  honguera: {
+    rotulo: 'E  hablar',
+    textura: 'honguera-placeholder',
+    quien: 'HONGUERA',
+    cuadros: [
+      'El hongo crece de lo que sueltan los dioses. Todo aquí.',
+      'Alumbra y cuenta el tiempo. Por eso lo cultivamos.',
+      'El Mondador come lo que el sacramento rechaza.',
+      'No lo espante. Mientras coma, la impureza no sube.',
+      'Cuando muera el último, alguien tendrá que limpiar.',
     ],
   },
 };

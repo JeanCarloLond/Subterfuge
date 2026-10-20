@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { RangoPatrulla } from './Devoto';
 import type { Enemigo } from './Enemigo';
@@ -108,6 +109,7 @@ export class Cerdo implements Habitante, Enemigo {
       } else {
         this.estado = 'comiendo';
         this.finEstado = ahora + c.comerMs;
+        if (this.ctx.oye(this.sprite.x, this.sprite.y)) sonido.cerdoGrune();
       }
     }
 

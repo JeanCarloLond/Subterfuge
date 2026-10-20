@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
 import { EVENTO_MAREA, type EstadoMarea } from '../systems/Marea';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -82,6 +83,7 @@ export class Cuervo implements Habitante {
 
   /** Un pico abierto: estira el cuerpo un instante. */
   private graznar(): void {
+    if (this.ctx.oye(this.sprite.x, this.sprite.y)) sonido.cuervoGrazna();
     this.ctx.escena.tweens.add({
       targets: this.sprite,
       scaleY: 1.12,

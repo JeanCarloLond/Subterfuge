@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -88,6 +89,7 @@ export class Hongo implements Habitante {
     }
     if (this.cerca && this.ctx.jugador.interactuar) {
       this.ctx.curar(ESPECIES.hongo.curacion);
+      sonido.hongoPop();
       this.ctx.avisar('Hongo de Lámpara  ·  +1 carne');
       progreso.dejarHuella(this.huella);
       this.apagar();

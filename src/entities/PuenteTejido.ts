@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -92,6 +93,7 @@ export class PuenteTejido implements Habitante {
   private crecer(): void {
     this.hecho = true;
     this.aviso.setVisible(false);
+    sonido.tejidoCrece();
     const escena = this.ctx.escena;
     escena.tweens.killTweensOf(this.sprite);
     this.sprite.setScale(1);

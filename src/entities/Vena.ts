@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
 import { EVENTO_MAREA, type EstadoMarea } from '../systems/Marea';
+import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
 
@@ -92,6 +93,7 @@ export class Vena implements Habitante {
     this.finApertura = ahora + this.apertura;
     (this.sprite.body as Phaser.Physics.Arcade.Body).enable = false;
     this.ctx.escena.tweens.add({ targets: this.cortina, scaleX: 0.25, duration: 110 });
+    if (this.ctx.oye(this.cortina.x, this.cortina.y)) sonido.venaPulso();
   }
 
   private cerrar(ahora: number): void {

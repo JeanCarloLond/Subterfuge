@@ -409,21 +409,21 @@ entraran en el grupo de enemigos, un tajo al aire mataría al Mondador —el ani
 sagrado, casi extinto— por accidente. Por eso cada especie declara un
 **contrato**, y la escena la mete en un grupo distinto:
 
-| Contrato  | Especies                              | Tajo        | Injerto | Hiere al rozar |
-| --------- | ------------------------------------- | ----------- | ------- | -------------- |
-| `hostil`  | Remedo, Serpiente, Cerdo              | sí          | sí      | sí             |
-| `neutral` | Mondador, Buitre, Cuervo, Mata, Hongo | no          | no      | no             |
-| `peligro` | Zarza, Alfombra, Vena                 | si se corta | no      | sí             |
+| Contrato                              | Especies                 | Tajo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Injerto | Hiere al rozar |
+| ------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------------- |
+| `hostil`                              | Remedo, Serpiente, Cerdo | sí                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | sí      | sí             |
+| `neutral`                             | Serpiente                | Mini-jefe (#98). Duerme hasta que entras en su arena; se presenta y saca su barra. Telegrafía cada embestida (≥ 500 ms); si falla, se estrella en el borde y queda aturdida 900 ms (el tajo entra entero; fuera de ahí, las escamas paran la mitad). Bajo la mitad de vida abre la boca y traga: te retiene y te escupe con 1 menos, salvo que salgas con dash. El parry también la aturde. Si mueres, el combate se reinicia; al morir suelta 2 injertos y emite `serpiente-vencida` para que el nivel abra el ducto. |
+| Mondador, Buitre, Cuervo, Mata, Hongo | no                       | no                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | no      |
+| `peligro`                             | Zarza, Alfombra, Vena    | si se corta                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | no      | sí             |
 
 Un nivel las declara en un solo campo, `criaturas`, con un `tipo` por entrada
 (`src/entities/Criatura.ts`). **Añadir una especie no toca `EscenaNivel`**: su
 entrada en `CriaturaDef`, su clase (cumple `Habitante`, y `Enemigo` si se puede
 herir) y su fábrica en `FABRICAS`.
 
-Tienen ya su clase todas menos una: Remedo, Mondador, Buitre, Cerdo, Cuervo,
-Zarza, Alfombra, Mata, Vena, Hongo y la Flor de hueso (#96, #97, #99 a #104,
-#125). Falta la **Serpiente**, a propósito: es un mini-jefe con arena propia en
-el nido del Nivel 2 (#98). Un nivel
+Tienen ya su clase todas las especies: Remedo, Serpiente, Mondador, Buitre,
+Cerdo, Cuervo, Zarza, Alfombra, Mata, Vena, Hongo y la Flor de hueso (#96 a
+#104, #125). Ningún nivel las coloca todavía: eso es el Nivel 2 (#128). Un nivel
 que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
 su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
 declara ninguna y no cambia.
@@ -465,6 +465,18 @@ la caída al vacío. Nunca mata de golpe. Se para sola con la pausa y el Códice
 **El nivel decide hasta dónde sube** (`alturaMaxima`): nunca hasta el Altar de
 la entrada ni el umbral de salida, y siempre con una repisa a salvo por encima.
 La **Vena** late más rápido mientras dura: la ventana para cruzarla se acorta.
+
+**Fieles del Vientre Húmedo (#87).** El Tanteador explica la Alfombra («la de
+verdad tiene fleco; la otra respira») y la Honguera habla del Mondador como de
+un compañero de oficio. Los dos tienen ficha en LOS FIELES, que se abre al
+hablar con ellos. Sus frases sobre la niña y la huida esperan al acta.
+
+**Sonido (#108).** Cada especie suena a su materia, sintetizado como el resto:
+la Serpiente silba antes de embestir, el Cuervo grazna con resonancia de cable,
+la Alfombra susurra y chasquea, la Marea retumba al subir y al bajar. Lo que se
+repite solo (graznidos, ronroneos, el pulso de la Vena) suena únicamente si la
+criatura está a menos de 260 px del Cirujano. La música del Vientre Húmedo
+espera a elegir una pista CC0.
 
 **Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
 por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo
