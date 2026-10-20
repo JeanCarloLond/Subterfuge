@@ -8,6 +8,8 @@
  * veces lo has hecho, hasta dónde has bajado y qué hora es.
  */
 
+import { numeroEnLetras } from '../../../src/lore/Codice';
+import { VIENTRE } from '../../../src/lore/Vientre';
 import { mancha, memoriaDelDescenso } from '../memoria';
 import { elemento, html } from '../texto';
 
@@ -211,7 +213,9 @@ function loQueSabe(vez: number): string[] {
       : `Son las ${hh}:${mm}. Turno de ${hora.getHours() < 14 ? 'mañana' : 'tarde'}. Gracias por venir en horario.`,
   );
   if (m.capas.length > 0)
-    lineas.push(`Consta que ha visitado ${m.capas.length} de las seis capas.`);
+    lineas.push(
+      `Consta que ha visitado ${m.capas.length} de las ${numeroEnLetras(VIENTRE.length)} capas.`,
+    );
   if (m.hitos.includes('manos-anteriores'))
     lineas.push('Consta una visita a la Sala 7. No hace falta que nos cuente lo que vio.');
   if (m.hitos.includes('final'))

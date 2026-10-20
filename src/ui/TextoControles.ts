@@ -35,9 +35,9 @@ export const CONTROLES_COMBATE_TACTIL: readonly string[] = [
   'CARGADO   mantener X  (30 Fervor)',
   'PARRY     P',
   'INJERTAR  F  lanzar un injerto',
-  'POCION    Q  (+3 vida)',
+  'POCIÓN    Q  (+3 vida)',
   'REZAR     E  junto a un Altar',
-  'CODICE    L  leer lo recogido',
+  'CÓDICE    L  leer lo recogido',
 ];
 
 export const CONTROLES_SISTEMA_TACTIL: readonly string[] = [

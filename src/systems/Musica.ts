@@ -12,9 +12,18 @@ export const PISTAS = {
   salas: 'salas-intro-oscura',
   jefe: 'jefe-santuario-oscuro',
   final: 'final-camara-de-huesos',
+  // El Vientre Humedo (#108): viento grave y goteo, la Lluvia Tibia hecha musica.
+  'vientre-humedo': 'vientre-humedo-mazmorra',
 } as const;
 
 export type Pista = keyof typeof PISTAS;
+
+/**
+ * Pistas que todavia no usa ningun nivel y por eso no se precargan: bajarlas
+ * al arrancar retrasaria el Nivel 1 por algo que no suena. Cuando el Nivel 2
+ * exista, su pista sale de aqui.
+ */
+export const SIN_PRECARGA: ReadonlySet<Pista> = new Set<Pista>(['vientre-humedo']);
 
 /** Volumen de cada pista. La musica acompana; nunca compite con los golpes. */
 const VOLUMEN: Record<Pista, number> = {
@@ -24,6 +33,7 @@ const VOLUMEN: Record<Pista, number> = {
   salas: 0.3,
   jefe: 0.42,
   final: 0.38,
+  'vientre-humedo': 0.3,
 };
 
 /**

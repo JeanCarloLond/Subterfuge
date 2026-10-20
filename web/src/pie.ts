@@ -1,6 +1,7 @@
 /** El pie de página: el expediente del visitante y la mancha. */
 
 import { CODICE } from '../../src/lore/Codice';
+import { VIENTRE } from '../../src/lore/Vientre';
 import { descensoAbierto, mancha, memoriaDelDescenso } from './memoria';
 
 /** El expediente del pie: qué ha bajado el visitante, según el juego. */
@@ -10,7 +11,7 @@ export function actualizarPie(): void {
 
   const m = memoriaDelDescenso();
   const partes: string[] = [];
-  if (m.capas.length) partes.push(`${m.capas.length} de 6 capas pisadas`);
+  if (m.capas.length) partes.push(`${m.capas.length} de ${VIENTRE.length} capas pisadas`);
   if (m.fragmentos.length)
     partes.push(`${m.fragmentos.length} de ${CODICE.length} hojas del Códice`);
   if (m.fichas.length) partes.push(`${m.fichas.length} fichas del Registro`);

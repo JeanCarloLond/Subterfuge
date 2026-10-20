@@ -448,10 +448,17 @@ Cada zona sigue la misma regla: **el camino principal enseña, los desvíos
 premian**. Cada desvío exige una mecánica (doble salto, dash, agarre) y guarda
 una de dos cosas:
 
-- **Fragmento del Códice** — premio de lectura. Seis en total.
+- **Fragmento del Códice** — premio de lectura. Ocho en el Nivel 1 (`Codice.ts`).
 - **Reliquia** — premio de cuerpo. `Relicario de Carne` (+1 vitalidad máxima)
-  y `Frasco Consagrado` (+1 Poción). Cinco en total, persistentes entre zonas
-  (`Progreso.ts`).
+  y `Frasco Consagrado` (+1 Poción). Siete en el Nivel 1, persistentes entre
+  zonas (`Progreso.ts`).
+
+**Ningún total se escribe a mano (#94).** Las hojas salen de `Codice.ts`, las
+fichas de `Registro.ts`, las capas de `Vientre.ts` y las reliquias de
+`src/lore/Reliquias.ts`, una lista con su zona y su nivel. Los niveles colocan
+las reliquias y la lista las cuenta; `verificar-rutas` comprueba que coinciden.
+Cada cierre cuenta las de su nivel (`reliquiasDelNivel`), como con el Códice;
+la web cuenta el total.
 
 **Capas de ambiente** (`EscenaNivel`): detrás de todo, el telón de arcadas con
 parallax; encima, el **atrezo lejano** (`fondo:` en cada zona — ventanas
@@ -969,6 +976,21 @@ Cada nivel declara `tinte` y `desgaste` en su `DefinicionNivel`, al lado de
 `colorFondo`. Es lo que mantiene la regla del descenso con un solo tileset: la
 misma piedra baja de tono y se agrieta más según se cierra el Vientre, y el musgo
 se apaga del todo en las Criptas, donde ya no llega nada vivo.
+
+### El Vientre Húmedo (#105)
+
+Provisional, a mano en `ArteProvisional.ts`, como los muros de Pasillos,
+Criptas y Salas: `muro-humedo-a` y `muro-humedo-b`. La biblia dice que la capa V
+son «pasillos de hospital vueltos santuario» y que el suelo es «hormigón,
+azulejo, acero, cera, óxido y hueso»: azulejo de quirófano con la junta negra y
+mojada, una mancha de agua, óxido, y en la variante una vena que cruza las
+juntas y una gota de cera. Un nivel lo usa con
+`muro: ['muro-humedo-a-placeholder', 'muro-humedo-b-placeholder']`.
+
+Decorado nuevo, con su sitio en `verificar-rutas`: `membrana` (embutida en el
+muro), `raiz` (cuelga), `nido` (la boca del ducto entre huesos) y `charco-vivo`
+(en el suelo). El set definitivo en Aseprite sigue siendo del equipo y entra con
+las mismas claves.
 
 ### Si el arte cambia
 

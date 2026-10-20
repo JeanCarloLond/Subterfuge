@@ -66,6 +66,11 @@ jobs:
       - name: Rutas de retorno de los niveles
         run: npm run verificar-rutas
 
+      # Lo que se lee en pantalla: sin "checkpoint", "mana" ni "boss", y con
+      # sus tildes. Un texto sin acento solo se ve jugando (#122).
+      - name: Textos visibles
+        run: npm run verificar-textos
+
   # El build es lo que de verdad demuestra que la rama no está rota.
   build:
     name: Build de producción
