@@ -1,3 +1,4 @@
+import { esfuerzo } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
@@ -23,6 +24,7 @@ export class BootScene extends Phaser.Scene {
       sonido.adoptarContexto(this.sound.context);
     }
     musica.vincular(this);
+    esfuerzo.vincular(this);
 
     // Los dedos se leen del navegador, no de Phaser (ver input/Toques.ts), y
     // se empieza a escuchar aqui: la pantalla final y los dialogos tambien los

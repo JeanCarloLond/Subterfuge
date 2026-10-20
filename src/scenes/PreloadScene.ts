@@ -1,3 +1,4 @@
+import { VOCES_DE_ESFUERZO } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { generarArteProvisional } from '../systems/ArteProvisional';
@@ -57,6 +58,10 @@ export class PreloadScene extends Phaser.Scene {
     // decodificar y el juego se queda en la barra de carga. Musica.ts ya
     // tolera que una pista no exista.
     const sinAudio = import.meta.env.VITE_SIN_AUDIO === '1';
+    // Las voces de esfuerzo: veinte tomas de decimas de segundo (96 KB).
+    for (const voz of sinAudio ? [] : VOCES_DE_ESFUERZO) {
+      this.load.audio(`voz-${voz}`, `assets/audio/voces/${voz}.mp3`);
+    }
     const aCargar = (Object.keys(PISTAS) as Pista[]).filter((p) => !SIN_PRECARGA.has(p));
     for (const archivo of sinAudio ? [] : aCargar.map((p) => PISTAS[p])) {
       this.load.audio(archivo, [

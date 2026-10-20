@@ -1,3 +1,4 @@
+import { esfuerzo } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
 import { MOVIMIENTO, VESTAL } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
@@ -185,6 +186,7 @@ export class Vestal implements Enemigo {
     this.estado = 'espera';
 
     // La escena crea el sello: la entidad no conoce el grupo de proyectiles.
+    esfuerzo.enemigo('vestal', 'ataque');
     this.eventos.emit('lanzar', {
       x: this.sprite.x + (this.mirandoDerecha ? 10 : -10),
       // A la altura del sello del pecho, no de la cintura.

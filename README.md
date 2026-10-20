@@ -143,7 +143,8 @@ Húmedo**, está en preparación.
   paredes, fieles con los que se puede hablar y una última línea que solo
   aparece si se completa.
 - **Audio**: efectos sintetizados en tiempo real (cada enemigo suena a su
-  materia) y banda sonora CC0 por zona, con tema propio para el jefe y el cierre.
+  materia), voces de esfuerzo al atacar, saltar, caer y recibir golpes, y una
+  banda sonora con ritmo por zona, con tema propio para el jefe y el cierre.
 - **Táctil**: se puede jugar en el móvil, con mando en pantalla.
 
 ### Nivel 2 — El Vientre Húmedo (en preparación)
@@ -260,9 +261,15 @@ al caer al fondo el jugador quedaba encallado; ahora eso no puede colarse.
 
 ## Créditos de terceros
 
-La música es de autores de [OpenGameArt.org](https://opengameart.org) publicada
-bajo **CC0** (dominio público). Autoría, título y enlace de cada pista en
-[public/assets/audio/musica/LICENCIAS.md](public/assets/audio/musica/LICENCIAS.md).
+La música y las voces son de autores de [OpenGameArt.org](https://opengameart.org),
+bajo **CC0** (dominio público) o **CC-BY 4.0**:
+
+- **Música:** SRG774 (CC0), JaggedStone (CC0), Bobjt (CC0) y **North Fantasy
+  Music** (CC-BY 4.0, «Fantasy Music and Drum Loops Pack»). Detalle en
+  [public/assets/audio/musica/LICENCIAS.md](public/assets/audio/musica/LICENCIAS.md).
+- **Voces de esfuerzo:** qubodup y Ogrebane (CC0). Detalle en
+  [public/assets/audio/voces/LICENCIAS.md](public/assets/audio/voces/LICENCIAS.md).
+
 Los efectos de sonido son originales del proyecto (síntesis en tiempo real).
 
 ## Licencia

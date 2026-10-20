@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { IMPACTO } from '../config/Sacramento';
+import { esfuerzo } from './Esfuerzo';
 import { sonido, type ClaseEnemigo } from './Sonido';
 
 /**
@@ -45,6 +46,7 @@ export class Impacto {
     cargado: boolean,
     clase: ClaseEnemigo = 'devoto',
   ): void {
+    esfuerzo.enemigo(clase, 'herida');
     sonido.golpe(cargado, clase);
     this.congelar(cargado ? IMPACTO.hitstopCargadoMs : IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(
@@ -114,6 +116,7 @@ export class Impacto {
 
   /** El Cirujano encaja un golpe. */
   danoRecibido(): void {
+    esfuerzo.cirujano('herida');
     sonido.dano();
     this.congelar(IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(160, IMPACTO.sacudidaRecibir);
@@ -122,6 +125,7 @@ export class Impacto {
 
   /** El Cirujano se estrella contra el suelo. Mas largo y mas grave que un golpe. */
   danoPorCaida(dano: number): void {
+    esfuerzo.cirujano('caida');
     sonido.danoPorCaida(dano);
     this.congelar(IMPACTO.hitstopCargadoMs);
     this.escena.cameras.main.shake(220, IMPACTO.sacudidaRecibir * 1.4);
@@ -153,6 +157,7 @@ export class Impacto {
    * mas largo y mas rojo, y en que la sacudida no se parece a ninguna otra.
    */
   muerteCirujano(x: number, y: number): void {
+    esfuerzo.cirujano('muerte');
     sonido.muerteJugador();
     this.congelar(IMPACTO.hitstopMuerteMs);
 
@@ -168,6 +173,7 @@ export class Impacto {
   }
 
   muerteEnemigo(x: number, y: number, clase: ClaseEnemigo = 'devoto'): void {
+    esfuerzo.enemigo(clase, 'muerte');
     sonido.muerteEnemigo(clase);
     this.congelar(IMPACTO.hitstopMuerteMs);
     this.escena.cameras.main.shake(180, IMPACTO.sacudidaMuerte);

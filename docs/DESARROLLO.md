@@ -922,8 +922,18 @@ vivo. Va muy bajo — se nota cuando se apaga, no cuando suena.
 llamada: la interfaz pública (`golpe`, `parry`, `altar`…) puede quedarse igual
 y cargar samples por dentro.
 
-**Música** (`src/systems/Musica.ts`) son pistas **CC0 de OpenGameArt**, una por
-zona (`musica:` en cada definición de nivel), más un tema para el jefe — entra al
+**Voces de esfuerzo** (`src/systems/Esfuerzo.ts`): la única excepción a «todo
+se sintetiza». Una voz sintetizada suena a robot, y el gruñido al atacar, el
+resoplido al saltar o el quejido al recibir un golpe tienen que sonar a alguien
+(revisión del equipo). Son grabaciones **CC0** de OpenGameArt (qubodup para el
+Cirujano, Ogrebane para el Reformado), recortadas y en MP3 mono: 20 tomas, 96 KB.
+Los Devotos y las Vestales usan la voz del Cirujano más grave o más aguda. Para
+no cansar, el ataque y el salto no siempre gritan y hay un descanso mínimo entre
+voces; el golpe recibido y la muerte, siempre. Autoría en
+`public/assets/audio/voces/LICENCIAS.md`.
+
+**Música** (`src/systems/Musica.ts`) son pistas **de OpenGameArt, CC0 y CC-BY
+4.0**, una por zona (`musica:` en cada definición de nivel), más un tema para el jefe — entra al
 despertar y vuelve la de la zona al vencerlo — y otro para el cierre. Cambiar de
 pista es un fundido cruzado hecho con un temporizador propio, **no con tweens de
 escena**: un tween muere cuando su escena se detiene, y cambiar de zona detiene
@@ -931,6 +941,15 @@ la escena justo mientras la pista saliente se apaga. En pausa y en el Códice la
 música se atenúa, no se corta. Cada pista va en `.ogg` y `.mp3` porque Safari no
 reproduce Ogg Vorbis; el navegador carga solo el formato que sabe leer (~5 MB).
 Autoría y licencia de cada pista: `public/assets/audio/musica/LICENCIAS.md`.
+
+Las pistas de zona **tienen ritmo** desde la revisión del equipo, que encontró
+sosas las ambientales de antes. Se eligieron **midiendo el pulso** (la
+autocorrelación de los ataques de cada pista): las de antes daban entre 0,03 y
+0,11; las de ahora, entre 0,3 y 0,8. El descenso va a más —un redoble en el
+Atrio, un latido en los Pasillos, un redoble ominoso en las Criptas, urgencia en
+las Salas, tambores para el jefe— y el cierre se queda con su piano. La web usa
+las mismas, una por capa. Las de North Fantasy Music son **CC-BY 4.0** y obligan
+a acreditar: está en `LICENCIAS.md` y en el README.
 
 Nota de navegador: el `AudioContext` nace suspendido y no suena nada hasta que
 el usuario interactúa. Los efectos comparten el contexto de Phaser (un solo

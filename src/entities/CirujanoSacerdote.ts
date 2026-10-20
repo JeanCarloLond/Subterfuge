@@ -17,6 +17,7 @@ import {
 import type { Controles } from '../input/Controles';
 import { Fervor } from '../systems/Fervor';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
+import { esfuerzo } from '../systems/Esfuerzo';
 import { sonido } from '../systems/Sonido';
 import { Vitalidad } from '../systems/Vitalidad';
 
@@ -422,6 +423,7 @@ export class CirujanoSacerdote {
           : 'lateral';
 
     this.estado = 'atacando';
+    esfuerzo.cirujano('ataque');
     this.ataqueEnCurso = tipo;
     this.golpeadosEnSwing.clear();
     this.tajoMostrado = false;
@@ -946,6 +948,7 @@ export class CirujanoSacerdote {
 
   private ejecutarSalto(impulso: number): void {
     sonido.salto();
+    esfuerzo.cirujano('salto');
     this.cuerpo.setVelocityY(-impulso);
     this.instanteSaltoEncolado = -Infinity;
     this.ultimoInstanteEnSuelo = -Infinity;
