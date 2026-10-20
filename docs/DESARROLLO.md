@@ -462,7 +462,7 @@ declara ninguna y no cambia.
 | Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.                                                                                 |
 | Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola.                                                                    |
 | Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                                                                                      |
-| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.                                                                      |
+| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde) que sube y baja a la vez en toda la zona: el reloj de la ciudad. `E` lo come: cura 1 y se apaga para la partida.      |
 | Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.                                                                              |
 | Vena     | Cortina de carne que cierra un paso (#101). No hiere: bloquea. Se abre en el pico del Latido (0,8 s de cada 2,6 s), con un golpe que lo anuncia; con la Marea, 0,45 s de cada 1,5 s. |
 | Tejido   | Nódulo al borde de un hueco (#95). `E` gasta un injerto y crece un puente de carne que pasa a ser suelo. Sin injertos, avisa y no gasta. Siempre opcional.                           |

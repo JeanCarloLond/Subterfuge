@@ -655,6 +655,11 @@ export const ESPECIES = {
   hongo: {
     radio: 24,
     curacion: 1,
+    /**
+     * Lo que tarda su brillo en subir y bajar (ms). Todos los de la zona van a
+     * la vez: la ciudad usa ese pulso como reloj (#96).
+     */
+    relojMs: 9000,
   },
   /**
    * La Flor de hueso (#125). Una sola por nivel, y se recoge una vez. La issue

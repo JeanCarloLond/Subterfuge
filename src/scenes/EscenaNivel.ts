@@ -144,6 +144,14 @@ export interface Umbral {
 }
 
 /** Todo lo que distingue a un nivel de otro. La logica es comun. */
+/** Un charco del decorado, para saber cuándo se pisa. */
+interface Charco {
+  x: number;
+  y: number;
+  ancho: number;
+  color: number;
+}
+
 export interface DefinicionNivel {
   mundo: { ancho: number; alto: number };
   colorFondo: string;
@@ -342,6 +350,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private criaturas: Habitante[] = [];
   private marea?: Marea;
   private lluvia?: Phaser.GameObjects.Particles.ParticleEmitter;
+  /** Los charcos del decorado: dónde están y de qué color salpican (#96). */
+  private charcos: Charco[] = [];
+  private charcoPisado?: Charco;
+  private ultimaSalpicadura = -Infinity;
+  private salpicaduras?: Phaser.GameObjects.Particles.ParticleEmitter;
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
@@ -435,6 +448,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (this.controles.codicePresionado) this.abrirCodice();
 
     this.cirujano.actualizar();
+    this.pisarCharcos();
 
     for (const devoto of this.devotos) {
       devoto.actualizar(this.cirujano.sprite.x, this.cirujano.sprite.y);
@@ -505,6 +519,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.criaturas = [];
     this.marea = undefined;
     this.lluvia = undefined;
+    this.charcos = [];
+    this.charcoPisado = undefined;
+    this.salpicaduras = undefined;
     this.placas = [];
     this.grupoEnemigos = undefined;
     this.grupoNeutrales = undefined;
@@ -800,9 +817,73 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * piezas tienen vida propia (la llama de la vela, el vaiven del exvoto) para
    * que la zona no parezca una foto.
    */
+  /**
+   * Un charco no cambia la física, pero tampoco es una mancha pintada en el
+   * suelo (#96). Tiene un filo de luz que corre despacio por la superficie
+   * (lo único que refleja en una sala sin sol) y salpica cuando se pisa.
+   */
+  private prepararCharco(pieza: Phaser.GameObjects.Sprite, tipo: 'charco' | 'charco-vivo'): void {
+    const color = tipo === 'charco' ? 0x7d2b2b : 0x8c3a3a;
+    this.charcos.push({ x: pieza.x, y: pieza.y, ancho: pieza.width, color });
+
+    const filo = this.add
+      .rectangle(pieza.x, pieza.y - pieza.height + 2, Math.round(pieza.width * 0.4), 1, 0xf2d6c8)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setAlpha(0.12)
+      .setDepth(-4);
+    this.tweens.add({
+      targets: filo,
+      alpha: { from: 0.06, to: 0.26 },
+      x: { from: pieza.x - 2, to: pieza.x + 2 },
+      duration: Phaser.Math.Between(2200, 3400),
+      delay: Phaser.Math.Between(0, 1500),
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+  }
+
+  /** Salpica al entrar en un charco y, andando por él, a cada pocos pasos. */
+  private pisarCharcos(): void {
+    if (this.charcos.length === 0) return;
+    const cuerpo = this.cirujano.sprite.body as Phaser.Physics.Arcade.Body;
+    const enSuelo = cuerpo.blocked.down || cuerpo.touching.down;
+    const x = cuerpo.center.x;
+    const charco = enSuelo
+      ? this.charcos.find(
+          (c) => Math.abs(x - c.x) < c.ancho / 2 && Math.abs(cuerpo.bottom - c.y) < 4,
+        )
+      : undefined;
+
+    const ahora = this.time.now;
+    const entra = charco !== undefined && charco !== this.charcoPisado;
+    const chapotea =
+      charco !== undefined &&
+      Math.abs(cuerpo.velocity.x) > 20 &&
+      ahora - this.ultimaSalpicadura > 280;
+    this.charcoPisado = charco;
+    if (!charco || !(entra || chapotea)) return;
+
+    this.ultimaSalpicadura = ahora;
+    this.salpicaduras ??= this.add
+      .particles(0, 0, 'chispa-placeholder', {
+        speed: { min: 18, max: 50 },
+        angle: { min: 205, max: 335 },
+        gravityY: 320,
+        lifespan: { min: 220, max: 360 },
+        scale: { start: 0.9, end: 0.3 },
+        emitting: false,
+      })
+      .setDepth(6);
+    this.salpicaduras.setParticleTint(charco.color);
+    this.salpicaduras.explode(entra ? 6 : 3, x, charco.y - 2);
+    sonido.gota();
+  }
+
   private crearDecorado(): void {
     for (const [x, y, tipo] of this.definicion.decorado ?? []) {
       const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
+      if (tipo === 'charco' || tipo === 'charco-vivo') this.prepararCharco(pieza, tipo);
       const cuelga =
         tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo' || tipo === 'raiz';
       pieza.setOrigin(0.5, cuelga ? 0 : 1);

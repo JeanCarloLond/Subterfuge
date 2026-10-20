@@ -65,20 +65,25 @@ export class Hongo implements Habitante {
     this.luz.setDepth(-3);
     this.luz.setBlendMode(Phaser.BlendModes.ADD);
     this.luz.setTint(LUZ);
-    this.luz.setScale(0.6);
-    this.luz.setAlpha(0.55);
-    // Respira mas despacio que una vela: no es una llama.
-    ctx.escena.tweens.add({
-      targets: this.luz,
-      alpha: { from: 0.45, to: 0.6 },
-      duration: 1400,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
+    this.latirComoReloj();
+  }
+
+  /**
+   * El brillo sube y baja despacio, y todos los hongos de la zona a la vez:
+   * la biblia dice que los hongueros saben la hora por el tono, y eso solo se
+   * puede si el pulso es comun. Cada vela parpadea a su aire; el hongo no.
+   */
+  private latirComoReloj(): void {
+    if (!this.luz) return;
+    const periodo = ESPECIES.hongo.relojMs;
+    const fase = (this.ctx.escena.time.now % periodo) / periodo;
+    const pulso = 0.5 - 0.5 * Math.cos(fase * Math.PI * 2);
+    this.luz.setAlpha(0.32 + 0.3 * pulso);
+    this.luz.setScale(0.54 + 0.1 * pulso);
   }
 
   actualizar(xJugador: number, yJugador: number): void {
+    this.latirComoReloj();
     if (this.comido) return;
     const ahoraCerca =
       Phaser.Math.Distance.Between(xJugador, yJugador, this.sprite.x, this.sprite.y) <
