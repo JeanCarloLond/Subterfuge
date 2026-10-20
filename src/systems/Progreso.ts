@@ -1,4 +1,4 @@
-import { CODICE } from '../lore/Codice';
+import { CODICE_EN_JUEGO } from '../lore/Codice';
 import { REGISTRO } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
 import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
@@ -90,8 +90,23 @@ class Progreso {
     return this.recogidos.size;
   }
 
+  /** Las hojas que el juego puede dar: las de los niveles que existen. */
   get fragmentosTotales(): number {
-    return CODICE.length;
+    return CODICE_EN_JUEGO.length;
+  }
+
+  /**
+   * Cuantas hojas de un nivel se han recogido.
+   *
+   * El cierre de cada nivel cuenta las SUYAS: el Nivel 1 premia sus 8 aunque el
+   * Codice entero tenga mas, y no deja de premiarlas cuando lleguen las otras.
+   */
+  fragmentosDelNivel(nivel: 1 | 2): number {
+    return CODICE_EN_JUEGO.filter((f) => f.nivel === nivel && this.recogidos.has(f.id)).length;
+  }
+
+  fragmentosTotalesDelNivel(nivel: 1 | 2): number {
+    return CODICE_EN_JUEGO.filter((f) => f.nivel === nivel).length;
   }
 
   get haySinLeer(): boolean {
@@ -100,7 +115,7 @@ class Progreso {
 
   /** Ids recogidos en el orden canonico del Codice, no en el de recogida. */
   get idsRecogidosEnOrden(): string[] {
-    return CODICE.map((f) => f.id).filter((id) => this.recogidos.has(id));
+    return CODICE_EN_JUEGO.map((f) => f.id).filter((id) => this.recogidos.has(id));
   }
 
   // -- El Registro ----------------------------------------------------------

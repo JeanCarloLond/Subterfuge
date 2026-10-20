@@ -1,7 +1,7 @@
 /**
  * Doctrina: los folios del Códice, y la Vigilia.
  *
- * La Diócesis publica su escritura: los versículos de las ocho hojas se leen
+ * La Diócesis publica su escritura: los versículos de todas las hojas se leen
  * sin haber jugado. Lo que no publica es lo que hay debajo y al margen.
  *
  * La Vigilia es el minijuego del bible: "mantén encendida una vela de cera
@@ -11,8 +11,8 @@
  * que se reescribió. Solo en las hojas que el visitante se haya ganado.
  */
 
-import { CODICE } from '../../../src/lore/Codice';
-import { type Folio, montarLibro } from '../libro';
+import { CODICE, ROMANOS, numeroEnLetras } from '../../../src/lore/Codice';
+import { type Folio, irAFolio, montarLibro } from '../libro';
 import { fragmentoAbierto } from '../memoria';
 import { acentuar, elemento, html, parrafos } from '../texto';
 import { montarVela } from '../vela';
@@ -63,7 +63,21 @@ const MANUAL: Readonly<Record<string, readonly string[]>> = {
     '§8.1  Este dato no se comunica al personal ni a la población.',
     '§8.2  El lote se mantiene en 1000 unidades. No hay evidencia de que pueda crecer.',
   ],
+  'codice-09': [
+    'GV·RES-04 §9  Residuo tisular no apto: retirar de la sala y evacuar por el desagüe inferior.',
+    '§9.1  No se registra el destino final del residuo. No es competencia del operador.',
+  ],
+  'codice-10': [
+    'GV·PROT-07 §5.2  Alojamiento de reformados en niveles inferiores. Sin visitas.',
+    '§5.3  El nivel inferior no requiere limpieza: el lote se encarga. (Sin datos posteriores.)',
+  ],
 };
+
+const QUIETO =
+  typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** El ejemplar de la web es el Códice entero: aquí las hojas son doctrina, no botín. */
+const HOJAS = numeroEnLetras(CODICE.length);
 
 export function renderDoctrina(contenedor: HTMLElement): () => void {
   const abiertas = CODICE.filter((f) => fragmentoAbierto(f.id)).length;
@@ -74,7 +88,7 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
       <h1>El Códice de la Carne</h1>
       <div class="filete"></div>
       <p class="lede">
-        Edición para el fiel de las ocho hojas del Códice, tal como se enseñan en el Atrio. La
+        Edición para el fiel de las ${HOJAS} hojas del Códice, tal como se enseñan en el Atrio. La
         Diócesis recomienda leerlas con una vela encendida y no prolongar la lectura más de lo
         que dure la cera.
       </p>
@@ -83,12 +97,26 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
           abiertas === CODICE.length
             ? 'Su ejemplar está completo. Le rogamos que no lo lea a oscuras.'
             : abiertas > 0
-              ? `Su ejemplar tiene ${abiertas} de las ocho hojas completas. Las demás llegaron sin margen.`
+              ? `Su ejemplar tiene ${abiertas} de las ${HOJAS} hojas completas. Las demás llegaron sin margen.`
               : 'Su ejemplar llegó sin márgenes. Es normal: los márgenes se reponen en el descenso, o presentando una clave.'
         }
       </p>
 
       <p class="vigilia-nota" id="vigilia-nota" aria-live="polite"></p>
+
+      <nav class="indice" aria-label="Índice del Códice">
+        <div class="indice-titulo">Índice</div>
+        <ol class="indice-lista">
+          ${CODICE.map(
+            (f, i) => `
+            <li><button type="button" data-ir="${i}" class="${fragmentoAbierto(f.id) ? 'ganada' : ''}">
+              <span class="indice-num">${ROMANOS[i] ?? i + 1}</span>
+              <span class="indice-nombre">${html(f.titulo)}</span>
+              <span class="indice-cita">${html(acentuar(f.cita))}${fragmentoAbierto(f.id) ? '' : ' · sin margen'}</span>
+            </button></li>`,
+          ).join('')}
+        </ol>
+      </nav>
 
       <div id="libro"></div>
     </article>
@@ -98,7 +126,7 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
   // mano dejó al margen (o el hueco donde lo arrancaron).
   const folios: Folio[] = CODICE.map((fragmento, i) => {
     const abierta = fragmentoAbierto(fragmento.id);
-    const romano = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'][i];
+    const romano = ROMANOS[i] ?? String(i + 1);
     return {
       romano,
       ganada: abierta,
@@ -115,7 +143,22 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
            <div class="margen arrancado"><p>Margen no disponible en esta edición.</p></div>`,
     };
   });
-  const cerrarLibro = montarLibro(raiz.querySelector('#libro') as HTMLElement, folios);
+  // El índice (#114) no duplica el texto: cita, título y número. Cualquier
+  // folio es navegable, ganado o no: la escritura es pública; el margen, no.
+  const libro = raiz.querySelector('#libro') as HTMLElement;
+  const entradas = [...raiz.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+  for (const b of entradas) {
+    b.addEventListener('click', () => {
+      irAFolio(libro, Number(b.dataset.ir));
+      libro.scrollIntoView({ behavior: QUIETO ? 'auto' : 'smooth', block: 'start' });
+    });
+  }
+  const cerrarLibro = montarLibro(libro, folios, (actual) => {
+    entradas.forEach((b, i) => {
+      if (i === actual) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+  });
 
   contenedor.append(raiz);
 

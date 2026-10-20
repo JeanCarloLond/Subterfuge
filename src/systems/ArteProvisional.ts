@@ -1947,6 +1947,8 @@ const ZARZA: Figura = {
     n: 0x120a0c,
     t: 0x4a2a28,
     T: 0x7a4a40,
+    t: 0x2a1a1c,
+    T: 0x46302e,
     h: 0xc9bda8,
     r: 0x7a1e22,
   },

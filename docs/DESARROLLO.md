@@ -118,6 +118,12 @@ scripts/
 
 ## Flujo de escenas
 
+> **Fase 4 en curso.** El juego pasa a tener dos niveles: lo que hay hoy es el **Nivel 1**,
+> y el **Nivel 2 — El Vientre Húmedo · La escapatoria** empieza con la decisión del
+> Cirujano en el cierre. Antes de tocar escenas, niveles o lore de esta fase, lee el
+> [acta de canon](canon/nivel-2-vientre-humedo.md): fija qué cubre cada nivel, qué no se
+> muestra y qué queda pendiente de decidir.
+
 ```
 Boot ──► Preload ──► Atrio ──► Pasillos ──► Criptas ──► Salas ──► Final
                        │          │            │          │
@@ -652,7 +658,8 @@ ambigüedad y deja en paz las demás.
 que responde cosas que no deberías saber de ti": sabe cuántas veces lo has
 hecho, hasta dónde has bajado y qué hora es; se rellena a tinta en un expediente
 del Registro y la resolución se sella con lacre), el Sacramento ("precisión
-quirúrgica, tipo Operation pero litúrgico"; a pixel, seis pasos que acaban a
+quirúrgica, tipo Operation pero litúrgico"; a pixel, siete pasos —uno es apartar
+de la bandeja el bisturí que tiembla, porque es un Remedo (#113)— que acaban a
 corazón abierto, con el injerto dado entre latido y latido; fallar deja una
 mancha en el portal que persiste) y la Vigilia ("mantén encendida una vela mientras lees el Códice";
 al apagarse se ve lo que la luz tapaba; la vela vive en la esquina, a pixel, y se
@@ -759,6 +766,25 @@ Con `prefers-reduced-motion` no hay polvo animado, la vela no sigue al
 puntero y no hay transiciones. En un teléfono la escena se encuadra solo en
 sus figuras y el título va debajo.
 
+### Cuando llegue el arte final, la web no puede quedarse sin láminas (#115)
+
+La web no carga PNG del juego: `npm run exportar-arte` lee las figuras de
+`ArteProvisional.ts` y las vuelca en `web/generado/arte.json`, y de ahí pinta
+cada lámina (`pintarFigura`). Las once especies del Vientre Húmedo ya están
+ahí con su clave (`mondador`, `remedo`, `serpiente`, `buitre`, `cerdo`,
+`cuervo`, `zarza`, `mata`, `alfombra`, `vena`, `hongo`).
+
+El día que el equipo entregue el PNG definitivo de una especie:
+
+1. Se carga en `PreloadScene` con la **misma clave** (sin `-placeholder`) y el
+   juego lo usa.
+2. **La figura provisional no se borra hasta que la web tenga otra fuente**:
+   si se borra, `pintarFigura` devuelve `false` y el Registro enseña la vitrina
+   con la cruz de lámina pendiente. No se rompe, pero se pierde el dibujo.
+3. Para pasar la web al PNG, `exportar-arte` tiene que aprender a copiar ese
+   PNG a `web/generado/` y `pintarFigura` a dibujarlo como imagen. Es un cambio
+   pequeño, pero va en su propio PR, no colado con el arte.
+
 ## Linaje y El Vientre: dos exploradores, no dos posters
 
 Las dos secciones con diagrama (`web/src/paginas/linaje.ts` y `vientre.ts`)
@@ -831,6 +857,17 @@ Recoger un fragmento **no abre nada**: solo un aviso. Se lee con `L` cuando el
 jugador quiere, sobre el juego en pausa. El índice muestra los huecos de lo que
 falta, así que se sabe cuántos hay sin saber dónde. Lo recogido sobrevive al
 cambio de zona (`Progreso.ts`) y se reinicia al volver al Atrio desde el cierre.
+
+**Diez hojas, contadas por nivel (#127).** Cada fragmento declara su `nivel`: ocho
+son del Nivel 1 y dos (IX y X) del Nivel 2. El cierre de cada nivel cuenta **las
+suyas** (`progreso.fragmentosDelNivel`), así que el Nivel 1 sigue premiando su
+8/8 con la línea oculta aunque el Códice entero tenga más.
+
+Mientras el Nivel 2 no exista, **el juego no enseña la IX ni la X**: serían dos
+hojas «arrancadas» imposibles de conseguir. Lo controla `NIVEL_MAS_HONDO` en
+`Codice.ts`; al construir el Nivel 2 pasa a 2 y aparecen solas en el índice y en
+el HUD. La web sí publica las diez: allí los versículos son doctrina pública y
+el margen se sigue ganando como siempre.
 
 ## Audio
 

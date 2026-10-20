@@ -35,7 +35,27 @@ const GIRO_MS = 620;
 const CHEVRON =
   '<svg viewBox="0 0 3 5" width="9" height="15" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M2 0h1v1H2zM1 1h1v1H1zM0 2h1v1H0zM1 3h1v1H1zM2 4h1v1H2z"/></svg>';
 
-export function montarLibro(nodo: HTMLElement, folios: readonly Folio[]): () => void {
+/** Nombre del evento con el que otro elemento de la página pide un folio. */
+const EVENTO_IR = 'libro-ir';
+
+/**
+ * Pide al libro montado en `nodo` que pase al folio `indice`, con el mismo
+ * giro que las flechas. Es lo que usa el índice de Doctrina (#114): el libro
+ * no sabe que hay un índice, y el índice no toca las caras del libro.
+ */
+export function irAFolio(nodo: HTMLElement, indice: number): void {
+  nodo.dispatchEvent(new CustomEvent<number>(EVENTO_IR, { detail: indice }));
+}
+
+/**
+ * @param alCambiar se llama con el folio que queda abierto, para que lo que
+ *   haya fuera del libro (el índice) marque el actual.
+ */
+export function montarLibro(
+  nodo: HTMLElement,
+  folios: readonly Folio[],
+  alCambiar?: (indice: number) => void,
+): () => void {
   nodo.classList.add('libro');
   nodo.innerHTML = `
     <div class="libro-tapa">
@@ -81,6 +101,7 @@ export function montarLibro(nodo: HTMLElement, folios: readonly Folio[]): () => 
       if (i === actual) c.setAttribute('aria-current', 'page');
       else c.removeAttribute('aria-current');
     });
+    alCambiar?.(actual);
   };
 
   const poner = (i: number) => {
@@ -211,6 +232,7 @@ export function montarLibro(nodo: HTMLElement, folios: readonly Folio[]): () => 
   anterior.addEventListener('click', () => ir(actual - 1));
   siguiente.addEventListener('click', () => ir(actual + 1));
   for (const c of cintas) c.addEventListener('click', () => ir(Number(c.dataset.folio)));
+  nodo.addEventListener(EVENTO_IR, (e) => ir((e as CustomEvent<number>).detail));
 
   // Teclado: las flechas pasan página salvo que el foco esté en un campo.
   const alTeclear = (e: KeyboardEvent) => {
