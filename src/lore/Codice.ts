@@ -46,6 +46,11 @@
 
 export interface FragmentoCodice {
   id: string;
+  /**
+   * El nivel donde se recoge. El recuento se hace por nivel para que el cierre
+   * del Nivel 1 siga premiando sus 8 hojas aunque el Codice entero tenga mas.
+   */
+  nivel: 1 | 2;
   /** Referencia liturgica, al estilo capitulo:versiculo. */
   cita: string;
   titulo: string;
@@ -58,6 +63,7 @@ export interface FragmentoCodice {
 export const CODICE: readonly FragmentoCodice[] = [
   {
     id: 'codice-01',
+    nivel: 1,
     cita: 'Códice II, 4',
     titulo: 'De la mirada',
     versiculo: [
@@ -74,6 +80,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-02',
+    nivel: 1,
     cita: 'Códice III, 1',
     titulo: 'Del diezmo',
     versiculo: [
@@ -89,6 +96,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-03',
+    nivel: 1,
     cita: 'Códice I, 1',
     titulo: 'Del origen',
     versiculo: [
@@ -104,6 +112,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-04',
+    nivel: 1,
     cita: 'Códice IV, 7',
     titulo: 'Del sorteo',
     versiculo: [
@@ -120,6 +129,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-05',
+    nivel: 1,
     cita: 'Códice V, 2',
     titulo: 'De los Elegidos',
     versiculo: [
@@ -135,6 +145,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-06',
+    nivel: 1,
     cita: 'Códice VI, 1',
     titulo: 'De las manos',
     versiculo: [
@@ -152,6 +163,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-07',
+    nivel: 1,
     cita: 'Códice V, 9',
     titulo: 'De la espera',
     versiculo: [
@@ -167,6 +179,7 @@ export const CODICE: readonly FragmentoCodice[] = [
   },
   {
     id: 'codice-08',
+    nivel: 1,
     cita: 'Códice VII, 3',
     titulo: 'Del silencio',
     versiculo: [
@@ -181,8 +194,97 @@ export const CODICE: readonly FragmentoCodice[] = [
       'Lo dejo escrito porque nadie lo dice en voz alta.',
     ],
   },
+  {
+    id: 'codice-09',
+    nivel: 2,
+    cita: 'Códice VI, 6',
+    titulo: 'De la limpieza',
+    versiculo: [
+      'Lo que el dios rechaza no se devuelve.',
+      'Se aparta, se pesa y se deja abajo.',
+      'Nada de lo ofrecido sale del Vientre.',
+      'El que limpia el altar no recibe nombre.',
+    ],
+    margen: [
+      'El que limpia el altar se llama Mondador.',
+      'Nació el último en el año 62. Ya no cría arriba.',
+      'Si se extingue, alguien tendrá que hacer su trabajo.',
+      'Y ese alguien no va a tener dientes de bisturí.',
+    ],
+  },
+  {
+    id: 'codice-10',
+    nivel: 2,
+    cita: 'Códice V, 12',
+    titulo: 'De lo que no se completa',
+    versiculo: [
+      'El Reformado no se traslada.',
+      'Se le deja donde fue hecho, y allí sirve.',
+      'Lo que no sube alimenta lo que baja.',
+      'La cuenta del Vientre no se publica.',
+    ],
+    margen: [
+      'Los niveles de abajo no son un depósito.',
+      'Son un estómago. La Diócesis nunca ha limpiado nada:',
+      'se lo come el Vientre.',
+      'Y el Vientre se está quedando sin dientes.',
+    ],
+  },
 ];
+
+/**
+ * El nivel mas hondo que existe en el juego.
+ *
+ * Las hojas IX y X ya estan escritas (issue #127), pero el Nivel 2 todavia no
+ * se ha construido. Si el juego las ensenara, el libro del Nivel 1 tendria dos
+ * hojas "arrancadas" que no hay manera de conseguir, y quien se lo termina
+ * entero se quedaria en 8/10 sin saber por que. La web si las publica: alli
+ * son doctrina, no algo que haya que ganarse jugando.
+ *
+ * Cuando el Nivel 2 entre (#129), esto pasa a 2 y las hojas aparecen solas.
+ */
+export const NIVEL_MAS_HONDO = 1;
+
+/** Las hojas que el juego ensena: las de los niveles que existen. */
+export const CODICE_EN_JUEGO: readonly FragmentoCodice[] = CODICE.filter(
+  (fragmento) => fragmento.nivel <= NIVEL_MAS_HONDO,
+);
 
 export function fragmentoPorId(id: string): FragmentoCodice | undefined {
   return CODICE.find((fragmento) => fragmento.id === id);
+}
+
+/** Los folios se numeran en romanos, en el juego y en la web. */
+export const ROMANOS: readonly string[] = [
+  'I',
+  'II',
+  'III',
+  'IV',
+  'V',
+  'VI',
+  'VII',
+  'VIII',
+  'IX',
+  'X',
+];
+
+/**
+ * El numero de hojas en letra, para los textos que lo dicen ("las diez hojas").
+ * Solo cubre lo que el Codice puede llegar a tener; fuera de eso, la cifra.
+ */
+export function numeroEnLetras(n: number): string {
+  const LETRAS = [
+    'cero',
+    'una',
+    'dos',
+    'tres',
+    'cuatro',
+    'cinco',
+    'seis',
+    'siete',
+    'ocho',
+    'nueve',
+    'diez',
+  ];
+  return LETRAS[n] ?? String(n);
 }

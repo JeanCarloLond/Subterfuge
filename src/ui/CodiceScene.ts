@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
-import { CODICE, fragmentoPorId } from '../lore/Codice';
+import { CODICE_EN_JUEGO, ROMANOS, fragmentoPorId } from '../lore/Codice';
 import { FAMILIAS, REGISTRO, type Familia } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
 import { CRONOLOGIA } from '../lore/Cronologia';
@@ -39,9 +39,6 @@ const COLOR = {
   lapiz: '#3f3d47',
   palimpsesto: '#2a1a1e',
 } as const;
-
-/** Numeros romanos para capitulos y folios. */
-const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
 /** Ruido entero reproducible: los bordes rotos del folio salen igual cada vez. */
 function ruido(x: number, y: number): number {
@@ -502,7 +499,7 @@ export class CodiceScene extends Phaser.Scene {
       color: COLOR.oroTexto,
     });
 
-    CODICE.forEach((fragmento, i) => {
+    CODICE_EN_JUEGO.forEach((fragmento, i) => {
       const recogido = progreso.estaRecogido(fragmento.id);
       const texto = this.add.text(x, y + 8 + i * 14, '', {
         fontFamily: 'monospace',
@@ -528,7 +525,7 @@ export class CodiceScene extends Phaser.Scene {
   }
 
   private refrescarIndice(): void {
-    CODICE.forEach((fragmento, i) => {
+    CODICE_EN_JUEGO.forEach((fragmento, i) => {
       const texto = this.indiceTextos[i];
       const recogido = progreso.estaRecogido(fragmento.id);
       const seleccionado = this.ids[this.indice] === fragmento.id;
@@ -563,7 +560,7 @@ export class CodiceScene extends Phaser.Scene {
 
     progreso.marcarLeido(fragmento.id);
 
-    const hoja = CODICE.findIndex((f) => f.id === fragmento.id);
+    const hoja = CODICE_EN_JUEGO.findIndex((f) => f.id === fragmento.id);
     this.folioTexto.setText(`${fragmento.cita}   ·   fol. ${ROMANOS[hoja] ?? hoja + 1}`);
     this.tituloTexto.setText(fragmento.titulo.toUpperCase());
 

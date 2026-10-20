@@ -30,7 +30,7 @@ export class FinalScene extends Phaser.Scene {
 
   create(): void {
     recordar('hitos', 'final');
-    this.fragmentos = progreso.fragmentosRecogidos;
+    this.fragmentos = progreso.fragmentosDelNivel(1);
 
     this.cameras.main.setBackgroundColor('#0b090b');
     this.cameras.main.fadeIn(900, 11, 9, 11);
@@ -116,7 +116,7 @@ export class FinalScene extends Phaser.Scene {
     // cuando se han leido todas las demas. Es el premio de rejugar y el
     // motivo del lore-hunter para volver a bajar. El "no vengas" escondido lo
     // describe el world bible como parte de la campana ARG.
-    if (this.fragmentos >= progreso.fragmentosTotales) {
+    if (this.fragmentos >= progreso.fragmentosTotalesDelNivel(1)) {
       const ultimoMargen = this.add
         .text(centroX, 244, ['al margen, en otra tinta:', '"No vengas."'].join('\n'), {
           fontFamily: 'monospace',
@@ -152,7 +152,7 @@ export class FinalScene extends Phaser.Scene {
    * el que un lore-hunter volveria a jugar el teaser.
    */
   private textoRecuento(): string {
-    const total = progreso.fragmentosTotales;
+    const total = progreso.fragmentosTotalesDelNivel(1);
     const reliquias = progreso.reliquiasRecogidas;
     const codice =
       this.fragmentos === 0
