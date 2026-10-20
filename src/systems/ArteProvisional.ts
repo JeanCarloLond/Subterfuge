@@ -1470,46 +1470,56 @@ const LUZ_HOSPITAL: Figura = {
 // ahi el oxido, que es lo que separa esto de una nave espacial.
 
 // Tanque de cultivo de Genesis Vestal. El fluido sigue corriendo y dentro hay
-// algo que no termina de morirse, que es exactamente lo que le paso a los Mil.
-// El marco esta comido de oxido: funciona, pero nadie lo ha tocado en siglos.
+// algo encogido que no termina de morirse, que es exactamente lo que le paso a
+// los Mil. Redibujado mas grande (revision del equipo): el de antes tenia el
+// borde derecho escalonado y no se distinguia lo de dentro. Ahora es un
+// cilindro de vidrio con cupula, burbujas y la figura de carne en el centro.
 const TANQUE: Figura = {
   paleta: {
+    n: 0x14100f, // negro
     M: 0x9ca193, // metal
     S: 0x4a5450, // metal en sombra
     o: 0x8a4a22, // oxido
+    g: 0x6aa0a0, // el vidrio, de canto
     t: 0x487b84, // fluido
     T: 0x7fc9bd, // fluido, brillo
+    b: 0xc8f4f0, // burbuja
     c: 0x8c2f2f, // carne en sombra
     C: 0xb03a34, // carne
     R: 0xd4564a, // carne al rojo
-    n: 0x14100f, // negro
   },
   // prettier-ignore
   filas: [
-    '...MMMMMMMMMM...',
-    '..MooooooooooM..',
-    '..MoSSSSSSSSoM..',
-    '..MoSttttttSoM..',
-    '..MoStTTTTtSoM..',
-    '..MoSttttttSoM..',
-    '..MoSttccttSoM..',
-    '..MoStcCCCctSoM.',
-    '..MoStcCRRCctSM.',
-    '..MoStcCRRCctSM.',
-    '..MoStcCCCCctSM.',
-    '..MoSttcCCcttSM.',
-    '..MoSttccccttSM.',
-    '..MoSttttttttSM.',
-    '..MoStTttttTtSM.',
-    '..MoSttttttttSM.',
-    '..MoSSSSSSSSSSM.',
-    '..MooooooooooM..',
-    '...MMMMMMMMMM...',
-    '...ooMMMMMMoo...',
-    '...oo......oo...',
-    '...oo......oo...',
-    '..ooo......ooo..',
-    '..nnn......nnn..',
+    '....nnnnnnnnnnnn....',
+    '...nMMMMMMMMMMMMn...',
+    '..nMMSSSSSSSSSSMMn..',
+    '..nMooooooooooooMn..',
+    '..ngttttttttttttgn..',
+    '..ngtTtttttttbttgn..',
+    '..ngtTttttttttttgn..',
+    '..ngtTtttccctbttgn..',
+    '..ngtTttcCCCcttbgn..',
+    '..ngtTttcCRCctttgn..',
+    '..ngtTtttcCcttttgn..',
+    '..ngtTttccCccbttgn..',
+    '..ngtTtcCCCCCcttgn..',
+    '..ngtTtcCRRRCcttgn..',
+    '..ngtTtcCRRRCcbtgn..',
+    '..ngtTttcCCCcttbgn..',
+    '..ngtTtttcCctttTgn..',
+    '..ngtTttcctccttTgn..',
+    '..ngtTtttttttbtTgn..',
+    '..ngtTttttttttttgn..',
+    '..ngttttttttttttgn..',
+    '..nMooooooooooooMn..',
+    '..nMMSSSSSSSSSSMMn..',
+    '...nMMMMMMMMMMMMn...',
+    '....nMMoMMMMoMMn....',
+    '....nooMMMMMMoon....',
+    '....noo......oon....',
+    '....noo......oon....',
+    '...nooo......ooon...',
+    '...nnnn......nnnn...',
   ],
 };
 
@@ -2566,10 +2576,504 @@ const CHARCO_VIVO: Figura = {
     '.ddrrrrRrrrrrrrrrrrrrrdd',
   ],
 };
+// -- Los fieles con los que se habla --------------------------------------------
+//
+// Antes usaban los sprites de los enemigos (Devoto, Vestal, el Reformado jefe)
+// y se confundian con ellos. Cada uno tiene ahora su figura de civil: sin carne
+// abierta, sin metal, con lo que lleva en la mano. El fiel de la cola, con el
+// papel de su inscripcion.
+const FIEL: Figura = {
+  paleta: {
+    h: 0x9a7f66,
+    p: 0x4a3426,
+    g: 0x7a6440,
+    G: 0x9a8458,
+    d: 0x231c18,
+    n: 0x1e1611,
+    w: 0xe8e0cc,
+    l: 0x6a5a48,
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dppppppd........',
+    '.....dpphhhhppd.......',
+    '.....dphhhhhhpd.......',
+    '.....dphhnhnhpd.......',
+    '.....dphhhhhhpd.......',
+    '......dhhhhhhd........',
+    '.......dhhhhd.........',
+    '.....ddggggggdd.......',
+    '....dggGGGGGGggd......',
+    '...dggGGGGGGGGggd.....',
+    '...dgGGGGGGGGGGgd.....',
+    '..dhgGGGGGGGwwwwwd....',
+    '..dhgGGGGGGGwllllw....',
+    '...dgGGGGGGGwwwwwwh...',
+    '...dgGGGGGGGwllllwh...',
+    '...dgGGGGGGGwwwwwd....',
+    '...dgGGGGGGGGGGgd.....',
+    '...dgGGGGGGGGGGgd.....',
+    '...ddgGGGGGGGGgdd.....',
+    '..ddgggggggggd........',
+    '..dggggggggggd........',
+    '..dgggd..dgggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '.ddggd....dggdd.......',
+    '.nnggd....dggnn.......',
+    '.nnnnn.....nnnn.......',
+    '..nnn.......nn........',
+    '......................',
+  ],
+};
+// La Vestal de Registro: habito gris, cuello blanco y el Libro rojo. Clero de
+// oficina, no la Vestal que lanza sellos.
+const REGISTRADORA: Figura = {
+  paleta: {
+    h: 0x9a7f66,
+    p: 0x3a3446,
+    g: 0x4a4458,
+    G: 0x5e5870,
+    d: 0x1c1820,
+    n: 0x141018,
+    w: 0xe8e0cc,
+    r: 0x8c2f2f,
+    R: 0xb03a34,
+    o: 0xc9a44c,
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dppppppd........',
+    '.....dpphhhhppd.......',
+    '.....dphhhhhhpd.......',
+    '.....dphhnhnhpd.......',
+    '.....dphhhhhhpd.......',
+    '.....dpdhhhhdpd.......',
+    '.....dpwwwwwwpd.......',
+    '.....dpwwwwwwpd.......',
+    '....dggGGGGGGggd......',
+    '...dggGGGGGGGGggd.....',
+    '...dgGGGGGGGGGGgd.....',
+    '..dhgGGGGGrrrrrrd.....',
+    '..dhgGGGGGrRRRRrhd....',
+    '...dgGGGGGrRooRrhd....',
+    '...dgGGGGGrRRRRrd.....',
+    '...dgGGGGGrrrrrrd.....',
+    '...dgGGGGGGGGGGgd.....',
+    '...dgGGGGGGGGGGgd.....',
+    '...ddgGGGGGGGGgdd.....',
+    '..ddgggggggggd........',
+    '..dggggggggggd........',
+    '..dgggd..dgggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '.ddggd....dggdd.......',
+    '.nnggd....dggnn.......',
+    '.nnnnn.....nnnn.......',
+    '..nnn.......nn........',
+    '......................',
+  ],
+};
+// El auxiliar de Criptas: delantal claro, pano en la boca y la jeringa.
+const AUXILIAR: Figura = {
+  paleta: {
+    h: 0x9a7f66,
+    p: 0x3a2e26,
+    g: 0x3a3e40,
+    G: 0x4a5052,
+    d: 0x1c1a1a,
+    n: 0x141010,
+    a: 0xb8b4a8,
+    A: 0xd8d4c8,
+    m: 0xd8d0c0,
+    M: 0x9ca193,
+    t: 0x7fc9bd,
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dppppppd........',
+    '.....dpphhhhppd.......',
+    '.....dphhhhhhpd.......',
+    '.....dphhnhnhpd.......',
+    '.....dpmmmmmmpd.......',
+    '......dmmmmmmd........',
+    '.......dmmmmd.........',
+    '.....ddggggggdd.......',
+    '....dggaaaaaaggd......',
+    '...dggaAAAAAAaggd.....',
+    '...dgaAAAAAAAAagd.....',
+    '..dhgaAAAAAAAAagdMMt..',
+    '..dhgaAAAAAAAAaghMtt..',
+    '...dgaAAAAAAAAaghd....',
+    '...dgaAAAAAAAAagd.....',
+    '...dgaAAAAAAAAagd.....',
+    '...dgaAAAAAAAAagd.....',
+    '...dggaaaaaaaaggd.....',
+    '...ddgggggggggdd......',
+    '..ddgggggggggd........',
+    '..dggggggggggd........',
+    '..dgggd..dgggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '.ddggd....dggdd.......',
+    '.nnggd....dggnn.......',
+    '.nnnnn.....nnnn.......',
+    '..nnn.......nn........',
+    '......................',
+  ],
+};
+// El Reformado viejo, sentado en un cajon. Vendado y quieto: nada que ver con
+// el jefe.
+const REFORMADO_SENTADO: Figura = {
+  paleta: {
+    c: 0x8c4f4f,
+    C: 0xa86a66,
+    o: 0x5c2f33,
+    n: 0x2a1a1e,
+    v: 0xc9bda8,
+    V: 0x9a8d78,
+    s: 0x3a1418,
+    b: 0x5a4030,
+    B: 0x7a5a40,
+    M: 0x9ca193,
+  },
+  // prettier-ignore
+  filas: [
+    '.........nnnnnn.........',
+    '........nccccccn........',
+    '.......ncCCccvvcn.......',
+    '.......ncCcnccvvn.......',
+    '.......nccccccccn.......',
+    '........nocccocn........',
+    '......nnnccccccnnn......',
+    '.....ncCcvvvvvvccCn.....',
+    '....ncCccvVVVVvcccCn....',
+    '....nccscvvvvvvcsccn....',
+    '....ncccsvVVVVvscccn....',
+    '....nMcccvvvvvvcccMn....',
+    '.....nccccccccccccn.....',
+    '.....ncccooooooocccn....',
+    '....nbbbBBBBBBBBbbbn....',
+    '....nbccbBBBBBBbccbn....',
+    '....nbccbbbbbbbbccbn....',
+    '....nbccnBBBBBBnccbn....',
+    '....nbonnbbbbbbnnobn....',
+    '....nbbbbbbbbbbbbbbn....',
+    '....nnnnnnnnnnnnnnnn....',
+  ],
+};
+// El bocadillo que flota sobre quien se puede hablar. Oro de reliquia: lo que
+// se puede tocar en el juego brilla asi.
+const BOCADILLO: Figura = {
+  paleta: {
+    o: 0xc9a44c,
+    w: 0xf0e8d8,
+    n: 0x2a1a1e,
+  },
+  // prettier-ignore
+  filas: [
+    '.ooooooooo.',
+    'owwwwwwwwwo',
+    'ownwwnwwnwo',
+    'owwwwwwwwwo',
+    '.oooowoooo.',
+    '.....oo....',
+    '.....o.....',
+  ],
+};
+// La guardia del parry: el brazo adelantado con el bisturi atravesado. Antes el
+// parry solo tenia el Cirujano de dorado y no se leia como un gesto.
+const CIRUJANO_GUARDIA: Figura = {
+  paleta: {
+    n: 0x0c081f,
+    N: 0x211746,
+    q: 0x3a2a55,
+    p: 0x51356a,
+    P: 0x775d91,
+    L: 0x846d96,
+    k: 0xe3a940,
+    K: 0xfcd038,
+    Y: 0xf4ed93,
+    j: 0xcb6e2f,
+    m: 0x5d3927,
+  },
+  // prettier-ignore
+  filas: [
+    '.......qppppq...........',
+    '.....qppPPPPppq.........',
+    '....qppPPPPPPppq........',
+    '....qppPPPPPPPppq.......',
+    '....qppPnnnnnPppq.......',
+    '....qppnkkkkknPpq.......',
+    '....qppnkKKKKkkjq.......',
+    '....qppnkKYnKKkkjj......',
+    '....qppnkKKnKKkkkjj.....',
+    '....qppnkkKKkkkkjjj.....',
+    '....qppnnkkkkkjjjj......',
+    '....qppnnmkkkjjj........',
+    '....qppqnmmkjj..........',
+    '....qppq.mmjj...........',
+    '...qpppppppq............',
+    '..qppPPPPPPPppq.........',
+    '..qppPPPPPPPPPppqmjKKKKj',
+    '..qppPPPPPPPPPppqmmjjjj.',
+    '...qppppppppppq.........',
+    '....qppPPPPPpq..........',
+    '...qppPPPPPPPpq.........',
+    '...qpppppppppppq........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNN.........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNm.........',
+    '.....NNNNKNNNNm.........',
+    '....NpppppppppN.........',
+    '....NkKYKkppppN.........',
+    '....NpppppppppN.........',
+    '....NNNNNNNNNNN.........',
+    '....NNNNNNNNNNN.........',
+    '....NNNNnNNNNNN.........',
+    '....NNNnnNNNNNN.........',
+    '...NNNNnnnNNNNNN........',
+    '...NNNnnnnnNNNNN........',
+    '...NNNnnnnnNNNNN........',
+    '...NNnnn...nnnNN........',
+    '...nnnn.....nnnn........',
+    '...nnn.......nnn........',
+  ],
+};
+// Beber la Pocion de Carne: el frasco rojo alzado hasta el pico. La otra mano
+// no suelta el bisturi.
+const CIRUJANO_BEBE: Figura = {
+  paleta: {
+    n: 0x0c081f,
+    N: 0x211746,
+    q: 0x3a2a55,
+    p: 0x51356a,
+    P: 0x775d91,
+    L: 0x846d96,
+    k: 0xe3a940,
+    K: 0xfcd038,
+    Y: 0xf4ed93,
+    j: 0xcb6e2f,
+    m: 0x5d3927,
+    r: 0x8c2f2f,
+    R: 0xd4564a,
+    v: 0xc9bda8,
+  },
+  // prettier-ignore
+  filas: [
+    '.......qppppq...........',
+    '.....qppPPPPppq.........',
+    '....qppPPPPPPppq........',
+    '....qppPPPPPPPppq.......',
+    '....qppPnnnnnPppq.......',
+    '....qppnkkkkknPpq.......',
+    '....qppnkKKKKkkjq.......',
+    '....qppnkKYnKKkkjj......',
+    '....qppnkKKnKKkkkjj.....',
+    '....qppnkkKKkkkkjjvv....',
+    '....qppnnkkkkkjjjjrr....',
+    '....qppnnmkkkjjj.rRRr...',
+    '....qppqnmmkjj...rRrr...',
+    '....qppq.mmjj....rrrr...',
+    '...qpppppppq....mmm.....',
+    '..qppPPPPPPPppqmm.......',
+    '..qppPPPPPPPPPppq.......',
+    '..qppPPPPPPPPPppq.......',
+    '...qppppppppppq.........',
+    '....qppPPPPPpq..........',
+    '...qppPPPPPPPpq.........',
+    '...qpppppppppppq........',
+    '.....NNNNKNNNNN.........',
+    '.....NNNNnNNNNN.........',
+    '.....NNNNKNNNNNm........',
+    '.....NNNNnNNNNmm........',
+    '.....NNNNKNNNNm.j.......',
+    '....NpppppppppNjKj......',
+    '....NkKYKkppppNjKKj.....',
+    '....NpppppppppNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNNNNNNNNjKKj.....',
+    '....NNNNnNNNNNN.jKKj....',
+    '....NNNnnNNNNNN.jKKj....',
+    '...NNNNnnnNNNNNN.jKj....',
+    '...NNNnnnnnNNNNN.jKj....',
+    '...NNNnnnnnNNNNN..jj....',
+    '...NNnnn...nnnNN........',
+    '...nnnn.....nnnn........',
+    '...nnn.......nnn........',
+  ],
+};
+// El destello de dos filos en cruz que salta al parar un golpe.
+const PARRY_DESTELLO: Figura = {
+  paleta: {
+    o: 0xe8d9a0,
+    w: 0xffffff,
+    d: 0xc9a44c,
+  },
+  // prettier-ignore
+  filas: [
+    'w.........w',
+    '.wo.....ow.',
+    '..wo...ow..',
+    '...wo.ow...',
+    '....wdw....',
+    '.....w.....',
+    '....wdw....',
+    '...wo.ow...',
+    '..wo...ow..',
+    '.wo.....ow.',
+    'w.........w',
+  ],
+};
+// -- Iconos del HUD ---------------------------------------------------------
+//
+// Un corazon de carne por punto de vida, un frasco por Pocion y la pieza de
+// metal por injerto. Vacios se distinguen por la forma (contorno sin relleno),
+// no solo por el color.
+const HUD_CARNE: Figura = {
+  paleta: {
+    n: 0x1a0e10,
+    c: 0x8c2f2f,
+    C: 0xb03a34,
+    R: 0xd4564a,
+    L: 0xf0a090,
+  },
+  // prettier-ignore
+  filas: [
+    '.nn...nn.',
+    'nCCn.nCcn',
+    'nCLCnCccn',
+    'nCRcccccn',
+    '.nccccccn',
+    '..ncccn..',
+    '...ncn...',
+    '....n....',
+  ],
+};
+const HUD_CARNE_VACIA: Figura = {
+  paleta: {
+    n: 0x6a4a48,
+    e: 0x2a1a1c,
+  },
+  // prettier-ignore
+  filas: [
+    '.nn...nn.',
+    'neen.neen',
+    'neeeneeen',
+    'neeeeeeen',
+    '.neeeeen.',
+    '..neeen..',
+    '...nen...',
+    '....n....',
+  ],
+};
+const HUD_FRASCO: Figura = {
+  paleta: {
+    n: 0x1a0e10,
+    o: 0x8a6a2a,
+    w: 0xc9c4b8,
+    R: 0xb03a34,
+    C: 0xd4564a,
+    c: 0x8c2f2f,
+  },
+  // prettier-ignore
+  filas: [
+    '..ooo..',
+    '..nwn..',
+    '..nwn..',
+    '.nwwwn.',
+    'nwRRRwn',
+    'nRRCRRn',
+    'nRCCCRn',
+    'ncRRRcn',
+    '.nnnnn.',
+  ],
+};
+const HUD_FRASCO_VACIO: Figura = {
+  paleta: {
+    n: 0x6a5a54,
+    g: 0x2a2426,
+    w: 0x4a4440,
+  },
+  // prettier-ignore
+  filas: [
+    '.......',
+    '..nwn..',
+    '..nwn..',
+    '.nwwwn.',
+    'nwgggwn',
+    'ngggggn',
+    'ngggggn',
+    'ngggggn',
+    '.nnnnn.',
+  ],
+};
+const HUD_INJERTO: Figura = {
+  paleta: {
+    n: 0x14100f,
+    M: 0x9ca193,
+    S: 0x4a5450,
+    R: 0xd4564a,
+    c: 0x8c2f2f,
+  },
+  // prettier-ignore
+  filas: [
+    '.nnn.',
+    'nMMMn',
+    'nMSMn',
+    'nMSMn',
+    'nMSMn',
+    'nRcRn',
+    'nRRRn',
+    '.nnn.',
+  ],
+};
+const HUD_INJERTO_VACIO: Figura = {
+  paleta: {
+    n: 0x4a5450,
+    e: 0x1e2222,
+  },
+  // prettier-ignore
+  filas: [
+    '.nnn.',
+    'neeen',
+    'neeen',
+    'neeen',
+    'neeen',
+    'neeen',
+    'neeen',
+    '.nnn.',
+  ],
+};
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
   'cirujano-paso-b': CIRUJANO_PASO_B,
+  'hud-carne': HUD_CARNE,
+  'hud-carne-vacia': HUD_CARNE_VACIA,
+  'hud-frasco': HUD_FRASCO,
+  'hud-frasco-vacio': HUD_FRASCO_VACIO,
+  'hud-injerto': HUD_INJERTO,
+  'hud-injerto-vacio': HUD_INJERTO_VACIO,
+  'cirujano-guardia': CIRUJANO_GUARDIA,
+  'cirujano-bebe': CIRUJANO_BEBE,
+  'parry-destello': PARRY_DESTELLO,
   devoto: DEVOTO,
   'devoto-b': DEVOTO_B,
   'muro-pasillos-a': MURO_PASILLOS_A,
@@ -2585,6 +3089,11 @@ const FIGURAS: Record<string, Figura> = {
   nido: NIDO,
   'charco-vivo': CHARCO_VIVO,
   vestal: VESTAL,
+  fiel: FIEL,
+  registradora: REGISTRADORA,
+  auxiliar: AUXILIAR,
+  'reformado-sentado': REFORMADO_SENTADO,
+  bocadillo: BOCADILLO,
   'vestal-cazadora': VESTAL_CAZADORA,
   sello: SELLO,
   reformado: REFORMADO,

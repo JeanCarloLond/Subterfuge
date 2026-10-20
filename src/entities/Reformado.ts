@@ -1,3 +1,4 @@
+import { esfuerzo } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
 import { MOVIMIENTO, REFORMADO } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
@@ -362,6 +363,7 @@ export class Reformado implements Enemigo {
 
     this.maniobra = maniobra;
     this.estado = 'anticipando';
+    esfuerzo.enemigo('reformado', 'ataque');
     this.yaGolpeoEnSwing = false;
     this.finAccion = ahora + anticipacion;
     this.cuerpo.setVelocityX(0);

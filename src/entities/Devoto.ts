@@ -1,3 +1,4 @@
+import { esfuerzo } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
 import { COMBATE, DEVOTO, MOVIMIENTO } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
@@ -182,6 +183,7 @@ export class Devoto implements Enemigo {
 
   private iniciarAnticipacion(ahora: number): void {
     this.estado = 'anticipando';
+    esfuerzo.enemigo('devoto', 'ataque');
     this.cuerpo.setVelocityX(0);
     this.finAccion = ahora + DEVOTO.anticipacionAtaqueMs;
     this.yaGolpeoEnSwing = false;

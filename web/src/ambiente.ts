@@ -41,23 +41,23 @@ interface Capa {
 
 /** Una entrada por profundidad, de la portada (0) a los Sacramentos (5). */
 const CAPAS: readonly Capa[] = [
-  { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-cavernas-antiguas' },
-  { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-cavernas-antiguas' },
+  { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
+  { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
   {
     muro: ['muro-pasillos-a', 'muro-pasillos-b'],
     polvo: '184, 170, 150',
-    musica: 'pasillos-caverna-oscura',
+    musica: 'pasillos-pulso',
   },
   {
     muro: ['muro-criptas-a', 'muro-criptas-b'],
     polvo: '150, 150, 160',
-    musica: 'criptas-perdido',
+    musica: 'criptas-redoble-ominoso',
   },
-  { muro: ['muro-salas-a', 'muro-salas-b'], polvo: '168, 122, 122', musica: 'salas-intro-oscura' },
+  { muro: ['muro-salas-a', 'muro-salas-b'], polvo: '168, 122, 122', musica: 'salas-urgencia' },
   {
     muro: ['muro-salas-b', 'muro-salas-a'],
     polvo: '178, 108, 104',
-    musica: 'jefe-santuario-oscuro',
+    musica: 'jefe-tambores',
   },
 ];
 

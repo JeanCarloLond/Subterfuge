@@ -14,8 +14,12 @@ import { VOCES, type ClaveVoz, type Voz } from '../lore/Voces';
  * comodidad habria sido un error caro — el Cirujano lo mataria de un tajo sin
  * querer, y el unico civil del juego moriria por accidente.
  *
- * Se apaga en gris hasta que te acercas, como los Altares: el color dice
- * "esto responde" sin necesidad de un icono encima.
+ * Se distingue de un enemigo por dos cosas, y las dos hacian falta (la
+ * revision del equipo los confundia): una figura de civil propia, sin carne
+ * abierta ni metal, y un bocadillo de oro que flota sobre la cabeza siempre,
+ * de lejos. Antes se apagaba en gris hasta que te acercabas, y en gris se
+ * leia como un enemigo dormido. Cuando ya se ha hablado con el, el bocadillo
+ * se queda pero mas tenue: sigue ahi si quieres volver a oirle.
  */
 export class Fiel {
   readonly sprite: Phaser.GameObjects.Sprite;
@@ -27,6 +31,7 @@ export class Fiel {
   private cerca = false;
 
   private readonly aviso: Phaser.GameObjects.Text;
+  private readonly bocadillo: Phaser.GameObjects.Image;
 
   constructor(escena: Phaser.Scene, x: number, y: number, clave: ClaveVoz) {
     this.clave = clave;
@@ -34,10 +39,21 @@ export class Fiel {
 
     this.sprite = escena.add.sprite(x, y, this.voz.textura).setOrigin(0.5, 1);
     this.sprite.setDepth(8);
-    this.sprite.setTint(GRIS);
+    const cima = y - this.sprite.height;
+
+    this.bocadillo = escena.add.image(x, cima - 6, 'bocadillo-placeholder').setOrigin(0.5, 1);
+    this.bocadillo.setDepth(20);
+    escena.tweens.add({
+      targets: this.bocadillo,
+      y: cima - 9,
+      duration: 700,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
 
     this.aviso = escena.add
-      .text(x, y - 44, this.voz.rotulo, {
+      .text(x, cima - 16, this.voz.rotulo, {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#d6cfc4',
@@ -59,8 +75,9 @@ export class Fiel {
     if (ahoraCerca !== this.cerca) {
       this.cerca = ahoraCerca;
       this.aviso.setVisible(ahoraCerca);
-      if (ahoraCerca) this.sprite.clearTint();
-      else this.sprite.setTint(GRIS);
+      // De cerca el rotulo dice que hacer; el bocadillo se aparta para no
+      // taparlo.
+      this.bocadillo.setVisible(!ahoraCerca);
     }
 
     // Al mirarle se gira hacia ti. Es un gesto barato y es lo que separa a
@@ -75,6 +92,7 @@ export class Fiel {
     if (this.hablado) return;
     this.hablado = true;
     this.aviso.setText('E  volver a oírle');
+    this.bocadillo.setAlpha(0.45);
   }
 
   get yaHablado(): boolean {
@@ -84,6 +102,3 @@ export class Fiel {
 
 /** Distancia a la que ofrece conversacion (px). */
 const RADIO = 46;
-
-/** Apagado mientras no te acercas, como los Altares sin encender. */
-const GRIS = 0x5e5a56;

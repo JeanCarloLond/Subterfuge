@@ -6,11 +6,16 @@ import Phaser from 'phaser';
  * Ogg Vorbis). Autoria y licencias en LICENCIAS.md, en esa misma carpeta.
  */
 export const PISTAS = {
-  atrio: 'atrio-cavernas-antiguas',
-  pasillos: 'pasillos-caverna-oscura',
-  criptas: 'criptas-perdido',
-  salas: 'salas-intro-oscura',
-  jefe: 'jefe-santuario-oscuro',
+  // Con ritmo (revision del equipo: "la musica es sosa"). Se eligieron
+  // midiendo el pulso: las de antes estaban entre 0,03 y 0,11 y estas entre
+  // 0,3 y 0,8. El descenso va a mas: un redoble en el Atrio, un latido en los
+  // Pasillos, un redoble ominoso en las Criptas, urgencia en las Salas y
+  // tambores para el jefe.
+  atrio: 'atrio-redoble',
+  pasillos: 'pasillos-pulso',
+  criptas: 'criptas-redoble-ominoso',
+  salas: 'salas-urgencia',
+  jefe: 'jefe-tambores',
   final: 'final-camara-de-huesos',
   // El Vientre Humedo (#108): viento grave y goteo, la Lluvia Tibia hecha musica.
   'vientre-humedo': 'vientre-humedo-mazmorra',
@@ -28,9 +33,10 @@ export const SIN_PRECARGA: ReadonlySet<Pista> = new Set<Pista>(['vientre-humedo'
 /** Volumen de cada pista. La musica acompana; nunca compite con los golpes. */
 const VOLUMEN: Record<Pista, number> = {
   atrio: 0.32,
-  pasillos: 0.32,
+  // Las dos de SRG774 vienen bajas y no se pueden subir mas sin saturar.
+  pasillos: 0.48,
   criptas: 0.3,
-  salas: 0.3,
+  salas: 0.48,
   jefe: 0.42,
   final: 0.38,
   'vientre-humedo': 0.3,

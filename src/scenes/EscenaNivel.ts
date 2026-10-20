@@ -112,6 +112,22 @@ export type TipoDecorado =
   | 'nido'
   | 'charco-vivo';
 
+/**
+ * Algo que cruza el fondo de vez en cuando: un Cuervo por las bovedas, la
+ * Serpiente asomando por un conducto. Sin fisica ni interaccion; dice que el
+ * Vientre esta vivo aunque en esa zona no se le pueda tocar (revision del
+ * equipo: "no se ven los animales").
+ */
+export interface Aparicion {
+  tipo: 'cuervo' | 'serpiente';
+  /** Altura del cruce (px de mundo). */
+  y: number;
+  desde: number;
+  hasta: number;
+  /** Cada cuanto vuelve a cruzar, aproximadamente (ms). */
+  cadaMs: number;
+}
+
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
 
@@ -157,6 +173,8 @@ export interface DefinicionNivel {
    * especies: ver src/entities/Criatura.ts.
    */
   criaturas?: readonly CriaturaDef[];
+  /** Cruces de fondo: ver `Aparicion`. */
+  apariciones?: readonly Aparicion[];
   /**
    * Atrezo LEJANO: detras de todo, mas oscuro y con parallax. Da profundidad;
    * el jugador nunca lo toca. Las posiciones son aproximadas: al moverse la
@@ -386,6 +404,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.crearLuces();
     this.crearPolvo();
     if (this.definicion.lluvia) this.crearLluvia();
+    for (const aparicion of this.definicion.apariciones ?? []) this.crearAparicion(aparicion);
     if (this.definicion.mareas) this.crearMarea(this.definicion.mareas);
     this.crearVineta();
 
@@ -708,6 +727,45 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
   }
 
+  /**
+   * Un cruce de fondo que se repite. El Cuervo aletea y ondula; la Serpiente
+   * se arrastra despacio, oscura, como algo que pasa por detras de la pared.
+   */
+  private crearAparicion(a: Aparicion): void {
+    const cuervo = a.tipo === 'cuervo';
+    const figura = this.add.image(a.desde, a.y, `${a.tipo}-placeholder`).setDepth(-4);
+    figura.setVisible(false);
+    if (!cuervo) figura.setTint(0x6a4a48).setAlpha(0.7);
+
+    const cruzar = () => {
+      if (!figura.active) return;
+      const ida = Phaser.Math.Between(0, 1) === 0;
+      const x0 = ida ? a.desde : a.hasta;
+      const x1 = ida ? a.hasta : a.desde;
+      figura
+        .setPosition(x0, a.y)
+        .setVisible(true)
+        .setFlipX(x1 < x0);
+      const velocidad = cuervo ? 95 : 32;
+      const vuelo = { t: 0 };
+      this.tweens.add({
+        targets: vuelo,
+        t: 1,
+        duration: (Math.abs(x1 - x0) / velocidad) * 1000,
+        onUpdate: () => {
+          const y = cuervo ? a.y + Math.sin(vuelo.t * Math.PI * 6) * 4 : a.y;
+          figura.setPosition(Phaser.Math.Linear(x0, x1, vuelo.t), y);
+          if (cuervo) figura.setScale(1, 1 + Math.sin(vuelo.t * Math.PI * 30) * 0.18);
+        },
+        onComplete: () => {
+          figura.setVisible(false);
+          this.time.delayedCall(a.cadaMs * Phaser.Math.FloatBetween(0.7, 1.3), cruzar);
+        },
+      });
+    };
+    this.time.delayedCall(a.cadaMs * Phaser.Math.FloatBetween(0.1, 0.5), cruzar);
+  }
+
   private crearPolvo(): void {
     const { ancho, alto } = RESOLUCION;
     const color = this.definicion.polvo ?? 0xc9b48a;
@@ -954,6 +1012,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cirujano.eventos.on('sin-injertos', () => {
       this.game.events.emit(EVENTOS_HUD.aviso, 'sin injertos  ·  los sueltan los fieles');
     });
+    this.cirujano.eventos.on('bebe', (x: number, y: number) => this.impacto.pocion(x, y));
     this.cirujano.eventos.on('caida', (dano: number) => {
       this.impacto.danoPorCaida(dano);
       this.game.events.emit(EVENTOS_HUD.aviso, `caída: -${dano}`);

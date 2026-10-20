@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { IMPACTO } from '../config/Sacramento';
+import { esfuerzo } from './Esfuerzo';
 import { sonido, type ClaseEnemigo } from './Sonido';
 
 /**
@@ -45,6 +46,7 @@ export class Impacto {
     cargado: boolean,
     clase: ClaseEnemigo = 'devoto',
   ): void {
+    esfuerzo.enemigo(clase, 'herida');
     sonido.golpe(cargado, clase);
     this.congelar(cargado ? IMPACTO.hitstopCargadoMs : IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(
@@ -72,10 +74,49 @@ export class Impacto {
     this.anillo(x, y, 34, 0xe8d9a0, 300);
     this.anillo(x, y, 20, 0xffffff, 200);
     this.chispas(x, y, 0, 16, 0xe8d9a0);
+
+    // Y el gesto: dos filos en cruz que saltan y se abren. Es lo que dice
+    // "lo has parado" mas fuerte que un golpe acertado.
+    const destello = this.escena.add.image(x, y, 'parry-destello-placeholder').setDepth(60);
+    destello.setBlendMode(Phaser.BlendModes.ADD);
+    destello.setScale(0.6);
+    this.escena.tweens.add({
+      targets: destello,
+      scale: 2.4,
+      angle: 45,
+      alpha: 0,
+      duration: 380,
+      ease: 'Quad.easeOut',
+      onComplete: () => destello.destroy(),
+    });
+  }
+
+  /**
+   * Beber la Pocion de Carne: gotas rojas que suben y un pulso al final.
+   * Sin esto, beber era quedarse quieto con el frasco invisible.
+   */
+  pocion(x: number, y: number): void {
+    const emisor = this.escena.add.particles(x, y - 18, 'chispa-placeholder', {
+      x: { min: -6, max: 6 },
+      y: { min: 0, max: 14 },
+      speedY: { min: -40, max: -18 },
+      speedX: { min: -6, max: 6 },
+      lifespan: 520,
+      scale: { start: 1.4, end: 0.4 },
+      alpha: { start: 0.9, end: 0 },
+      tint: [0xd4564a, 0x8c2f2f, 0xb03a34],
+      quantity: 2,
+      frequency: 40,
+      duration: 500,
+    });
+    emisor.setDepth(40);
+    this.escena.time.delayedCall(1200, () => emisor.destroy());
+    this.escena.time.delayedCall(520, () => this.anillo(x, y - 18, 18, 0xd4564a, 260));
   }
 
   /** El Cirujano encaja un golpe. */
   danoRecibido(): void {
+    esfuerzo.cirujano('herida');
     sonido.dano();
     this.congelar(IMPACTO.hitstopGolpeMs);
     this.escena.cameras.main.shake(160, IMPACTO.sacudidaRecibir);
@@ -84,6 +125,7 @@ export class Impacto {
 
   /** El Cirujano se estrella contra el suelo. Mas largo y mas grave que un golpe. */
   danoPorCaida(dano: number): void {
+    esfuerzo.cirujano('caida');
     sonido.danoPorCaida(dano);
     this.congelar(IMPACTO.hitstopCargadoMs);
     this.escena.cameras.main.shake(220, IMPACTO.sacudidaRecibir * 1.4);
@@ -115,6 +157,7 @@ export class Impacto {
    * mas largo y mas rojo, y en que la sacudida no se parece a ninguna otra.
    */
   muerteCirujano(x: number, y: number): void {
+    esfuerzo.cirujano('muerte');
     sonido.muerteJugador();
     this.congelar(IMPACTO.hitstopMuerteMs);
 
@@ -130,6 +173,7 @@ export class Impacto {
   }
 
   muerteEnemigo(x: number, y: number, clase: ClaseEnemigo = 'devoto'): void {
+    esfuerzo.enemigo(clase, 'muerte');
     sonido.muerteEnemigo(clase);
     this.congelar(IMPACTO.hitstopMuerteMs);
     this.escena.cameras.main.shake(180, IMPACTO.sacudidaMuerte);
