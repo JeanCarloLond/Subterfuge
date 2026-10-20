@@ -32,7 +32,7 @@ export function renderSacramentos(contenedor: HTMLElement): void {
           <canvas class="lamina" data-figura="bandeja" width="72" height="72" aria-hidden="true"></canvas>
           <span class="profundidad">práctica · con las manos</span>
           <h3>El Sacramento</h3>
-          <p>Práctica guiada en cuatro pasos: cubrir, pesar, incidir y sellar. Se informa de que los errores quedan registrados y son visibles en el resto del portal.</p>
+          <p>Práctica guiada en siete pasos, del rostro cubierto al sello: pesar, contar el instrumental, incidir, abrir, injertar. Se informa de que los errores quedan registrados y son visibles en el resto del portal.</p>
         </a>
         <a class="tarjeta" href="#/doctrina">
           <canvas class="lamina" data-figura="vela" width="72" height="72" aria-hidden="true"></canvas>

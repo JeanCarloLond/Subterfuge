@@ -483,6 +483,14 @@ button:disabled {
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+/* Con el Pabellón son seis secciones (#79): en pantallas medianas se aprietan
+   un poco para no bajar a una segunda línea bajo la marca. */
+@media (max-width: 1440px) {
+  .nav {
+    gap: 4px 14px;
+    font-size: 11px;
+  }
+}
 .nav a {
   color: var(--tinta-2);
   text-decoration: none;
