@@ -415,21 +415,93 @@ entraran en el grupo de enemigos, un tajo al aire mataría al Mondador —el ani
 sagrado, casi extinto— por accidente. Por eso cada especie declara un
 **contrato**, y la escena la mete en un grupo distinto:
 
-| Contrato  | Especies                                     | Tajo        | Injerto | Hiere al rozar |
-| --------- | -------------------------------------------- | ----------- | ------- | -------------- |
-| `hostil`  | Remedo, Serpiente                            | sí          | sí      | sí             |
-| `neutral` | Mondador, Buitre, Cerdo, Cuervo, Mata, Hongo | no          | no      | no             |
-| `peligro` | Zarza, Alfombra, Vena                        | si se corta | no      | sí             |
+| Contrato                              | Especies                 | Tajo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Injerto | Hiere al rozar |
+| ------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------------- |
+| `hostil`                              | Remedo, Serpiente, Cerdo | sí                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | sí      | sí             |
+| `neutral`                             | Serpiente                | Mini-jefe (#98). Duerme hasta que entras en su arena; se presenta y saca su barra. Telegrafía cada embestida (≥ 500 ms); si falla, se estrella en el borde y queda aturdida 900 ms (el tajo entra entero; fuera de ahí, las escamas paran la mitad). Bajo la mitad de vida abre la boca y traga: te retiene y te escupe con 1 menos, salvo que salgas con dash. El parry también la aturde. Si mueres, el combate se reinicia; al morir suelta 2 injertos y emite `serpiente-vencida` para que el nivel abra el ducto. |
+| Mondador, Buitre, Cuervo, Mata, Hongo | no                       | no                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | no      |
+| `peligro`                             | Zarza, Alfombra, Vena    | si se corta                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | no      | sí             |
 
 Un nivel las declara en un solo campo, `criaturas`, con un `tipo` por entrada
 (`src/entities/Criatura.ts`). **Añadir una especie no toca `EscenaNivel`**: su
 entrada en `CriaturaDef`, su clase (cumple `Habitante`, y `Enemigo` si se puede
 herir) y su fábrica en `FABRICAS`.
 
-De momento `FABRICAS` está vacío: cada especie entra con su issue (#97 a #104).
-Un nivel que declare una criatura sin clase **falla al cargar**, a propósito: un
-nivel al que le falta su depredador sin que nadie lo note es peor que uno que no
-arranca. El Nivel 1 no declara ninguna y no cambia.
+Tienen ya su clase todas las especies: Remedo, Serpiente, Mondador, Buitre,
+Cerdo, Cuervo, Zarza, Alfombra, Mata, Vena, Hongo y la Flor de hueso (#96 a
+#104, #125). Ningún nivel las coloca todavía: eso es el Nivel 2 (#128). Un nivel
+que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
+su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
+declara ninguna y no cambia.
+
+| Especie  | Qué hace                                                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Remedo   | Quieto y gris, parece instrumental. Tiembla si te acercas (el tell). Pegado, muerde 1 y huye; no acosa.                                                                              |
+| Mondador | Recorre su ruta y se para a comer. Si le lanzas un tajo cerca, huye y no vuelve en esa visita.                                                                                       |
+| Buitre   | Posado. Si llegas corriendo o le tiras un tajo, se va y vuelve al rato.                                                                                                              |
+| Cerdo    | Pasea y come en su corral; se asusta si llegas corriendo. No ataca, pero se puede matar (#100): deja carne engastada que cura 2 y el HUD dice «propiedad del linaje».                |
+| Cuervo   | Salta al siguiente posadero cuando te acercas: seguirlo lleva a donde el nivel quiera.                                                                                               |
+| Zarza    | Muro: no se atraviesa. Rozarla hiere. Se corta a tajos (2 por tile), da Fervor y no vuelve a crecer.                                                                                 |
+| Alfombra | Respira si te acercas. Pisarla atrapa y quita 1 cada 1,2 s, sin empujón. Se sale saltando, con dash o cortándola.                                                                    |
+| Mata     | `E` para cosechar: 3 frutos; casi siempre cura 1, a veces es amargo y a veces muerde un Remedo.                                                                                      |
+| Hongo    | Luz fría (un brillo aditivo, como velas y Altares, pero verde). `E` lo come: cura 1 y se apaga para la partida.                                                                      |
+| Flor     | La de la Cena de la Ausencia (#125). `E` la recoge: 10 de Fervor y una línea. Una por nivel; no vuelve.                                                                              |
+| Vena     | Cortina de carne que cierra un paso (#101). No hiere: bloquea. Se abre en el pico del Latido (0,8 s de cada 2,6 s), con un golpe que lo anuncia; con la Marea, 0,45 s de cada 1,5 s. |
+| Tejido   | Nódulo al borde de un hueco (#95). `E` gasta un injerto y crece un puente de carne que pasa a ser suelo. Sin injertos, avisa y no gasta. Siempre opcional.                           |
+
+Las criaturas no reciben la escena entera, sino un **contexto** con lo justo
+(`ContextoCriatura`): dónde está el Cirujano, herirlo, curarlo, avisar en el
+HUD, hacerse sólidas para él. Así ninguna especie acaba tocando la cámara o el
+HUD por su cuenta.
+
+Un nivel con `lluvia: true` tiene **Lluvia Tibia** (#96): gotas finas de agua
+oxidada, fijas a la cámara como el polvo y detrás de todo. Es ambiente, no moja.
+Arrecia mientras la Marea avisa y sube.
+
+Un nivel con `mareas` tiene **Mareas del Hambre** (#91), el fenómeno de la
+biblia: "cuando los Viscerales digieren, los ductos expulsan fluidos tibios que
+inundan las criptas bajas". Es un temporizador (`src/systems/Marea.ts`):
+reposo → aviso → subiendo → crecida → bajando. El aviso se oye (el Latido que
+se acelera), se lee ("sube el agua"), se ve (arrecia la lluvia) y lo anuncian
+los animales: el **Buitre se va** y no vuelve hasta que baja el agua, y el
+**Cuervo grazna** tres veces. Tocar el agua hiere y empuja hacia arriba; si
+cubre al Cirujano entero, lo devuelve al último Altar con un punto menos, como
+la caída al vacío. Nunca mata de golpe. Se para sola con la pausa y el Códice.
+
+**El nivel decide hasta dónde sube** (`alturaMaxima`): nunca hasta el Altar de
+la entrada ni el umbral de salida, y siempre con una repisa a salvo por encima.
+La **Vena** late más rápido mientras dura: la ventana para cruzarla se acorta.
+
+**Fieles del Vientre Húmedo (#87).** El Tanteador explica la Alfombra («la de
+verdad tiene fleco; la otra respira») y la Honguera habla del Mondador como de
+un compañero de oficio. Los dos tienen ficha en LOS FIELES, que se abre al
+hablar con ellos. Sus frases sobre la niña y la huida esperan al acta.
+
+**Sonido (#108).** Cada especie suena a su materia, sintetizado como el resto:
+la Serpiente silba antes de embestir, el Cuervo grazna con resonancia de cable,
+la Alfombra susurra y chasquea, la Marea retumba al subir y al bajar. Lo que se
+repite solo (graznidos, ronroneos, el pulso de la Vena) suena únicamente si la
+criatura está a menos de 260 px del Cirujano. La música del Vientre Húmedo
+espera a elegir una pista CC0.
+
+**Detalles que unen unas especies con otras.** La Zarza puede llevar un Remedo
+escondido (`remedo: true`): solo sale si se corta, y sale huyendo. La Serpiente,
+al despertar, pone la música de combate y la devuelve al vencerla o si se
+reinicia el combate; y el Cuervo que esté cerca grazna en alarma. La Vestal
+puede ser **cazadora** (`cazadora: true` en `vestales`): lleva la máscara de
+caparazón de Mondador. La Lluvia Tibia se oye: un siseo en bucle con gotas
+sueltas, que arrecia con la Marea.
+
+Una criatura puede poner otra en el nivel (`ctx.crear`). Entra en su grupo como
+las del principio; los solapes de neutrales y peligros se registran después de
+colocar las iniciales, así que una criatura nueva de esos dos contratos solo
+funciona si el nivel ya tenía alguna de su contrato. Hoy solo aparece el Remedo,
+que es hostil.
+
+**Ojo con los grupos de Arcade.** `group.add` le reaplica al cuerpo los valores
+por defecto del grupo: lo vuelve movible, le devuelve la gravedad y lo
+reactiva. Por eso las criaturas entran con `meterSinPisar`, que los conserva.
+Sin eso la Zarza dejaba de ser un muro y lo posado se caía del mundo.
 
 Se catalogan al verlas (a menos de 170 px), como los Devotos, pero solo si su
 ficha del Registro ya está escrita (#88): un id sin ficha contaría en la web
@@ -481,10 +553,17 @@ Cada zona sigue la misma regla: **el camino principal enseña, los desvíos
 premian**. Cada desvío exige una mecánica (doble salto, dash, agarre) y guarda
 una de dos cosas:
 
-- **Fragmento del Códice** — premio de lectura. Seis en total.
+- **Fragmento del Códice** — premio de lectura. Ocho en el Nivel 1 (`Codice.ts`).
 - **Reliquia** — premio de cuerpo. `Relicario de Carne` (+1 vitalidad máxima)
-  y `Frasco Consagrado` (+1 Poción). Cinco en total, persistentes entre zonas
-  (`Progreso.ts`).
+  y `Frasco Consagrado` (+1 Poción). Siete en el Nivel 1, persistentes entre
+  zonas (`Progreso.ts`).
+
+**Ningún total se escribe a mano (#94).** Las hojas salen de `Codice.ts`, las
+fichas de `Registro.ts`, las capas de `Vientre.ts` y las reliquias de
+`src/lore/Reliquias.ts`, una lista con su zona y su nivel. Los niveles colocan
+las reliquias y la lista las cuenta; `verificar-rutas` comprueba que coinciden.
+Cada cierre cuenta las de su nivel (`reliquiasDelNivel`), como con el Códice;
+la web cuenta el total.
 
 **Capas de ambiente** (`EscenaNivel`): detrás de todo, el telón de arcadas con
 parallax; encima, el **atrezo lejano** (`fondo:` en cada zona — ventanas
@@ -1002,6 +1081,21 @@ Cada nivel declara `tinte` y `desgaste` en su `DefinicionNivel`, al lado de
 `colorFondo`. Es lo que mantiene la regla del descenso con un solo tileset: la
 misma piedra baja de tono y se agrieta más según se cierra el Vientre, y el musgo
 se apaga del todo en las Criptas, donde ya no llega nada vivo.
+
+### El Vientre Húmedo (#105)
+
+Provisional, a mano en `ArteProvisional.ts`, como los muros de Pasillos,
+Criptas y Salas: `muro-humedo-a` y `muro-humedo-b`. La biblia dice que la capa V
+son «pasillos de hospital vueltos santuario» y que el suelo es «hormigón,
+azulejo, acero, cera, óxido y hueso»: azulejo de quirófano con la junta negra y
+mojada, una mancha de agua, óxido, y en la variante una vena que cruza las
+juntas y una gota de cera. Un nivel lo usa con
+`muro: ['muro-humedo-a-placeholder', 'muro-humedo-b-placeholder']`.
+
+Decorado nuevo, con su sitio en `verificar-rutas`: `membrana` (embutida en el
+muro), `raiz` (cuelga), `nido` (la boca del ducto entre huesos) y `charco-vivo`
+(en el suelo). El set definitivo en Aseprite sigue siendo del equipo y entra con
+las mismas claves.
 
 ### Si el arte cambia
 

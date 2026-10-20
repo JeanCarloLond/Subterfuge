@@ -1,4 +1,5 @@
 import { CODICE_EN_JUEGO } from '../lore/Codice';
+import { RELIQUIAS } from '../lore/Reliquias';
 import { REGISTRO } from '../lore/Registro';
 import { VIENTRE } from '../lore/Vientre';
 import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
@@ -21,6 +22,12 @@ export type TipoReliquia = 'relicario' | 'frasco';
 class Progreso {
   private recogidos = new Set<string>();
   private leidos = new Set<string>();
+  /**
+   * Cambios que el Cirujano deja en el Vientre y que siguen ahi al volver a una
+   * zona: una Zarza cortada no vuelve a crecer en la partida (#102). Solo vive
+   * lo que dura la partida; no se recuerda entre visitas a la web.
+   */
+  private huellas = new Set<string>();
   private reliquias = new Map<string, TipoReliquia>();
   /** Fichas del Registro ya vistas o tocadas. */
   private fichas = new Set<string>();
@@ -51,6 +58,14 @@ class Progreso {
    * la munición que costo pelear se perderia en la puerta.
    */
   private cargaInjertadora: number = INJERTADORA.cargaInicial;
+
+  dejarHuella(id: string): void {
+    this.huellas.add(id);
+  }
+
+  hayHuella(id: string): boolean {
+    return this.huellas.has(id);
+  }
 
   /** @returns true si es la primera vez que se recoge este fragmento. */
   recogerFragmento(id: string): boolean {
@@ -229,12 +244,18 @@ class Progreso {
     return this.reliquias.size;
   }
 
-  /**
-   * Cuantas reliquias hay repartidas por el Vientre. Se mantiene a mano: dos en
-   * el Atrio, dos en los Pasillos, dos en las Criptas y una en las Salas.
-   */
+  /** Cuantas reliquias hay repartidas por el Vientre: las de src/lore/Reliquias.ts. */
   get reliquiasTotales(): number {
-    return 7;
+    return RELIQUIAS.length;
+  }
+
+  /** Las recogidas de un nivel: cada cierre cuenta las suyas, como el Codice. */
+  reliquiasDelNivel(nivel: 1 | 2): number {
+    return RELIQUIAS.filter((r) => r.nivel === nivel && this.reliquias.has(r.id)).length;
+  }
+
+  reliquiasTotalesDelNivel(nivel: 1 | 2): number {
+    return RELIQUIAS.filter((r) => r.nivel === nivel).length;
   }
 
   private contar(tipo: TipoReliquia): number {
@@ -255,6 +276,7 @@ class Progreso {
   reiniciar(): void {
     this.recogidos.clear();
     this.leidos.clear();
+    this.huellas.clear();
     this.reliquias.clear();
     this.fichas.clear();
     this.capas.clear();

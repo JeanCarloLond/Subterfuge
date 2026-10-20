@@ -1945,8 +1945,8 @@ const CUERVO: Figura = {
 const ZARZA: Figura = {
   paleta: {
     n: 0x120a0c,
-    t: 0x2a1a1c,
-    T: 0x46302e,
+    t: 0x4a2a28,
+    T: 0x7a4a40,
     h: 0xc9bda8,
     r: 0x7a1e22,
   },
@@ -2094,6 +2094,478 @@ const HONGO: Figura = {
   ],
 };
 
+// La Alfombra Devota cuando se cierra: los mismos colores, pero los filamentos
+// de pie y sin fleco. El aviso es la FORMA, no el tono: tiene que leerse
+// tambien sin distinguir el rojo.
+const ALFOMBRA_ERIZADA: Figura = {
+  paleta: {
+    n: 0x2a0e14,
+    v: 0x6e1e2c,
+    V: 0x8a2a3a,
+    w: 0x521420,
+  },
+  // prettier-ignore
+  filas: [
+    'V.v.V..v.V.v..V.',
+    'vVv.VvvVvVv.vVvV',
+    'VvwvvVvwvvVvvwvv',
+    'vvVvwvvVvvwvvVvw',
+    'vVvvVvvvVvvVvvvV',
+    'wvwwvwwvwwvwwvww',
+  ],
+};
+
+// La Flor de hueso (#125). Blanca, con el centro de carne: la que se deja en
+// el asiento vacio de la Cena de la Ausencia. La biblia la pone entre las
+// plantas de su bolsa de palabras y entre los artefactos culturales.
+const FLOR_HUESO: Figura = {
+  paleta: {
+    n: 0x2a2024,
+    h: 0xe6ddc8,
+    H: 0xf6f0e0,
+    s: 0xb3a68c,
+    c: 0x9a5a54,
+    r: 0x7a1e22,
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnn....',
+    '..nnhHHhnn..',
+    '.nhHnhhnHhn.',
+    '.nhhhrrhhhn.',
+    'nhHhrccrhHhn',
+    '.nhhhrrhhhn.',
+    '.nhHnhhnHhn.',
+    '..nnhssHnn..',
+    '....nshn....',
+    '..nn.nsn....',
+    '.nhsnnsn....',
+    '..nnhssn....',
+    '....nshn....',
+    '..nnnssnnn..',
+  ],
+};
+
+// Puentes de tejido (#95). El nodulo que late al borde de un hueco: ahi se
+// injerta, y de ahi crece el puente.
+const NODULO: Figura = {
+  paleta: {
+    n: 0x2a0e12,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    L: 0xd4564a,
+    v: 0x4a2a4a,
+  },
+  // prettier-ignore
+  filas: [
+    '...nnnn...',
+    '..nCCCcn..',
+    '.nCLLCccn.',
+    'nCLLCccvcn',
+    'nCCCcvcccn',
+    'ncccvcccvn',
+    'nccvccCccn',
+    '.ncccccvn.',
+    '..ncvccn..',
+    '.nnnnnnnn.',
+  ],
+};
+// Un tramo del puente ya crecido. Se repite a lo ancho; por debajo cuelgan
+// hebras, para que se lea como carne tendida y no como una tabla.
+const PUENTE_TEJIDO: Figura = {
+  paleta: {
+    n: 0x2a0e12,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    v: 0x4a2a4a,
+    s: 0x5c1f24,
+  },
+  // prettier-ignore
+  filas: [
+    'nCCnCCCnnCCnCCCn',
+    'CccCcccCCccCcccC',
+    'ccvccccvcccvcccc',
+    'cvcccvcccvcccvcc',
+    'sccsccscsccsccsc',
+    'nsnnsnnsnnsnnsnn',
+    '.n..n..n..n..n..',
+    '................',
+  ],
+};
+// El Tanteador (#87). Sale del Devoto vendado: la misma gente, otro oficio.
+// La venda sobre los ojos y la vara de hierro con la que golpea el suelo antes
+// de cruzar una sala.
+const TANTEADOR: Figura = {
+  paleta: {
+    h: 0x9a7f66,
+    v: 0xd8cdbe,
+    g: 0x4a4038,
+    G: 0x5e5248,
+    d: 0x231c18,
+    n: 0x1e1611,
+    k: 0x6a6e6a,
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dhhhhhhd........',
+    '.....dhhhhhhhhd.......',
+    '.....dvvvvvvvhd.......',
+    '.....dvvvvvvvhd.......',
+    '.....dhhhhhhhhd.......',
+    '......dhhhhhhd........',
+    '.......dhhhhd.........',
+    '.....ddgggggggd.......',
+    '....dggGGGGgggd.......',
+    '...dggGGGGGGggdhh.....',
+    '...dgGGGGGGGggdhhd....',
+    '..dhgGGGGGGGggdkd.....',
+    '..dhggGGGGGGgggkd.....',
+    '...dgggGGGGGgggk......',
+    '...dggggGGGgggdk......',
+    '...dgggggggggggk......',
+    '...dgggggggggdd.k.....',
+    '...dggggdggggd..k.....',
+    '...ddgggddgggd..k.....',
+    '..ddggdddddggd..k.....',
+    '..dgddddddddgd..k.....',
+    '..dggd....ddgd..k.....',
+    '..dggd....ddgd..k.....',
+    '..dggd....ddgd..k.....',
+    '..dggd....dggd..k.....',
+    '..dggd....dggd..k.....',
+    '..dggd....dggd..k.....',
+    '..dggd....dggd..k.....',
+    '.ddggd....dggdd.k.....',
+    '.nnggd....dggnn.k.....',
+    '.nnnnn.....nnnn.kk....',
+    '..nnn.......nn..kk....',
+    '......................',
+  ],
+};
+// La Honguera (#87). Delantal de trabajo y un cesto de Hongo de Lampara: el
+// unico verde frio del Vientre, tambien aqui.
+const HONGUERA: Figura = {
+  paleta: {
+    h: 0x9a7f66,
+    p: 0x5a4a3a,
+    g: 0x4a5040,
+    d: 0x231c18,
+    n: 0x1e1611,
+    a: 0x9a8a72,
+    A: 0xb8a88c,
+    l: 0x7ad0a8,
+    L: 0xc8f4dc,
+    b: 0x6a4a2a,
+  },
+  // prettier-ignore
+  filas: [
+    '.......dddddd.........',
+    '......dppppppd........',
+    '.....dpphhhhppd.......',
+    '.....dphhhhhhpd.......',
+    '.....dphhnhnhpd.......',
+    '.....dphhhhhhpd.......',
+    '......dhhhhhhd........',
+    '.......dhhhhd.........',
+    '.....ddggggggdd.......',
+    '....dggaaaaaaggd......',
+    '...dggaAAAAAAaggd.....',
+    '...dgaAAAAAAAAagd.....',
+    '..dhgaAAAAAAAAagd.....',
+    '..dhgaAAAAAAAAaghd....',
+    '...dgaAAAAAAAAaghd....',
+    '...dgaAAAAAAAddddddd..',
+    '...dgaAAAAAAdlLlLlLd..',
+    '...dgaAAAAAAdLlLlLld..',
+    '...dggaaaaaadbbbbbbd..',
+    '...ddggggggg.dbbbbd...',
+    '..ddgggggggggd........',
+    '..dggggggggggd........',
+    '..dgggd..dgggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '..dggd....dggd........',
+    '.ddggd....dggdd.......',
+    '.nnggd....dggnn.......',
+    '.nnnnn.....nnnn.......',
+    '..nnn.......nn........',
+    '......................',
+  ],
+};
+// La Serpiente con la boca cerrada: la fase 1 del combate (#98). La de la
+// boca abierta es la de la lamina y la de la fase 2.
+const SERPIENTE_CERRADA: Figura = {
+  paleta: {
+    n: 0x1a0e10,
+    c: 0x8c3a3a,
+    C: 0xb05a50,
+    o: 0x5c1f24,
+    e: 0x6a5a4a,
+    E: 0x9a8a72,
+    r: 0x2a080c,
+    w: 0xe6ddc8,
+  },
+  // prettier-ignore
+  filas: [
+    '........................................',
+    '........................................',
+    '..nnnnn.......................nnnnnnn...',
+    '.nEeEeEn.....nnnnnnn.........nEeEeEeEn..',
+    'nEeEeEeEn...nEeEeEeEn.......nEeEeEeEEEn.',
+    'ncccccccn..nEeEeEeEeEn.....nccCCCCCCCCn.',
+    'ncCCCCccn.ncccccccccccn...nccccccccccccn',
+    '.nccccccnnccCCCCCcccccn..ncccccccccccwwn',
+    '..nccccccccccccccccccccnnccccccccooowwn.',
+    '...nooccccccooooooccccccccccccccooooonn.',
+    '....nnoooooonnnnnnooooooooocccccccon....',
+    '......nnnnnn......nnnnnnnnnoooooon......',
+    '...........................nnnnnn.......',
+  ],
+};
+// La Vestal cazadora (#99): la misma Vestal con la mascara de caparazon de
+// Mondador que la biblia da al Colegio ("injertos mayores, capucha, mascara de
+// caparazon de Mondador"). Explica sin decirlo por que casi no quedan.
+const VESTAL_CAZADORA: Figura = {
+  paleta: {
+    o: 0xcda058,
+    O: 0xe7ce9f,
+    r: 0x5d5466,
+    R: 0xd4564a,
+    s: 0x342f3e,
+    p: 0x9a8878,
+    c: 0x8c2f2f,
+    C: 0xb03a34,
+    t: 0x7fc9bd,
+    T: 0xc9dcc8,
+    n: 0x1e1611,
+    M: 0x9ca193,
+    S: 0x3f4a4e,
+    h: 0xe6ddc8,
+    H: 0xa89c84,
+    d: 0x8a6a2a,
+  },
+  // prettier-ignore
+  filas: [
+    '.........oo...........',
+    '........oOOo..........',
+    '........oOOo..........',
+    '.........oo...........',
+    '......h.h.h.h.........',
+    '.....hHhHhHhHh........',
+    '.....dooOOOOood.......',
+    '....doOOOoOOOood......',
+    '....doOOndOndOod......',
+    '....dooOOOOOOood......',
+    '.....dooOooOood.......',
+    '......ddoooodd........',
+    '......oocccccot.......',
+    '.....oocCCCCCcoo......',
+    '....rrcCRRRRRCcrr.....',
+    '...rrrcCRRRRRCcrrr....',
+    '..prrRcCRRRRRCcRrrp...',
+    '..prrRRoooooooRRrrp...',
+    '..prrRRoOnnnOoRRrrp...',
+    '..prrRRoOnnnOoRRrrp...',
+    '..prrRRoooooooRRrrp...',
+    '...rrRcCRRRRRCcRrr....',
+    '...rrcCRRRRRRRCcrr....',
+    '...ocCRRRRRRRRRCco....',
+    '....cCRRRRRRRRRCc.....',
+    '....cCRRRRRRRRRCc.....',
+    '...cCRRRRRRRRRRRCc....',
+    '...cCRRRRRRRRRRRCc....',
+    '..cCRRRRRRRRRRRRRCc...',
+    '..cCRRRRRMMRRRRRRCc...',
+    '..cCRRRRMttMRRRRRCc...',
+    '..cCRRRRRMMRRRRRRCc...',
+    '..ccCRRRRRRRRRRRCcc...',
+    '...ccCRRRRRRRRRCcc....',
+    '....ccCCRRRRRCCcc.....',
+    '.....cccCCCCCccc......',
+    '...ccc.cccccc.ccc.....',
+    '..ccc....cccc....cc...',
+  ],
+};
+
+// -- El Vientre Humedo: muro y decorado (#105) --------------------------------
+//
+// La capa V son "pasillos de hospital vueltos santuario" y el suelo es
+// "hormigon, azulejo, acero, cera, oxido y hueso" (biblia). Azulejo de quirofano
+// con la junta negra y mojada: una mancha de agua que baja y oxido. Provisional,
+// como el resto: el set de Aseprite del equipo entra con las mismas claves.
+const MURO_HUMEDO_A: Figura = {
+  paleta: {
+    j: 0x1c1a1a,
+    a: 0x8a8478,
+    b: 0x76705f,
+    A: 0xa49d8c,
+    w: 0x3a4a48,
+    o: 0x7a4a22,
+    c: 0x8c2f2f,
+    C: 0xd4564a,
+    e: 0xd8cdbe,
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jAaaaaajAaaaaaaj',
+    'jaaaaaajaaaaaabj',
+    'jaaaaabjaaaaaabj',
+    'jaaaaabjaawaaabj',
+    'jaaaaabjaawaaabj',
+    'jabbbbbjabwbbbbj',
+    'jjjjjjjjjjwjjjjj',
+    'jAaaaaajAawaaaaj',
+    'jaaaaaajaawaaaoj',
+    'jaaaaabjaawaaaoj',
+    'jaaaaabjaaaaaoaj',
+    'jaaaaabjaaaaaabj',
+    'jaaaaabjaaaaaabj',
+    'jabbbbbjabbbbbbj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+// La variante, con una vena que cruza las juntas y una gota de cera: la
+// arquitectura empezando a ser carne.
+const MURO_HUMEDO_B: Figura = {
+  paleta: {
+    j: 0x1c1a1a,
+    a: 0x8a8478,
+    b: 0x76705f,
+    A: 0xa49d8c,
+    w: 0x3a4a48,
+    o: 0x7a4a22,
+    c: 0x8c2f2f,
+    C: 0xd4564a,
+    e: 0xd8cdbe,
+  },
+  // prettier-ignore
+  filas: [
+    'jjjjjjjjjjjjjjjj',
+    'jAaaeaajAaaaaaaj',
+    'jaaaeaajaaaaaabj',
+    'jaaaaabjaaaaaabj',
+    'jaaaaabjaaaaCcbj',
+    'jaacaabjaaaCcabj',
+    'jabbCcbjabCcbbbj',
+    'jjjjjCcjjCcjjjjj',
+    'jAaaaaCcCcaaaaaj',
+    'jaaaaaajccaaaaaj',
+    'jaaaaabjaaaaaabj',
+    'jawaaabjaaaaaabj',
+    'jawaaabjaaoaaabj',
+    'jawaaabjaaoaaabj',
+    'jabbbbbjabbbbbbj',
+    'jjjjjjjjjjjjjjjj',
+  ],
+};
+// Membrana de tejido tapando un boqueton del muro. Va embutida en la pared.
+const MEMBRANA: Figura = {
+  paleta: {
+    n: 0x3a1418,
+    m: 0xb06a66,
+    M: 0xd0908a,
+    v: 0x6a2a3a,
+    h: 0x14100f,
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnnnnnn....',
+    '..nnmmmmmmmmnn..',
+    '.nmmMMmmmmvmmmn.',
+    '.nmMMmmmmvmmmmn.',
+    'nmmMmmmvvmmmmmmn',
+    'nmmmmmvmmmmmMmmn',
+    'nmmmmvmmhmmMMmmn',
+    'nmmmvmmhhhmmmmmn',
+    'nmmmvmmhhhmmmvmn',
+    'nmmmmvmmhmmmvmmn',
+    'nmmmmmvmmmmvmmmn',
+    'nmMmmmmvvvvmmmmn',
+    '.nmMmmmmmmmmmmn.',
+    '.nmmmmmmmmmmmmn.',
+    '..nnmmmmmmmmnn..',
+    '....nnnnnnnn....',
+  ],
+};
+// Raices que cuelgan de la boveda. Necesitan algo arriba de donde colgar.
+const RAIZ: Figura = {
+  paleta: {
+    n: 0x1e1410,
+    r: 0x5a4030,
+    R: 0x7a5a40,
+    c: 0x8c3a3a,
+  },
+  // prettier-ignore
+  filas: [
+    'nRRRrrRRn',
+    '.nRrnrRn.',
+    '.nRn.nRn.',
+    '.nRn.nrn.',
+    '..nRnnrn.',
+    '..nRn.rn.',
+    '..nrn.nrn',
+    '..nRn..rn',
+    '.nRn...rn',
+    '.nrn...nc',
+    '.nrn....n',
+    '..nRn....',
+    '..nrn....',
+    '...nc....',
+    '...n.....',
+  ],
+};
+// La boca de un ducto entre huesos: el nido de la Serpiente. Se apoya en el suelo.
+const NIDO: Figura = {
+  paleta: {
+    n: 0x14100f,
+    M: 0x7f8a85,
+    S: 0x4a5450,
+    o: 0x7a4a22,
+    h: 0xe6ddc8,
+    H: 0xb3a68c,
+    c: 0x8c2f2f,
+  },
+  // prettier-ignore
+  filas: [
+    '....nnnnnnnnnnnnnnnnnnnnnnnn....',
+    '...nMMMMMMMMMMMMMMMMMMMMMMMMn...',
+    '..nMSSSSSSSSSSSSSSSSSSSSSSSSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMonnnnnnnnnnnnnnnnnnnnnnoMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnccnnnnnnnnnnnnnSMn..',
+    '..nMSnnnnnnnnnnnnnnnnnnnnnnSMn..',
+    '.hnMSnhHnnnnnnnnnnnnnHhnnnnSMnh.',
+    'hHnMShHhHnnnnnnnnnnHhHhnnnnSMnHh',
+    'HhHMShhHhHhnnnnnnHhHhhHhnnnSMHhH',
+    'hHhHhHhHHhHhhHhHhHhHHhHhHhHhHhHh',
+    'nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn',
+  ],
+};
+// Lo que deja la Marea: un charco tibio con algo dentro. En el suelo.
+const CHARCO_VIVO: Figura = {
+  paleta: {
+    d: 0x3a1418,
+    r: 0x6a2a2a,
+    R: 0x8c3a3a,
+    L: 0xc06060,
+  },
+  // prettier-ignore
+  filas: [
+    '...dddddddddddddddd.....',
+    '.ddrrRrrrLrrrrRrrrrdd...',
+    'drrRrrrrrrrrLrrrrrRrrdd.',
+    '.ddrrrrRrrrrrrrrrrrrrrdd',
+  ],
+};
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -2106,7 +2578,14 @@ const FIGURAS: Record<string, Figura> = {
   'muro-criptas-b': MURO_CRIPTAS_B,
   'muro-salas-a': MURO_SALAS_A,
   'muro-salas-b': MURO_SALAS_B,
+  'muro-humedo-a': MURO_HUMEDO_A,
+  'muro-humedo-b': MURO_HUMEDO_B,
+  membrana: MEMBRANA,
+  raiz: RAIZ,
+  nido: NIDO,
+  'charco-vivo': CHARCO_VIVO,
   vestal: VESTAL,
+  'vestal-cazadora': VESTAL_CAZADORA,
   sello: SELLO,
   reformado: REFORMADO,
   'reformado-2': REFORMADO_RESPIRA,
@@ -2150,6 +2629,13 @@ const FIGURAS: Record<string, Figura> = {
   zarza: ZARZA,
   mata: MATA,
   alfombra: ALFOMBRA,
+  'alfombra-erizada': ALFOMBRA_ERIZADA,
+  'flor-hueso': FLOR_HUESO,
+  nodulo: NODULO,
+  'puente-tejido': PUENTE_TEJIDO,
+  tanteador: TANTEADOR,
+  honguera: HONGUERA,
+  'serpiente-cerrada': SERPIENTE_CERRADA,
   vena: VENA,
   hongo: HONGO,
 };

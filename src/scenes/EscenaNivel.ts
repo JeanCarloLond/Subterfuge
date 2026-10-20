@@ -2,7 +2,12 @@ import Phaser from 'phaser';
 import { CirujanoSacerdote } from '../entities/CirujanoSacerdote';
 import { Devoto } from '../entities/Devoto';
 import { enemigoDe } from '../entities/Enemigo';
-import { CONTRATO, crearCriatura, type CriaturaDef } from '../entities/Criatura';
+import {
+  CONTRATO,
+  crearCriatura,
+  type ContextoCriatura,
+  type CriaturaDef,
+} from '../entities/Criatura';
 import { habitanteDe, type Habitante } from '../entities/Habitante';
 import { Reformado } from '../entities/Reformado';
 import { Sello } from '../entities/Sello';
@@ -13,15 +18,24 @@ import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { Fiel } from '../entities/Fiel';
 import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
-import { Ofrenda } from '../objetos/Ofrenda';
+import { Ofrenda, type TipoOfrenda } from '../objetos/Ofrenda';
 import { Reliquia } from '../objetos/Reliquia';
-import { CAIDA, DEVOTO, OFRENDA, REFORMADO, RESOLUCION } from '../config/Sacramento';
+import {
+  CAIDA,
+  DEVOTO,
+  MAREAS,
+  OFRENDA,
+  REFORMADO,
+  RESOLUCION,
+  VITALIDAD,
+} from '../config/Sacramento';
 import { fijo } from '../systems/Nitidez';
 import { Impacto } from '../systems/Impacto';
 import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
+import { EVENTO_MAREA, Marea, type DefinicionMarea, type EstadoMarea } from '../systems/Marea';
 import { sonido, type ClaseEnemigo } from '../systems/Sonido';
 import type { ClavePensamiento } from '../lore/Pensamientos';
 import { VOCES, type ClaveVoz } from '../lore/Voces';
@@ -44,6 +58,11 @@ export interface RondaDevoto {
   y: number;
   izquierda: number;
   derecha: number;
+  /**
+   * Solo Vestales: la cazadora de Mondadores, con la mascara de caparazon
+   * (#99). Es la misma Vestal; lo que cambia es lo que lleva puesto.
+   */
+  cazadora?: boolean;
 }
 
 /**
@@ -86,7 +105,12 @@ export type TipoDecorado =
   | 'luz-hospital'
   | 'tanque'
   | 'bandeja'
-  | 'goteo';
+  | 'goteo'
+  // El Vientre Humedo (#105): lo que el ecosistema deja en el hospital.
+  | 'membrana'
+  | 'raiz'
+  | 'nido'
+  | 'charco-vivo';
 
 /** Placa del Registro: [x, y, texto]. Se lee con E, en una linea. */
 export type Inscripcion = readonly [x: number, y: number, texto: string];
@@ -141,6 +165,16 @@ export interface DefinicionNivel {
   fondo?: readonly Decorado[];
   /** Color del polvo en suspension. Calido arriba, frio y gris abajo. */
   polvo?: number;
+  /**
+   * Lluvia Tibia (#96): el goteo de agua oxidada que cae de las bovedas en el
+   * Vientre Humedo. Ambiente puro: no moja ni cambia la fisica.
+   */
+  lluvia?: boolean;
+  /**
+   * Mareas del Hambre (#91): el agua de los ductos sube, hiere y baja. Sin
+   * esto, la zona no tiene marea. Ver src/systems/Marea.ts.
+   */
+  mareas?: DefinicionMarea;
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -197,6 +231,15 @@ export interface DefinicionNivel {
 
 /** Lado del tile. */
 const T = 16;
+
+/**
+ * Altura de la cabeza del Cirujano sobre sus pies (px): la capucha, no la caja
+ * de colision. La Marea lo "cubre entero" cuando el agua pasa de aqui.
+ */
+const ALTO_CIRUJANO = 34;
+
+/** Hasta donde se oye una criatura (px): algo mas de media pantalla. */
+const RADIO_OIDO = 260;
 
 /**
  * Lado de la casilla del mapa, en pixeles del mundo.
@@ -279,6 +322,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private ofrendas: Ofrenda[] = [];
   private fieles: Fiel[] = [];
   private criaturas: Habitante[] = [];
+  private marea?: Marea;
+  private lluvia?: Phaser.GameObjects.Particles.ParticleEmitter;
   private placas: {
     sprite: Phaser.GameObjects.Sprite;
     texto: string;
@@ -340,6 +385,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.crearLuces();
     this.crearPolvo();
+    if (this.definicion.lluvia) this.crearLluvia();
+    if (this.definicion.mareas) this.crearMarea(this.definicion.mareas);
     this.crearVineta();
 
     this.cameras.main.startFollow(this.cirujano.sprite, true, 0.12, 0.12);
@@ -384,6 +431,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.catalogarLoQueSeVe();
     this.anotarCasillaDelMapa();
+    this.actualizarMarea();
 
     this.actualizarJefe();
 
@@ -436,6 +484,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.ofrendas = [];
     this.fieles = [];
     this.criaturas = [];
+    this.marea = undefined;
+    this.lluvia = undefined;
     this.placas = [];
     this.grupoEnemigos = undefined;
     this.grupoNeutrales = undefined;
@@ -572,6 +622,92 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * Polvo en suspension, fijo a la camara. Muy poco y muy lento: se nota como
    * aire, no como nieve. Es la senal mas barata de que el espacio tiene volumen.
    */
+  /**
+   * La Lluvia Tibia. Gotas finas fijas a la camara, como el polvo, para que
+   * llueva en toda la pantalla sin sembrar el mundo entero de particulas.
+   * Van detras del Cirujano y de las criaturas: es el fondo, no un obstaculo.
+   */
+  private crearLluvia(): void {
+    const { ancho, alto } = RESOLUCION;
+    const emisor = this.add.particles(0, 0, 'chispa-placeholder', {
+      x: { min: fijo(0, 0).x, max: fijo(ancho, 0).x },
+      y: fijo(0, -4).y,
+      lifespan: { min: (alto / 170) * 1000, max: (alto / 120) * 1000 },
+      speedY: { min: 120, max: 170 },
+      speedX: { min: -4, max: 4 },
+      scaleX: 0.5,
+      scaleY: { min: 1.5, max: 2.5 },
+      alpha: { start: 0.35, end: 0.1 },
+      tint: 0x9a8a72,
+      frequency: 70,
+      maxAliveParticles: 40,
+    });
+    emisor.setScrollFactor(0);
+    emisor.setDepth(-2);
+    this.lluvia = emisor;
+
+    // Se oye ademas de verse: un siseo en bucle y gotas sueltas que caen a
+    // destiempo. Se apaga al salir de la zona.
+    sonido.lluviaEncendida();
+    const gotear = () => {
+      sonido.gota();
+      this.time.delayedCall(Phaser.Math.Between(350, 1100), gotear);
+    };
+    this.time.delayedCall(600, gotear);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => sonido.lluviaApagada());
+  }
+
+  /**
+   * La Marea del Hambre. Arrecia la lluvia mientras avisa y sube: es la senal
+   * que se ve, ademas del Latido que se oye y del aviso del HUD.
+   */
+  private crearMarea(def: DefinicionMarea): void {
+    const marea = new Marea(this, def, this.definicion.mundo.ancho, this.definicion.mundo.alto);
+    this.marea = marea;
+    const alCambiar = (estado: EstadoMarea) => {
+      if (estado === 'aviso') this.game.events.emit(EVENTOS_HUD.aviso, 'sube el agua');
+      const arrecia = estado === 'aviso' || estado === 'subiendo';
+      this.lluvia?.setFrequency(arrecia ? 30 : 70);
+      if (this.lluvia) sonido.lluviaArrecia(arrecia);
+    };
+    this.events.on(EVENTO_MAREA, alCambiar);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off(EVENTO_MAREA, alCambiar));
+  }
+
+  /**
+   * El agua hiere al tocarla y, si cubre al Cirujano entero, el Vientre lo
+   * devuelve al ultimo Altar con un punto menos: como caer al vacio, nunca una
+   * muerte de golpe. Tocarla es un golpe normal, con su invulnerabilidad, y
+   * empuja hacia arriba para salir.
+   */
+  private actualizarMarea(): void {
+    const marea = this.marea;
+    if (!marea) return;
+    marea.actualizar(this.time.now);
+    if (!marea.haySubida || this.cirujano.estaMuerto || this.reapareciendo) return;
+
+    const pies = this.cirujano.sprite.y;
+    const cabeza = pies - ALTO_CIRUJANO;
+    const superficie = marea.superficie;
+
+    if (cabeza > superficie) {
+      const destino = this.altarActivo?.puntoReaparicion ?? this.definicion.inicio;
+      this.cirujano.recibirCaida(1, destino.x, destino.y);
+      this.cameras.main.flash(200, 11, 9, 11);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'la Marea te arrastra');
+      return;
+    }
+
+    if (pies > superficie + 2) {
+      const resultado = this.cirujano.recibirDano(MAREAS.danoPorContacto, this.cirujano.sprite.x);
+      if (resultado === 'herido') {
+        this.impacto.danoRecibido();
+        // Hacia arriba y no de lado: el retroceso lateral lo meteria mas al fondo.
+        this.cirujano.cuerpo.setVelocity(0, -VITALIDAD.retrocesoY - MAREAS.empuje);
+      }
+    }
+  }
+
   private crearPolvo(): void {
     const { ancho, alto } = RESOLUCION;
     const color = this.definicion.polvo ?? 0xc9b48a;
@@ -609,7 +745,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private crearDecorado(): void {
     for (const [x, y, tipo] of this.definicion.decorado ?? []) {
       const pieza = this.add.sprite(x, y, `${tipo}-placeholder`);
-      const cuelga = tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo';
+      const cuelga =
+        tipo === 'exvoto' || tipo === 'luz-hospital' || tipo === 'goteo' || tipo === 'raiz';
       pieza.setOrigin(0.5, cuelga ? 0 : 1);
       pieza.setDepth(-5);
 
@@ -866,23 +1003,46 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const definiciones = this.definicion.criaturas ?? [];
     if (definiciones.length === 0) return;
 
-    for (const def of definiciones) {
-      const criatura = crearCriatura({ escena: this, suelos: this.suelos }, def);
-      this.criaturas.push(criatura);
+    const contexto = this.contextoDeCriaturas();
+    for (const def of definiciones) this.incorporarCriatura(contexto, def);
 
-      switch (CONTRATO[def.tipo]) {
-        case 'hostil':
-          // Mismo grupo que Devotos y Vestales: el tajo, el injerto, el sello
-          // devuelto y el roce ya lo tratan, porque cumple `Enemigo`.
-          this.obtenerGrupoEnemigos().add(criatura.sprite);
-          break;
-        case 'neutral':
-          this.obtenerGrupoNeutrales().add(criatura.sprite);
-          break;
-        case 'peligro':
-          this.obtenerGrupoPeligros().add(criatura.sprite);
-          break;
-      }
+    this.vigilarCriaturas();
+  }
+
+  /** Crea una criatura y la mete en el grupo de su contrato. */
+  private incorporarCriatura(contexto: ContextoCriatura, def: CriaturaDef): void {
+    const criatura = crearCriatura(contexto, def);
+    this.criaturas.push(criatura);
+
+    switch (CONTRATO[def.tipo]) {
+      case 'hostil':
+        // Mismo grupo que Devotos y Vestales: el tajo, el injerto, el sello
+        // devuelto y el roce ya lo tratan, porque cumple `Enemigo`.
+        meterSinPisar(this.obtenerGrupoEnemigos(), criatura.sprite);
+        break;
+      case 'neutral':
+        meterSinPisar(this.obtenerGrupoNeutrales(), criatura.sprite);
+        break;
+      case 'peligro':
+        meterSinPisar(this.obtenerGrupoPeligros(), criatura.sprite);
+        break;
+    }
+  }
+
+  /**
+   * Los solapes de los grupos de neutrales y de peligros. Se registran una vez,
+   * despues de colocar las del principio; las que aparecen luego (el Remedo de
+   * la Zarza) entran en esos mismos grupos y ya quedan cubiertas.
+   */
+  private vigilarCriaturas(): void {
+    // Los neutrales no reciben el tajo, pero se enteran de el: el Mondador
+    // huye, el Cuervo se va. Es lo que hace que no sean decorado.
+    if (this.grupoNeutrales) {
+      this.physics.add.overlap(this.cirujano.hitbox, this.grupoNeutrales, (_h, neutral) =>
+        habitanteDe(neutral as Phaser.GameObjects.GameObject)?.alSerAmenazado?.(
+          this.cirujano.sprite.x,
+        ),
+      );
     }
 
     // Los peligros hieren al rozarlos, y los que se pueden cortar reciben el
@@ -895,6 +1055,75 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.resolverGolpeDelCirujano(peligro as Phaser.GameObjects.GameObject),
       );
     }
+  }
+
+  /**
+   * Lo que las criaturas pueden hacer con el Cirujano y con el nivel, y nada
+   * mas. Se les da esto y no la escena entera para que ninguna especie acabe
+   * tocando el HUD o la camara por su cuenta.
+   */
+  private contextoDeCriaturas(): ContextoCriatura {
+    const cirujano = this.cirujano;
+    const controles = this.controles;
+    const contexto: ContextoCriatura = {
+      escena: this,
+      suelos: this.suelos,
+      jugador: {
+        get x() {
+          return cirujano.sprite.x;
+        },
+        get y() {
+          return cirujano.sprite.y;
+        },
+        get velocidadX() {
+          return cirujano.cuerpo.velocity.x;
+        },
+        get estado() {
+          return cirujano.estadoActual;
+        },
+        get estaMuerto() {
+          return cirujano.estaMuerto;
+        },
+        get interactuar() {
+          return controles.interactuarPresionado;
+        },
+      },
+      herir: (cantidad, origenX) => {
+        if (cirujano.estaMuerto) return 'ignorado';
+        const resultado = cirujano.recibirDano(cantidad, origenX);
+        if (resultado === 'herido') this.impacto.danoRecibido();
+        if (resultado === 'parado') {
+          sonido.parry();
+          this.impacto.parryLogrado(cirujano.sprite.x, cirujano.sprite.y - 20);
+        }
+        return resultado;
+      },
+      soltarOfrenda: (x, y, tipo) => this.soltarOfrendaDeTipo(x, y, tipo),
+      barraDeJefe: (puntos, maximo, cortes) =>
+        this.game.events.emit(EVENTOS_HUD.jefe, puntos, maximo, cortes),
+      presentar: (titulo, subtitulo) =>
+        this.game.events.emit(EVENTOS_HUD.presentacion, titulo, subtitulo),
+      curar: (cantidad) => cirujano.vitalidad.curar(cantidad),
+      ganarFervor: (cantidad) => cirujano.fervor.ganar(cantidad),
+      avisar: (texto) => this.game.events.emit(EVENTOS_HUD.aviso, texto),
+      bloquear: (objeto) => this.physics.add.collider(cirujano.sprite, objeto),
+      desgastar: (cantidad) => {
+        if (cirujano.estaMuerto || cirujano.esInvulnerable) return;
+        cirujano.vitalidad.recibirDano(cantidad);
+        this.impacto.danoRecibido();
+      },
+      gastarInjerto: () => {
+        if (cirujano.gastarInjerto()) return true;
+        this.game.events.emit(EVENTOS_HUD.aviso, 'sin injertos  ·  los sueltan los fieles');
+        return false;
+      },
+      frenarJugador: () => cirujano.cuerpo.setVelocityX(0),
+      zona: this.scene.key,
+      oye: (x, y) =>
+        Phaser.Math.Distance.Between(x, y, cirujano.sprite.x, cirujano.sprite.y) < RADIO_OIDO,
+      crear: (def) => this.incorporarCriatura(contexto, def),
+    };
+    return contexto;
   }
 
   private obtenerGrupoNeutrales(): Phaser.Physics.Arcade.Group {
@@ -926,10 +1155,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     for (const ronda of this.definicion.vestales ?? []) {
-      const vestal = new Vestal(this, ronda.x, ronda.y, {
-        izquierda: ronda.izquierda,
-        derecha: ronda.derecha,
-      });
+      const vestal = new Vestal(
+        this,
+        ronda.x,
+        ronda.y,
+        { izquierda: ronda.izquierda, derecha: ronda.derecha },
+        ronda.cazadora ? 'vestal-cazadora-placeholder' : 'vestal-placeholder',
+      );
 
       this.physics.add.collider(vestal.sprite, this.suelos);
       grupo.add(vestal.sprite);
@@ -1379,8 +1611,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
   /** Un enemigo cae y deja algo, segun su clase y la suerte. */
   private soltarOfrenda(x: number, y: number, clase: ClaseEnemigo): void {
     const tipo = Ofrenda.sortear(clase);
-    if (!tipo) return;
+    if (tipo) this.soltarOfrendaDeTipo(x, y, tipo);
+  }
 
+  private soltarOfrendaDeTipo(x: number, y: number, tipo: TipoOfrenda): void {
     const ofrenda = new Ofrenda(this, x, y, tipo);
     this.ofrendas.push(ofrenda);
 
@@ -1395,12 +1629,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     sonido.ofrenda(ofrenda.tipo);
 
-    if (ofrenda.tipo === 'carne') {
-      this.cirujano.vitalidad.curar(OFRENDA.curacionCarne);
-      this.game.events.emit(
-        EVENTOS_HUD.aviso,
-        `${ofrenda.nombre}  ·  +${OFRENDA.curacionCarne} vida`,
-      );
+    if (ofrenda.tipo === 'carne' || ofrenda.tipo === 'carne-engastada') {
+      const cura =
+        ofrenda.tipo === 'carne' ? OFRENDA.curacionCarne : OFRENDA.curacionCarneEngastada;
+      this.cirujano.vitalidad.curar(cura);
+      this.game.events.emit(EVENTOS_HUD.aviso, `${ofrenda.nombre}  ·  +${cura} vida`);
       return;
     }
 
@@ -1780,6 +2013,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const primeraVez = !fiel.yaHablado;
     fiel.marcarHablado();
 
+    // Los fieles con ficha propia (el Tanteador, la Honguera) entran en el
+    // Registro al hablar con ellos: se los conoce por lo que dicen.
+    if (fichaPorId(fiel.clave)) this.anotar(fiel.clave);
+
     if (primeraVez && fiel.clave === 'reformado-viejo') {
       if (this.cirujano.cargarInjerto(INJERTOS_DEL_REFORMADO)) {
         this.anotar('injerto');
@@ -1832,12 +2069,21 @@ export abstract class EscenaNivel extends Phaser.Scene {
     sonido.altar();
     this.cameras.main.flash(260, 232, 200, 120);
 
-    this.game.events.emit(EVENTOS_HUD.aviso, 'ALTAR: descenso guardado');
+    // El presagio del Buitre (#100): si se ha ido porque viene la Marea, el
+    // Altar lo dice. No cambia nada del guardado: es una senal, no un castigo.
+    const enDuda =
+      this.marea !== undefined &&
+      this.marea.estado !== 'reposo' &&
+      this.criaturas.some((c) => c.clase === 'buitre');
+    this.game.events.emit(
+      EVENTOS_HUD.aviso,
+      enDuda ? 'ALTAR: descenso guardado  ·  ofrenda en duda' : 'ALTAR: descenso guardado',
+    );
     this.time.delayedCall(700, () => {
       this.cirujano.reponerEnAltar();
       this.game.events.emit(
         EVENTOS_HUD.aviso,
-        'cuerpo y frasco repuestos  ·  aqui volveras si caes',
+        'cuerpo y frasco repuestos  ·  aquí volverás si caes',
       );
     });
   }
@@ -2141,4 +2387,31 @@ export abstract class EscenaNivel extends Phaser.Scene {
       },
     });
   }
+}
+
+/**
+ * Mete un cuerpo en un grupo de Arcade sin perder como estaba configurado.
+ *
+ * `group.add` le reaplica al cuerpo los valores por defecto del grupo: lo
+ * vuelve movible, le devuelve la gravedad y lo reactiva. Con los Devotos no se
+ * nota, porque andan por el suelo; con las criaturas si. La Zarza dejaba de ser
+ * un muro (el Cirujano la empujaba), y lo que estaba posado —la Mata, el
+ * Cuervo— se caia por el suelo y se salia del mundo.
+ */
+function meterSinPisar(
+  grupo: Phaser.Physics.Arcade.Group,
+  sprite: Phaser.Physics.Arcade.Sprite,
+): void {
+  const cuerpo = sprite.body as Phaser.Physics.Arcade.Body;
+  const antes = {
+    gravedad: cuerpo.allowGravity,
+    inamovible: cuerpo.immovable,
+    activo: cuerpo.enable,
+    bordes: cuerpo.collideWorldBounds,
+  };
+  grupo.add(sprite);
+  cuerpo.setAllowGravity(antes.gravedad);
+  cuerpo.setImmovable(antes.inamovible);
+  cuerpo.setEnable(antes.activo);
+  cuerpo.setCollideWorldBounds(antes.bordes);
 }

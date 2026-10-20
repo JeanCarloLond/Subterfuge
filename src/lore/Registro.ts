@@ -81,6 +81,33 @@ export const REGISTRO: readonly FichaRegistro[] = [
 
   // -- El oficio ------------------------------------------------------------
   {
+    id: 'tanteador',
+    familia: 'fieles',
+    nombre: 'Tanteador',
+    textura: 'tanteador-placeholder',
+    hallazgo: 'visto en el Vientre Húmedo',
+    descripcion: [
+      'Porteador que cruza las salas golpeando el suelo con una',
+      'vara de hierro antes de cada paso. Sabe dónde crece la',
+      'Alfombra Devota: lo aprende con el pulgar, sobre la mano',
+      'de cera del Tanteador de las Mil Salas.',
+    ],
+  },
+  {
+    id: 'honguera',
+    familia: 'fieles',
+    nombre: 'Honguera',
+    textura: 'honguera-placeholder',
+    hallazgo: 'vista en el Vientre Húmedo',
+    descripcion: [
+      'Cultiva el Hongo de Lámpara, que da luz y marca las horas.',
+      'Las terrazas del Atrio son de su gremio; abajo trabaja',
+      'en las grietas. Le deja comida al Mondador y lo trata',
+      'como a un compañero de oficio.',
+    ],
+  },
+
+  {
     id: 'cirujano',
     familia: 'oficio',
     nombre: 'Manos del Sacramento',
@@ -304,6 +331,22 @@ export const REGISTRO: readonly FichaRegistro[] = [
       'Los hongueros lo cultivan en las terrazas del Atrio;',
       'abajo crece solo, sobre lo que sueltan los dioses.',
       'La Diócesis lo llama un regalo del Latido.',
+    ],
+  },
+
+  {
+    // La biblia la pone entre las plantas (bolsa de palabras) y entre los
+    // artefactos culturales; aqui va con la flora, con su uso en la ficha.
+    id: 'flor-de-hueso',
+    familia: 'flora',
+    nombre: 'Flor de hueso',
+    textura: 'flor-hueso-placeholder',
+    hallazgo: 'vista en el Vientre Húmedo',
+    descripcion: [
+      'Flor blanca que crece de hueso y del tejido que el',
+      'sacramento rechaza. En la Cena de la Ausencia se deja',
+      'una sobre el asiento vacío del que fue subido.',
+      'La Diócesis la tiene por adorno menor, no por sacramento.',
     ],
   },
 

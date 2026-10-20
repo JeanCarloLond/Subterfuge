@@ -219,6 +219,17 @@ export class CirujanoSacerdote {
    * Mete un injerto recogido en la Injertadora.
    * @returns false si ya estaba llena, para que la escena lo diga.
    */
+  /**
+   * Gasta un injerto sin dispararlo: para hacer crecer un puente de tejido
+   * (#95). La Injertadora no se fabrico como arma, y aqui vuelve a su oficio.
+   * @returns false si no habia ninguno.
+   */
+  gastarInjerto(): boolean {
+    if (!progreso.gastarInjerto()) return false;
+    this.eventos.emit('injertos', progreso.injertos, progreso.injertosMaximos);
+    return true;
+  }
+
   cargarInjerto(cantidad: number): boolean {
     if (!progreso.cargarInjerto(cantidad)) return false;
     this.eventos.emit('injertos', progreso.injertos, progreso.injertosMaximos);

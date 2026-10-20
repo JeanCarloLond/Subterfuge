@@ -330,6 +330,12 @@ export const CONTACTO = {
  */
 export const OFRENDA = {
   curacionCarne: 1,
+  /**
+   * La carne engastada del Cerdo de Protocolo (#100): cura el doble, porque es
+   * la de las mesas de los linajes. Solo hay un cerdo por corral y muere una
+   * vez, asi que no sustituye a los Altares.
+   */
+  curacionCarneEngastada: 2,
   fervorSello: 20,
   /** Injertos que repone un injerto recogido. */
   cargaInjerto: 1,
@@ -512,4 +518,174 @@ export const REFORMADO = {
 
   /** Pausa vulnerable tras fallar una embestida. La ventana de castigo. */
   aturdimientoTrasFalloMs: 1100,
+} as const;
+
+/**
+ * La fauna y la flora del Vientre Humedo (#97 a #104).
+ *
+ * Casi nada de esto es un enemigo. Los numeros estan puestos para que cada
+ * especie se entienda en el primer encuentro y no castigue mas de la cuenta:
+ * el Vientre es hostil por lo que es, no por lo que persigue al jugador.
+ */
+export const ESPECIES = {
+  /**
+   * La Serpiente de Tejido (#98): el mini-jefe de los ductos. Todo telegrafia
+   * 500 ms o mas; se gana con la vida y el equipo iniciales.
+   */
+  serpiente: {
+    vida: 20,
+    /** Por debajo de esto abre la boca y empieza a tragar (fase 2). */
+    vidaFase2: 10,
+    velocidad: 40,
+    velocidadEmbestida: 230,
+    anticipacionMs: 640,
+    /** Fase 2: menos aviso, pero nunca menos de 500 ms. */
+    anticipacionFase2Ms: 520,
+    /**
+     * Tope de seguridad, no la duracion normal: la embestida sigue hasta el
+     * jugador o hasta el borde de la arena. Si se cortara por tiempo, fallar no
+     * acabaria nunca en choque y la ventana de castigo no existiria.
+     */
+    embestidaMs: 2400,
+    enfriamientoMs: 1300,
+    /** Fallar y chocar con el borde de la arena: la ventana de castigo. */
+    aturdidaMs: 900,
+    /** Las escamas: fuera de la ventana, el tajo entra a medias. */
+    factorEscamas: 0.5,
+    /** Tragado: lo que dura dentro antes de escupirlo (y de quitarle 1). */
+    retenerMs: 900,
+    dano: 1,
+    injertosAlMorir: 2,
+  },
+  /** El instrumento tibio: muerde una vez y huye; no acosa. */
+  remedo: {
+    vida: 2,
+    dano: 1,
+    /** A esta distancia del Cirujano, muerde (px). */
+    radioMordisco: 20,
+    /** Desde aqui ya tiembla: es el tell que se aprende (px). */
+    radioTemblor: 72,
+    /** Cada cuanto tiembla mientras el Cirujano esta cerca (ms). */
+    cadaTemblorMs: 1400,
+    velocidadHuida: 110,
+    huidaMs: 1300,
+    /** Tras huir vuelve a quedarse quieto y a parecer un objeto. */
+    reposoMs: 2600,
+  },
+  /** El limpiador sagrado: no hiere, no se mata, y huye si se le amenaza. */
+  mondador: {
+    velocidad: 34,
+    velocidadHuida: 150,
+    /** Se para a comer en cada punto de su ruta (ms). */
+    comerMs: 1600,
+    /** Llegar a un punto de la ruta, con este margen (px). */
+    margen: 4,
+  },
+  /** El Buitre de la Quietud: se espanta y vuelve. */
+  buitre: {
+    /** Se espanta si el Cirujano se le acerca a esta distancia corriendo (px). */
+    radioEspanto: 44,
+    velocidadQueEspanta: 120,
+    ausenciaMs: 6000,
+  },
+  /** Cria de los linajes: ambienta el corral. */
+  cerdo: {
+    /** Dos tajos normales: no es un enemigo, pero tampoco es de papel. */
+    vida: 3,
+    velocidad: 18,
+    velocidadHuida: 90,
+    radioSusto: 64,
+    velocidadQueAsusta: 120,
+    comerMs: 2200,
+    pasoMs: 1800,
+  },
+  /** El mensajero: salta de posadero en posadero por delante del Cirujano. */
+  cuervo: {
+    radioPartida: 56,
+    vueloMs: 900,
+    /** Altura del arco de vuelo (px). */
+    arco: 26,
+    graznidoCadaMs: 4200,
+  },
+  /** Barrera viva: hiere al rozarla, se corta y no vuelve a crecer. */
+  zarza: {
+    vidaPorTile: 2,
+    /** Fervor por abrir el paso. Medio sello: es una planta, no un fiel. */
+    fervorAlCortar: 10,
+  },
+  /** La trampa que parece liturgia. */
+  alfombra: {
+    /** Golpes que hacen falta para cortar los filamentos. */
+    vida: 2,
+    /** Dano mientras se esta atrapado, cada tanto (ms). */
+    cadaDanoMs: 1200,
+    /** Tras soltarse, este tiempo no vuelve a cerrarse: salir no es otra trampa. */
+    graciaMs: 900,
+    /** Desde aqui respira, para quien se fija (px). */
+    radioRespiracion: 56,
+    cadaRespiracionMs: 1500,
+  },
+  /** Cosecha con riesgo. No es una fuente infinita de curacion. */
+  mata: {
+    frutos: 3,
+    radio: 26,
+    /** Probabilidades acumuladas: comestible, amargo; el resto es un Remedo. */
+    comestible: 0.65,
+    amargo: 0.25,
+    curacion: 1,
+    danoRemedo: 1,
+  },
+  /**
+   * La Vena Trepadora como compuerta (#101): cierra un paso y solo se abre en
+   * el pico del Latido. Con la Marea en marcha el Latido se acelera, y la
+   * ventana se acorta: cruzarla durante una crecida cuesta mas.
+   */
+  vena: {
+    cicloMs: 2600,
+    abiertaMs: 800,
+    cicloMareaMs: 1500,
+    abiertaMareaMs: 450,
+    /** El golpe que anuncia que se va a abrir (ms antes). */
+    avisoMs: 320,
+  },
+  /**
+   * El Hongo de Lampara (#96). Se come: la biblia lo da como alimento ademas
+   * de luz, asi que cura y no da Fervor. Comido, se apaga para la partida.
+   */
+  hongo: {
+    radio: 24,
+    curacion: 1,
+  },
+  /**
+   * La Flor de hueso (#125). Una sola por nivel, y se recoge una vez. La issue
+   * pide "+1 Fervor"; en una escala de 100 eso no se nota, asi que da lo mismo
+   * que abrir una Zarza: un gesto, no una recompensa.
+   */
+  flor: {
+    radio: 24,
+    fervor: 10,
+  },
+} as const;
+
+/**
+ * Las Mareas del Hambre (#91). La biblia: "cuando los Viscerales digieren, los
+ * ductos expulsan fluidos tibios que inundan las criptas bajas. Esas crecidas
+ * fertilizan todo, pero tambien arrastran a quien este abajo".
+ *
+ * Un fenomeno del edificio, no un castigo: avisa con tiempo, sube despacio,
+ * hiere sin matar y baja. Si cubre al Cirujano entero, el Vientre lo devuelve
+ * al ultimo Altar con un punto menos, como al caer al vacio.
+ */
+export const MAREAS = {
+  periodoMs: 18000,
+  /** Lo minimo para ganar altura desde el fondo de una sala. */
+  avisoMs: 2600,
+  subidaMs: 4200,
+  crecidaMs: 6200,
+  bajadaMs: 4200,
+  /** Cuanto sube sobre su nivel de reposo (px). */
+  alturaMaxima: 220,
+  danoPorContacto: 1,
+  /** Empujon hacia arriba al tocar el agua, para salir de ella (px/s). */
+  empuje: 44,
 } as const;

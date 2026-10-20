@@ -3,10 +3,11 @@ import { OFRENDA } from '../config/Sacramento';
 import type { ClaseEnemigo } from '../systems/Sonido';
 
 /** Lo que deja un enemigo al caer. */
-export type TipoOfrenda = 'carne' | 'sello' | 'injerto';
+export type TipoOfrenda = 'carne' | 'carne-engastada' | 'sello' | 'injerto';
 
 export const OFRENDAS: Record<TipoOfrenda, { nombre: string; textura: string }> = {
   carne: { nombre: 'carne del diezmo', textura: 'carne-placeholder' },
+  'carne-engastada': { nombre: 'carne engastada', textura: 'carne-placeholder' },
   sello: { nombre: 'sello del diezmo', textura: 'sello-placeholder' },
   injerto: { nombre: 'injerto de metal', textura: 'injerto-placeholder' },
 };
@@ -34,6 +35,8 @@ export class Ofrenda {
     this.tipo = tipo;
 
     this.sprite = escena.physics.add.sprite(x, y, OFRENDAS[tipo].textura);
+    // El oro de la placa injertada: se distingue de la carne del diezmo.
+    if (tipo === 'carne-engastada') this.sprite.setTint(0xe0b860);
     this.sprite.setDepth(28);
     this.sprite.setData('ofrenda', this);
 
@@ -109,6 +112,9 @@ export class Ofrenda {
         if (tirada < OFRENDA.vestalCarne) return 'carne';
         if (tirada < OFRENDA.vestalCarne + OFRENDA.vestalInjerto) return 'injerto';
         return 'sello';
+      case 'cerdo':
+        // Muere una vez y siempre deja su carne: es lo que se cria.
+        return 'carne-engastada';
       case 'devoto':
         if (tirada < OFRENDA.devotoCarne) return 'carne';
         if (tirada < OFRENDA.devotoCarne + OFRENDA.devotoSello) return 'sello';

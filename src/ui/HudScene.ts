@@ -13,7 +13,11 @@ export const EVENTOS_HUD = {
   injertos: 'hud-injertos',
   codice: 'hud-codice',
   aviso: 'hud-aviso',
-  /** Vida del jefe: (puntos, maximo). Con puntos < 0 la barra se oculta. */
+  /**
+   * Vida del jefe: (puntos, maximo, cortes?). Con puntos < 0 la barra se
+   * oculta. `cortes` son las marcas de fase, en proporcion; por defecto las
+   * del Reformado (tres fases).
+   */
   jefe: 'hud-jefe',
   /** Texto de una placa del Registro: se muestra unos segundos, centrado abajo. */
   inscripcion: 'hud-inscripcion',
@@ -76,6 +80,7 @@ export class HudScene extends Phaser.Scene {
   /** Negativo mientras no hay jefe en escena: la barra no se dibuja. */
   private jefeVida = -1;
   private jefeMaximo = 1;
+  private jefeCortes: readonly number[] = [1 / 3, 2 / 3];
 
   constructor() {
     super({ key: 'Hud' });
@@ -276,9 +281,10 @@ export class HudScene extends Phaser.Scene {
     const alPresentacion = (titulo: string, subtitulo: string) =>
       this.mostrarPresentacion(titulo, subtitulo);
     const alCaida = (cae: boolean) => this.mostrarCaida(cae);
-    const alJefe = (puntos: number, maximo: number) => {
+    const alJefe = (puntos: number, maximo: number, cortes?: readonly number[]) => {
       this.jefeVida = puntos;
       this.jefeMaximo = maximo;
+      this.jefeCortes = cortes ?? [1 / 3, 2 / 3];
       this.redibujar();
     };
 
@@ -440,7 +446,7 @@ export class HudScene extends Phaser.Scene {
 
     // Marcas de las fases: el jugador ve venir el cambio de ritmo.
     this.grafico.lineStyle(1, COLOR.borde, 1);
-    for (const corte of [1 / 3, 2 / 3]) {
+    for (const corte of this.jefeCortes) {
       const px = x + ancho * corte;
       this.grafico.lineBetween(px, y, px, y + alto);
     }

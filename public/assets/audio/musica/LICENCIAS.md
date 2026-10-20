@@ -7,6 +7,8 @@ es lo correcto y porque el proyecto es académico.
 
 Los archivos se recodificaron (Ogg Vorbis q2 y MP3 96 kbps, 44,1 kHz estéreo)
 para reducir el peso de descarga del juego; no se alteró el contenido musical.
+La del Vientre Húmedo es la excepción: su `.ogg` es el original (pesa como las
+demás) y el `.mp3` se hizo a 96 kbps desde él.
 
 | Archivo                        | Título original                        | Autor          | Licencia | Fuente                                                              |
 | ------------------------------ | -------------------------------------- | -------------- | -------- | ------------------------------------------------------------------- |
@@ -16,6 +18,7 @@ para reducir el peso de descarga del juego; no se alteró el contenido musical.
 | `salas-intro-oscura.*`         | Dark Intro                             | Nikke          | CC0      | https://opengameart.org/content/dark-intro                          |
 | `jefe-santuario-oscuro.*`      | Dark Shrine Loop                       | qubodup (remix de yd) | CC0 | https://opengameart.org/content/dark-shrine-loop                   |
 | `final-camara-de-huesos.*`     | skeleton chamber piano                 | Bobjt          | CC0      | https://opengameart.org/content/skeleton-chamber-piano              |
+| `vientre-humedo-mazmorra.*`    | Loopable Dungeon Ambience              | JaggedStone    | CC0      | https://opengameart.org/content/loopable-dungeon-ambience           |
 
 Los **efectos de sonido** no vienen de aquí: se sintetizan en tiempo real con la
 Web Audio API (`src/systems/Sonido.ts`) y son originales del proyecto.
