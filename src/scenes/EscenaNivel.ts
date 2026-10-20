@@ -58,6 +58,11 @@ export interface RondaDevoto {
   y: number;
   izquierda: number;
   derecha: number;
+  /**
+   * Solo Vestales: la cazadora de Mondadores, con la mascara de caparazon
+   * (#99). Es la misma Vestal; lo que cambia es lo que lleva puesto.
+   */
+  cazadora?: boolean;
 }
 
 /**
@@ -635,6 +640,16 @@ export abstract class EscenaNivel extends Phaser.Scene {
     emisor.setScrollFactor(0);
     emisor.setDepth(-2);
     this.lluvia = emisor;
+
+    // Se oye ademas de verse: un siseo en bucle y gotas sueltas que caen a
+    // destiempo. Se apaga al salir de la zona.
+    sonido.lluviaEncendida();
+    const gotear = () => {
+      sonido.gota();
+      this.time.delayedCall(Phaser.Math.Between(350, 1100), gotear);
+    };
+    this.time.delayedCall(600, gotear);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => sonido.lluviaApagada());
   }
 
   /**
@@ -648,6 +663,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       if (estado === 'aviso') this.game.events.emit(EVENTOS_HUD.aviso, 'sube el agua');
       const arrecia = estado === 'aviso' || estado === 'subiendo';
       this.lluvia?.setFrequency(arrecia ? 30 : 70);
+      if (this.lluvia) sonido.lluviaArrecia(arrecia);
     };
     this.events.on(EVENTO_MAREA, alCambiar);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off(EVENTO_MAREA, alCambiar));
@@ -982,25 +998,37 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (definiciones.length === 0) return;
 
     const contexto = this.contextoDeCriaturas();
-    for (const def of definiciones) {
-      const criatura = crearCriatura(contexto, def);
-      this.criaturas.push(criatura);
+    for (const def of definiciones) this.incorporarCriatura(contexto, def);
 
-      switch (CONTRATO[def.tipo]) {
-        case 'hostil':
-          // Mismo grupo que Devotos y Vestales: el tajo, el injerto, el sello
-          // devuelto y el roce ya lo tratan, porque cumple `Enemigo`.
-          meterSinPisar(this.obtenerGrupoEnemigos(), criatura.sprite);
-          break;
-        case 'neutral':
-          meterSinPisar(this.obtenerGrupoNeutrales(), criatura.sprite);
-          break;
-        case 'peligro':
-          meterSinPisar(this.obtenerGrupoPeligros(), criatura.sprite);
-          break;
-      }
+    this.vigilarCriaturas();
+  }
+
+  /** Crea una criatura y la mete en el grupo de su contrato. */
+  private incorporarCriatura(contexto: ContextoCriatura, def: CriaturaDef): void {
+    const criatura = crearCriatura(contexto, def);
+    this.criaturas.push(criatura);
+
+    switch (CONTRATO[def.tipo]) {
+      case 'hostil':
+        // Mismo grupo que Devotos y Vestales: el tajo, el injerto, el sello
+        // devuelto y el roce ya lo tratan, porque cumple `Enemigo`.
+        meterSinPisar(this.obtenerGrupoEnemigos(), criatura.sprite);
+        break;
+      case 'neutral':
+        meterSinPisar(this.obtenerGrupoNeutrales(), criatura.sprite);
+        break;
+      case 'peligro':
+        meterSinPisar(this.obtenerGrupoPeligros(), criatura.sprite);
+        break;
     }
+  }
 
+  /**
+   * Los solapes de los grupos de neutrales y de peligros. Se registran una vez,
+   * despues de colocar las del principio; las que aparecen luego (el Remedo de
+   * la Zarza) entran en esos mismos grupos y ya quedan cubiertas.
+   */
+  private vigilarCriaturas(): void {
     // Los neutrales no reciben el tajo, pero se enteran de el: el Mondador
     // huye, el Cuervo se va. Es lo que hace que no sean decorado.
     if (this.grupoNeutrales) {
@@ -1031,7 +1059,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private contextoDeCriaturas(): ContextoCriatura {
     const cirujano = this.cirujano;
     const controles = this.controles;
-    return {
+    const contexto: ContextoCriatura = {
       escena: this,
       suelos: this.suelos,
       jugador: {
@@ -1087,7 +1115,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
       zona: this.scene.key,
       oye: (x, y) =>
         Phaser.Math.Distance.Between(x, y, cirujano.sprite.x, cirujano.sprite.y) < RADIO_OIDO,
+      crear: (def) => this.incorporarCriatura(contexto, def),
     };
+    return contexto;
   }
 
   private obtenerGrupoNeutrales(): Phaser.Physics.Arcade.Group {
@@ -1119,10 +1149,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     for (const ronda of this.definicion.vestales ?? []) {
-      const vestal = new Vestal(this, ronda.x, ronda.y, {
-        izquierda: ronda.izquierda,
-        derecha: ronda.derecha,
-      });
+      const vestal = new Vestal(
+        this,
+        ronda.x,
+        ronda.y,
+        { izquierda: ronda.izquierda, derecha: ronda.derecha },
+        ronda.cazadora ? 'vestal-cazadora-placeholder' : 'vestal-placeholder',
+      );
 
       this.physics.add.collider(vestal.sprite, this.suelos);
       grupo.add(vestal.sprite);

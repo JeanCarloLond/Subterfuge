@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ESPECIES } from '../config/Sacramento';
 import { EVENTO_MAREA, type EstadoMarea } from '../systems/Marea';
+import { EVENTO_SERPIENTE_DESPIERTA } from './SerpienteDeTejido';
 import { sonido } from '../systems/Sonido';
 import type { ContextoCriatura } from './Criatura';
 import type { Habitante } from './Habitante';
@@ -16,9 +17,12 @@ import type { Habitante } from './Habitante';
  * ataca, tambien se adelanta al siguiente posadero. Es un heraldo del culto, y
  * la Diocesis no deja que el pueblo lo toque.
  *
- * Cuando la Marea del Hambre empieza a avisar, grazna tres veces seguidas. El
- * aviso de la Serpiente cerca espera a que exista la Serpiente (#98).
+ * Cuando la Marea del Hambre empieza a avisar, grazna tres veces seguidas; y
+ * si la Serpiente despierta cerca, grazna mas fuerte y sin parar un momento.
  */
+/** Hasta donde se entera de que despierta la Serpiente (px). */
+const RADIO_SERPIENTE = 360;
+
 export class Cuervo implements Habitante {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   readonly contrato = 'neutral' as const;
@@ -51,6 +55,18 @@ export class Cuervo implements Habitante {
     };
     ctx.escena.events.on(EVENTO_MAREA, alCambiarMarea);
     ctx.escena.events.once('shutdown', () => ctx.escena.events.off(EVENTO_MAREA, alCambiarMarea));
+
+    const alDespertarSerpiente = (x: number, y: number) => {
+      if (Phaser.Math.Distance.Between(x, y, this.sprite.x, this.sprite.y) > RADIO_SERPIENTE)
+        return;
+      for (let i = 0; i < 5; i += 1) {
+        ctx.escena.time.delayedCall(i * 180, () => this.graznar(true));
+      }
+    };
+    ctx.escena.events.on(EVENTO_SERPIENTE_DESPIERTA, alDespertarSerpiente);
+    ctx.escena.events.once('shutdown', () =>
+      ctx.escena.events.off(EVENTO_SERPIENTE_DESPIERTA, alDespertarSerpiente),
+    );
   }
 
   /** En que posadero esta, o hacia cual vuela. */
@@ -82,11 +98,12 @@ export class Cuervo implements Habitante {
   }
 
   /** Un pico abierto: estira el cuerpo un instante. */
-  private graznar(): void {
-    if (this.ctx.oye(this.sprite.x, this.sprite.y)) sonido.cuervoGrazna();
+  /** @param alarma mas fuerte y mas abierto: la Serpiente esta cerca. */
+  private graznar(alarma = false): void {
+    if (this.ctx.oye(this.sprite.x, this.sprite.y)) sonido.cuervoGrazna(alarma);
     this.ctx.escena.tweens.add({
       targets: this.sprite,
-      scaleY: 1.12,
+      scaleY: alarma ? 1.25 : 1.12,
       duration: 90,
       yoyo: true,
       repeat: 1,

@@ -29,11 +29,21 @@ export class Zarza implements Habitante, Enemigo {
   private readonly huella: string;
   private vida: number;
   private cortada = false;
+  /** Hay un Remedo escondido entre las puas (#102). Solo sale si se corta. */
+  private readonly remedo: boolean;
 
   private readonly ctx: ContextoCriatura;
 
-  constructor(ctx: ContextoCriatura, x: number, y: number, altoTiles: number, anchoTiles = 1) {
+  constructor(
+    ctx: ContextoCriatura,
+    x: number,
+    y: number,
+    altoTiles: number,
+    anchoTiles = 1,
+    remedo = false,
+  ) {
     this.ctx = ctx;
+    this.remedo = remedo;
     const ancho = anchoTiles * T;
     const alto = altoTiles * T;
     this.vida = ESPECIES.zarza.vidaPorTile * altoTiles * anchoTiles;
@@ -93,6 +103,10 @@ export class Zarza implements Habitante, Enemigo {
       progreso.dejarHuella(this.huella);
       this.ctx.ganarFervor(ESPECIES.zarza.fervorAlCortar);
       this.quedarseEnTocon();
+      // El que se escondia entre las puas sale corriendo: no muerde al salir.
+      if (this.remedo) {
+        this.ctx.crear({ tipo: 'remedo', x: this.sprite.x, y: this.tallos.y - 1, huyendo: true });
+      }
     }
     return true;
   }
