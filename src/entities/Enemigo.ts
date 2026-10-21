@@ -19,6 +19,12 @@ export interface Enemigo {
   /** De que esta hecho, para que suene distinto al golpearlo y al caer. */
   readonly clase: ClaseEnemigo;
 
+  /**
+   * Escamas o coraza que el filo y el injerto no atraviesan (#167): solo le
+   * entra lo que se le devuelve con el parry. La escena hace rebotar el resto.
+   */
+  readonly pielDura?: boolean;
+
   /** @returns true si el golpe conecto. */
   recibirDano(cantidad: number, origenX: number): boolean;
 }

@@ -17,7 +17,7 @@ const PROFUNDIDAD_DETRAS = -1;
 /** A cuestas, delante: la capa de el la taparia entera. */
 const PROFUNDIDAD_DELANTE = 1;
 
-export type EstadoNina = 'sigue' | 'a-cuestas' | 'espera';
+export type EstadoNina = 'sigue' | 'a-cuestas' | 'espera' | 'escondida';
 
 /** Lo que ella necesita saber de el cada fotograma. */
 export interface GuiaNina {
@@ -50,6 +50,8 @@ export class Nina {
   private readonly rastro = new Rastro(SEPARACION);
   private estado: EstadoNina = 'sigue';
   private recorrido = 0;
+  /** La luz del nicho donde se esconde. */
+  private luz?: Phaser.GameObjects.Image;
   /**
    * Si ya pisa suelo con el. Al entrar en una zona o reaparecer, el Cirujano
    * suele estar cayendo unos pixeles: hasta que no aterriza, ella no se pone,
@@ -69,7 +71,44 @@ export class Nina {
     return this.estado;
   }
 
+  /**
+   * Corre a un nicho y se queda alli mientras dure el peligro (#167): fuera
+   * del alcance de todo y siempre a la vista, con su luz.
+   */
+  esconderEn(x: number, y: number): void {
+    if (this.estado === 'escondida') return;
+    this.estado = 'escondida';
+    this.sprite.setPosition(x, y).setVisible(true).setDepth(PROFUNDIDAD_DETRAS);
+    this.posar('cine-nina-pie');
+    this.luz ??= this.sprite.scene.add
+      .image(x, y - 10, 'brillo-placeholder')
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setTint(0xe8c890)
+      .setDepth(-3);
+    this.luz
+      .setPosition(x, y - 10)
+      .setAlpha(0.45)
+      .setScale(0.55)
+      .setVisible(true);
+  }
+
+  /** Pasa el peligro: vuelve a su lado en cuanto el pise suelo. */
+  salir(): void {
+    if (this.estado !== 'escondida') return;
+    this.estado = 'sigue';
+    this.luz?.setVisible(false);
+    this.asentada = false;
+    this.enSuelo = 0;
+    this.sprite.setVisible(false);
+  }
+
   actualizar(guia: GuiaNina, aCuestas: boolean): void {
+    if (this.estado === 'escondida') {
+      // Desde el nicho, hacia el.
+      this.sprite.setFlipX(guia.x < this.sprite.x);
+      return;
+    }
+
     // Si el cae, ella se queda donde esta. Al volver el al Altar, el rastro
     // se rompe por la distancia y ella vuelve a ponerse a su lado.
     if (guia.muerto) {

@@ -155,6 +155,11 @@ export interface ContextoCriatura {
    */
   desgastar(cantidad: number): void;
   /**
+   * Un proyectil que se para con el parry y vuelve contra quien lo lanzo
+   * (#167). Devuelto quita `danoDevuelto`.
+   */
+  escupir(x: number, y: number, direccion: number, danoDevuelto: number): void;
+  /**
    * Gasta un injerto de la Injertadora. Si no hay, avisa y devuelve false:
    * pulsar y que no pase nada se lee como un boton roto.
    */

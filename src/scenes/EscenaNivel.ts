@@ -11,7 +11,7 @@ import {
 } from '../entities/Criatura';
 import { habitanteDe, type Habitante } from '../entities/Habitante';
 import { Reformado } from '../entities/Reformado';
-import { Sello } from '../entities/Sello';
+import { Sello, type FormaProyectil } from '../entities/Sello';
 import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
@@ -24,6 +24,13 @@ import { CHARLAS, FRASES_NINA, type ZonaCharla } from '../lore/Charlas';
 import type { Pensamiento } from '../lore/Pensamientos';
 import { Fiel } from '../entities/Fiel';
 import { Nina } from '../entities/Nina';
+import {
+  EVENTO_SERPIENTE_CALMA,
+  EVENTO_SERPIENTE_DESPIERTA,
+  EVENTO_SERPIENTE_FASE2,
+  EVENTO_SERPIENTE_VENCIDA,
+  type SerpienteDeTejido,
+} from '../entities/SerpienteDeTejido';
 import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
 import { Ofrenda, type TipoOfrenda } from '../objetos/Ofrenda';
@@ -257,6 +264,13 @@ export interface DefinicionNivel {
   conteo?: { x: number; y: number; piezas: number };
   /** La niña huye con el Cirujano (#157): las zonas del Nivel 2. */
   nina?: boolean;
+  /** Donde se esconde ella mientras pelea la Serpiente (#167): pies del nicho. */
+  nicho?: { x: number; y: number };
+  /**
+   * Lo que cierra el ducto mientras viva la Serpiente (#167): una fila de
+   * tiles [x, y, anchoTiles] de tejido que se deshace al vencerla.
+   */
+  cierreDelNido?: readonly [x: number, y: number, anchoTiles: number];
   /**
    * Tramos donde ella va a su espalda (#157): trepas largas y persecuciones.
    * Rectangulos [x0, y0, x1, y1]; basta con que el Cirujano este dentro.
@@ -420,6 +434,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private bocadillos!: Bocadillos;
   /** Lo que dice al intentar golpear sin bisturi: una cada pocos segundos. */
   private frasesSinBisturi = new Turnos(SIN_BISTURI, 4000);
+  /** La pista de la Serpiente: la dice ella, y no la repite en bucle (#167). */
+  private frasePielDura = new Turnos(FRASES_NINA.pielDura, 6000);
   /** "E  hablar" sobre la niña, cuando estan tranquilos (#176). */
   private avisoCharla?: Phaser.GameObjects.Text;
   /** Desde cuando el Cirujano esta quieto en el suelo. */
@@ -464,6 +480,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.impacto = new Impacto(this);
     this.bocadillos = new Bocadillos(this);
     this.frasesSinBisturi = new Turnos(SIN_BISTURI, 4000);
+    this.frasePielDura = new Turnos(FRASES_NINA.pielDura, 6000);
     this.impacto.alRuido = (x, y, radio) => this.hacerRuido(x, y, radio);
 
     this.crearCirujano(inicio.x, inicio.y);
@@ -485,6 +502,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       };
     }
 
+    this.prepararNido();
     this.crearLuces();
     this.crearPolvo();
     if (this.definicion.lluvia) this.crearLluvia();
@@ -1246,7 +1264,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (definiciones.length === 0) return;
 
     const contexto = this.contextoDeCriaturas();
-    for (const def of definiciones) this.incorporarCriatura(contexto, def);
+    for (const def of definiciones) {
+      // La Serpiente vencida no vuelve a su nido en esta partida (#167).
+      if (def.tipo === 'serpiente' && progreso.hayHuella(`serpiente-vencida:${this.scene.key}`))
+        continue;
+      this.incorporarCriatura(contexto, def);
+    }
 
     this.vigilarCriaturas();
   }
@@ -1360,6 +1383,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
         return false;
       },
       frenarJugador: () => cirujano.cuerpo.setVelocityX(0),
+      escupir: (x, y, direccion, danoDevuelto) =>
+        this.lanzarSello(x, y, direccion, { textura: 'escama-placeholder', danoDevuelto }),
       zona: this.scene.key,
       oye: (x, y) =>
         Phaser.Math.Distance.Between(x, y, cirujano.sprite.x, cirujano.sprite.y) < RADIO_OIDO,
@@ -1838,6 +1863,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const puntoX = enemigo.sprite.x;
     const puntoY = enemigo.sprite.y - 12;
 
+    // Escamas que el filo no atraviesa (#167): rebota, y la niña lo ve.
+    if (enemigo.pielDura) {
+      this.impacto.rebote(puntoX, puntoY);
+      this.pistaPielDura();
+      return;
+    }
+
     enemigo.recibirDano(dano, this.cirujano.sprite.x);
 
     if (enemigo.estaMuerto) {
@@ -1974,6 +2006,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!enemigo || enemigo.estaMuerto) return;
     if (!injerto.consumir()) return;
 
+    if (enemigo.pielDura) {
+      this.impacto.rebote(injerto.sprite.x, injerto.sprite.y);
+      this.pistaPielDura();
+      injerto.destruir();
+      return;
+    }
+
     enemigo.recibirDano(injerto.dano, injerto.sprite.x);
     this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, false, enemigo.clase);
     if (enemigo.estaMuerto)
@@ -1983,8 +2022,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
   // -- Sellos del diezmo ---------------------------------------------------
 
-  private lanzarSello(x: number, y: number, direccion: number): void {
-    const sello = new Sello(this, x, y, direccion);
+  private lanzarSello(x: number, y: number, direccion: number, forma?: FormaProyectil): void {
+    const sello = new Sello(this, x, y, direccion, forma);
     this.sellos.push(sello);
 
     // Contra el escenario se disuelve: no atraviesa muros.
@@ -2453,6 +2492,83 @@ export abstract class EscenaNivel extends Phaser.Scene {
     progreso.dejarHuella(`charla:${zona}:${i}`);
     sonido.interfazAbrir();
     this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, dialogo: charlas[i] });
+  }
+
+  /**
+   * La niña ve lo que el no: que el filo no entra y que lo que escupe se
+   * puede devolver (#167). Sin ella, lo dice el propio Cirujano.
+   */
+  private pistaPielDura(): void {
+    const frase = this.frasePielDura.siguiente(this.time.now);
+    if (!frase) return;
+    if (this.nina) this.decirNina(frase);
+    else this.bocadillos.decir(this.cirujano.sprite, frase);
+  }
+
+  /**
+   * El nido de la Serpiente (#167): la niña se esconde mientras dura el
+   * combate, golpea una tuberia cuando la Serpiente abre la boca, y el ducto
+   * se abre al vencerla. Vencida, no vuelve: queda la huella.
+   */
+  private prepararNido(): void {
+    const serpiente = this.criaturas.find((c) => c.clase === 'serpiente') as
+      SerpienteDeTejido | undefined;
+    const huella = `serpiente-vencida:${this.scene.key}`;
+    const cierre = progreso.hayHuella(huella) ? undefined : this.crearCierreDelNido();
+    if (!serpiente) return;
+
+    const nicho = this.definicion.nicho;
+    const alDespertar = () => {
+      if (nicho) this.nina?.esconderEn(nicho.x, nicho.y);
+    };
+    const alCalmarse = () => this.nina?.salir();
+    const alFase2 = () => {
+      if (!nicho || !this.nina) return;
+      sonido.tuberia();
+      this.decirNina(FRASES_NINA.ruido[0]);
+      this.time.delayedCall(500, () => serpiente.distraer(nicho.x));
+    };
+    const alVencerla = () => {
+      progreso.dejarHuella(huella);
+      this.nina?.salir();
+      for (const pieza of cierre ?? []) {
+        this.tweens.add({
+          targets: pieza,
+          alpha: 0,
+          scaleY: 0.2,
+          duration: 700,
+          ease: 'Quad.easeIn',
+          onComplete: () => pieza.destroy(),
+        });
+        (pieza.body as Phaser.Physics.Arcade.StaticBody).enable = false;
+      }
+    };
+    this.events.on(EVENTO_SERPIENTE_DESPIERTA, alDespertar);
+    this.events.on(EVENTO_SERPIENTE_CALMA, alCalmarse);
+    this.events.on(EVENTO_SERPIENTE_FASE2, alFase2);
+    this.events.once(EVENTO_SERPIENTE_VENCIDA, alVencerla);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.events.off(EVENTO_SERPIENTE_DESPIERTA, alDespertar);
+      this.events.off(EVENTO_SERPIENTE_CALMA, alCalmarse);
+      this.events.off(EVENTO_SERPIENTE_FASE2, alFase2);
+      this.events.off(EVENTO_SERPIENTE_VENCIDA, alVencerla);
+    });
+  }
+
+  /** El tapon de tejido sobre el ducto: solido mientras la Serpiente viva. */
+  private crearCierreDelNido(): Phaser.Physics.Arcade.Image[] {
+    const cierre = this.definicion.cierreDelNido;
+    if (!cierre) return [];
+    const [x, y, anchoTiles] = cierre;
+    const textura = this.definicion.muro?.[0] ?? 'membrana-placeholder';
+    const piezas: Phaser.Physics.Arcade.Image[] = [];
+    for (let i = 0; i < anchoTiles; i += 1) {
+      const pieza = this.physics.add.staticImage(x + i * T + T / 2, y + T / 2, textura);
+      pieza.setTint(0xb0606a).setDepth(2);
+      this.physics.add.collider(this.cirujano.sprite, pieza);
+      piezas.push(pieza);
+    }
+    return piezas;
   }
 
   /** Una frase de ella sobre su cabeza, con un respiro opcional antes. */

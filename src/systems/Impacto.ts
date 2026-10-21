@@ -70,6 +70,15 @@ export class Impacto {
     this.anillo(x, y, cargado ? 26 : 16, oro, 220);
   }
 
+  /**
+   * Un golpe que no entra (#167): chispas grises, sin anillo ni hitstop. Se
+   * tiene que ver al instante que eso no sirve.
+   */
+  rebote(x: number, y: number): void {
+    sonido.rebote();
+    this.chispas(x, y, 0, 6, 0x9a9a92);
+  }
+
   /** Parry logrado: el momento mas legible de todo el combate. */
   parryLogrado(x: number, y: number): void {
     sonido.parry();

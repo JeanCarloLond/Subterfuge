@@ -5,6 +5,13 @@ import { sonido } from '../systems/Sonido';
 /** Quien es dueño del sello ahora mismo. Cambia con el parry. */
 export type DuenoSello = 'vestal' | 'cirujano';
 
+/** Lo que cambia de un proyectil a otro. Sin indicar, el sello del Vestal. */
+export interface FormaProyectil {
+  textura?: string;
+  /** Lo que quita al volver contra quien lo lanzo. */
+  danoDevuelto?: number;
+}
+
 /**
  * Sello del diezmo: el proyectil que lanza el Vestal.
  *
@@ -19,11 +26,19 @@ export class Sello {
   private consumido = false;
   private readonly escena: Phaser.Scene;
   private readonly temporizador: Phaser.Time.TimerEvent;
+  private readonly danoAlVolver: number;
 
-  constructor(escena: Phaser.Scene, x: number, y: number, direccion: number) {
+  constructor(
+    escena: Phaser.Scene,
+    x: number,
+    y: number,
+    direccion: number,
+    forma: FormaProyectil = {},
+  ) {
     this.escena = escena;
+    this.danoAlVolver = forma.danoDevuelto ?? PROYECTIL.danoDevuelto;
 
-    this.sprite = escena.physics.add.sprite(x, y, 'sello-placeholder');
+    this.sprite = escena.physics.add.sprite(x, y, forma.textura ?? 'sello-placeholder');
     this.sprite.setData('sello', this);
     this.sprite.setDepth(30);
 
@@ -53,7 +68,7 @@ export class Sello {
   }
 
   get dano(): number {
-    return this.fueDevuelto ? PROYECTIL.danoDevuelto : PROYECTIL.dano;
+    return this.fueDevuelto ? this.danoAlVolver : PROYECTIL.dano;
   }
 
   /** Un sello solo hiere una vez, aunque el solape dure varios fotogramas. */

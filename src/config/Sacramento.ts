@@ -566,10 +566,22 @@ export const ESPECIES = {
      */
     embestidaMs: 2400,
     enfriamientoMs: 1300,
-    /** Fallar y chocar con el borde de la arena: la ventana de castigo. */
+    /** Fallar y chocar con el borde de la arena, o que le paren la embestida. */
     aturdidaMs: 900,
-    /** Las escamas: fuera de la ventana, el tajo entra a medias. */
-    factorEscamas: 0.5,
+    /**
+     * El escupitajo (#167): una escama dura que se para con el parry y vuelve.
+     * Es lo unico que la hiere: el filo y el injerto rebotan en sus escamas.
+     */
+    escupirMs: 620,
+    /**
+     * Entre escama y escama de una rafaga. Mas que la ventana y el
+     * enfriamiento del parry juntos: todas se pueden devolver.
+     */
+    rafagaMs: 700,
+    /** Lo que quita una escama devuelta. Cinco la vencen; aturdida, el doble. */
+    danoEscama: 4,
+    /** Las que escupe hacia el ruido cuando la niña la distrae, una vez. */
+    rafagaDistraida: 3,
     /** Tragado: lo que dura dentro antes de escupirlo (y de quitarle 1). */
     retenerMs: 900,
     dano: 1,

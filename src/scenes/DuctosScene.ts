@@ -27,7 +27,7 @@ export class DuctosScene extends EscenaNivel {
       telon: 'fondo-costillas',
       colorFondo: '#0d090b',
       musica: 'vientre-humedo',
-      inicio: { x: 40, y: 900 },
+      inicio: { x: 100, y: 900 },
       nina: true,
       llegada: 'ductos',
       // La trepa entera, del primer escalon a la Puerta: ella va a su espalda.
@@ -57,7 +57,10 @@ export class DuctosScene extends EscenaNivel {
         [192, 784, 8], //          x 192..320
         [416, 848, 6], //          x 416..512
 
-        [0, 928, 40], //           el fondo del ducto, x 0..640
+        // El nicho alto donde se esconde ella mientras pelea la Serpiente.
+        [16, 864, 3], //           x 16..64
+
+        [0, 928, 40], //           el nido: el fondo del ducto, x 0..640
       ],
 
       paredes: [
@@ -65,7 +68,9 @@ export class DuctosScene extends EscenaNivel {
         [624, 48, 928],
       ],
 
-      devotos: [{ x: 300, y: 928, izquierda: 200, derecha: 520 }],
+      // El nido es solo de la Serpiente (#167): nada mas pelea en el fondo, o se
+      // comeria las escamas devueltas.
+      devotos: [],
 
       vestales: [
         { x: 440, y: 576, izquierda: 392, derecha: 504 },
@@ -79,7 +84,12 @@ export class DuctosScene extends EscenaNivel {
 
       fragmentos: [[56, 696, 'codice-10']],
 
-      reliquias: [[600, 496, 'ductos-relicario', 'relicario']],
+      reliquias: [[592, 496, 'ductos-relicario', 'relicario']],
+
+      // El nido de la Serpiente (#167): el fondo del ducto. Mientras viva, un
+      // tapon de tejido cierra la subida; ella se esconde en el nicho.
+      nicho: { x: 40, y: 864 },
+      cierreDelNido: [16, 800, 38],
 
       decorado: [
         [500, 928, 'nido'],
@@ -103,11 +113,12 @@ export class DuctosScene extends EscenaNivel {
         [500, 300, 'conducto'],
       ],
 
-      // Lo que crece en los ductos: la Vena al ritmo del Latido, pegada al
-      // muro, y una Zarza en el rincón del fondo, fuera del camino.
+      // La Serpiente en su nido, y lo que crece en la subida: la Vena al
+      // ritmo del Latido guardando el Relicario, y una Zarza en una repisa.
       criaturas: [
-        { tipo: 'vena', x: 600, y: 928, altoTiles: 5 },
-        { tipo: 'zarza', x: 560, y: 928, altoTiles: 2 },
+        { tipo: 'serpiente', x: 440, y: 928, arena: { izquierda: 150, derecha: 600 } },
+        { tipo: 'vena', x: 548, y: 496, altoTiles: 3 },
+        { tipo: 'zarza', x: 110, y: 368, altoTiles: 2 },
       ],
 
       inscripciones: [[140, 928, 'DUCTOS DE SUBIDA. A la Puerta del Cuerpo. Solo Vestales.']],

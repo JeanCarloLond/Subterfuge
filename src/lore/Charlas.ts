@@ -118,6 +118,17 @@ export const FRASES_NINA = {
   rezar: ['Yo no rezo. Te espero.', 'Ojos al suelo, palma al frente. ¿Así?'],
   /** Al recuperar el bisturi en el conteo del instrumental. */
   bisturi: ['Ese no tiembla.'],
+  /**
+   * Con la Serpiente (#167): el filo rebota en sus escamas, y ella lo ve
+   * antes que el. La primera es la pista; las otras, si sigue sin entender.
+   */
+  pielDura: [
+    'No le entra. Lo que escupe, devuélveselo.',
+    'Cuando escupa, para el golpe.',
+    'Que le vuelva lo suyo.',
+  ],
+  /** Golpea una tuberia para que la Serpiente se vuelva hacia ella. */
+  ruido: ['¡Eh! ¡Aquí!'],
   /** Si se quedan quietos un rato. */
   quietos: ['¿Oyes eso? Late.', 'Hace calor aquí abajo.', 'Huele a la parte de atrás de casa.'],
 } as const;

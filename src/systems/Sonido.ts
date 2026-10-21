@@ -818,6 +818,21 @@ class Sonido {
     this.tono({ desde: 190, hasta: 150, onda: 'square', duracion: 0.05, volumen: 0.07 });
   }
 
+  /**
+   * El filo contra unas escamas que no ceden (#167): un tintineo seco y corto,
+   * sin el golpe sordo de la carne. Se oye que no ha entrado.
+   */
+  rebote(): void {
+    this.tono({ desde: 2600, hasta: 1900, onda: 'triangle', duracion: 0.07, volumen: 0.16 });
+    this.tono({ desde: 1300, hasta: 1250, onda: 'square', duracion: 0.05, volumen: 0.06 });
+  }
+
+  /** La niña golpea una tuberia: metal hueco que resuena (#167). */
+  tuberia(): void {
+    this.tono({ desde: 340, hasta: 300, onda: 'square', duracion: 0.35, volumen: 0.14 });
+    this.tono({ desde: 680, hasta: 640, onda: 'triangle', duracion: 0.5, volumen: 0.1 });
+  }
+
   selloLanzado(): void {
     this.tono({ desde: 900, hasta: 1500, onda: 'triangle', duracion: 0.1, volumen: 0.14 });
   }

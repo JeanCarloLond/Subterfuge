@@ -3117,6 +3117,24 @@ const HUD_INJERTADORA: Figura = {
     '..nnnn......',
   ],
 };
+// La escama que escupe la Serpiente (#167): dura, con su brillo. Se para con
+// el parry y vuelve; es lo unico que la hiere.
+const ESCAMA: Figura = {
+  paleta: {
+    n: 0x1a0e10,
+    e: 0x6a5a4a,
+    E: 0x9a8a72,
+    w: 0xe6ddc8,
+  },
+  // prettier-ignore
+  filas: [
+    '.nnnnn.',
+    'nEEeEEn',
+    'nEwEeEn',
+    'nEEeEEn',
+    '.nnnnn.',
+  ],
+};
 // -- Poses de ataque (issue #146) --------------------------------------------
 //
 // Antes el ataque de un enemigo era un cambio de color y nada mas: se ponia
@@ -3455,6 +3473,7 @@ const FIGURAS: Record<string, Figura> = {
   'hud-frasco-vacio': HUD_FRASCO_VACIO,
   'hud-injerto': HUD_INJERTO,
   'hud-injerto-vacio': HUD_INJERTO_VACIO,
+  escama: ESCAMA,
   'hud-bisturi': HUD_BISTURI,
   'hud-bisturi-vacio': HUD_BISTURI_VACIO,
   'hud-injertadora': HUD_INJERTADORA,
