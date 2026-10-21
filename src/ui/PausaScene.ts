@@ -196,7 +196,7 @@ export class PausaScene extends Phaser.Scene {
     // alto y las posiciones a mano, anadir una linea a la ayuda desbordaba el
     // panel sin que nada se quejara.
     const conDedos = tactil.esAparatoTactil;
-    const ayuda = ayudaDeControles(conDedos, progreso.tieneBisturi);
+    const ayuda = ayudaDeControles(conDedos, progreso.tieneBisturi, progreso.tieneInjertadora);
     const movimiento = this.add.text(12, arriba, ayuda.movimiento.join('\n'), estilo);
     const combate = this.add.text(236, arriba, ayuda.combate.join('\n'), estilo);
     const sistema = this.add.text(

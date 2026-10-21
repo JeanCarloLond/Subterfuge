@@ -11,6 +11,8 @@ export const EVENTOS_HUD = {
   pociones: 'hud-pociones',
   /** Carga de la Injertadora: (injertos, maximo). */
   injertos: 'hud-injertos',
+  /** Cambia lo que se lleva: el bisturi o la Injertadora (#178). Sin datos. */
+  armas: 'hud-armas',
   codice: 'hud-codice',
   aviso: 'hud-aviso',
   /**
@@ -58,6 +60,10 @@ export class HudScene extends Phaser.Scene {
   private textoCodice!: Phaser.GameObjects.Text;
   private textoPocion!: Phaser.GameObjects.Text;
   private textoInjertos!: Phaser.GameObjects.Text;
+  private textoBisturi!: Phaser.GameObjects.Text;
+  /** Los iconos de las dos armas (#178): el bisturi y la Injertadora. */
+  private iconoBisturi!: Phaser.GameObjects.Image;
+  private iconoInjertadora!: Phaser.GameObjects.Image;
   private textoAviso!: Phaser.GameObjects.Text;
   private textoInscripcion!: Phaser.GameObjects.Text;
   private avisoAudio!: Phaser.GameObjects.Text;
@@ -72,14 +78,6 @@ export class HudScene extends Phaser.Scene {
   private pocionesMaximas: number = POCION.cargasMaximas;
   private injertosActuales: number = INJERTADORA.cargaInicial;
   private injertosMaximos: number = INJERTADORA.cargaMaxima;
-  /**
-   * La Injertadora no se enseña hasta que cae el primer injerto.
-   *
-   * Un indicador a cero desde el primer segundo solo dice "te falta algo" sin
-   * decir que; en cuanto cae la primera pieza, el hueco tiene sentido y
-   * enseña cuanto cabe.
-   */
-  private injertadoraDescubierta = false;
   private fragmentos = 0;
   /** Negativo mientras no hay jefe en escena: la barra no se dibuja. */
   private jefeVida = -1;
@@ -105,7 +103,6 @@ export class HudScene extends Phaser.Scene {
     this.pocionesMaximas = POCION.cargasMaximas;
     this.injertosActuales = INJERTADORA.cargaInicial;
     this.injertosMaximos = INJERTADORA.cargaMaxima;
-    this.injertadoraDescubierta = false;
     this.fragmentos = 0;
     this.jefeVida = -1;
     this.jefeMaximo = 1;
@@ -122,9 +119,16 @@ export class HudScene extends Phaser.Scene {
       color: '#8a7d70',
     });
 
-    // La Injertadora, debajo de los frascos. Solo aparece cuando hay algo que
-    // enseñar: antes del primer injerto el arma no existe para el jugador.
-    this.textoInjertos = this.add.text(8, 41, '', {
+    // Las armas, debajo de los frascos (#178): el bisturi, que se ve apagado
+    // cuando no se lleva, y la Injertadora, que no aparece hasta ganarla.
+    this.iconoBisturi = this.add.image(0, 0, 'hud-bisturi-placeholder').setOrigin(0, 0);
+    this.iconoInjertadora = this.add.image(0, 0, 'hud-injertadora-placeholder').setOrigin(0, 0);
+    this.textoBisturi = this.add.text(8, 41, '', {
+      fontFamily: 'monospace',
+      fontSize: '7px',
+      color: '#8a7d70',
+    });
+    this.textoInjertos = this.add.text(8, 51, '', {
       fontFamily: 'monospace',
       fontSize: '7px',
       color: '#8a7d70',
@@ -293,11 +297,9 @@ export class HudScene extends Phaser.Scene {
     const alInjertos = (cargas: number, maximo?: number) => {
       this.injertosActuales = cargas;
       if (maximo !== undefined) this.injertosMaximos = maximo;
-      // Basta con haber tenido uno: a partir de ahi el indicador se queda,
-      // tambien vacio, porque ya significa algo.
-      if (cargas > 0) this.injertadoraDescubierta = true;
       this.redibujar();
     };
+    const alArmas = () => this.redibujar();
     const alCodice = (total: number) => {
       this.fragmentos = total;
       this.redibujar();
@@ -318,6 +320,7 @@ export class HudScene extends Phaser.Scene {
     bus.on(EVENTOS_HUD.fervor, alFervor);
     bus.on(EVENTOS_HUD.pociones, alPociones);
     bus.on(EVENTOS_HUD.injertos, alInjertos);
+    bus.on(EVENTOS_HUD.armas, alArmas);
     bus.on(EVENTOS_HUD.codice, alCodice);
     bus.on(EVENTOS_HUD.aviso, alAviso);
     bus.on(EVENTOS_HUD.jefe, alJefe);
@@ -332,6 +335,7 @@ export class HudScene extends Phaser.Scene {
       bus.off(EVENTOS_HUD.fervor, alFervor);
       bus.off(EVENTOS_HUD.pociones, alPociones);
       bus.off(EVENTOS_HUD.injertos, alInjertos);
+      bus.off(EVENTOS_HUD.armas, alArmas);
       bus.off(EVENTOS_HUD.codice, alCodice);
       bus.off(EVENTOS_HUD.aviso, alAviso);
       bus.off(EVENTOS_HUD.jefe, alJefe);
@@ -371,20 +375,34 @@ export class HudScene extends Phaser.Scene {
     this.textoPocion.setPosition(x0 + anchoPociones + 4, 28);
     this.textoPocion.setText(this.pocionesActuales > 0 ? 'Q  Poción de Carne' : 'sin Poción');
 
-    let fondo = 38;
-    if (this.injertadoraDescubierta) {
+    // El bisturi: dorado en la mano, apagado si se quedo en la Sala (#160).
+    const armado = progreso.tieneBisturi;
+    this.iconoBisturi.setPosition(x0, 40);
+    this.iconoBisturi.setTexture(
+      armado ? 'hud-bisturi-placeholder' : 'hud-bisturi-vacio-placeholder',
+    );
+    this.textoBisturi.setPosition(x0 + 17, 38);
+    this.textoBisturi.setText(armado ? 'J  bisturí' : 'sin bisturí');
+    this.textoBisturi.setColor(armado ? '#8a7d70' : '#62564b');
+    let fondo = 49;
+
+    // La Injertadora y sus disparos, como capsulas que se llenan (#178).
+    const conInjertadora = progreso.tieneInjertadora;
+    this.iconoInjertadora.setVisible(conInjertadora);
+    if (conInjertadora) {
+      this.iconoInjertadora.setPosition(x0, 50);
       const anchoInjertos = this.dibujarIconos(
-        x0,
-        39,
+        x0 + 16,
+        49,
         this.injertosMaximos,
         this.injertosActuales,
         'hud-injerto-placeholder',
         'hud-injerto-vacio-placeholder',
         7,
       );
-      this.textoInjertos.setPosition(x0 + anchoInjertos + 4, 39);
+      this.textoInjertos.setPosition(x0 + 16 + anchoInjertos + 3, 49);
       this.textoInjertos.setText(this.injertosActuales > 0 ? 'F  Injertadora' : 'sin injertos');
-      fondo = 49;
+      fondo = 59;
     } else {
       this.textoInjertos.setText('');
     }
@@ -406,7 +424,8 @@ export class HudScene extends Phaser.Scene {
         anchoVida,
         64,
         anchoPociones + 4 + this.textoPocion.width,
-        this.injertadoraDescubierta ? this.textoInjertos.x - x0 + this.textoInjertos.width : 0,
+        this.textoBisturi.x - x0 + this.textoBisturi.width,
+        conInjertadora ? this.textoInjertos.x - x0 + this.textoInjertos.width : 0,
         this.textoCodice.width,
       ) + 10;
     this.marco.clear();

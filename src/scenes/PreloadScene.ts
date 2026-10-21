@@ -123,8 +123,10 @@ export class PreloadScene extends Phaser.Scene {
 function escenaDeArranque(consulta: string): string {
   if (consulta.includes('cinematica')) return 'Final';
   if (new URLSearchParams(consulta).get('nivel') === '2') {
-    // Como tras la decision: el bisturi se quedo en la Sala (#160).
+    // Como tras la decision: el bisturi se quedo en la Sala (#160), y la
+    // Injertadora de las Manos anteriores va en la mano (#178).
     progreso.soltarBisturi();
+    progreso.ganarInjertadora();
     return 'Desague';
   }
   if (consulta.includes('tactil') && !consulta.includes('inicio')) return 'Atrio';

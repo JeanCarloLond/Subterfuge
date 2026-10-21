@@ -259,24 +259,18 @@ export const COMBATE = {
  * no para sustituirlo.
  */
 export const INJERTADORA = {
-  /** Injertos que caben encima. Cuatro: se acaban rapido y se notan. */
-  cargaMaxima: 4,
   /**
-   * Con cuantos empieza la partida.
-   *
-   * UNO, y no cero. Empezaba a cero para que el jugador aprendiera de donde
-   * sale la munición en el momento en que le importa, pero en la practica eso
-   * escondia el arma entera: pulsabas F y no pasaba nada, el indicador del HUD
-   * no aparecia, y la Injertadora solo existia si tenias la suerte de que un
-   * Devoto soltara metal. Con uno cargado, el arma se ve y se prueba en el
-   * primer minuto, y a partir de ahi ya es escasa de verdad.
-   *
-   * Tambien encaja mejor: las Manos no salen de la Sala 7 con el instrumento
-   * descargado.
+   * Injertos que caben encima: tres disparos (#178). Se gana llena, al vencer
+   * a las Manos anteriores, y despues se recarga con lo que sueltan los fieles.
    */
-  cargaInicial: 1,
-  /** Entre el golpe normal (2) y el cargado (6): util, no resolutivo. */
-  dano: 3,
+  cargaMaxima: 3,
+  /** Antes de ganarla no hay nada que cargar. */
+  cargaInicial: 0,
+  /**
+   * Pega casi como el cargado (#178): es el arma del Nivel 2 mientras no hay
+   * bisturi. Un Devoto cae de dos, una Vestal de uno.
+   */
+  dano: 5,
   /** Sale a presion: casi el doble que el sello del Vestal. */
   velocidad: 340,
   /** Se apaga solo si no toca nada, para no dejar metal volando (ms). */

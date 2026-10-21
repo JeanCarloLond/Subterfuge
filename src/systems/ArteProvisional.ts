@@ -3061,6 +3061,62 @@ const HUD_INJERTO_VACIO: Figura = {
     '.nnn.',
   ],
 };
+// Las armas en el HUD (#178). El bisturi, dorado como en la mano...
+const HUD_BISTURI: Figura = {
+  paleta: {
+    n: 0x14100f,
+    Y: 0xf4ed93,
+    K: 0xfcd038,
+    k: 0xe3a940,
+    j: 0xcb6e2f,
+  },
+  // prettier-ignore
+  filas: [
+    '.......nnnnn.',
+    'nnnnnnnjkkkkn',
+    'nYYYKKKkjKKkn',
+    'nnjjjjjjkkkjn',
+    '.......nnnnn.',
+  ],
+};
+// ...y apagado cuando se quedo en la Sala: la misma forma, sin oro.
+const HUD_BISTURI_VACIO: Figura = {
+  paleta: {
+    n: 0x4a5450,
+    Y: 0x2b2e2c,
+    K: 0x2b2e2c,
+    k: 0x232524,
+    j: 0x1e2020,
+  },
+  // prettier-ignore
+  filas: [
+    '.......nnnnn.',
+    'nnnnnnnjkkkkn',
+    'nYYYKKKkjKKkn',
+    'nnjjjjjjkkkjn',
+    '.......nnnnn.',
+  ],
+};
+// La Injertadora: el cuerpo de metal, la mirilla de carne y la empuñadura.
+const HUD_INJERTADORA: Figura = {
+  paleta: {
+    n: 0x14100f,
+    M: 0x9ca193,
+    S: 0x4a5450,
+    c: 0x8c2f2f,
+    R: 0xd4564a,
+  },
+  // prettier-ignore
+  filas: [
+    '..nnnnnnnnn.',
+    '.nMMMMMMMMMn',
+    'nMSccRcSSSMn',
+    '.nMMMMMMMMn.',
+    '..nMSn......',
+    '..nMSn......',
+    '..nnnn......',
+  ],
+};
 // -- Poses de ataque (issue #146) --------------------------------------------
 //
 // Antes el ataque de un enemigo era un cambio de color y nada mas: se ponia
@@ -3399,6 +3455,9 @@ const FIGURAS: Record<string, Figura> = {
   'hud-frasco-vacio': HUD_FRASCO_VACIO,
   'hud-injerto': HUD_INJERTO,
   'hud-injerto-vacio': HUD_INJERTO_VACIO,
+  'hud-bisturi': HUD_BISTURI,
+  'hud-bisturi-vacio': HUD_BISTURI_VACIO,
+  'hud-injertadora': HUD_INJERTADORA,
   'cirujano-guardia': CIRUJANO_GUARDIA,
   'cirujano-bebe': CIRUJANO_BEBE,
   'parry-destello': PARRY_DESTELLO,

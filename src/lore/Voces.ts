@@ -77,7 +77,7 @@ export const VOCES: Readonly<Record<ClaveVoz, Voz>> = {
       'No se acerque tanto. Ya sé cómo me ve.',
       'Llegué a la mitad. Eso no es fracasar: es llegar a la',
       'mitad, que es más de lo que llega casi nadie.',
-      'Tenga. Me sobra metal y a usted le hará falta abajo.',
+      'Las Manos de antes llevaban Injertadora. Si llega, tómela.',
     ],
   },
 

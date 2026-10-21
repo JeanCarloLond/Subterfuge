@@ -582,20 +582,24 @@ impiden, y están en `INJERTADORA` y `OFRENDA` (`src/config/Sacramento.ts`):
    cuerpo a cuerpo, que es justo lo contrario de lo que se quiere.
 3. **El enfriamiento no deja vaciar la carga de golpe.**
 
-Daño 3: entre el golpe normal (2) y el cargado (6). Útil, no resolutivo. Es
-para lo que el bisturí no alcanza — un Vestal en una repisa —, no para
-sustituirlo.
+**Se gana al vencer al primer jefe (#178).** Las Manos anteriores la llevaban;
+al caer, pasa a las del Cirujano, **llena**: tres disparos. Hasta entonces no
+existe (ni en el HUD, ni en la ayuda, ni en la botonera) y los fieles no
+sueltan metal. Así es el arma del Nivel 2, que empieza sin bisturí.
+
+Daño 5: casi como el cargado (6). Un Devoto cae de dos, una Vestal de uno. Con
+tres disparos y la munición escasa, sigue sin sustituir al bisturí, pero ya es
+un arma que se usa.
 
 La carga vive en `Progreso`, no en el Cirujano: cada zona construye un Cirujano
 nuevo, y si viviera en la entidad, bajar un piso vaciaría el arma y la munición
 que costó pelear se perdería en la puerta.
 
-Se empieza con **un injerto cargado**, y no con cero. Cero era la idea original
-—que el jugador descubriera de dónde sale la munición en el momento en que le
-importa—, pero escondía el arma entera: pulsabas `F` y no pasaba nada, el
-indicador del HUD no aparecía, y la Injertadora solo existía si tenías la
-suerte de que un Devoto soltara metal. Con uno cargado se ve y se prueba en el
-primer minuto, y a partir de ahí ya es escasa de verdad.
+Antes se tenía desde el Atrio con un injerto cargado, y pasaba desapercibida.
+Ganarla llena tras el jefe resuelve lo mismo que resolvía aquel injerto —que se
+vea y se pruebe en cuanto se tiene— y le da un momento propio. El HUD enseña las
+dos armas con su icono (#178): el bisturí, dorado o apagado si se quedó en la
+Sala, y la Injertadora con sus disparos como cápsulas.
 
 Pulsar `F` sin munición **suena y lo dice en el HUD**. Un botón que no hace
 nada visible se lee como un botón roto, no como un arma vacía.

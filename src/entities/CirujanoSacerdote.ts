@@ -420,7 +420,11 @@ export class CirujanoSacerdote {
       return;
     }
 
-    if (this.controles.injertadoraPresionada && ahora >= this.finEnfriamientoInjertadora) {
+    if (
+      this.controles.injertadoraPresionada &&
+      progreso.tieneInjertadora &&
+      ahora >= this.finEnfriamientoInjertadora
+    ) {
       this.dispararInjertadora(ahora);
       return;
     }

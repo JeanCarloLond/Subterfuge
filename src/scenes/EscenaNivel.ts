@@ -1590,6 +1590,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     jefe.eventos.on('muerte', () => {
       this.jefeDerrotado = true;
       recordar('hitos', 'manos-anteriores');
+      // Lo que llevaban las Manos anteriores pasa a las suyas (#178).
+      this.time.delayedCall(900, () => this.ganarInjertadora());
       this.game.events.emit(EVENTOS_HUD.jefe, -1, 1);
       this.abrirUmbral();
       this.subirReja();
@@ -1851,7 +1853,31 @@ export abstract class EscenaNivel extends Phaser.Scene {
   /** Un enemigo cae y deja algo, segun su clase y la suerte. */
   private soltarOfrenda(x: number, y: number, clase: ClaseEnemigo): void {
     const tipo = Ofrenda.sortear(clase);
+    // Sin Injertadora no hay a que cargar el metal (#178).
+    if (tipo === 'injerto' && !progreso.tieneInjertadora) return;
     if (tipo) this.soltarOfrendaDeTipo(x, y, tipo);
+  }
+
+  /**
+   * La Injertadora de las Manos anteriores, llena (#178). Se gana al vencer
+   * al primer jefe, y es el arma del Nivel 2 mientras no hay bisturi.
+   */
+  private ganarInjertadora(): void {
+    if (!progreso.ganarInjertadora()) return;
+    sonido.altar();
+    this.anotar('injertadora');
+    this.game.events.emit(EVENTOS_HUD.injertos, progreso.injertos, progreso.injertosMaximos);
+    this.game.events.emit(EVENTOS_HUD.armas);
+    this.game.events.emit(EVENTOS_HUD.aviso, 'la Injertadora de las Manos anteriores  ·  F lanzar');
+    this.rehacerAyuda();
+  }
+
+  /** La ayuda cambia con lo que se lleva: se rehace el panel tal como estaba. */
+  private rehacerAyuda(): void {
+    const visible = this.panelAyuda?.visible === true;
+    this.panelAyuda?.destroy();
+    this.crearAyudaControles(false);
+    this.panelAyuda?.setVisible(visible);
   }
 
   private soltarOfrendaDeTipo(x: number, y: number, tipo: TipoOfrenda): void {
@@ -2264,7 +2290,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Registro al hablar con ellos: se los conoce por lo que dicen.
     if (fichaPorId(fiel.clave)) this.anotar(fiel.clave);
 
-    if (primeraVez && fiel.clave === 'reformado-viejo') {
+    if (primeraVez && fiel.clave === 'reformado-viejo' && progreso.tieneInjertadora) {
       if (this.cirujano.cargarInjerto(INJERTOS_DEL_REFORMADO)) {
         this.anotar('injerto');
         this.game.events.emit(
@@ -2358,11 +2384,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.impacto.parryLogrado(x, y - 4);
     this.game.events.emit(EVENTOS_HUD.aviso, 'el bisturí vuelve a la mano');
     this.decirNina(FRASES_NINA.bisturi[0], 700);
-    // Ya armado, la ayuda vuelve a nombrar el golpe: se rehace el panel.
-    const visible = this.panelAyuda?.visible === true;
-    this.panelAyuda?.destroy();
-    this.crearAyudaControles(false);
-    this.panelAyuda?.setVisible(visible);
+    // Ya armado, la ayuda vuelve a nombrar el golpe, y el HUD lo enseña.
+    this.game.events.emit(EVENTOS_HUD.armas);
+    this.rehacerAyuda();
   }
 
   /**
@@ -2725,7 +2749,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // En un movil, un panel que dice "SALTAR ESPACIO" es peor que no tener
     // ayuda: nombra teclas que ahi no existen.
     const conDedos = tactil.esAparatoTactil;
-    const ayuda = ayudaDeControles(conDedos, progreso.tieneBisturi);
+    const ayuda = ayudaDeControles(conDedos, progreso.tieneBisturi, progreso.tieneInjertadora);
     const movimiento = this.add.text(12, margen, ayuda.movimiento.join('\n'), estilo);
     const combate = this.add.text(236, margen, ayuda.combate.join('\n'), estilo);
 

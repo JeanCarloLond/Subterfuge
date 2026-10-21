@@ -121,6 +121,7 @@ function sinBisturi(lineas: readonly string[]): string[] {
 export function ayudaDeControles(
   conDedos: boolean,
   armado = true,
+  injertadora = true,
 ): {
   movimiento: readonly string[];
   combate: readonly string[];
@@ -143,7 +144,10 @@ export function ayudaDeControles(
           combate: CONTROLES_COMBATE,
           sistema: CONTROLES_SISTEMA,
         };
-  return armado ? ayuda : { ...ayuda, combate: sinBisturi(ayuda.combate) };
+  let combate: readonly string[] = armado ? ayuda.combate : sinBisturi(ayuda.combate);
+  // La Injertadora se gana al vencer al primer jefe (#178): antes no existe.
+  if (!injertadora) combate = combate.filter((linea) => !linea.startsWith('INJERTAR'));
+  return { ...ayuda, combate };
 }
 
 // Si alguien alarga una linea, que falle aqui y no en la pantalla del jugador.

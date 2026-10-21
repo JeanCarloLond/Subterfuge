@@ -132,8 +132,11 @@ export class TactilScene extends Phaser.Scene {
   private avisoGiro!: Phaser.GameObjects.Container;
   private enVertical = false;
   private tapado = false;
-  /** Sin bisturi el boton de golpear no se dibuja ni responde (#160). */
-  private armado = true;
+  /**
+   * Lo que se lleva: sin bisturi no hay boton de golpear (#160), y sin
+   * Injertadora no hay boton de lanzar (#178). Ni se dibujan ni responden.
+   */
+  private armas = '';
 
   constructor() {
     super({ key: 'Tactil' });
@@ -146,7 +149,7 @@ export class TactilScene extends Phaser.Scene {
     this.grafico = this.add.graphics().setDepth(10);
     this.puestos = [];
     this.tapado = false;
-    this.armado = progreso.tieneBisturi;
+    this.armas = this.armasDeAhora();
 
     for (const boton of BOTONES) {
       const glifo = this.add
@@ -289,8 +292,8 @@ export class TactilScene extends Phaser.Scene {
    */
   update(): void {
     this.comprobarTapado();
-    if (this.armado !== progreso.tieneBisturi) {
-      this.armado = progreso.tieneBisturi;
+    if (this.armas !== this.armasDeAhora()) {
+      this.armas = this.armasDeAhora();
       this.mostrarGlifos();
       this.dibujar();
     }
@@ -362,8 +365,15 @@ export class TactilScene extends Phaser.Scene {
     this.dibujar();
   }
 
+  private armasDeAhora(): string {
+    return `${progreso.tieneBisturi}:${progreso.tieneInjertadora}`;
+  }
+
   private oculto(puesto: Puesto): boolean {
-    return puesto.boton.accion === 'atacar' && !this.armado;
+    const { accion } = puesto.boton;
+    if (accion === 'atacar') return !progreso.tieneBisturi;
+    if (accion === 'injertadora') return !progreso.tieneInjertadora;
+    return false;
   }
 
   private mostrarGlifos(): void {

@@ -131,7 +131,8 @@ Húmedo**, está en construcción.
 - **Movimiento completo**: salto, doble salto, dash con invulnerabilidad y
   agarre de bordes.
 - **Combate**: ataque, ataque cargado (gasta Fervor), parry que aturde y la
-  Injertadora, que lanza las prótesis que sueltan los fieles.
+  Injertadora, que se gana al vencer al jefe y lanza las prótesis que sueltan
+  los fieles.
 - **Sistemas**: Fervor, Poción de Carne, Altares de guardado y el Códice de la
   Carne, un libro que se abre con `L` (Códice, Registro, mapa, capas, jerarquía,
   linaje y cronología).

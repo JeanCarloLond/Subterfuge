@@ -27,6 +27,8 @@ export interface ProgresoGuardado {
   /** Vida y cargas de la Pocion (#174). Sin el campo, todo lleno, como antes. */
   vida?: number | null;
   pociones?: number | null;
+  /** Sin el campo, el guardado es de cuando la Injertadora se tenia desde el Atrio. */
+  injertadora?: boolean;
 }
 
 /**
@@ -89,6 +91,11 @@ class Progreso {
    */
   private bisturi = true;
   /**
+   * Si ya se tiene la Injertadora (#178). Se gana al vencer a las Manos
+   * anteriores, en la Sala 7: hasta entonces no hay arma ni municion.
+   */
+  private injertadora = false;
+  /**
    * La vida y las cargas de la Pocion del Cirujano (#174). Antes cada zona lo
    * construia entero y bajar curaba gratis; ahora sale con lo que traia. null
    * es "lleno": una partida nueva, o un guardado de antes de esto.
@@ -108,6 +115,21 @@ class Progreso {
   apuntarCirujano(vida: number, pociones: number): void {
     this.vida = vida;
     this.pociones = pociones;
+  }
+
+  get tieneInjertadora(): boolean {
+    return this.injertadora;
+  }
+
+  /**
+   * Se gana la Injertadora, y llena: con sus tres disparos.
+   * @returns true si es la primera vez.
+   */
+  ganarInjertadora(): boolean {
+    if (this.injertadora) return false;
+    this.injertadora = true;
+    this.cargaInjertadora = INJERTADORA.cargaMaxima;
+    return true;
   }
 
   get tieneBisturi(): boolean {
@@ -303,16 +325,16 @@ class Progreso {
     return INJERTADORA.cargaMaxima;
   }
 
-  /** @returns true si el injerto entro; false si el arma ya estaba llena. */
+  /** @returns true si el injerto entro; false si el arma ya estaba llena o no se tiene. */
   cargarInjerto(cantidad: number): boolean {
-    if (this.cargaInjertadora >= INJERTADORA.cargaMaxima) return false;
+    if (!this.injertadora || this.cargaInjertadora >= INJERTADORA.cargaMaxima) return false;
     this.cargaInjertadora = Math.min(INJERTADORA.cargaMaxima, this.cargaInjertadora + cantidad);
     return true;
   }
 
   /** @returns true si habia con que disparar. */
   gastarInjerto(): boolean {
-    if (this.cargaInjertadora <= 0) return false;
+    if (!this.injertadora || this.cargaInjertadora <= 0) return false;
     this.cargaInjertadora -= 1;
     return true;
   }
@@ -390,6 +412,7 @@ class Progreso {
       bisturi: this.bisturi,
       vida: this.vida,
       pociones: this.pociones,
+      injertadora: this.injertadora,
     };
   }
 
@@ -411,6 +434,7 @@ class Progreso {
     this.bisturi = datos.bisturi ?? true;
     this.vida = datos.vida ?? null;
     this.pociones = datos.pociones ?? null;
+    this.injertadora = datos.injertadora ?? true;
   }
 
   /** Volver al Atrio desde el cierre empieza una partida limpia. */
@@ -427,6 +451,7 @@ class Progreso {
     this.bisturi = true;
     this.vida = null;
     this.pociones = null;
+    this.injertadora = false;
   }
 }
 
