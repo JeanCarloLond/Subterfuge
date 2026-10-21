@@ -18,6 +18,7 @@ import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { ConteoInstrumental } from '../objetos/ConteoInstrumental';
 import { Fiel } from '../entities/Fiel';
+import { Nina } from '../entities/Nina';
 import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
 import { Ofrenda, type TipoOfrenda } from '../objetos/Ofrenda';
@@ -239,6 +240,13 @@ export interface DefinicionNivel {
    * lleva.
    */
   conteo?: { x: number; y: number; piezas: number };
+  /** La niña huye con el Cirujano (#157): las zonas del Nivel 2. */
+  nina?: boolean;
+  /**
+   * Tramos donde ella va a su espalda (#157): trepas largas y persecuciones.
+   * Rectangulos [x0, y0, x1, y1]; basta con que el Cirujano este dentro.
+   */
+  aCuestas?: ReadonlyArray<readonly [x0: number, y0: number, x1: number, y1: number]>;
   /** Pista de fondo de la zona. Ver Musica.ts. */
   musica?: Pista;
   /**
@@ -372,6 +380,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     aviso: Phaser.GameObjects.Text;
   }[] = [];
   private conteo?: ConteoInstrumental;
+  private nina?: Nina;
   /**
    * Los hostiles: todo lo que el tajo, el injerto y el sello pueden herir. Es
    * el "grupoHostiles" de #90; se queda con su nombre porque Devoto, Vestal y
@@ -430,6 +439,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.poblarNivel();
     this.poblarCriaturas();
     this.continuarEnAltar(datos.altar);
+    // Se pone a su lado en cuanto el pisa suelo: ver Nina.asentada.
+    if (this.definicion.nina) {
+      this.nina = new Nina(this, this.cirujano.sprite.x, this.cirujano.sprite.y);
+    }
 
     this.crearLuces();
     this.crearPolvo();
@@ -494,6 +507,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     this.actualizarParallax();
+    this.actualizarNina();
     this.actualizarAltares();
     this.actualizarConteo();
     this.actualizarFieles();
@@ -545,6 +559,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.salpicaduras = undefined;
     this.placas = [];
     this.conteo = undefined;
+    this.nina = undefined;
     this.grupoEnemigos = undefined;
     this.grupoNeutrales = undefined;
     this.grupoPeligros = undefined;
@@ -2223,6 +2238,25 @@ export abstract class EscenaNivel extends Phaser.Scene {
         }
       },
       (x, y) => this.recuperarBisturi(x, y),
+    );
+  }
+
+  private actualizarNina(): void {
+    if (!this.nina) return;
+    const { sprite } = this.cirujano;
+    const cuerpo = sprite.body as Phaser.Physics.Arcade.Body;
+    const aCuestas = (this.definicion.aCuestas ?? []).some(
+      ([x0, y0, x1, y1]) => sprite.x >= x0 && sprite.x <= x1 && sprite.y >= y0 && sprite.y <= y1,
+    );
+    this.nina.actualizar(
+      {
+        x: sprite.x,
+        y: sprite.y,
+        suelo: cuerpo.blocked.down || cuerpo.touching.down,
+        haciaDerecha: !sprite.flipX,
+        muerto: this.cirujano.estaMuerto,
+      },
+      aCuestas,
     );
   }
 

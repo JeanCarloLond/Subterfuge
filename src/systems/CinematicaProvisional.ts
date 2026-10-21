@@ -120,6 +120,17 @@ const NINA_PIE: Dibujo = {
       20: '....ss....',
       21: '....SSS...',
     },
+    // A la espalda del Cirujano (#157): las piernas, dobladas hacia delante
+    // alrededor de el. Se usa en el juego, no en la cinematica.
+    'a-cuestas': {
+      15: '..TTttttss',
+      16: '..TTTTTTss',
+      17: '........SS',
+      18: '..........',
+      19: '..........',
+      20: '..........',
+      21: '..........',
+    },
   },
 };
 

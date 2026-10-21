@@ -27,6 +27,9 @@ export class DuctosScene extends EscenaNivel {
       colorFondo: '#0d090b',
       musica: 'vientre-humedo',
       inicio: { x: 40, y: 900 },
+      nina: true,
+      // La trepa entera, del primer escalon a la Puerta: ella va a su espalda.
+      aCuestas: [[0, 0, 640, 880]],
 
       // Rosa vena: la piedra ya no se distingue del tejido que la cubre.
       tinte: 0xc89098,

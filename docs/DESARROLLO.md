@@ -129,6 +129,15 @@ bisturí de verdad entre Remedos, que tiemblan. Coger un Remedo muerde (nunca
 mata) y la bandeja se vuelve a contar con una pieza menos; la lógica, sin
 Phaser, está en `systems/Conteo.ts`, con sus tests.
 
+**La niña (#157).** Huye con el Cirujano en las zonas con `nina: true`
+(`entities/Nina.ts`). No tiene vida, ni cuerpo de física, ni entra en ningún
+grupo: nada puede tocarla, y no puede fracasar. No decide por dónde ir: repite
+el camino del Cirujano a 20 px de camino por detrás (`systems/Rastro.ts`), así
+que salta donde él saltó y nunca se queda atrás. Si él aparece lejos de golpe
+(vuelve al Altar, se continúa una partida), el camino empieza de nuevo a su
+lado en cuanto pisa suelo. En los rectángulos `aCuestas` de la definición va a
+su espalda: en los Ductos, toda la trepa.
+
 **Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
 Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
 guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:
