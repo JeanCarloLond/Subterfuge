@@ -59,6 +59,20 @@ export const REGISTRO: readonly FichaRegistro[] = [
     ],
   },
   {
+    id: 'devoto-vendado',
+    familia: 'fieles',
+    nombre: 'Devoto vendado',
+    textura: 'devoto-vendado-placeholder',
+    hallazgo: 'visto en el Desagüe',
+    nivel: 2,
+    descripcion: [
+      'Devoto que baja a servir a los Niveles Reformados.',
+      'Se le venda antes de bajar: lo de abajo no se mira.',
+      'Oye por los dos. Va adonde suena algo; el que',
+      'anda despacio pasa a su lado sin ser nadie.',
+    ],
+  },
+  {
     id: 'vestal',
     familia: 'fieles',
     nombre: 'Vestal',

@@ -138,6 +138,14 @@ que salta donde él saltó y nunca se queda atrás. Si él aparece lejos de golp
 lado en cuanto pisa suelo. En los rectángulos `aCuestas` de la definición va a
 su espalda: en los Ductos, toda la trepa.
 
+**El Devoto vendado (#165).** `vendado: true` en la ronda de un Devoto. No ve:
+solo nota al Cirujano si lo tiene pegado. Lo que suena sí le llega
+(`hacerRuido` en la escena, radios en `RUIDO`): caer desde alto, el dash, los
+golpes y los parry (a través de `Impacto.alRuido`) y la Injertadora. Andar no
+suena. Al oír algo se para, ladea la cabeza hacia el sonido (el aviso que se
+aprende) y va a ese sitio; si no encuentra nada, vuelve a su ronda. Quién oye
+qué lo decide `systems/Ruido.ts`: un suelo de por medio se traga el ruido.
+
 **Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
 Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
 guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:

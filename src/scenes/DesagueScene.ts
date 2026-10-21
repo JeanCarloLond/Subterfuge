@@ -66,10 +66,13 @@ export class DesagueScene extends EscenaNivel {
         [1264, 48, 432],
       ],
 
+      // Los que bajan a servir llevan venda (#165): sin bisturí no hay con
+      // qué pelear, así que se pasa sin hacer ruido. Caer desde alto, el dash
+      // y los golpes los traen.
       devotos: [
-        { x: 460, y: 288, izquierda: 400, derecha: 530 },
-        { x: 300, y: 432, izquierda: 60, derecha: 540 },
-        { x: 1040, y: 352, izquierda: 950, derecha: 1180 },
+        { x: 460, y: 288, izquierda: 400, derecha: 530, vendado: true },
+        { x: 300, y: 432, izquierda: 60, derecha: 540, vendado: true },
+        { x: 1040, y: 352, izquierda: 950, derecha: 1180, vendado: true },
       ],
 
       altares: [

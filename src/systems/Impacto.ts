@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { destellar, sacudir } from './Ajustes';
-import { IMPACTO } from '../config/Sacramento';
+import { IMPACTO, RUIDO } from '../config/Sacramento';
 import { esfuerzo } from './Esfuerzo';
 import { progreso } from './Progreso';
 import { sonido, type ClaseEnemigo } from './Sonido';
@@ -15,6 +15,11 @@ import { sonido, type ClaseEnemigo } from './Sonido';
  */
 export class Impacto {
   private readonly escena: Phaser.Scene;
+  /**
+   * Quien escucha los golpes (#165). La escena lo conecta a los Devotos
+   * vendados: todo lo que aqui suena a metal se oye en el nivel.
+   */
+  alRuido?: (x: number, y: number, radio: number) => void;
   private finCongelacion = 0;
 
   constructor(escena: Phaser.Scene) {
@@ -50,6 +55,7 @@ export class Impacto {
   ): void {
     esfuerzo.enemigo(clase, 'herida');
     sonido.golpe(cargado, clase);
+    this.alRuido?.(x, y, RUIDO.golpe);
     this.congelar(cargado ? IMPACTO.hitstopCargadoMs : IMPACTO.hitstopGolpeMs);
     sacudir(
       this.escena.cameras.main,
@@ -67,6 +73,7 @@ export class Impacto {
   /** Parry logrado: el momento mas legible de todo el combate. */
   parryLogrado(x: number, y: number): void {
     sonido.parry();
+    this.alRuido?.(x, y, RUIDO.golpe);
     this.congelar(IMPACTO.hitstopParryMs);
 
     const camara = this.escena.cameras.main;

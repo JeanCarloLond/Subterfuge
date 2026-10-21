@@ -31,6 +31,7 @@ import {
   OFRENDA,
   REFORMADO,
   RESOLUCION,
+  RUIDO,
   VITALIDAD,
 } from '../config/Sacramento';
 import { fijo } from '../systems/Nitidez';
@@ -38,6 +39,7 @@ import { Impacto } from '../systems/Impacto';
 import { fichaPorId } from '../lore/Registro';
 import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { guardado } from '../systems/Guardado';
+import { seOye } from '../systems/Ruido';
 import { recordar } from '../systems/Memoria';
 import { musica, type Pista } from '../systems/Musica';
 import { EVENTO_MAREA, Marea, type DefinicionMarea, type EstadoMarea } from '../systems/Marea';
@@ -63,6 +65,8 @@ export interface RondaDevoto {
    * (#99). Es la misma Vestal; lo que cambia es lo que lleva puesto.
    */
   cazadora?: boolean;
+  /** Solo Devotos: el vendado de los Niveles Reformados, que oye y no ve (#165). */
+  vendado?: boolean;
 }
 
 /**
@@ -435,6 +439,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.sembrarDesgaste();
     this.controles = new Controles(this);
     this.impacto = new Impacto(this);
+    this.impacto.alRuido = (x, y, radio) => this.hacerRuido(x, y, radio);
 
     this.crearCirujano(inicio.x, inicio.y);
     this.poblarNivel();
@@ -1128,11 +1133,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
     });
     this.cirujano.eventos.on('disparo', (x: number, y: number, direccion: number) => {
       this.lanzarInjerto(x, y, direccion);
+      this.hacerRuido(x, y, RUIDO.injerto);
     });
     this.cirujano.eventos.on('sin-injertos', () => {
       this.game.events.emit(EVENTOS_HUD.aviso, 'sin injertos  ·  los sueltan los fieles');
     });
     this.cirujano.eventos.on('bebe', (x: number, y: number) => this.impacto.pocion(x, y));
+    this.cirujano.eventos.on('ruido', (x: number, y: number, radio: number) =>
+      this.hacerRuido(x, y, radio),
+    );
     this.cirujano.eventos.on('caida', (dano: number) => {
       this.impacto.danoPorCaida(dano);
       this.game.events.emit(EVENTOS_HUD.aviso, `caída: -${dano}`);
@@ -1319,10 +1328,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const grupo = this.obtenerGrupoEnemigos();
 
     for (const ronda of this.definicion.devotos) {
-      const devoto = new Devoto(this, ronda.x, ronda.y, {
-        izquierda: ronda.izquierda,
-        derecha: ronda.derecha,
-      });
+      const devoto = new Devoto(
+        this,
+        ronda.x,
+        ronda.y,
+        { izquierda: ronda.izquierda, derecha: ronda.derecha },
+        ronda.vendado,
+      );
 
       this.physics.add.collider(devoto.sprite, this.suelos);
       grupo.add(devoto.sprite);
@@ -2008,7 +2020,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     for (const devoto of this.devotos) {
       if (Phaser.Math.Distance.Between(x, y, devoto.sprite.x, devoto.sprite.y) < RADIO_VISTA) {
-        this.anotar('devoto');
+        this.anotar(devoto.vendado ? 'devoto-vendado' : 'devoto');
         break;
       }
     }
@@ -2241,6 +2253,18 @@ export abstract class EscenaNivel extends Phaser.Scene {
       },
       (x, y) => this.recuperarBisturi(x, y),
     );
+  }
+
+  /**
+   * Algo ha sonado (#165): lo oyen los Devotos vendados que esten a tiro.
+   * Andar no pasa por aqui; caer desde alto, el dash, los golpes, el parry y
+   * la Injertadora si.
+   */
+  private hacerRuido(x: number, y: number, radio: number): void {
+    for (const devoto of this.devotos) {
+      if (!devoto.vendado || devoto.estaMuerto) continue;
+      if (seOye({ x, y }, devoto.sprite, radio)) devoto.oir(x);
+    }
   }
 
   private actualizarNina(): void {

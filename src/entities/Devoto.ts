@@ -1,6 +1,6 @@
 import { esfuerzo } from '../systems/Esfuerzo';
 import Phaser from 'phaser';
-import { COMBATE, DEVOTO, MOVIMIENTO } from '../config/Sacramento';
+import { COMBATE, DEVOTO, MOVIMIENTO, VENDADO } from '../config/Sacramento';
 import type { Enemigo } from './Enemigo';
 import { Vitalidad } from '../systems/Vitalidad';
 import { polvo, tajoEnemigo } from '../systems/GolpeEnemigo';
@@ -10,7 +10,7 @@ import { BarraVida } from '../ui/BarraVida';
 type PoseDevoto = 'alza' | 'golpe';
 
 export type EstadoDevoto =
-  'patrulla' | 'persecucion' | 'anticipando' | 'atacando' | 'aturdido' | 'muerto';
+  'patrulla' | 'escuchando' | 'persecucion' | 'anticipando' | 'atacando' | 'aturdido' | 'muerto';
 
 /** Limites de la ronda de patrulla, en coordenadas de mundo. */
 export interface RangoPatrulla {
@@ -44,16 +44,30 @@ export class Devoto implements Enemigo {
   private yaGolpeoEnSwing = false;
   private tweenTelegrafia?: Phaser.Tweens.Tween;
 
-  /** 'devoto' o 'devoto-b': de ahi salen las texturas de sus poses. */
+  /** 'devoto', 'devoto-b' o 'devoto-vendado': de ahi salen sus poses. */
   private readonly figura: string;
+  /**
+   * El vendado (#165) no ve: oye. Persigue el sitio donde sono algo, no al
+   * Cirujano; solo si se le pega lo nota y golpea.
+   */
+  readonly vendado: boolean;
+  /** Donde sono lo ultimo que oyo. */
+  private destinoRuido = 0;
   private pose: PoseDevoto | null = null;
 
   private readonly escena: Phaser.Scene;
   private readonly patrulla: RangoPatrulla;
 
-  constructor(escena: Phaser.Scene, x: number, y: number, patrulla: RangoPatrulla) {
+  constructor(
+    escena: Phaser.Scene,
+    x: number,
+    y: number,
+    patrulla: RangoPatrulla,
+    vendado = false,
+  ) {
     this.escena = escena;
     this.patrulla = patrulla;
+    this.vendado = vendado;
     this.vitalidad = new Vitalidad(DEVOTO.vida);
 
     // Cual de las dos variantes le toca, por su sitio en el nivel y no al
@@ -68,7 +82,7 @@ export class Devoto implements Enemigo {
     h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d);
     h = Math.imul(h ^ (h >>> 12), 0x297a2d39);
     const variante = ((h ^ (h >>> 15)) >>> 0) % 2;
-    this.figura = variante === 0 ? 'devoto' : 'devoto-b';
+    this.figura = vendado ? 'devoto-vendado' : variante === 0 ? 'devoto' : 'devoto-b';
     this.sprite = escena.physics.add.sprite(x, y, `${this.figura}-placeholder`);
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setData('devoto', this);
@@ -128,8 +142,12 @@ export class Devoto implements Enemigo {
       case 'atacando':
         this.actualizarAtaque(ahora);
         break;
+      case 'escuchando':
+        this.actualizarEscucha(ahora);
+        break;
       case 'persecucion':
-        this.actualizarPersecucion(ahora, objetivoX, objetivoY);
+        if (this.vendado) this.actualizarBusqueda(ahora, objetivoX, objetivoY);
+        else this.actualizarPersecucion(ahora, objetivoX, objetivoY);
         break;
       default:
         this.actualizarPatrulla(ahora, objetivoX, objetivoY);
@@ -149,12 +167,71 @@ export class Devoto implements Enemigo {
       objetivoX,
       objetivoY,
     );
-    return distancia <= DEVOTO.rangoDeteccion;
+    // Vendado, solo se entera de lo que tiene pegado.
+    const alcance = this.vendado ? DEVOTO.rangoAtaque : DEVOTO.rangoDeteccion;
+    return distancia <= alcance;
+  }
+
+  /**
+   * Algo ha sonado en x. Solo le importa al vendado: se para, ladea la cabeza
+   * hacia el sonido y despues va. Ese gesto es lo que se aprende.
+   */
+  oir(x: number): void {
+    if (!this.vendado) return;
+    // A su espalda o de frente, igual: no ve hacia donde mira. Si le llega o
+    // no, lo decide la escena (systems/Ruido.ts).
+    if (this.estado !== 'patrulla' && this.estado !== 'persecucion') return;
+
+    this.destinoRuido = x;
+    this.mirandoDerecha = x > this.sprite.x;
+    this.ultimoAvistamiento = this.escena.time.now;
+    if (this.estado === 'persecucion') return;
+
+    this.estado = 'escuchando';
+    this.finAccion = this.escena.time.now + VENDADO.escucharMs;
+    this.cuerpo.setVelocityX(0);
+    const lado = this.mirandoDerecha ? 1 : -1;
+    this.escena.tweens.add({
+      targets: this.sprite,
+      angle: lado * 10,
+      duration: VENDADO.escucharMs * 0.4,
+      yoyo: true,
+      hold: VENDADO.escucharMs * 0.2,
+      ease: 'Sine.easeOut',
+      onComplete: () => this.sprite.setAngle(0),
+    });
+  }
+
+  private actualizarEscucha(ahora: number): void {
+    this.cuerpo.setVelocityX(0);
+    if (ahora >= this.finAccion) this.estado = 'persecucion';
+  }
+
+  /** El vendado va a donde sono. Si por el camino se topa con el, golpea. */
+  private actualizarBusqueda(ahora: number, objetivoX: number, objetivoY: number): void {
+    if (this.detecta(objetivoX, objetivoY) && ahora >= this.finEnfriamientoAtaque) {
+      this.mirandoDerecha = objetivoX > this.sprite.x;
+      this.iniciarAnticipacion(ahora);
+      return;
+    }
+    if (ahora - this.ultimoAvistamiento > VENDADO.memoriaMs) {
+      this.estado = 'patrulla';
+      return;
+    }
+
+    const falta = this.destinoRuido - this.sprite.x;
+    if (Math.abs(falta) <= VENDADO.llegadaPx) {
+      this.cuerpo.setVelocityX(0);
+      return;
+    }
+    this.mirandoDerecha = falta > 0;
+    this.cuerpo.setVelocityX(Math.sign(falta) * VENDADO.velocidadBusqueda);
   }
 
   private actualizarPatrulla(ahora: number, objetivoX: number, objetivoY: number): void {
     if (this.detecta(objetivoX, objetivoY)) {
       this.ultimoAvistamiento = ahora;
+      this.destinoRuido = objetivoX;
       this.estado = 'persecucion';
       return;
     }
@@ -326,7 +403,8 @@ export class Devoto implements Enemigo {
 
     // Recibir un golpe lo pone en alerta aunque no hubiera visto al Cirujano.
     this.ultimoAvistamiento = this.escena.time.now;
-    if (this.estado === 'patrulla') this.estado = 'persecucion';
+    this.destinoRuido = origenX;
+    if (this.estado === 'patrulla' || this.estado === 'escuchando') this.estado = 'persecucion';
 
     this.destellar(0xffffff);
     return true;

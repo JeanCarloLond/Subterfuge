@@ -405,6 +405,30 @@ export const DEVOTO = {
 } as const;
 
 /**
+ * El Devoto vendado (#165): "los Devotos que bajan a servir, una venda sobre
+ * los ojos". No ve: oye. Va hacia el ruido; andar no hace ninguno.
+ */
+export const VENDADO = {
+  /** Lo que tarda en moverse tras oir algo: la cabeza ladeada, el tell (ms). */
+  escucharMs: 420,
+  velocidadBusqueda: 72,
+  /** Lo que sigue buscando donde sono, si no encuentra nada (ms). */
+  memoriaMs: 2600,
+  /** A esta distancia del sitio del ruido, da por llegado (px). */
+  llegadaPx: 8,
+} as const;
+
+/** A cuantos px se oye cada cosa. Andar no suena: no esta aqui. */
+export const RUIDO = {
+  /** Caer desde alto: el mismo golpe seco que suena al aterrizar fuerte. */
+  aterrizaje: 150,
+  dash: 110,
+  /** Un golpe que conecta, un parry, una Zarza que se corta. */
+  golpe: 190,
+  injerto: 150,
+} as const;
+
+/**
  * Vestal: clero de la Diocesis, un escalon por encima del Devoto.
  *
  * No se ensucia las manos: mantiene la distancia y lanza sellos del diezmo. Es

@@ -11,6 +11,7 @@ import {
   MOVIMIENTO,
   POCION,
   RELIQUIA,
+  RUIDO,
   VITALIDAD,
   ZONA_DANO,
 } from '../config/Sacramento';
@@ -302,7 +303,10 @@ export class CirujanoSacerdote {
 
       // Aterrizaje: solo suena al tocar suelo tras una caida de verdad.
       if (!this.enSueloAntes && this.velocidadCaidaPrevia > 120) {
-        sonido.aterrizaje(this.velocidadCaidaPrevia > 450);
+        const fuerte = this.velocidadCaidaPrevia > 450;
+        sonido.aterrizaje(fuerte);
+        // Lo que suena fuerte, se oye (#165): caer desde alto, no andar.
+        if (fuerte) this.eventos.emit('ruido', this.sprite.x, this.sprite.y, RUIDO.aterrizaje);
         this.resolverDanoPorCaida(ahora);
       }
       this.inicioCaidaY = this.sprite.y;
@@ -1010,6 +1014,7 @@ export class CirujanoSacerdote {
       this.controles.ejeX !== 0 ? Math.sign(this.controles.ejeX) : this.mirandoDerecha ? 1 : -1;
 
     sonido.dash();
+    this.eventos.emit('ruido', this.sprite.x, this.sprite.y, RUIDO.dash);
     this.estado = 'dash';
     this.finDash = ahora + DASH.duracionMs;
     this.finInvulnerabilidad = ahora + DASH.invulnerabilidadMs;

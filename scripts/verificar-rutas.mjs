@@ -556,7 +556,10 @@ function fichasVisiblesEn(archivo) {
   const src = archivo.replace(/apariciones: \[[^\]]*\]/g, '');
   const vistas = new Set([...src.matchAll(/'([a-z-]+)'/g)].map((m) => m[1]));
   if (/\bflor\b/.test(src)) vistas.add('flor-de-hueso');
-  if (/devotos: \[\s*\{/.test(src)) vistas.add('devoto');
+  // Cada Devoto se cataloga como lo que es: con venda o sin ella (#165).
+  for (const m of leerTuplas(src, 'devotos', /\{([^{}]*)\}/g)) {
+    vistas.add(/vendado:\s*true/.test(m[1]) ? 'devoto-vendado' : 'devoto');
+  }
   if (/vestales: \[\s*\{/.test(src)) vistas.add('vestal').add('sello');
   if (/\bjefe: \{/.test(src)) vistas.add('reformado');
   if (/altares: \[\s*\{/.test(src)) vistas.add('altar');

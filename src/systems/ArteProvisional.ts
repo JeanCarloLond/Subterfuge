@@ -3368,6 +3368,27 @@ const BISTURI: Figura = {
   ],
 };
 
+// El Devoto vendado (#165): los que bajan a servir llevan una venda negra
+// sobre los ojos, anudada atras. Las dos colas del nudo son lo que se ve de
+// lejos.
+// prettier-ignore
+const DEVOTO_VENDADO = pose(DEVOTO, {
+  3: '...nndnnnnnnMMd.......',
+  4: '....ndvvvvvvMSd.......',
+});
+
+// prettier-ignore
+const DEVOTO_VENDADO_ALZA = pose(DEVOTO_ALZA, {
+  3: '...nndnnnnnnMMdMttttMd',
+  4: '....ndvvvvvvMSdMMttMd.',
+});
+
+// prettier-ignore
+const DEVOTO_VENDADO_GOLPE = pose(DEVOTO_GOLPE, {
+  3: '...nndnnnnnnMMd.......',
+  4: '....ndvvvvvvMSd.......',
+});
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -3459,6 +3480,9 @@ const FIGURAS: Record<string, Figura> = {
   'devoto-golpe': DEVOTO_GOLPE,
   'devoto-b-alza': DEVOTO_B_ALZA,
   'devoto-b-golpe': DEVOTO_B_GOLPE,
+  'devoto-vendado': DEVOTO_VENDADO,
+  'devoto-vendado-alza': DEVOTO_VENDADO_ALZA,
+  'devoto-vendado-golpe': DEVOTO_VENDADO_GOLPE,
   'vestal-alza': VESTAL_ALZA,
   'vestal-lanza': VESTAL_LANZA,
   'vestal-cazadora-alza': VESTAL_CAZADORA_ALZA,
