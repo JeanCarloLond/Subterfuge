@@ -37,6 +37,11 @@ export class DesagueScene extends EscenaNivel {
       lluvia: true,
       polvo: 0xa08060,
 
+      // El canal del fondo se inunda (#163): la raya de sedimento de la pared
+      // dice hasta donde. No llega a ningún escalón, y el Relicario del rincón
+      // hay que cogerlo entre dos crecidas.
+      mareas: [{ suelo: 432, alturaMaxima: 56, x0: 16, x1: 1264 }],
+
       // Cada escalón baja 64 px y solapa 32 con el siguiente: se vuelve a
       // subir con el salto simple. El canal del fondo esta a 80 px del escalón
       // mas bajo, tambien al alcance.

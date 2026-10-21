@@ -491,6 +491,14 @@ la caída al vacío. Nunca mata de golpe. Se para sola con la pausa y el Códice
 la entrada ni el umbral de salida, y siempre con una repisa a salvo por encima.
 La **Vena** late más rápido mientras dura: la ventana para cruzarla se acorta.
 
+**Por tramos (#163).** `mareas` es una lista: cada una inunda su región
+(`x0`..`x1`; sin indicar, todo el ancho) y puede llevar `desfaseMs` para no subir
+a la vez que otra. Solo hiere la que inunda donde está el Cirujano. Cada una
+deja en la pared una **raya de sedimento** a la altura de su cresta: como se
+dibuja con el mismo número con el que sube, no puede mentir. El ciclo, la
+región y la cresta van sin Phaser en `systems/CicloMarea.ts`, con sus tests, y
+`verificar-rutas` comprueba cada marea solo contra los Altares de su región.
+
 **Fieles del Vientre Húmedo (#87).** El Tanteador explica la Alfombra («la de
 verdad tiene fleco; la otra respira») y la Honguera habla del Mondador como de
 un compañero de oficio. Los dos tienen ficha en LOS FIELES, que se abre al

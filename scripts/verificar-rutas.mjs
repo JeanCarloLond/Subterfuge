@@ -402,35 +402,44 @@ function verificarCriaturas(nombre, src) {
 
 /**
  * La Marea del Hambre nunca puede llegar al Altar ni al umbral (#91): seria
- * reaparecer debajo del agua, o no poder salir de la zona mientras sube. El
- * agua cubre todo el ancho del mundo, asi que basta con comparar alturas.
+ * reaparecer debajo del agua, o no poder salir de la zona mientras sube. Cada
+ * marea inunda su region en x (#163; sin region, todo el ancho), asi que un
+ * Altar solo cuenta si esta dentro de ella y por debajo de la cresta.
  */
 function verificarMarea(nombre, src) {
-  const marea = src.match(/mareas:\s*\{([^}]*)\}/);
-  if (!marea) return true;
+  const mareas = leerTuplas(src, 'mareas', /\{([^{}]*)\}/g).map((m) => {
+    const campo = (c, defecto) =>
+      Number(m[1].match(new RegExp(`${c}:\\s*(-?\\d+)`))?.[1] ?? defecto);
+    return {
+      cresta: campo('suelo') - campo('alturaMaxima', 220),
+      x0: campo('x0', -Infinity),
+      x1: campo('x1', Infinity),
+    };
+  });
+  if (mareas.length === 0) return true;
 
-  const suelo = Number(marea[1].match(/suelo:\s*(\d+)/)?.[1]);
-  const altura = Number(marea[1].match(/alturaMaxima:\s*(\d+)/)?.[1] ?? 220);
-  const cresta = suelo - altura;
-
-  const altares = leerTuplas(src, 'altares', /\{\s*x:\s*(-?\d+),\s*y:\s*(-?\d+)\s*\}/g).map(
-    (m) => ({
-      que: `el Altar de x=${m[1]}`,
-      y: Number(m[2]),
-    }),
-  );
+  const puntos = leerTuplas(src, 'altares', /\{\s*x:\s*(-?\d+),\s*y:\s*(-?\d+)\s*\}/g).map((m) => ({
+    que: `el Altar de x=${m[1]}`,
+    x: Number(m[1]),
+    y: Number(m[2]),
+  }));
   const umbral = src.match(/umbral:\s*\{\s*x:\s*(-?\d+),\s*y:\s*(-?\d+)/);
-  if (umbral) altares.push({ que: `el umbral de x=${umbral[1]}`, y: Number(umbral[2]) });
+  if (umbral)
+    puntos.push({ que: `el umbral de x=${umbral[1]}`, x: Number(umbral[1]), y: Number(umbral[2]) });
 
-  const bajoElAgua = altares.filter((a) => a.y > cresta);
-  if (bajoElAgua.length === 0) {
-    console.log(
-      `${nombre}: OK — la Marea (cresta y=${cresta}) no llega a ningun Altar ni al umbral`,
-    );
+  const errores = [];
+  for (const [i, marea] of mareas.entries()) {
+    for (const p of puntos) {
+      if (p.x >= marea.x0 && p.x <= marea.x1 && p.y > marea.cresta)
+        errores.push(`la marea ${i + 1} (cresta y=${marea.cresta}) cubre ${p.que} (y=${p.y})`);
+    }
+  }
+  if (errores.length === 0) {
+    console.log(`${nombre}: OK — ${mareas.length} marea(s), ninguna llega a un Altar ni al umbral`);
     return true;
   }
-  console.log(`${nombre}: FALLO — la Marea sube hasta y=${cresta}`);
-  for (const a of bajoElAgua) console.log(`  cubre ${a.que} (y=${a.y})`);
+  console.log(`${nombre}: FALLO — la Marea cubre lo que no debe`);
+  for (const e of errores) console.log(`  ${e}`);
   return false;
 }
 

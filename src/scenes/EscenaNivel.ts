@@ -203,10 +203,11 @@ export interface DefinicionNivel {
    */
   lluvia?: boolean;
   /**
-   * Mareas del Hambre (#91): el agua de los ductos sube, hiere y baja. Sin
-   * esto, la zona no tiene marea. Ver src/systems/Marea.ts.
+   * Mareas del Hambre (#91): el agua de los ductos sube, hiere y baja. Cada
+   * una inunda su region (#163), con su desfase para no subir todas a la vez.
+   * Sin ninguna, la zona no tiene marea. Ver src/systems/Marea.ts.
    */
-  mareas?: DefinicionMarea;
+  mareas?: readonly DefinicionMarea[];
   umbral?: Umbral;
   /**
    * y por debajo de la cual se considera que el Cirujano cayo al vacio.
@@ -367,7 +368,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private ofrendas: Ofrenda[] = [];
   private fieles: Fiel[] = [];
   private criaturas: Habitante[] = [];
-  private marea?: Marea;
+  private mareas: Marea[] = [];
   private lluvia?: Phaser.GameObjects.Particles.ParticleEmitter;
   /** Los charcos del decorado: dónde están y de qué color salpican (#96). */
   private charcos: Charco[] = [];
@@ -448,7 +449,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.crearPolvo();
     if (this.definicion.lluvia) this.crearLluvia();
     for (const aparicion of this.definicion.apariciones ?? []) this.crearAparicion(aparicion);
-    if (this.definicion.mareas) this.crearMarea(this.definicion.mareas);
+    if (this.definicion.mareas?.length) this.crearMareas(this.definicion.mareas);
     this.crearVineta();
 
     this.cameras.main.startFollow(this.cirujano.sprite, true, 0.12, 0.12);
@@ -552,7 +553,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.ofrendas = [];
     this.fieles = [];
     this.criaturas = [];
-    this.marea = undefined;
+    this.mareas = [];
     this.lluvia = undefined;
     this.charcos = [];
     this.charcoPisado = undefined;
@@ -734,9 +735,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * La Marea del Hambre. Arrecia la lluvia mientras avisa y sube: es la senal
    * que se ve, ademas del Latido que se oye y del aviso del HUD.
    */
-  private crearMarea(def: DefinicionMarea): void {
-    const marea = new Marea(this, def, this.definicion.mundo.ancho, this.definicion.mundo.alto);
-    this.marea = marea;
+  private crearMareas(defs: readonly DefinicionMarea[]): void {
+    const { ancho, alto } = this.definicion.mundo;
+    this.mareas = defs.map((def) => new Marea(this, def, ancho, alto));
     const alCambiar = (estado: EstadoMarea) => {
       if (estado === 'aviso') this.game.events.emit(EVENTOS_HUD.aviso, 'sube el agua');
       const arrecia = estado === 'aviso' || estado === 'subiendo';
@@ -754,10 +755,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
    * empuja hacia arriba para salir.
    */
   private actualizarMarea(): void {
-    const marea = this.marea;
+    for (const marea of this.mareas) marea.actualizar(this.time.now);
+    if (this.cirujano.estaMuerto || this.reapareciendo) return;
+    // Solo la que inunda donde esta el: las demas mojan otras salas.
+    const marea = this.mareas.find((m) => m.haySubida && m.cubre(this.cirujano.sprite.x));
     if (!marea) return;
-    marea.actualizar(this.time.now);
-    if (!marea.haySubida || this.cirujano.estaMuerto || this.reapareciendo) return;
 
     const pies = this.cirujano.sprite.y;
     const cabeza = pies - ALTO_CIRUJANO;
@@ -2339,8 +2341,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // El presagio del Buitre (#100): si se ha ido porque viene la Marea, el
     // Altar lo dice. No cambia nada del guardado: es una senal, no un castigo.
     const enDuda =
-      this.marea !== undefined &&
-      this.marea.estado !== 'reposo' &&
+      this.mareas.some((marea) => marea.estado !== 'reposo') &&
       this.criaturas.some((c) => c.clase === 'buitre');
     this.game.events.emit(
       EVENTOS_HUD.aviso,
