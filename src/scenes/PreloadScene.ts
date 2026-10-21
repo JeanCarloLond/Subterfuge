@@ -84,13 +84,12 @@ export class PreloadScene extends Phaser.Scene {
     // y antes de esta linea todavia no existe.
     ponerCursor(this);
 
-    // Se entra por la pantalla de inicio (#150). Los dos bancos de pruebas se
-    // la saltan: `?cinematica` va directo al cierre (#147) y `?tactil`, con
-    // el que se prueban los controles de dedo, directo al Atrio. Con
-    // `?tactil&inicio` se prueba la propia pantalla de inicio.
-    const consulta = location.search;
-    const saltarInicio = consulta.includes('tactil') && !consulta.includes('inicio');
-    this.scene.start(consulta.includes('cinematica') ? 'Final' : saltarInicio ? 'Atrio' : 'Inicio');
+    // Se entra por la pantalla de inicio (#150). Los bancos de pruebas se la
+    // saltan: `?cinematica` va directo al cierre (#147), `?nivel=2` al
+    // principio del Nivel 2 (#156) y `?tactil`, con el que se prueban los
+    // controles de dedo, directo al Atrio. Con `?tactil&inicio` se prueba la
+    // propia pantalla de inicio.
+    this.scene.start(escenaDeArranque(location.search));
   }
 
   private dibujarBarraDeCarga(): void {
@@ -117,4 +116,12 @@ export class PreloadScene extends Phaser.Scene {
     generarRetratos(this);
     generarCinematica(this);
   }
+}
+
+/** Por donde empieza el juego, segun los bancos de pruebas de la URL. */
+function escenaDeArranque(consulta: string): string {
+  if (consulta.includes('cinematica')) return 'Final';
+  if (new URLSearchParams(consulta).get('nivel') === '2') return 'Desague';
+  if (consulta.includes('tactil') && !consulta.includes('inicio')) return 'Atrio';
+  return 'Inicio';
 }

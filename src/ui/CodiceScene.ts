@@ -886,8 +886,8 @@ export class CodiceScene extends Phaser.Scene {
     const entradas: EntradaPagina[] = VIENTRE.map((capa) => ({
       nombre: capa.nombre,
       descripcion: capa.descripcion,
-      pie: capa.escena ? 'pisada' : 'no se llega en el teaser',
-      abierta: () => (capa.escena ? progreso.estaPisada(capa.escena) : false),
+      pie: capa.escenas.length ? 'pisada' : 'no se llega en el juego',
+      abierta: () => capa.escenas.some((escena) => progreso.estaPisada(escena)),
     }));
     return this.crearPaginaLista(fx, fy, fa, fh, entradas, false);
   }

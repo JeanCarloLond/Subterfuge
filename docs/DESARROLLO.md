@@ -103,19 +103,31 @@ Boot ──► Preload ──► Inicio ──► Atrio ──► Pasillos ─�
                        │  Continuar  │          │            │          │
                        └─────────────┴──────────┴────────────┴──────────┴──► Hud  (escena paralela)
 
-Nivel 2, en construcción (#129):
-Final ──(desagüe de la Sala 7)──► VientreHumedo ──► FinalNivel2   (la Puerta del Cuerpo)
+Nivel 2 (#156):
+Final ──«Huir por el desagüe»──► Desague ──► Galeria ──► Ductos ──► FinalNivel2
+  └──«Volver al Atrio» (partida nueva)                              (la Puerta del Cuerpo)
 ```
+
+**De un nivel al otro (#156).** El cierre del Nivel 1 ofrece dos salidas:
+huir por el desagüe, que lleva al Nivel 2 **sin** reiniciar el `Progreso`, o
+volver al Atrio, que empieza de cero. Los dos cierres comparten `EscenaCierre`
+(salidas, recuento y vuelta al Atrio). Las zonas que existen, su nombre y su
+nivel están en `ZONAS_MAPA` (`lore/Mapa.ts`): de esa lista salen el mapa del
+libro y las zonas que se pueden continuar, y `verificar-rutas` comprueba que
+coincide con la suya. Las tres zonas del Nivel 2 forman una sola capa del
+Vientre, la V (`escenas` en `lore/Vientre.ts`).
 
 **Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
 Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
 guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:
 la zona, el Altar encendido y el `Progreso` entero. Continuar restaura el
 Progreso y arranca la zona con `{ altar }`. La vida, las pociones y el Fervor
-no se guardan: rezar los repone. Volver al Atrio o llegar al cierre lo borra.
+no se guardan: rezar los repone. El cierre del Nivel 1 guarda el principio del
+Nivel 2; volver al Atrio o llegar a la Puerta del Cuerpo lo borra.
 
 Bancos de pruebas: `?tactil` va directo al Atrio, `?tactil&inicio` pasa por la
-pantalla de inicio y `?cinematica` va directo al cierre.
+pantalla de inicio, `?cinematica` va directo al cierre del Nivel 1 y `?nivel=2`
+al principio del Nivel 2.
 
 ### Añadir una zona nueva
 
@@ -219,9 +231,11 @@ nivel se pueda desandar), `verificar-arte`, `verificar-textos` y
 - **Nivel 1 — El Sacramento: completo.** Las cuatro zonas, el jefe, el cierre
   con la cinemática, la pantalla de inicio, el guardado en Altares, las opciones
   de accesibilidad, el mando y los dedos. El README lo cuenta para quien juega.
-- **Nivel 2 — El Vientre Húmedo: en construcción.** Las especies, las Mareas y
-  la Lluvia Tibia ya existen y varias se ven en el Nivel 1; falta el nivel en
-  sí (geometría, la niña como compañera y su cierre): issues #128 a #134.
+- **Nivel 2 — El Vientre Húmedo: en construcción.** Ya se juega de punta a
+  punta: tres zonas (Desagüe, Galería de limpieza, Ductos) y el cierre ante la
+  Puerta del Cuerpo, con lo recogido en el Nivel 1 (#156). Falta lo que hace de
+  él una huida —la niña, el arranque sin bisturí, las persecuciones, los
+  enemigos nuevos y la Serpiente en su nido—: issues #157 a #172.
 - **Arte definitivo:** el de la sillería es del equipo; el resto sigue siendo
   provisional. Los encargos están en [`arte/encargos/`](arte/encargos/) y en las
   issues #105 a #107.
@@ -414,10 +428,9 @@ herir) y su fábrica en `FABRICAS`.
 
 Tienen ya su clase todas las especies: Remedo, Serpiente, Mondador, Buitre,
 Cerdo, Cuervo, Zarza, Alfombra, Mata, Vena, Hongo y la Flor de hueso (#96 a
-#104, #125). Ningún nivel las coloca todavía: eso es el Nivel 2 (#128). Un nivel
-que declare una criatura sin clase **falla al cargar**: un nivel al que le falta
-su depredador sin que nadie lo note es peor que uno que no arranca. El Nivel 1 no
-declara ninguna y no cambia.
+#104, #125). Las colocan los niveles en su campo `criaturas`. Un nivel que
+declare una criatura sin clase **falla al cargar**: un nivel al que le falta su
+depredador sin que nadie lo note es peor que uno que no arranca.
 
 | Especie  | Qué hace                                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -960,11 +973,15 @@ son del Nivel 1 y dos (IX y X) del Nivel 2. El cierre de cada nivel cuenta **las
 suyas** (`progreso.fragmentosDelNivel`), así que el Nivel 1 sigue premiando su
 8/8 con la línea oculta aunque el Códice entero tenga más.
 
-Mientras el Nivel 2 no exista, **el juego no enseña la IX ni la X**: serían dos
-hojas «arrancadas» imposibles de conseguir. Lo controla `NIVEL_MAS_HONDO` en
-`Codice.ts`; al construir el Nivel 2 pasa a 2 y aparecen solas en el índice y en
-el HUD. La web sí publica las diez: allí los versículos son doctrina pública y
-el margen se sigue ganando como siempre.
+El juego solo enseña las hojas de los niveles que se pueden jugar
+(`NIVEL_MAS_HONDO` en `Codice.ts`, hoy 2): una hoja de un nivel sin construir
+saldría «arrancada», imposible de conseguir. La web publica todas: allí los
+versículos son doctrina pública y el margen se sigue ganando como siempre.
+
+Las **fichas del Registro** también se cuentan por nivel: la que solo vive abajo
+lleva `nivel: 2`, y el cierre del Nivel 1 no la cuenta (`progreso.fichasHasta`).
+`verificar-rutas` comprueba que cada hoja, cada reliquia y cada ficha está de
+verdad en una zona de su nivel.
 
 ## Audio
 

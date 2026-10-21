@@ -1,7 +1,7 @@
 import { CODICE_EN_JUEGO } from '../lore/Codice';
 import { RELIQUIAS } from '../lore/Reliquias';
 import { REGISTRO } from '../lore/Registro';
-import { VIENTRE } from '../lore/Vientre';
+import { VIENTRE, capasPisadas } from '../lore/Vientre';
 import { INJERTADORA, RELIQUIA } from '../config/Sacramento';
 import { recordar } from './Memoria';
 
@@ -44,7 +44,11 @@ class Progreso {
   private reliquias = new Map<string, TipoReliquia>();
   /** Fichas del Registro ya vistas o tocadas. */
   private fichas = new Set<string>();
-  /** Capas del Vientre que el Cirujano ha pisado. */
+  /**
+   * Zonas que el Cirujano ha pisado, por clave de escena. Se llaman capas por
+   * historia: en el Nivel 1 cada zona era una capa. Ahora la capa V son tres
+   * zonas, y `capasPisadas` las agrupa.
+   */
   private capas = new Set<string>();
   /**
    * Trozos de cada zona por los que ya se ha pasado, para el mapa.
@@ -160,6 +164,19 @@ class Progreso {
     return REGISTRO.length;
   }
 
+  /**
+   * Fichas vistas de las que se pueden encontrar hasta ese nivel. El cierre del
+   * Nivel 1 no cuenta la Zarza ni la Vena: viven abajo, y contarlas dejaria
+   * el Registro incompleto sin manera de completarlo.
+   */
+  fichasHasta(nivel: 1 | 2): number {
+    return REGISTRO.filter((f) => (f.nivel ?? 1) <= nivel && this.fichas.has(f.id)).length;
+  }
+
+  fichasTotalesHasta(nivel: 1 | 2): number {
+    return REGISTRO.filter((f) => (f.nivel ?? 1) <= nivel).length;
+  }
+
   // -- El Vientre -----------------------------------------------------------
 
   /** @returns true si es la primera vez que se pisa esta capa. */
@@ -175,7 +192,7 @@ class Progreso {
   }
 
   get capasPisadas(): number {
-    return this.capas.size;
+    return capasPisadas(this.capas);
   }
 
   get capasTotales(): number {

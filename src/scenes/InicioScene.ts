@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
-import { VIENTRE } from '../lore/Vientre';
+import { nombreDeZona } from '../lore/Mapa';
 import { guardado, type Descenso } from '../systems/Guardado';
 import { musica } from '../systems/Musica';
 import { progreso } from '../systems/Progreso';
@@ -196,7 +196,7 @@ export class InicioScene extends Phaser.Scene {
 
   private detalle(opcion: Opcion): string {
     if (opcion === 'continuar') {
-      const zona = VIENTRE.find((capa) => capa.escena === this.descenso?.zona)?.nombre ?? '';
+      const zona = this.descenso ? nombreDeZona(this.descenso.zona) : '';
       return `${zona} · ${hace(this.descenso?.fecha ?? Date.now())}`;
     }
     if (opcion === 'descender' && this.avisado) {

@@ -124,7 +124,7 @@ Vestal, además, no solo paras su sello — se lo devuelves con el triple de da�
 
 **Fase 4 — en curso.** El juego pasa a tener dos niveles. El **Nivel 1** es el
 teaser que ya se puede jugar de principio a fin; el **Nivel 2, El Vientre
-Húmedo**, está en preparación.
+Húmedo**, está en construcción.
 
 ### Nivel 1 — El Sacramento (jugable)
 
@@ -153,10 +153,12 @@ Húmedo**, está en preparación.
   destellos, volúmenes por separado, velocidad del texto), y se juega con
   teclado, ratón, **mando** o el dedo en el móvil.
 
-### Nivel 2 — El Vientre Húmedo (en preparación)
+### Nivel 2 — El Vientre Húmedo (en construcción)
 
-El ecosistema que vive de lo que el sacramento rechaza. Ya está hecho, a la
-espera de construir el nivel:
+La huida por el desagüe de la Sala 7 hasta la Puerta del Cuerpo, por el
+ecosistema que vive de lo que el sacramento rechaza. Ya se recorre entero: tres
+zonas (el Desagüe, la Galería de limpieza y los Ductos) y su cierre, con lo
+recogido en el Nivel 1. Y está hecho:
 
 - **Fauna y flora** con su comportamiento: el Mondador, el Remedo, el Cerdo de
   Protocolo, el Buitre ritual, el Cuervo de Ermita, la Zarza Cosedora, la
@@ -169,8 +171,8 @@ espera de construir el nivel:
 - **Dos hojas más del Códice** (diez en total) y el Registro con su fauna y su
   flora.
 
-Falta la geometría del nivel y su cierre, que esperan a que el equipo narrativo
-apruebe el canon de la fase.
+Falta lo que lo convierte en una huida: la niña como compañera, el arranque sin
+bisturí, las persecuciones, los enemigos nuevos y la Serpiente en su nido.
 
 ### El portal de la Diócesis
 

@@ -9,7 +9,7 @@
 
 import { CODICE, numeroEnLetras } from '../../../src/lore/Codice';
 import { RELIQUIAS } from '../../../src/lore/Reliquias';
-import { VIENTRE } from '../../../src/lore/Vientre';
+import { VIENTRE, capasPisadas } from '../../../src/lore/Vientre';
 import { memoriaDelDescenso, descensoAbierto, hitoAbierto } from '../memoria';
 import { elemento } from '../texto';
 import { montarEscena } from '../escena';
@@ -130,7 +130,7 @@ export function renderPortada(contenedor: HTMLElement): () => void {
       <section class="seccion" id="expediente">
         <div class="eyebrow">Su expediente</div>
         <div class="expediente">
-          <div><b>Capas pisadas</b><span>${m.capas.length} / ${VIENTRE.length}</span></div>
+          <div><b>Capas pisadas</b><span>${capasPisadas(m.capas)} / ${VIENTRE.length}</span></div>
           <div><b>Hojas del Códice</b><span>${m.fragmentos.length} / ${CODICE.length}</span></div>
           <div><b>Fichas</b><span>${m.fichas.length}</span></div>
           <div><b>Reliquias</b><span>${m.reliquias.length} / ${RELIQUIAS.length}</span></div>

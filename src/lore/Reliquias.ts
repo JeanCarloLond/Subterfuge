@@ -25,4 +25,7 @@ export const RELIQUIAS: readonly ReliquiaLore[] = [
   { id: 'criptas-relicario', zona: 'Criptas', tipo: 'relicario', nivel: 1 },
   { id: 'criptas-frasco', zona: 'Criptas', tipo: 'frasco', nivel: 1 },
   { id: 'salas-frasco', zona: 'Salas', tipo: 'frasco', nivel: 1 },
+  { id: 'desague-relicario', zona: 'Desague', tipo: 'relicario', nivel: 2 },
+  { id: 'galeria-frasco', zona: 'Galeria', tipo: 'frasco', nivel: 2 },
+  { id: 'ductos-relicario', zona: 'Ductos', tipo: 'relicario', nivel: 2 },
 ];

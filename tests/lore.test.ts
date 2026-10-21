@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { CODICE, CODICE_EN_JUEGO } from '../src/lore/Codice';
+import { CODICE, CODICE_EN_JUEGO, NIVEL_MAS_HONDO } from '../src/lore/Codice';
 import { REGISTRO } from '../src/lore/Registro';
 import { RELIQUIAS } from '../src/lore/Reliquias';
 import { VIENTRE } from '../src/lore/Vientre';
+import { ZONAS_MAPA } from '../src/lore/Mapa';
 import { ACTO_II, GANCHO_FINAL, guionDelSacramento } from '../src/lore/Cinematicas';
 import { RETRATOS } from '../src/lore/Retratos';
 import {
@@ -22,7 +23,7 @@ import {
  * nunca se abre.
  */
 const unicos = (ids: readonly string[]) => new Set(ids).size === ids.length;
-const ZONAS = VIENTRE.flatMap((capa) => (capa.escena ? [capa.escena] : []));
+const ZONAS = VIENTRE.flatMap((capa) => capa.escenas);
 
 describe('Codice', () => {
   it('cada hoja tiene un id propio', () => {
@@ -31,7 +32,12 @@ describe('Codice', () => {
 
   it('el Nivel 1 tiene sus 8 hojas, y el juego solo da las de los niveles que existen', () => {
     expect(CODICE.filter((f) => f.nivel === 1)).toHaveLength(8);
-    expect(CODICE_EN_JUEGO.every((f) => f.nivel === 1)).toBe(true);
+    expect(CODICE_EN_JUEGO.every((f) => f.nivel <= NIVEL_MAS_HONDO)).toBe(true);
+  });
+
+  it('con el Nivel 2 construido, el juego da las diez', () => {
+    expect(NIVEL_MAS_HONDO).toBe(2);
+    expect(CODICE_EN_JUEGO).toHaveLength(CODICE.length);
   });
 });
 
@@ -49,9 +55,21 @@ describe('Reliquias', () => {
 });
 
 describe('El Vientre', () => {
-  it('son seis capas, y las dos hondas no se juegan', () => {
+  it('son seis capas: cinco se juegan y la sexta no', () => {
     expect(VIENTRE).toHaveLength(6);
-    expect(VIENTRE.slice(4).every((capa) => capa.escena === null)).toBe(true);
+    expect(VIENTRE.slice(0, 5).every((capa) => capa.escenas.length > 0)).toBe(true);
+    expect(VIENTRE[5].escenas).toHaveLength(0);
+  });
+
+  it('cada zona del mapa esta en una sola capa, y cada capa jugada en el mapa', () => {
+    const delMapa = ZONAS_MAPA.map((zona) => zona.escena);
+    expect([...ZONAS].sort()).toEqual([...delMapa].sort());
+    expect(unicos(ZONAS)).toBe(true);
+  });
+
+  it('la capa V son las tres zonas del Nivel 2', () => {
+    const nivel2 = ZONAS_MAPA.filter((zona) => zona.nivel === 2).map((zona) => zona.escena);
+    expect(VIENTRE[4].escenas).toEqual(nivel2);
   });
 });
 

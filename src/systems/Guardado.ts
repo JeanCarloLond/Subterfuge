@@ -1,4 +1,5 @@
 import { progreso, type ProgresoGuardado } from './Progreso';
+import { ZONAS_MAPA } from '../lore/Mapa';
 
 /**
  * El descenso guardado (issue #149).
@@ -24,7 +25,7 @@ const VERSION = 1;
 
 export interface Descenso {
   version: number;
-  /** Escena de la zona: 'Atrio', 'Pasillos'... */
+  /** Escena de la zona: 'Atrio', 'Pasillos', 'Desague'... */
   zona: string;
   /** Indice del Altar encendido en la definicion de la zona. */
   altar: number;
@@ -33,8 +34,11 @@ export interface Descenso {
   fecha: number;
 }
 
-/** Las zonas que se pueden continuar. El cierre no: ahi el descenso ha terminado. */
-const ZONAS = new Set(['Atrio', 'Pasillos', 'Criptas', 'Salas']);
+/**
+ * Las zonas que se pueden continuar: las del mapa. Los cierres no, porque no
+ * tienen Altar; el del Nivel 1 guarda el principio del Nivel 2 (FinalScene).
+ */
+const ZONAS = new Set(ZONAS_MAPA.map((zona) => zona.escena));
 
 export const guardado = {
   guardar(zona: string, altar: number): void {

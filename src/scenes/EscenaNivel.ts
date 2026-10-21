@@ -135,7 +135,7 @@ export type ReliquiaDef = readonly [x: number, y: number, id: string, tipo: Tipo
 export interface Umbral {
   x: number;
   y: number;
-  /** Clave de la escena destino. */
+  /** Clave de la escena destino: la zona siguiente o un cierre. */
   destino: string;
   etiqueta: string;
 }

@@ -235,15 +235,12 @@ export const CODICE: readonly FragmentoCodice[] = [
 /**
  * El nivel mas hondo que existe en el juego.
  *
- * Las hojas IX y X ya estan escritas (issue #127), pero el Nivel 2 todavia no
- * se ha construido. Si el juego las ensenara, el libro del Nivel 1 tendria dos
- * hojas "arrancadas" que no hay manera de conseguir, y quien se lo termina
- * entero se quedaria en 8/10 sin saber por que. La web si las publica: alli
- * son doctrina, no algo que haya que ganarse jugando.
- *
- * Cuando el Nivel 2 entre (#129), esto pasa a 2 y las hojas aparecen solas.
+ * El juego solo enseña las hojas de los niveles que se pueden jugar: una hoja
+ * de un nivel sin construir saldria "arrancada" en el libro, sin manera de
+ * conseguirla. La web las publica todas: alli son doctrina, no algo que haya
+ * que ganarse jugando. Con el Nivel 2 (#156) entran la IX y la X.
  */
-export const NIVEL_MAS_HONDO = 1;
+export const NIVEL_MAS_HONDO = 2;
 
 /** Las hojas que el juego ensena: las de los niveles que existen. */
 export const CODICE_EN_JUEGO: readonly FragmentoCodice[] = CODICE.filter(

@@ -9,7 +9,7 @@
  */
 
 import { numeroEnLetras } from '../../../src/lore/Codice';
-import { VIENTRE } from '../../../src/lore/Vientre';
+import { VIENTRE, capasPisadas } from '../../../src/lore/Vientre';
 import { mancha, memoriaDelDescenso } from '../memoria';
 import { elemento, html } from '../texto';
 
@@ -214,7 +214,7 @@ function loQueSabe(vez: number): string[] {
   );
   if (m.capas.length > 0)
     lineas.push(
-      `Consta que ha visitado ${m.capas.length} de las ${numeroEnLetras(VIENTRE.length)} capas.`,
+      `Consta que ha visitado ${capasPisadas(m.capas)} de las ${numeroEnLetras(VIENTRE.length)} capas.`,
     );
   if (m.hitos.includes('manos-anteriores'))
     lineas.push('Consta una visita a la Sala 7. No hace falta que nos cuente lo que vio.');

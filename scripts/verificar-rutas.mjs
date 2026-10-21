@@ -469,16 +469,147 @@ function verificarReliquias(zonas) {
   return false;
 }
 
+/**
+ * Esta lista de zonas y la del mapa (src/lore/Mapa.ts, que es tambien la de lo
+ * que se puede continuar) tienen que ser la misma: una zona que faltara aqui
+ * no se comprobaria, y una que faltara alli no tendria plano ni guardado.
+ */
+function verificarZonasDelMapa(zonas) {
+  const mapa = readFileSync(join(raiz, 'src/lore/Mapa.ts'), 'utf8');
+  const delMapa = [...mapa.matchAll(/escena: '([A-Za-z]+)', nombre: '[^']*', nivel: (\d)/g)].map(
+    (m) => `${m[1]}:${m[2]}`,
+  );
+  const aqui = zonas.map(([zona, , nivel]) => `${zona}:${nivel}`);
+  if (delMapa.join(',') === aqui.join(',')) {
+    console.log(`Zonas: OK — las ${aqui.length} del mapa, en el mismo orden y nivel`);
+    return true;
+  }
+  console.log('Zonas: FALLO — esta lista y la de src/lore/Mapa.ts no coinciden');
+  console.log(`  mapa: ${delMapa.join(', ')}`);
+  console.log(`  aqui: ${aqui.join(', ')}`);
+  return false;
+}
+
+/**
+ * Cada hoja del Codice de un nivel jugable se coloca una vez, en una zona de
+ * su nivel. Una hoja que nadie coloca deja el libro sin completar; una en otro
+ * nivel hace que el cierre cuente mal.
+ */
+function verificarFragmentos(zonas) {
+  const codice = readFileSync(join(raiz, 'src/lore/Codice.ts'), 'utf8');
+  const hondo = Number(codice.match(/NIVEL_MAS_HONDO = (\d)/)[1]);
+  const hojas = new Map(
+    [...codice.matchAll(/id: '(codice-\d+)',\s*nivel: (\d)/g)]
+      .map((m) => [m[1], Number(m[2])])
+      .filter(([, nivel]) => nivel <= hondo),
+  );
+
+  const errores = [];
+  const colocadas = new Map();
+  for (const [zona, archivo, nivel] of zonas) {
+    const src = readFileSync(join(raiz, archivo), 'utf8');
+    for (const m of leerTuplas(src, 'fragmentos', /'(codice-\d+)'/g)) {
+      const id = m[1];
+      if (colocadas.has(id)) errores.push(`${id} esta en ${colocadas.get(id)} y en ${zona}`);
+      colocadas.set(id, zona);
+      if (!hojas.has(id)) errores.push(`${id} (en ${zona}) no es una hoja de un nivel jugable`);
+      else if (hojas.get(id) !== nivel)
+        errores.push(`${id} es del Nivel ${hojas.get(id)} y esta en ${zona} (Nivel ${nivel})`);
+    }
+  }
+  for (const id of hojas.keys()) {
+    if (!colocadas.has(id)) errores.push(`${id} no la coloca ningun nivel`);
+  }
+
+  if (errores.length === 0) {
+    console.log(`Codice: OK — las ${hojas.size} hojas jugables, cada una en su nivel`);
+    return true;
+  }
+  console.log('Codice: FALLO');
+  for (const e of errores) console.log(`  ${e}`);
+  return false;
+}
+
+/**
+ * Lo que una zona deja ver al Registro: las claves entre comillas de su
+ * definicion (criaturas, decorado, fieles) y lo que traen ciertos campos. Las
+ * apariciones no cuentan: cruzan el fondo y no catalogan nada.
+ */
+function fichasVisiblesEn(archivo) {
+  const src = archivo.replace(/apariciones: \[[^\]]*\]/g, '');
+  const vistas = new Set([...src.matchAll(/'([a-z-]+)'/g)].map((m) => m[1]));
+  if (/\bflor\b/.test(src)) vistas.add('flor-de-hueso');
+  if (/devotos: \[\s*\{/.test(src)) vistas.add('devoto');
+  if (/vestales: \[\s*\{/.test(src)) vistas.add('vestal').add('sello');
+  if (/\bjefe: \{/.test(src)) vistas.add('reformado');
+  if (/altares: \[\s*\{/.test(src)) vistas.add('altar');
+  if (/reliquias: \[\s*\[/.test(src)) vistas.add('reliquia');
+  return vistas;
+}
+
+/** Fichas que no dependen de la zona: las trae el Cirujano consigo. */
+const FICHAS_DEL_CIRUJANO = ['cirujano', 'injertadora', 'injerto'];
+
+/**
+ * Cada ficha del Registro dice desde que nivel se puede encontrar (#156), y el
+ * cierre de cada nivel cuenta solo esas. Si una ficha del Nivel 1 no esta en
+ * ninguna zona del Nivel 1, el Registro de ese cierre es imposible de
+ * completar; si una marcada del Nivel 2 ya aparece arriba, el cierre del Nivel
+ * 1 la deja fuera sin motivo. Las del Nivel 2 que aun no coloca nadie solo se
+ * avisan: llegan con sus issues.
+ */
+function verificarFichas(zonas) {
+  const registro = readFileSync(join(raiz, 'src/lore/Registro.ts'), 'utf8');
+  const fichas = [...registro.matchAll(/\n {4}id: '([a-z-]+)',([\s\S]*?)\n {2}\}/g)].map((m) => ({
+    id: m[1],
+    nivel: /\n {4}nivel: 2,/.test(m[2]) ? 2 : 1,
+  }));
+
+  const vistasHasta = (nivel) => {
+    const vistas = new Set(FICHAS_DEL_CIRUJANO);
+    for (const [, archivo, n] of zonas) {
+      if (n > nivel) continue;
+      for (const id of fichasVisiblesEn(readFileSync(join(raiz, archivo), 'utf8'))) vistas.add(id);
+    }
+    return vistas;
+  };
+  const enNivel1 = vistasHasta(1);
+  const enNivel2 = vistasHasta(2);
+
+  const errores = [];
+  const pendientes = [];
+  for (const { id, nivel } of fichas) {
+    if (nivel === 1 && !enNivel1.has(id))
+      errores.push(`${id} es del Nivel 1 y ninguna zona del Nivel 1 la tiene`);
+    if (nivel === 2 && enNivel1.has(id))
+      errores.push(`${id} esta marcada del Nivel 2, pero ya se ve en el Nivel 1`);
+    if (nivel === 2 && !enNivel2.has(id)) pendientes.push(id);
+  }
+
+  if (errores.length === 0) {
+    const aviso = pendientes.length ? ` (aun sin colocar: ${pendientes.join(', ')})` : '';
+    console.log(`Registro: OK — ${fichas.length} fichas, cada una en su nivel${aviso}`);
+    return true;
+  }
+  console.log('Registro: FALLO');
+  for (const e of errores) console.log(`  ${e}`);
+  return false;
+}
+
 console.log(
   `salto simple ${alturaSalto.toFixed(0)}px · con doble ${alturaDoble.toFixed(0)}px · ` +
     `dash +${avanceDash.toFixed(0)}px`,
 );
 
+/** Las zonas jugables y su nivel. Tienen que ser las de src/lore/Mapa.ts. */
 const zonas = [
-  ['Atrio', 'src/scenes/AtrioScene.ts'],
-  ['Pasillos', 'src/scenes/PasillosScene.ts'],
-  ['Criptas', 'src/scenes/CriptasScene.ts'],
-  ['Salas', 'src/scenes/SalasScene.ts'],
+  ['Atrio', 'src/scenes/AtrioScene.ts', 1],
+  ['Pasillos', 'src/scenes/PasillosScene.ts', 1],
+  ['Criptas', 'src/scenes/CriptasScene.ts', 1],
+  ['Salas', 'src/scenes/SalasScene.ts', 1],
+  ['Desague', 'src/scenes/DesagueScene.ts', 2],
+  ['Galeria', 'src/scenes/GaleriaScene.ts', 2],
+  ['Ductos', 'src/scenes/DuctosScene.ts', 2],
 ];
 
 const resultados = zonas.map(([nombre, archivo]) => verificar(nombre, archivo));
@@ -492,6 +623,9 @@ for (const [nombre, archivo] of zonas) {
 }
 
 console.log('');
+resultados.push(verificarZonasDelMapa(zonas));
 resultados.push(verificarReliquias(zonas));
+resultados.push(verificarFragmentos(zonas));
+resultados.push(verificarFichas(zonas));
 
 process.exit(resultados.every(Boolean) ? 0 : 1);

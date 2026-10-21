@@ -127,7 +127,7 @@ export const LINAJE: readonly Rama[] = [
       'desagües. Abajo, el tejido de una especie prende en otra:',
       'de ahí el Mondador, la Serpiente, la Mata y las Zarzas.',
     ],
-    abierto: () => progreso.estaDescubierto('mondador') || progreso.estaPisada('VientreHumedo'),
+    abierto: () => progreso.estaDescubierto('mondador') || progreso.estaPisada('Desague'),
   },
   {
     nombre: 'La ofrenda de hoy',

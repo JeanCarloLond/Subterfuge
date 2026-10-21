@@ -528,8 +528,7 @@ function centro(sala: Sala): { x: number; y: number } {
 /** Una sala se conoce si se pisó su capa, o si el descenso está abierto. */
 function conocida(sala: Sala): boolean {
   if (descensoAbierto()) return true;
-  const capa = VIENTRE[sala.capa];
-  return capa?.escena !== null && capa?.escena !== undefined && capaPisada(capa.escena);
+  return VIENTRE[sala.capa]?.escenas.some(capaPisada) ?? false;
 }
 
 function svg(marca: string): SVGElement {

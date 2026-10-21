@@ -34,6 +34,12 @@ export interface FichaRegistro {
   fotograma?: number;
   /** Como se descubre. Sale en la ficha, en pequeno. */
   hallazgo: string;
+  /**
+   * El primer nivel donde se la puede encontrar; sin indicar, el 1. El cierre
+   * de cada nivel cuenta solo lo que se podia haber visto hasta ahi (#156), y
+   * `verificar-rutas` comprueba que cada ficha esta de verdad en su nivel.
+   */
+  nivel?: 2;
   descripcion: readonly string[];
 }
 
@@ -222,6 +228,7 @@ export const REGISTRO: readonly FichaRegistro[] = [
     nombre: 'Serpiente de Tejido',
     textura: 'serpiente-placeholder',
     hallazgo: 'vista en los ductos',
+    nivel: 2,
     descripcion: [
       'Sin esqueleto y de escamas duras. Se traga la presa de un',
       'bocado y, si no cabe, rompe su propio tejido para abrirse.',
@@ -275,6 +282,7 @@ export const REGISTRO: readonly FichaRegistro[] = [
     nombre: 'Zarza Cosedora',
     textura: 'zarza-placeholder',
     hallazgo: 'vista en el zarzal',
+    nivel: 2,
     descripcion: [
       'Trepadora de tallos oscuros y púas ganchudas. Clava a lo',
       'que la roza y lo seca despacio. Las Vestales la dejan',
@@ -314,6 +322,7 @@ export const REGISTRO: readonly FichaRegistro[] = [
     nombre: 'Vena Trepadora',
     textura: 'vena-placeholder',
     hallazgo: 'vista en los muros',
+    nivel: 2,
     descripcion: [
       'Enredadera de carne que late al ritmo del Latido. Las',
       'Vestales leen su pulso para anunciar un Hambre. Crece',
@@ -342,6 +351,7 @@ export const REGISTRO: readonly FichaRegistro[] = [
     nombre: 'Flor de hueso',
     textura: 'flor-hueso-placeholder',
     hallazgo: 'vista en el Vientre Húmedo',
+    nivel: 2,
     descripcion: [
       'Flor blanca que crece de hueso y del tejido que el',
       'sacramento rechaza. En la Cena de la Ausencia se deja',

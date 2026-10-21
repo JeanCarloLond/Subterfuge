@@ -18,6 +18,10 @@ import { PasillosScene } from './scenes/PasillosScene';
 import { CriptasScene } from './scenes/CriptasScene';
 import { SalasScene } from './scenes/SalasScene';
 import { FinalScene } from './scenes/FinalScene';
+import { DesagueScene } from './scenes/DesagueScene';
+import { GaleriaScene } from './scenes/GaleriaScene';
+import { DuctosScene } from './scenes/DuctosScene';
+import { FinalNivel2Scene } from './scenes/FinalNivel2Scene';
 import { CinematicaScene } from './scenes/CinematicaScene';
 import { HudScene } from './ui/HudScene';
 import { CodiceScene } from './ui/CodiceScene';
@@ -28,9 +32,9 @@ import { TactilScene } from './ui/TactilScene';
 
 /**
  * Subterfuge - teaser jugable de "La Diocesis de la Carne".
- * Flujo de escenas: Boot -> Preload -> Atrio -> Pasillos -> Criptas -> Salas
- * -> Final,
- * con Hud corriendo en paralelo a los niveles.
+ * Flujo de escenas: Boot -> Preload -> Inicio -> Atrio -> Pasillos -> Criptas
+ * -> Salas -> Final (cierre del Nivel 1) -> Desague -> Galeria -> Ductos ->
+ * FinalNivel2, con Hud corriendo en paralelo a los niveles.
  */
 const configuracion: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -78,6 +82,10 @@ const configuracion: Phaser.Types.Core.GameConfig = {
     CriptasScene,
     SalasScene,
     FinalScene,
+    DesagueScene,
+    GaleriaScene,
+    DuctosScene,
+    FinalNivel2Scene,
     // Despues de Final: las escenas se pintan en el orden de esta lista, y la
     // cinematica va encima del cierre que la lanza.
     CinematicaScene,

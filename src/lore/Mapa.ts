@@ -18,13 +18,25 @@ import { progreso } from '../systems/Progreso';
  * queda. Una zona en la que no se ha entrado no tiene ni plano.
  */
 
-/** Las cuatro capas que se recorren, en orden de descenso. */
-export const ZONAS_MAPA: ReadonlyArray<{ escena: string; nombre: string }> = [
-  { escena: 'Atrio', nombre: 'El Atrio' },
-  { escena: 'Pasillos', nombre: 'Pasillos de Preparación' },
-  { escena: 'Criptas', nombre: 'Criptas de Espera' },
-  { escena: 'Salas', nombre: 'Salas de Sacramento' },
+/**
+ * Las zonas que se recorren, en orden de descenso. Es tambien la lista de las
+ * que se pueden continuar desde un Altar (Guardado.ts): una zona jugable que
+ * faltara aqui no tendria plano ni se podria retomar.
+ */
+export const ZONAS_MAPA: ReadonlyArray<{ escena: string; nombre: string; nivel: 1 | 2 }> = [
+  { escena: 'Atrio', nombre: 'El Atrio', nivel: 1 },
+  { escena: 'Pasillos', nombre: 'Pasillos de Preparación', nivel: 1 },
+  { escena: 'Criptas', nombre: 'Criptas de Espera', nivel: 1 },
+  { escena: 'Salas', nombre: 'Salas de Sacramento', nivel: 1 },
+  { escena: 'Desague', nombre: 'El Desagüe', nivel: 2 },
+  { escena: 'Galeria', nombre: 'La Galería de limpieza', nivel: 2 },
+  { escena: 'Ductos', nombre: 'Los Ductos', nivel: 2 },
 ];
+
+/** El nombre de una zona tal como se lee, o la clave si no es una zona. */
+export function nombreDeZona(escena: string): string {
+  return ZONAS_MAPA.find((zona) => zona.escena === escena)?.nombre ?? escena;
+}
 
 /** Lado de la casilla en el mundo. Tiene que cuadrar con EscenaNivel. */
 const CASILLA = 64;

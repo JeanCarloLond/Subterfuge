@@ -3,45 +3,35 @@ import { RESOLUCION } from '../config/Sacramento';
 import { progreso } from '../systems/Progreso';
 import { guardado } from '../systems/Guardado';
 import { recordar } from '../systems/Memoria';
-import { tactil } from '../input/Tactil';
-import { toques } from '../input/Toques';
 import { musica } from '../systems/Musica';
 import { sonido } from '../systems/Sonido';
-import { cursorActivo } from '../ui/Cursor';
 import { GANCHO_FINAL } from '../lore/Cinematicas';
+import { EscenaCierre } from './EscenaCierre';
 
 /**
  * Cierre del Nivel 1.
  *
  * Primero la cinematica del sacramento (#147): la nina, el tejido que responde
  * y la decision del Cirujano. Despues, sobre negro, la linea que queda, el
- * titulo y el recuento de lo que encontro el jugador.
+ * titulo, el recuento de lo que encontro el jugador y las dos salidas: huir
+ * por el desague al Nivel 2 con todo lo recogido (#156), o volver al Atrio y
+ * empezar de cero.
  *
  * La escena se queda en pausa mientras dura la cinematica, asi que las
  * entradas escalonadas de abajo esperan solas y empiezan al volver.
- *
- * Restriccion del universo que cualquier texto aqui debe respetar: los
- * Primigenios son ciegos. No pueden "mirar", "observar" ni "ver" nada. Conocen
- * el mundo por tacto e ingesta.
  */
-export class FinalScene extends Phaser.Scene {
-  private fragmentos = 0;
-  /**
-   * Desde cuando valen los toques. Hasta que acaba la cinematica, ninguno:
-   * el dedo que la salta manteniendo pulsado no puede, al levantarse, devolver
-   * al jugador al Atrio.
-   */
-  private listoDesde = Infinity;
-
+export class FinalScene extends EscenaCierre {
   constructor() {
     super({ key: 'Final' });
   }
 
   create(): void {
+    this.empezarCierre();
     recordar('hitos', 'final');
-    // El descenso ha terminado: no queda nada que continuar (#149).
-    guardado.borrar();
-    this.fragmentos = progreso.fragmentosDelNivel(1);
+    // El Nivel 1 ha terminado, el descenso no: si se cierra la pestaña aqui,
+    // Continuar lleva al principio de la huida con lo recogido (#149, #156).
+    guardado.guardar('Desague', 0);
+    const fragmentos = progreso.fragmentosDelNivel(1);
 
     this.cameras.main.setBackgroundColor('#0b090b');
     this.cameras.main.fadeIn(900, 11, 9, 11);
@@ -54,7 +44,6 @@ export class FinalScene extends Phaser.Scene {
 
     // El cierre de la historia va ANTES del recuento: primero se acaba lo que
     // le pasa al Cirujano, y luego se cuenta lo que encontro el jugador.
-    this.listoDesde = Infinity;
     this.events.once(Phaser.Scenes.Events.RESUME, () => {
       this.listoDesde = performance.now();
       musica.poner('final');
@@ -86,22 +75,8 @@ export class FinalScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setAlpha(0);
 
-    // Lo que viene, dicho sin trailer (#153): la cinematica acaba de prometer
-    // una huida, y quien termina tiene que saber que esa parte existe y aun no
-    // se juega. Cuando exista el Nivel 2 (#129), esto pasa a ser la opcion de
-    // seguir bajando.
-    const siguiente = this.add
-      .text(centroX, 186, 'Nivel 2 · El Vientre Húmedo · en desarrollo', {
-        fontFamily: 'monospace',
-        fontSize: '7px',
-        color: '#8a7d70',
-        align: 'center',
-      })
-      .setOrigin(0.5, 0.5)
-      .setAlpha(0);
-
     const recuento = this.add
-      .text(centroX, 208, this.textoRecuento(), {
+      .text(centroX, 196, this.textoRecuento(1), {
         fontFamily: 'monospace',
         fontSize: '8px',
         color: '#6b5f55',
@@ -110,44 +85,18 @@ export class FinalScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setAlpha(0);
 
-    const reinicio = this.add
-      .text(centroX, RESOLUCION.alto - 40, 'R  o clic:  volver al Atrio', {
-        fontFamily: 'monospace',
-        fontSize: '8px',
-        color: '#4a4038',
-        align: 'center',
-      })
-      .setOrigin(0.5, 0.5)
-      .setAlpha(0)
-      .setInteractive({ cursor: cursorActivo() });
-    reinicio.on('pointerover', () => reinicio.setColor('#d6cfc4'));
-    reinicio.on('pointerout', () => reinicio.setColor('#4a4038'));
-    reinicio.on('pointerdown', () => this.volverAlAtrio());
-
-    // Con el dedo, cualquier toque vale: acertar en una linea de ocho pixeles
-    // no es una forma de cerrar un juego (#75).
-    if (tactil.esAparatoTactil) {
-      reinicio.setText('toca para volver al Atrio');
-      const soltar = toques.alSoltar((_punto, inicio) => {
-        if (inicio >= this.listoDesde) this.volverAlAtrio();
-      });
-      this.events.once(Phaser.Scenes.Events.SHUTDOWN, soltar);
-    }
-
     // Entradas escalonadas: el cierre debe respirar, no soltarlo todo de golpe.
     this.aparecer(gancho, 700);
     this.aparecer(titulo, 1600);
-    this.aparecer(siguiente, 2000);
     this.aparecer(recuento, 2400);
-    this.aparecer(reinicio, 3200);
 
     // Codice completo: el margen tiene una ultima linea que solo aparece
     // cuando se han leido todas las demas. Es el premio de rejugar y el
     // motivo del lore-hunter para volver a bajar. El "no vengas" escondido lo
     // describe el world bible como parte de la campana ARG.
-    if (this.fragmentos >= progreso.fragmentosTotalesDelNivel(1)) {
+    if (fragmentos >= progreso.fragmentosTotalesDelNivel(1)) {
       const ultimoMargen = this.add
-        .text(centroX, 244, ['al margen, en otra tinta:', '"No vengas."'].join('\n'), {
+        .text(centroX, 228, ['al margen, en otra tinta:', '"No vengas."'].join('\n'), {
           fontFamily: 'monospace',
           fontSize: '8px',
           fontStyle: 'italic',
@@ -160,50 +109,17 @@ export class FinalScene extends Phaser.Scene {
       this.aparecer(ultimoMargen, 4400);
     }
 
-    this.input.keyboard?.once('keydown-R', () => this.volverAlAtrio());
+    this.crearSalidas(
+      [
+        { etiqueta: 'Huir por el desagüe', elegir: () => this.huir() },
+        { etiqueta: 'Volver al Atrio', elegir: () => this.volverAlAtrio() },
+      ],
+      3200,
+    );
   }
 
-  private volviendo = false;
-
-  private volverAlAtrio(): void {
-    if (this.volviendo) return;
-    this.volviendo = true;
-
-    this.cameras.main.fade(400, 11, 9, 11);
-    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-      progreso.reiniciar();
-      this.scene.start('Atrio');
-    });
-  }
-
-  /**
-   * Recuento del Codice. Es la unica recompensa por explorar, y el motivo por
-   * el que un lore-hunter volveria a jugar el teaser.
-   */
-  private textoRecuento(): string {
-    const total = progreso.fragmentosTotalesDelNivel(1);
-    const reliquias = progreso.reliquiasDelNivel(1);
-    const codice =
-      this.fragmentos === 0
-        ? 'ningún fragmento del Códice'
-        : `${this.fragmentos} de ${total} fragmentos del Códice`;
-    const relicario =
-      reliquias === 0
-        ? ''
-        : `   ·   ${reliquias} de ${progreso.reliquiasTotalesDelNivel(1)} reliquias`;
-    // El Registro tambien cuenta: es la mitad del libro, y catalogarlo entero
-    // exige haberse cruzado con todo lo que el Vientre tiene dentro.
-    const registro = `   ·   ${progreso.fichasDescubiertas} de ${progreso.fichasTotales} fichas`;
-    return codice + relicario + registro;
-  }
-
-  private aparecer(objeto: Phaser.GameObjects.Text, retardoMs: number): void {
-    this.tweens.add({
-      targets: objeto,
-      alpha: 1,
-      delay: retardoMs,
-      duration: 900,
-      ease: 'Quad.easeOut',
-    });
+  /** Al Nivel 2 con todo lo recogido: la huida sigue a la decision. */
+  private huir(): void {
+    this.salir(() => this.scene.start('Desague'));
   }
 }

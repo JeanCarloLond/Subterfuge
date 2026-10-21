@@ -26,10 +26,10 @@ export type Pista = keyof typeof PISTAS;
 
 /**
  * Pistas que todavia no usa ningun nivel y por eso no se precargan: bajarlas
- * al arrancar retrasaria el Nivel 1 por algo que no suena. Cuando el Nivel 2
- * exista, su pista sale de aqui.
+ * al arrancar retrasaria el juego por algo que no suena. Ahora mismo, ninguna:
+ * la del Vientre salio de aqui al construirse el Nivel 2 (#156).
  */
-export const SIN_PRECARGA: ReadonlySet<Pista> = new Set<Pista>(['vientre-humedo']);
+export const SIN_PRECARGA: ReadonlySet<Pista> = new Set<Pista>();
 
 /** Volumen de cada pista. La musica acompana; nunca compite con los golpes. */
 const VOLUMEN: Record<Pista, number> = {
