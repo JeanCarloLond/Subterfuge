@@ -34,7 +34,15 @@
 import type { ClaveRetrato } from './Retratos';
 
 /** Cada momento del descenso que se detiene a hablar. */
-export type ClavePensamiento = 'atrio' | 'pasillos' | 'criptas' | 'salas' | 'manos-anteriores';
+export type ClavePensamiento =
+  | 'atrio'
+  | 'pasillos'
+  | 'criptas'
+  | 'salas'
+  | 'manos-anteriores'
+  | 'desague'
+  | 'galeria'
+  | 'ductos';
 
 export interface Pensamiento {
   /**
@@ -44,6 +52,11 @@ export interface Pensamiento {
   quien?: string;
   /** Cara que se ve en el dialogo (#145). Sin ella, es el Cirujano. */
   retrato?: ClaveRetrato;
+  /**
+   * Quien dice cada cuadro, cuando hablan dos (#176): uno por cuadro. Sin
+   * esto, todos los dice `retrato`.
+   */
+  voces?: readonly ClaveRetrato[];
   /** Un cuadro por pantalla. Se avanza con E, clic o espacio. */
   cuadros: readonly string[];
 }
@@ -97,6 +110,42 @@ export const PENSAMIENTOS: Readonly<Record<ClavePensamiento, Pensamiento>> = {
 
   // El cierre ya no es un dialogo: es la cinematica del sacramento (#147), y
   // sus pensamientos viven en Cinematicas.ts.
+
+  // -- El Nivel 2: ya no habla solo (#176) ----------------------------------
+
+  // La caida por el desague. Arriba ya saben que la camilla esta vacia.
+  desague: {
+    voces: ['cirujano', 'nina', 'cirujano', 'nina'],
+    cuadros: [
+      'El desagüe de la Sala. Por aquí baja lo que no se ofrece.',
+      'Entonces yo también bajo por aquí.',
+      'No te sueltes. Arriba ya han visto la camilla vacía.',
+      'Huele a casa. A la parte de atrás de casa.',
+    ],
+  },
+
+  // La Galeria: lo que se come abajo es lo que nadie quiere arriba.
+  galeria: {
+    voces: ['nina', 'cirujano', 'nina', 'cirujano'],
+    cuadros: [
+      'Aquí hay luz y nadie la ha encendido.',
+      'Hongos de Lámpara. Crecen donde se tira lo que los Mil rechazan.',
+      'En casa comíamos de esto. De lo que nadie quería.',
+      'Si aquí abajo cuentan el instrumental, habrá un bisturí.',
+    ],
+  },
+
+  // El ducto de subida, a la puerta que nadie vigila.
+  ductos: {
+    voces: ['cirujano', 'nina', 'cirujano', 'nina', 'cirujano'],
+    cuadros: [
+      'Desde aquí se sube. Agárrate fuerte.',
+      '¿Adónde lleva?',
+      'A una puerta que nadie vigila. Solo entran Vestales.',
+      'Yo no soy Vestal.',
+      'Yo tampoco.',
+    ],
+  },
 };
 
 export function pensamiento(clave: ClavePensamiento): Pensamiento {

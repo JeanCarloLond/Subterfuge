@@ -62,6 +62,11 @@ export class Fiel {
       .setVisible(false);
   }
 
+  /** Si esta a tiro de hablar: con el al lado, la E es suya. */
+  get estaCerca(): boolean {
+    return this.cerca;
+  }
+
   /** @returns true si esta a tiro de hablar, para que la escena ofrezca la E. */
   actualizar(jugadorX: number, jugadorY: number): boolean {
     const distancia = Phaser.Math.Distance.Between(

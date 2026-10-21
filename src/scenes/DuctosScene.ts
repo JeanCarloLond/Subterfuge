@@ -28,6 +28,7 @@ export class DuctosScene extends EscenaNivel {
       musica: 'vientre-humedo',
       inicio: { x: 40, y: 900 },
       nina: true,
+      llegada: 'ductos',
       // La trepa entera, del primer escalon a la Puerta: ella va a su espalda.
       aCuestas: [[0, 0, 640, 880]],
 

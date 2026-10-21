@@ -28,6 +28,7 @@ export class GaleriaScene extends EscenaNivel {
       colorFondo: '#090c0a',
       musica: 'vientre-humedo',
       nina: true,
+      llegada: 'galeria',
       inicio: { x: 40, y: 300 },
 
       // Verde enfermo: la piedra coge el color de lo que crece encima.

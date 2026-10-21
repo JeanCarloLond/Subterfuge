@@ -20,6 +20,8 @@ import { ConteoInstrumental } from '../objetos/ConteoInstrumental';
 import { Bocadillos } from '../ui/Bocadillos';
 import { Turnos } from '../systems/Turnos';
 import { SIN_BISTURI } from '../lore/Frases';
+import { CHARLAS, FRASES_NINA, type ZonaCharla } from '../lore/Charlas';
+import type { Pensamiento } from '../lore/Pensamientos';
 import { Fiel } from '../entities/Fiel';
 import { Nina } from '../entities/Nina';
 import { tactil } from '../input/Tactil';
@@ -413,6 +415,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private bocadillos!: Bocadillos;
   /** Lo que dice al intentar golpear sin bisturi: una cada pocos segundos. */
   private frasesSinBisturi = new Turnos(SIN_BISTURI, 4000);
+  /** "E  hablar" sobre la niña, cuando estan tranquilos (#176). */
+  private avisoCharla?: Phaser.GameObjects.Text;
+  /** Desde cuando el Cirujano esta quieto en el suelo. */
+  private quietoDesde = 0;
+  private frasesNina = {
+    sinCharla: new Turnos(FRASES_NINA.sinCharla, 2500),
+    rezar: new Turnos(FRASES_NINA.rezar, 20000),
+    quietos: new Turnos(FRASES_NINA.quietos, 30000),
+  };
 
   private umbralSprite?: Phaser.GameObjects.Sprite;
   private umbralAviso?: Phaser.GameObjects.Text;
@@ -457,6 +468,16 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // Se pone a su lado en cuanto el pisa suelo: ver Nina.asentada.
     if (this.definicion.nina) {
       this.nina = new Nina(this, this.cirujano.sprite.x, this.cirujano.sprite.y);
+      this.avisoCharla = this.add
+        .text(0, 0, 'E  hablar', { fontFamily: 'monospace', fontSize: '8px', color: '#d6cfc4' })
+        .setOrigin(0.5, 1)
+        .setVisible(false);
+      this.quietoDesde = this.time.now;
+      this.frasesNina = {
+        sinCharla: new Turnos(FRASES_NINA.sinCharla, 2500),
+        rezar: new Turnos(FRASES_NINA.rezar, 20000),
+        quietos: new Turnos(FRASES_NINA.quietos, 30000),
+      };
     }
 
     this.crearLuces();
@@ -529,6 +550,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.actualizarFieles();
     this.actualizarUmbral();
     this.actualizarPlacas();
+    this.actualizarCharla();
     this.comprobarCaidaAlVacio();
     this.limpiarDevotosMuertos();
   }
@@ -576,6 +598,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.placas = [];
     this.conteo = undefined;
     this.nina = undefined;
+    this.avisoCharla = undefined;
     this.grupoEnemigos = undefined;
     this.grupoNeutrales = undefined;
     this.grupoPeligros = undefined;
@@ -2334,11 +2357,79 @@ export abstract class EscenaNivel extends Phaser.Scene {
     sonido.parry();
     this.impacto.parryLogrado(x, y - 4);
     this.game.events.emit(EVENTOS_HUD.aviso, 'el bisturí vuelve a la mano');
+    this.decirNina(FRASES_NINA.bisturi[0], 700);
     // Ya armado, la ayuda vuelve a nombrar el golpe: se rehace el panel.
     const visible = this.panelAyuda?.visible === true;
     this.panelAyuda?.destroy();
     this.crearAyudaControles(false);
     this.panelAyuda?.setVisible(visible);
+  }
+
+  /**
+   * Hablar con la niña (#176). Se ofrece solo cuando estan tranquilos: el
+   * quieto un momento en el suelo y nada mas a tiro de la E. Ella va siempre a
+   * su lado, y un "E  hablar" fijo taparia el Altar, las placas y el umbral.
+   * Si se quedan quietos mucho rato, ella dice algo sola.
+   */
+  private actualizarCharla(): void {
+    const nina = this.nina;
+    const aviso = this.avisoCharla;
+    if (!nina || !aviso) return;
+
+    const ahora = this.time.now;
+    const cuerpo = this.cirujano.cuerpo;
+    const quieto =
+      !this.cirujano.estaMuerto &&
+      !this.descendiendo &&
+      this.cirujano.estadoActual === 'suelo' &&
+      Math.abs(cuerpo.velocity.x) < 5;
+    if (!quieto) this.quietoDesde = ahora;
+
+    const otraE =
+      this.altares.some((a) => a.puedeRezar) ||
+      this.placas.some((p) => p.aviso.visible) ||
+      this.umbralAviso?.visible === true ||
+      this.fieles.some((f) => f.estaCerca);
+    const tranquilo = ahora - this.quietoDesde >= 1200 && nina.estadoActual === 'sigue' && !otraE;
+
+    aviso.setVisible(tranquilo);
+    if (!tranquilo) return;
+    // Por encima de las dos cabezas: a su altura, el pico de el lo tapaba.
+    aviso.setPosition(nina.sprite.x, Math.min(nina.sprite.y, this.cirujano.sprite.y) - 44);
+
+    if (this.controles.interactuarPresionado) {
+      this.quietoDesde = ahora;
+      aviso.setVisible(false);
+      this.hablarConNina();
+      return;
+    }
+
+    if (ahora - this.quietoDesde >= 9000) {
+      const frase = this.frasesNina.quietos.siguiente(ahora);
+      if (frase) this.decirNina(frase);
+    }
+  }
+
+  /** La siguiente conversacion de la zona que no se haya oido; si no queda, una frase. */
+  private hablarConNina(): void {
+    const zona = this.scene.key as ZonaCharla;
+    const charlas: readonly Pensamiento[] = CHARLAS[zona] ?? [];
+    const i = charlas.findIndex((_c, n) => !progreso.hayHuella(`charla:${zona}:${n}`));
+    if (i < 0) {
+      const frase = this.frasesNina.sinCharla.siguiente(this.time.now);
+      if (frase) this.decirNina(frase);
+      return;
+    }
+    progreso.dejarHuella(`charla:${zona}:${i}`);
+    sonido.interfazAbrir();
+    this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, dialogo: charlas[i] });
+  }
+
+  /** Una frase de ella sobre su cabeza, con un respiro opcional antes. */
+  private decirNina(frase: string, retardoMs = 0): void {
+    this.time.delayedCall(retardoMs, () => {
+      if (this.nina?.sprite.active) this.bocadillos.decir(this.nina.sprite, frase, '#e8d6c0');
+    });
   }
 
   /** Las placas del Registro se leen de pasada, con E, sin pausar nada. */
@@ -2391,6 +2482,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     altar.responder();
     this.altarActivo = altar;
     this.cirujano.rezar(DURACION_REZO_MS);
+    const rezo = this.frasesNina.rezar.siguiente(this.time.now);
+    if (rezo) this.decirNina(rezo, 900);
     sonido.altar();
     destellar(this.cameras.main, 260, 232, 200, 120);
 

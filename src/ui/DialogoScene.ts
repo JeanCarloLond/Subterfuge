@@ -68,6 +68,10 @@ export class DialogoScene extends Phaser.Scene {
 
   private texto!: Phaser.GameObjects.Text;
   private avisoAvance!: Phaser.GameObjects.Text;
+  /** La placa con el nombre: cambia cuando habla otro (#176). */
+  private placa!: Phaser.GameObjects.Text;
+  /** Quien dice cada cuadro; vacio si es siempre el mismo. */
+  private voces: readonly ClaveRetrato[] = [];
 
   private retrato!: Phaser.GameObjects.Image;
   private claveRetrato: ClaveRetrato = 'cirujano';
@@ -85,9 +89,10 @@ export class DialogoScene extends Phaser.Scene {
     this.escenaJuego = datos.escenaJuego;
     const guion = datos.dialogo ?? (datos.clave ? pensamiento(datos.clave) : undefined);
     this.cuadros = guion?.cuadros ?? [];
+    this.voces = guion?.voces ?? [];
     this.indice = 0;
     this.cerrando = false;
-    this.claveRetrato = guion?.retrato ?? 'cirujano';
+    this.claveRetrato = this.voces[0] ?? guion?.retrato ?? 'cirujano';
     const ficha = RETRATOS[this.claveRetrato];
 
     const { ancho, alto } = RESOLUCION;
@@ -121,7 +126,7 @@ export class DialogoScene extends Phaser.Scene {
     this.tweens.add({ targets: this.retrato, alpha: 1, duration: 140 });
 
     // La placa con el nombre, bajo el retrato y alineada a su derecha.
-    this.add
+    this.placa = this.add
       .text(nichoX + lado, nichoY + lado + 4, ficha.nombre, {
         fontFamily: 'monospace',
         fontSize: '7px',
@@ -201,6 +206,14 @@ export class DialogoScene extends Phaser.Scene {
     );
   }
 
+  /** Cambia la cara y el nombre si este cuadro lo dice otro (#176). */
+  private ponerVoz(clave: ClaveRetrato | undefined): void {
+    if (!clave || clave === this.claveRetrato) return;
+    this.claveRetrato = clave;
+    this.retrato.setTexture(texturaRetrato(clave));
+    this.placa.setText(RETRATOS[clave].nombre);
+  }
+
   /** Lo que hace la cara cuando nadie habla: respirar, parpadear, el brillo. */
   private vivirRetrato(): void {
     const ficha = RETRATOS[this.claveRetrato];
@@ -240,6 +253,7 @@ export class DialogoScene extends Phaser.Scene {
 
   /** Escribe el cuadro actual letra a letra, moviendo la boca al ritmo. */
   private escribir(): void {
+    this.ponerVoz(this.voces[this.indice]);
     const linea = this.cuadros[this.indice] ?? '';
     const habla = RETRATOS[this.claveRetrato].habla;
     this.texto.setText('');

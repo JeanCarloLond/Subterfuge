@@ -28,6 +28,7 @@ export class DesagueScene extends EscenaNivel {
       colorFondo: '#0d0b09',
       musica: 'vientre-humedo',
       nina: true,
+      llegada: 'desague',
       inicio: { x: 60, y: 150 },
 
       // Ocre y óxido: el agua que baja por aqui lleva hierro y carne disuelta.

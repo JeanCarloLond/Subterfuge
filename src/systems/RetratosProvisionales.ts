@@ -475,6 +475,71 @@ const REFORMADO_SENTADO: Retrato = {
   },
 };
 
+// La niña (#176): pelo oscuro, piel palida, el vestido de la ofrenda. Mira
+// de frente: es lo unico que el mundo le prohibe.
+const NINA: Retrato = {
+  paleta: {
+    d: 0x1e1611,
+    h: 0x2e211c,
+    H: 0x55402f,
+    s: 0xd9b59c,
+    S: 0xb38c76,
+    n: 0x14100f,
+    b: 0xe8ddd0,
+    m: 0x8a4a40,
+    t: 0xd6cebc,
+    T: 0xa69c88,
+  },
+  // prettier-ignore
+  filas: [
+    '................................',
+    '................................',
+    '...........dddddddddd...........',
+    '.........ddhhhhhhhhhhdd.........',
+    '........dhhhHHHHHhhhhhhd........',
+    '.......dhhHHHHHhhhhhhhhhd.......',
+    '.......dhhhhhhhhhhhhhhhhd.......',
+    '......dhhhhhssssssssshhhhd......',
+    '......dhhhhsssssssssssshhd......',
+    '......dhhhsssssssssssssshd......',
+    '......dhhhssSSssssSSssshhd......',
+    '......dhhhssnnssssnnssshhd......',
+    '......dhhhssnbssssnbssshhd......',
+    '......dhhhssssssssssssshhd......',
+    '......dhhhsssssSssssssshhd......',
+    '......dhhhssssssssssssshhd......',
+    '......dhhhssssmmmmssssshhd......',
+    '.......dhhsssssssssssshhd.......',
+    '.......dhhhSssssssssSshhd.......',
+    '........dhhhSSSSSSSShhhd........',
+    '........dhhhhdssssdhhhhd........',
+    '.........dhhhdSssSdhhhd.........',
+    '.........ddddtttttttdddd........',
+    '.......ddttttttttttttttdd.......',
+    '.....ddttttttttttttttttttdd.....',
+    '....dttTttttttttttttttttTttd....',
+    '...dtttTttttttttttttttttTtttd...',
+    '...dtttTttttttttttttttttTtttd...',
+    '...dTttTttttttttttttttttTttTd...',
+    '...dtttTttttttttttttttttTtttd...',
+    '...dTttTttttttttttttttttTttTd...',
+    '...dtttTttttttttttttttttTtttd...',
+  ],
+  fotogramas: {
+    habla1: {
+      17: '.......dhhsssssmmsssssshd.......',
+    },
+    habla2: {
+      16: '......dhhhsssmmmmmmsssshhd......',
+      17: '.......dhhsssssmmmssssshd.......',
+    },
+    parpadeo: {
+      11: '......dhhhssssssssssssshhd......',
+      12: '......dhhhssSSssssSSssshhd......',
+    },
+  },
+};
+
 const RETRATOS: Readonly<Record<string, Retrato>> = {
   cirujano: CIRUJANO,
   fiel: FIEL,
@@ -483,6 +548,7 @@ const RETRATOS: Readonly<Record<string, Retrato>> = {
   tanteador: TANTEADOR,
   honguera: HONGUERA,
   'reformado-sentado': REFORMADO_SENTADO,
+  nina: NINA,
 };
 
 function pintar(

@@ -138,6 +138,17 @@ que salta donde él saltó y nunca se queda atrás. Si él aparece lejos de golp
 lado en cuanto pisa suelo. En los rectángulos `aCuestas` de la definición va a
 su espalda: en los Ductos, toda la trepa.
 
+**Lo que hablan (#175, #176).** Las frases cortas salen sobre la cabeza sin
+parar el juego (`ui/Bocadillos.ts`) y se turnan con un respiro
+(`systems/Turnos.ts`): así dice el Cirujano que va sin bisturí, y así habla
+ella al rezar, al recuperar el bisturí o si se quedan quietos un rato. Los
+diálogos admiten dos voces: `voces` en un `Pensamiento` dice quién dice cada
+cuadro, y el retrato y la placa cambian. Al llegar a cada zona del Nivel 2
+hablan los dos (`desague`, `galeria`, `ductos` en `Pensamientos.ts`), y con E
+se habla con ella (`lore/Charlas.ts`): el «E hablar» sale solo con el
+Cirujano quieto y nada más a tiro de la E, y cada conversación se oye una vez
+por partida.
+
 **El Devoto vendado (#165).** `vendado: true` en la ronda de un Devoto. No ve:
 solo nota al Cirujano si lo tiene pegado. Lo que suena sí le llega
 (`hacerRuido` en la escena, radios en `RUIDO`): caer desde alto, el dash, los

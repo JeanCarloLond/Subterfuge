@@ -24,7 +24,8 @@ export type ClaveRetrato =
   | 'auxiliar'
   | 'tanteador'
   | 'honguera'
-  | 'reformado-sentado';
+  | 'reformado-sentado'
+  | 'nina';
 
 export interface FichaRetrato {
   /** Lo que dice la placa bajo el retrato. */
@@ -52,6 +53,8 @@ export const RETRATOS: Readonly<Record<ClaveRetrato, FichaRetrato>> = {
     parpadeo: 'parpadeo',
     respira: true,
   },
+  // La niña (#176). No tiene nombre en el Registro: era la ofrenda de hoy.
+  nina: { nombre: 'LA NIÑA', habla: ['habla1', 'habla2'], parpadeo: 'parpadeo', respira: true },
 };
 
 /** Clave de textura de un fotograma; sin fotograma, la base. */
