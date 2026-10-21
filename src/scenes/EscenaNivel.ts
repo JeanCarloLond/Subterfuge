@@ -17,6 +17,9 @@ import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { ConteoInstrumental } from '../objetos/ConteoInstrumental';
+import { Bocadillos } from '../ui/Bocadillos';
+import { Turnos } from '../systems/Turnos';
+import { SIN_BISTURI } from '../lore/Frases';
 import { Fiel } from '../entities/Fiel';
 import { Nina } from '../entities/Nina';
 import { tactil } from '../input/Tactil';
@@ -406,6 +409,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private alTerminarDescenso?: () => void;
   /** La pista de la Pocion se da una vez por zona, no cada vez que baja la vida. */
   private pistaPocionDada = false;
+  /** Frases sobre la cabeza, sin parar el juego (#175). */
+  private bocadillos!: Bocadillos;
+  /** Lo que dice al intentar golpear sin bisturi: una cada pocos segundos. */
+  private frasesSinBisturi = new Turnos(SIN_BISTURI, 4000);
 
   private umbralSprite?: Phaser.GameObjects.Sprite;
   private umbralAviso?: Phaser.GameObjects.Text;
@@ -439,6 +446,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.sembrarDesgaste();
     this.controles = new Controles(this);
     this.impacto = new Impacto(this);
+    this.bocadillos = new Bocadillos(this);
+    this.frasesSinBisturi = new Turnos(SIN_BISTURI, 4000);
     this.impacto.alRuido = (x, y, radio) => this.hacerRuido(x, y, radio);
 
     this.crearCirujano(inicio.x, inicio.y);
@@ -514,6 +523,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.actualizarParallax();
     this.actualizarNina();
+    this.bocadillos.actualizar();
     this.actualizarAltares();
     this.actualizarConteo();
     this.actualizarFieles();
@@ -1150,6 +1160,10 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.game.events.emit(EVENTOS_HUD.aviso, 'sin injertos  ·  los sueltan los fieles');
     });
     this.cirujano.eventos.on('bebe', (x: number, y: number) => this.impacto.pocion(x, y));
+    this.cirujano.eventos.on('sin-arma', () => {
+      const frase = this.frasesSinBisturi.siguiente(this.time.now);
+      if (frase) this.bocadillos.decir(this.cirujano.sprite, frase);
+    });
     this.cirujano.eventos.on('ruido', (x: number, y: number, radio: number) =>
       this.hacerRuido(x, y, radio),
     );

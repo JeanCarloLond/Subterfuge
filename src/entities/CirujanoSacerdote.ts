@@ -425,9 +425,14 @@ export class CirujanoSacerdote {
       return;
     }
 
-    // Sin bisturi no hay golpe (#160): la tecla no hace nada, y la ayuda ni
-    // la nombra. Quedan el empujon, el dash, la Injertadora y la Pocion.
-    if (!this.armado || ahora < this.finEnfriamientoAtaque) return;
+    // Sin bisturi no hay golpe (#160), y la ayuda ni lo nombra. Quedan el
+    // empujon, el dash, la Injertadora y la Pocion. Si se intenta, el lo dice
+    // (#175): la escena pone la frase.
+    if (!this.armado) {
+      if (this.controles.ataquePresionado) this.eventos.emit('sin-arma');
+      return;
+    }
+    if (ahora < this.finEnfriamientoAtaque) return;
 
     // El golpe sale AL PULSAR, no al soltar: la respuesta tiene que ser
     // inmediata o el jugador cree que la tecla no funciona. Seguir manteniendo
