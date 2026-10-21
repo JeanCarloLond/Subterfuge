@@ -57,6 +57,12 @@ export class Vitalidad extends Phaser.Events.EventEmitter {
     this.emit('cambio', this.actual, this.maxima_);
   }
 
+  /** Los puntos con los que se entra en una zona (#174). Nunca 0 ni por encima del maximo. */
+  fijar(puntos: number): void {
+    this.actual = Math.max(1, Math.min(this.maxima_, Math.round(puntos)));
+    this.emit('cambio', this.actual, this.maxima_);
+  }
+
   restaurar(): void {
     this.actual = this.maxima_;
     this.emit('cambio', this.actual, this.maxima_);

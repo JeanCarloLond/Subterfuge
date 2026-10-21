@@ -1113,6 +1113,17 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.cirujano = new CirujanoSacerdote(this, x, y, this.controles);
     this.physics.add.collider(this.cirujano.sprite, this.suelos);
 
+    // La vida y las Pociones viajan con el (#174): se apuntan cada vez que
+    // cambian, asi cualquier guardado y el umbral los llevan. Muerto no se
+    // apunta: reaparece con el cuerpo entero.
+    const apuntar = () => {
+      const { vitalidad } = this.cirujano;
+      if (!vitalidad.estaMuerto) progreso.apuntarCirujano(vitalidad.puntos, this.cirujano.pociones);
+    };
+    apuntar();
+    this.cirujano.vitalidad.on('cambio', apuntar);
+    this.cirujano.eventos.on('pociones', apuntar);
+
     this.cirujano.vitalidad.on('cambio', (puntos: number, maximo: number) => {
       this.game.events.emit(EVENTOS_HUD.vitalidad, puntos, maximo);
 
@@ -1291,7 +1302,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
         this.game.events.emit(EVENTOS_HUD.jefe, puntos, maximo, cortes),
       presentar: (titulo, subtitulo) =>
         this.game.events.emit(EVENTOS_HUD.presentacion, titulo, subtitulo),
-      curar: (cantidad) => cirujano.vitalidad.curar(cantidad),
+      curar: (cantidad) => cirujano.curarOGuardar(cantidad),
       ganarFervor: (cantidad) => cirujano.fervor.ganar(cantidad),
       avisar: (texto) => this.game.events.emit(EVENTOS_HUD.aviso, texto),
       bloquear: (objeto) => this.physics.add.collider(cirujano.sprite, objeto),
@@ -1824,8 +1835,15 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (ofrenda.tipo === 'carne' || ofrenda.tipo === 'carne-engastada') {
       const cura =
         ofrenda.tipo === 'carne' ? OFRENDA.curacionCarne : OFRENDA.curacionCarneEngastada;
-      this.cirujano.vitalidad.curar(cura);
-      this.game.events.emit(EVENTOS_HUD.aviso, `${ofrenda.nombre}  ·  +${cura} vida`);
+      const destino = this.cirujano.curarOGuardar(cura);
+      this.game.events.emit(
+        EVENTOS_HUD.aviso,
+        destino === 'frasco'
+          ? `${ofrenda.nombre}  ·  al frasco`
+          : destino === 'vida'
+            ? `${ofrenda.nombre}  ·  +${cura} vida`
+            : ofrenda.nombre,
+      );
       return;
     }
 

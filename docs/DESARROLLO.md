@@ -150,9 +150,17 @@ qué lo decide `systems/Ruido.ts`: un suelo de por medio se traga el ruido.
 Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
 guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:
 la zona, el Altar encendido y el `Progreso` entero. Continuar restaura el
-Progreso y arranca la zona con `{ altar }`. La vida, las pociones y el Fervor
-no se guardan: rezar los repone. El cierre del Nivel 1 guarda el principio del
-Nivel 2; volver al Atrio o llegar a la Puerta del Cuerpo lo borra.
+Progreso y arranca la zona con `{ altar }`. El cierre del Nivel 1 guarda el
+principio del Nivel 2; volver al Atrio o llegar a la Puerta del Cuerpo lo borra.
+
+**La vida y las Pociones viajan (#174).** Cada zona construye un Cirujano
+nuevo, pero con la vida y las cargas de la Poción que traía
+(`progreso.apuntarCirujano`, que la escena llama cada vez que cambian): bajar
+de zona no cura, y se guardan con el descenso. Las reponen rezar en un Altar y
+empezar otra partida; morir devuelve la vida pero no el frasco (#54). Lo que
+cura con el cuerpo entero (carne, frutos de la Mata, Hongos) **va al frasco**
+como una carga, si falta alguna (`systems/Frasco.ts`). Solo el Fervor empieza
+de cero en cada zona.
 
 Bancos de pruebas: `?tactil` va directo al Atrio, `?tactil&inicio` pasa por la
 pantalla de inicio, `?cinematica` va directo al cierre del Nivel 1 y `?nivel=2`

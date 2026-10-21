@@ -93,9 +93,11 @@ export class Hongo implements Habitante {
       this.aviso.setVisible(ahoraCerca);
     }
     if (this.cerca && this.ctx.jugador.interactuar) {
-      this.ctx.curar(ESPECIES.hongo.curacion);
+      const destino = this.ctx.curar(ESPECIES.hongo.curacion);
       sonido.hongoPop();
-      this.ctx.avisar('Hongo de Lámpara  ·  +1 carne');
+      this.ctx.avisar(
+        destino === 'frasco' ? 'Hongo de Lámpara  ·  al frasco' : 'Hongo de Lámpara  ·  +1 carne',
+      );
       progreso.dejarHuella(this.huella);
       this.apagar();
     }

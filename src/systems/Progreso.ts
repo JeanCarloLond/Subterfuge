@@ -24,15 +24,19 @@ export interface ProgresoGuardado {
   cargaInjertadora: number;
   /** Sin el campo, el guardado es de antes del Nivel 2: el bisturi seguia en la mano. */
   bisturi?: boolean;
+  /** Vida y cargas de la Pocion (#174). Sin el campo, todo lleno, como antes. */
+  vida?: number | null;
+  pociones?: number | null;
 }
 
 /**
  * Estado de la partida que sobrevive a los cambios de escena.
  *
- * Guarda lo que se gana y se conserva: fragmentos, reliquias, lo catalogado y
- * la carga de la Injertadora. El resto (vida, Fervor, pociones) se reinicia por
- * diseno al bajar de zona. Vive fuera de las escenas para que
- * ninguna tenga que ir pasando el estado a la siguiente por parametros.
+ * Guarda lo que se gana y se conserva: fragmentos, reliquias, lo catalogado,
+ * la carga de la Injertadora, y la vida y las Pociones con las que el Cirujano
+ * sale de cada zona (#174). Solo el Fervor se reinicia al bajar. Vive fuera de
+ * las escenas para que ninguna tenga que ir pasando el estado a la siguiente
+ * por parametros.
  */
 class Progreso {
   private recogidos = new Set<string>();
@@ -84,6 +88,27 @@ class Progreso {
    * Injertadora: cada zona construye un Cirujano nuevo.
    */
   private bisturi = true;
+  /**
+   * La vida y las cargas de la Pocion del Cirujano (#174). Antes cada zona lo
+   * construia entero y bajar curaba gratis; ahora sale con lo que traia. null
+   * es "lleno": una partida nueva, o un guardado de antes de esto.
+   */
+  private vida: number | null = null;
+  private pociones: number | null = null;
+
+  get vidaDelCirujano(): number | null {
+    return this.vida;
+  }
+
+  get pocionesDelCirujano(): number | null {
+    return this.pociones;
+  }
+
+  /** Lo apunta la escena cada vez que cambia: asi cualquier guardado lo lleva. */
+  apuntarCirujano(vida: number, pociones: number): void {
+    this.vida = vida;
+    this.pociones = pociones;
+  }
 
   get tieneBisturi(): boolean {
     return this.bisturi;
@@ -363,6 +388,8 @@ class Progreso {
       mundos: [...this.mundos],
       cargaInjertadora: this.cargaInjertadora,
       bisturi: this.bisturi,
+      vida: this.vida,
+      pociones: this.pociones,
     };
   }
 
@@ -382,6 +409,8 @@ class Progreso {
       Math.max(0, Math.round(datos.cargaInjertadora)),
     );
     this.bisturi = datos.bisturi ?? true;
+    this.vida = datos.vida ?? null;
+    this.pociones = datos.pociones ?? null;
   }
 
   /** Volver al Atrio desde el cierre empieza una partida limpia. */
@@ -396,6 +425,8 @@ class Progreso {
     this.mundos.clear();
     this.cargaInjertadora = INJERTADORA.cargaInicial;
     this.bisturi = true;
+    this.vida = null;
+    this.pociones = null;
   }
 }
 

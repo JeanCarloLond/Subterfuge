@@ -83,8 +83,10 @@ export class Mata implements Habitante {
 
     const tirada = Math.random();
     if (tirada < c.comestible) {
-      this.ctx.curar(c.curacion);
-      this.ctx.avisar('fruto de la Mata  ·  +1 carne');
+      const destino = this.ctx.curar(c.curacion);
+      this.ctx.avisar(
+        destino === 'frasco' ? 'fruto de la Mata  ·  al frasco' : 'fruto de la Mata  ·  +1 carne',
+      );
     } else if (tirada < c.comestible + c.amargo) {
       this.ctx.avisar('fruto amargo');
     } else {

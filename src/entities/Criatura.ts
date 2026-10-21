@@ -2,6 +2,7 @@ import type Phaser from 'phaser';
 import type { TipoOfrenda } from '../objetos/Ofrenda';
 import type { EstadoCirujano, ResultadoDano } from './CirujanoSacerdote';
 import type { RangoPatrulla } from './Devoto';
+import type { DestinoCura } from '../systems/Frasco';
 import { Alfombra } from './Alfombra';
 import { Buitre } from './Buitre';
 import { Cerdo } from './Cerdo';
@@ -136,7 +137,8 @@ export interface ContextoCriatura {
   barraDeJefe(puntos: number, maximo: number, cortes?: readonly number[]): void;
   /** El nombre de un jefe, en grande y una vez. */
   presentar(titulo: string, subtitulo: string): void;
-  curar(cantidad: number): void;
+  /** Cura, o si el cuerpo esta entero, llena el frasco (#174). */
+  curar(cantidad: number): DestinoCura;
   ganarFervor(cantidad: number): void;
   /**
    * Pone otra criatura en el nivel, ya en marcha: el Remedo que sale de la

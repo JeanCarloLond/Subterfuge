@@ -10,9 +10,8 @@ import { ZONAS_MAPA } from '../lore/Mapa';
  * guardado · aquí volverás si caes"). Al rezar, y al entrar en una zona, que
  * es cuando su primer Altar se enciende solo.
  *
- * No se guarda la vida, las pociones ni el Fervor. Rezar los repone, y cada
- * zona construye un Cirujano nuevo: al continuar se vuelve como tras caer,
- * entero, delante del Altar.
+ * La vida y las Pociones van dentro del Progreso (#174): se continua con las
+ * que se tenian. El Fervor no se guarda: cada zona empieza sin el.
  *
  * Es otra cosa que `Memoria`: aquello es lo descubierto alguna vez, para la
  * web, y no se borra nunca. Esto es UNA partida, y se borra al empezar otra.

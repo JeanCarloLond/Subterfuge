@@ -21,6 +21,7 @@ import { progreso, type TipoReliquia } from '../systems/Progreso';
 import { esfuerzo } from '../systems/Esfuerzo';
 import { sonido } from '../systems/Sonido';
 import { Vitalidad } from '../systems/Vitalidad';
+import { destinoDeCura, type DestinoCura } from '../systems/Frasco';
 
 export type EstadoCirujano =
   | 'suelo'
@@ -145,15 +146,25 @@ export class CirujanoSacerdote {
     this.escena = escena;
     this.controles = controles;
 
-    // Las reliquias recogidas en zonas anteriores siguen contando.
+    // Las reliquias recogidas en zonas anteriores siguen contando, y la vida y
+    // las Pociones son las que traia (#174): bajar de zona no cura.
     this.vitalidad = new Vitalidad(VITALIDAD.maxima + progreso.vitalidadExtra);
+    const vida = progreso.vidaDelCirujano;
+    if (vida !== null) this.vitalidad.fijar(vida);
     this.fervor = new Fervor();
     this.cargasPocionMax = POCION.cargasMaximas + progreso.pocionesExtra;
-    this.cargasPocion = this.cargasPocionMax;
+    this.cargasPocion = Math.min(
+      this.cargasPocionMax,
+      Math.max(0, progreso.pocionesDelCirujano ?? this.cargasPocionMax),
+    );
 
     this.sprite = escena.physics.add.sprite(x, y, 'cirujano-placeholder');
     this.sprite.setOrigin(0.5, 1);
     this.sprite.setCollideWorldBounds(true);
+    // La caida se mide desde donde aparece. Con el 0 de partida, el primer
+    // aterrizaje de cada zona contaba como una caida desde lo alto del mundo
+    // y costaba vida al entrar (#174 lo destapo: antes bajar curaba).
+    this.inicioCaidaY = y;
 
     const cuerpo = this.cuerpo;
     // El sprite mide 16x32, pero el capirote NO colisiona: la caja empieza a la
@@ -920,6 +931,25 @@ export class CirujanoSacerdote {
   }
 
   /** Rezar en un Altar repone el frasco sin devolver el Fervor gastado. */
+  /**
+   * Una cura recogida (carne, fruto, Hongo). Con el cuerpo herido, cura; con
+   * el cuerpo entero, va al frasco como una carga de la Pocion (#174).
+   */
+  curarOGuardar(cantidad: number): DestinoCura {
+    const destino = destinoDeCura(
+      this.vitalidad.puntos,
+      this.vitalidad.maxima,
+      this.cargasPocion,
+      this.cargasPocionMax,
+    );
+    if (destino === 'vida') this.vitalidad.curar(cantidad);
+    if (destino === 'frasco') {
+      this.cargasPocion += 1;
+      this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
+    }
+    return destino;
+  }
+
   reponerEnAltar(): void {
     this.vitalidad.restaurar();
     this.cargasPocion = this.cargasPocionMax;
