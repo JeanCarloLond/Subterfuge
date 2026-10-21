@@ -28,6 +28,19 @@ describe('Recuentos por nivel', () => {
     expect(progreso.reliquiasDelNivel(1) + progreso.reliquiasDelNivel(2)).toBe(RELIQUIAS.length);
   });
 
+  it('el cierre del Nivel 2 cuenta el descenso entero: las 10 hojas', async () => {
+    const { progreso, CODICE_EN_JUEGO, RELIQUIAS } = await modulos();
+    for (const hoja of CODICE_EN_JUEGO) progreso.recogerFragmento(hoja.id);
+    for (const r of RELIQUIAS) progreso.recogerReliquia(r.id, r.tipo);
+
+    expect(progreso.fragmentosHasta(1)).toBe(8);
+    expect(progreso.fragmentosTotalesHasta(1)).toBe(8);
+    expect(progreso.fragmentosHasta(2)).toBe(10);
+    expect(progreso.fragmentosTotalesHasta(2)).toBe(10);
+    expect(progreso.reliquiasHasta(2)).toBe(RELIQUIAS.length);
+    expect(progreso.reliquiasTotalesHasta(1)).toBe(progreso.reliquiasTotalesDelNivel(1));
+  });
+
   it('una ficha del Nivel 2 no falta en el Registro del cierre del Nivel 1', async () => {
     const { progreso, REGISTRO } = await modulos();
     const deArriba = REGISTRO.filter((f) => (f.nivel ?? 1) === 1);

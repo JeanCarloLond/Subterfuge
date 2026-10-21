@@ -19,8 +19,8 @@ const COLOR = { texto: '#4a4038', activo: '#d6cfc4' };
  * escalonadas y las salidas que se eligen al final.
  *
  * Con el Nivel 2 (#156) el cierre del Nivel 1 dejo de ser el final del juego:
- * ahora ofrece seguir huyendo o volver al Atrio. Cada nivel cuenta lo SUYO
- * —sus hojas, sus reliquias— y el Registro hasta donde se ha podido ver.
+ * ahora ofrece seguir huyendo o volver al Atrio. Cada cierre cuenta hasta su
+ * nivel: el del 1, lo de arriba; el del 2, el descenso entero.
  *
  * Restriccion del universo que cualquier texto aqui debe respetar: los
  * Primigenios son ciegos. No pueden "mirar", "observar" ni "ver" nada.
@@ -118,20 +118,21 @@ export abstract class EscenaCierre extends Phaser.Scene {
   }
 
   /**
-   * Recuento de un nivel. Es la recompensa por explorar y el motivo por el que
-   * un lore-hunter vuelve a bajar.
+   * Recuento hasta ese nivel, incluido: el cierre del Nivel 1 cuenta lo suyo
+   * (8 hojas) y el del Nivel 2 el descenso entero (las 10). Es la recompensa
+   * por explorar y el motivo por el que un lore-hunter vuelve a bajar.
    */
   protected textoRecuento(nivel: 1 | 2): string {
-    const fragmentos = progreso.fragmentosDelNivel(nivel);
-    const reliquias = progreso.reliquiasDelNivel(nivel);
+    const fragmentos = progreso.fragmentosHasta(nivel);
+    const reliquias = progreso.reliquiasHasta(nivel);
     const codice =
       fragmentos === 0
         ? 'ningún fragmento del Códice'
-        : `${fragmentos} de ${progreso.fragmentosTotalesDelNivel(nivel)} fragmentos del Códice`;
+        : `${fragmentos} de ${progreso.fragmentosTotalesHasta(nivel)} fragmentos del Códice`;
     const relicario =
       reliquias === 0
         ? ''
-        : `   ·   ${reliquias} de ${progreso.reliquiasTotalesDelNivel(nivel)} reliquias`;
+        : `   ·   ${reliquias} de ${progreso.reliquiasTotalesHasta(nivel)} reliquias`;
     // El Registro tambien cuenta: es la mitad del libro, y catalogarlo entero
     // exige haberse cruzado con todo lo que el Vientre tiene dentro.
     const registro = `   ·   ${progreso.fichasHasta(nivel)} de ${progreso.fichasTotalesHasta(nivel)} fichas`;

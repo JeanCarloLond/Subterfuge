@@ -151,6 +151,18 @@ class Progreso {
     return CODICE_EN_JUEGO.filter((f) => f.nivel === nivel).length;
   }
 
+  /**
+   * Las hojas recogidas hasta ese nivel, incluido. Es lo que cuenta cada
+   * cierre: el del Nivel 1 premia sus 8, y el del Nivel 2 el Codice entero.
+   */
+  fragmentosHasta(nivel: 1 | 2): number {
+    return CODICE_EN_JUEGO.filter((f) => f.nivel <= nivel && this.recogidos.has(f.id)).length;
+  }
+
+  fragmentosTotalesHasta(nivel: 1 | 2): number {
+    return CODICE_EN_JUEGO.filter((f) => f.nivel <= nivel).length;
+  }
+
   get haySinLeer(): boolean {
     return [...this.recogidos].some((id) => !this.leidos.has(id));
   }
@@ -310,6 +322,15 @@ class Progreso {
 
   reliquiasTotalesDelNivel(nivel: 1 | 2): number {
     return RELIQUIAS.filter((r) => r.nivel === nivel).length;
+  }
+
+  /** Las reliquias hasta ese nivel, incluido: lo que cuenta cada cierre. */
+  reliquiasHasta(nivel: 1 | 2): number {
+    return RELIQUIAS.filter((r) => r.nivel <= nivel && this.reliquias.has(r.id)).length;
+  }
+
+  reliquiasTotalesHasta(nivel: 1 | 2): number {
+    return RELIQUIAS.filter((r) => r.nivel <= nivel).length;
   }
 
   private contar(tipo: TipoReliquia): number {
