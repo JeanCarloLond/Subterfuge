@@ -180,6 +180,12 @@ export interface DefinicionNivel {
   inicio: { x: number; y: number };
   plataformas: readonly Plataforma[];
   paredes: readonly Pared[];
+  /**
+   * Paredes de membrana (#161), con el mismo formato que `paredes`. Chocan
+   * igual, pero con el bisturi en la mano el Cirujano se clava en ellas y
+   * trepa. `verificar-rutas` las cuenta como subida.
+   */
+  membranas?: readonly Pared[];
   devotos: readonly RondaDevoto[];
   /** Vestales: opcional, no toda zona tiene clero. */
   vestales?: readonly RondaDevoto[];
@@ -409,6 +415,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     aviso: Phaser.GameObjects.Text;
   }[] = [];
   private conteo?: ConteoInstrumental;
+  /** Tiles de membrana, por "x,y" de su esquina (#161). */
+  private tilesMembrana = new Set<string>();
   private nina?: Nina;
   /**
    * Los hostiles: todo lo que el tajo, el injerto y el sello pueden herir. Es
@@ -620,6 +628,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.salpicaduras = undefined;
     this.placas = [];
     this.conteo = undefined;
+    this.tilesMembrana = new Set();
     this.nina = undefined;
     this.avisoCharla = undefined;
     this.grupoEnemigos = undefined;
@@ -1118,6 +1127,21 @@ export abstract class EscenaNivel extends Phaser.Scene {
       for (let y = yInicio; y < yFin; y += T) poner(x, y);
     }
 
+    // La membrana (#161): tejido sobre la piedra. Choca igual que un muro;
+    // lo distinto es que el bisturi se clava en ella.
+    for (const [x, yInicio, yFin] of this.definicion.membranas ?? []) {
+      for (let y = yInicio; y < yFin; y += T) {
+        const pieza = suelos.create(
+          x,
+          y,
+          'membrana-muro-placeholder',
+        ) as Phaser.Physics.Arcade.Sprite;
+        pieza.setOrigin(0, 0).refreshBody();
+        this.tilesSolidos.add(`${x},${y}`);
+        this.tilesMembrana.add(`${x},${y}`);
+      }
+    }
+
     return suelos;
   }
 
@@ -1169,6 +1193,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
   private crearCirujano(x: number, y: number): void {
     this.cirujano = new CirujanoSacerdote(this, x, y, this.controles);
     this.physics.add.collider(this.cirujano.sprite, this.suelos);
+    this.cirujano.esMembrana = (x, y) =>
+      this.tilesMembrana.has(`${Math.floor(x / T) * T},${Math.floor(y / T) * T}`);
+    this.cirujano.eventos.on('clavado', (x: number, y: number) => {
+      this.impacto.rebote(x, y);
+    });
 
     // La vida y las Pociones viajan con el (#174): se apuntan cada vez que
     // cambian, asi cualquier guardado y el umbral los llevan. Muerto no se

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import {
   AGARRE,
+  CLAVADO,
   CAIDA,
   COMBATE,
   CONTACTO,
@@ -136,6 +137,22 @@ export class CirujanoSacerdote {
   /** El arco del golpe se dibuja una sola vez por swing. */
   private tajoMostrado = false;
   private direccionAgarre: -1 | 1 = 1;
+  /** Colgado del bisturi clavado en una membrana, y no de un borde (#161). */
+  private clavado = false;
+  /**
+   * En un muro normal, un agarre por salto: se gasta al engancharse y vuelve
+   * al pisar suelo. Antes se podia trepar cualquier pared a saltitos (#161);
+   * subir por una pared es cosa de la membrana y del bisturi.
+   */
+  private agarreGastado = false;
+  /**
+   * Hasta cuando un impulso hacia arriba no se recorta al soltar el salto
+   * (#161). El corte es para el salto; trepar o salir de una pared con el
+   * boton suelto se quedaba en nada.
+   */
+  private sinCorteHasta = -Infinity;
+  /** La escena dice si en (x, y) hay membrana: el Cirujano no conoce el nivel. */
+  esMembrana?: (x: number, y: number) => boolean;
   /** Enemigos ya golpeados por el swing actual: un golpe no cuenta dos veces. */
   private golpeadosEnSwing = new Set<object>();
 
@@ -309,6 +326,7 @@ export class CirujanoSacerdote {
 
     if (enSuelo) {
       this.ultimoInstanteEnSuelo = ahora;
+      this.agarreGastado = false;
       this.dashesEnAireRestantes = DASH.usosEnAire;
       if (!this.enAccionBloqueante()) this.saltosRestantes = 1;
 
@@ -1031,6 +1049,8 @@ export class CirujanoSacerdote {
   /** Salto variable: soltar el boton en ascenso recorta la altura. */
   private recortarSaltoSiSuelta(): void {
     const cuerpo = this.cuerpo;
+    // Trepar y saltar desde la pared no son saltos: no se cortan al soltar.
+    if (this.escena.time.now < this.sinCorteHasta) return;
     if (cuerpo.velocity.y < 0 && !this.controles.saltoMantenido) {
       cuerpo.setVelocityY(cuerpo.velocity.y * MOVIMIENTO.factorCorteSalto);
     }
@@ -1095,9 +1115,23 @@ export class CirujanoSacerdote {
     // Debe empujarse contra la pared para engancharse.
     if (eje !== contraPared) return;
 
+    // Con el bisturi, la membrana lo sostiene; sin el, es un muro mas.
+    const membrana =
+      this.armado &&
+      (this.esMembrana?.(this.sprite.x + contraPared * 12, this.sprite.y - 14) ?? false);
+    if (!membrana && this.agarreGastado) return;
+    this.clavado = membrana;
+    if (!membrana) this.agarreGastado = true;
+
     this.direccionAgarre = contraPared as -1 | 1;
     this.estado = 'agarre';
     sonido.agarre();
+    if (membrana) {
+      // Un pixel fuera de la pared: pegado a ella, el cuerpo se engancha en
+      // las juntas entre tiles al subir y no se mueve.
+      cuerpo.reset(this.sprite.x - contraPared, this.sprite.y);
+      this.eventos.emit('clavado', this.sprite.x + contraPared * 6, this.sprite.y - 18);
+    }
     cuerpo.setAllowGravity(false);
     cuerpo.setVelocity(0, AGARRE.deslizamiento);
     cuerpo.setAccelerationX(0);
@@ -1107,6 +1141,10 @@ export class CirujanoSacerdote {
   }
 
   private actualizarAgarre(ahora: number): void {
+    if (this.clavado) {
+      this.actualizarClavado(ahora);
+      return;
+    }
     const cuerpo = this.cuerpo;
     const saltoEncolado = ahora - this.instanteSaltoEncolado <= MOVIMIENTO.bufferSaltoMs;
 
@@ -1116,6 +1154,7 @@ export class CirujanoSacerdote {
       this.soltarAgarre(ahora);
       cuerpo.setVelocityY(-AGARRE.impulsoTrepar);
       cuerpo.setVelocityX(this.direccionAgarre * MOVIMIENTO.velocidadCaminar * 0.6);
+      this.sinCorteHasta = ahora + 350;
       this.instanteSaltoEncolado = -Infinity;
       return;
     }
@@ -1129,7 +1168,56 @@ export class CirujanoSacerdote {
     cuerpo.setVelocity(0, AGARRE.deslizamiento);
   }
 
+  /**
+   * Colgado del bisturi (#161): arriba trepa y abajo baja mientras haya
+   * membrana; el salto lo despega de la pared hacia fuera; empujar al otro
+   * lado lo suelta. Arriba del todo, sale como de un borde.
+   */
+  private actualizarClavado(ahora: number): void {
+    const cuerpo = this.cuerpo;
+    const lado = this.direccionAgarre;
+    const saltoEncolado = ahora - this.instanteSaltoEncolado <= MOVIMIENTO.bufferSaltoMs;
+    const hay = (dy: number) =>
+      this.esMembrana?.(this.sprite.x + lado * 12, this.sprite.y + dy) ?? false;
+
+    if (saltoEncolado) {
+      this.soltarAgarre(ahora);
+      this.instanteSaltoEncolado = -Infinity;
+      this.mirandoDerecha = lado < 0;
+      this.saltosRestantes = 1;
+      cuerpo.setVelocity(-lado * CLAVADO.saltoParedX, -CLAVADO.saltoParedY);
+      this.sinCorteHasta = ahora + 350;
+      sonido.salto();
+      return;
+    }
+    if (this.controles.ejeX === -lado) {
+      this.soltarAgarre(ahora);
+      return;
+    }
+    if (this.controles.arribaMantenido) {
+      if (hay(-30)) {
+        cuerpo.setVelocity(0, -CLAVADO.velocidadTrepa);
+      } else {
+        // Se acaba la membrana: un tiron hacia arriba que la saca del todo, y
+        // el jugador elige a que lado cae (la repisa puede estar a cualquiera).
+        sonido.trepar();
+        this.soltarAgarre(ahora);
+        this.saltosRestantes = 1;
+        cuerpo.setVelocity(0, -CLAVADO.saltoParedY);
+        this.sinCorteHasta = ahora + 350;
+      }
+      return;
+    }
+    if (this.controles.abajoMantenido) {
+      if (hay(2)) cuerpo.setVelocity(0, CLAVADO.velocidadTrepa);
+      else this.soltarAgarre(ahora);
+      return;
+    }
+    cuerpo.setVelocity(0, 0);
+  }
+
   private soltarAgarre(ahora: number): void {
+    this.clavado = false;
     this.cuerpo.setAllowGravity(true);
     this.finBloqueoAgarre = ahora + AGARRE.bloqueoTrasSoltarMs;
     this.estado = 'aire';

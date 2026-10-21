@@ -47,6 +47,7 @@ export class DuctosScene extends EscenaNivel {
 
         // El ducto, de abajo arriba, en zigzag.
         [448, 224, 6], //          x 448..544
+        [576, 224, 2], //          x 576..608 — junto a lo alto de la membrana
         [256, 288, 6], //          x 256..352
         [96, 368, 8], //           x 96..224
         [320, 432, 8], //          x 320..448 — Altar
@@ -65,8 +66,13 @@ export class DuctosScene extends EscenaNivel {
 
       paredes: [
         [0, 48, 928],
-        [624, 48, 928],
+        [624, 48, 240],
+        [624, 480, 928],
       ],
+
+      // La membrana del muro derecho (#161): con el bisturi, desde la repisa
+      // del Relicario se trepa clavandolo hasta arriba.
+      membranas: [[624, 240, 480]],
 
       // El nido es solo de la Serpiente (#167): nada mas pelea en el fondo, o se
       // comeria las escamas devueltas.

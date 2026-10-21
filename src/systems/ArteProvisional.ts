@@ -3135,6 +3135,35 @@ const ESCAMA: Figura = {
     '.nnnnn.',
   ],
 };
+// La membrana (#161): carne tensa sobre la piedra, con sus venas. Es la
+// pared donde se clava el bisturi; se tiene que distinguir de la silleria.
+const MEMBRANA_MURO: Figura = {
+  paleta: {
+    n: 0x4a1a24,
+    m: 0x8a3a48,
+    M: 0xa85a64,
+    r: 0x5c1f2a,
+  },
+  // prettier-ignore
+  filas: [
+    'nmmMmmmnnmmmMmmn',
+    'mmMMmrmmmmMMmmrm',
+    'mMmmmrrmmMmmmrrm',
+    'mmmmmmrmmmmmmmrm',
+    'nmmrmmmmnmmrmmmn',
+    'mmrrMmmmmmrrMmmm',
+    'mmrmMMmmmmrmMMmm',
+    'mmmmmmmnmmmmmmmn',
+    'nmmmMmmmnmmmMmmm',
+    'mmrmmmmmmmrmmmmm',
+    'mrrmmMmmmrrmmMmm',
+    'mrmmmMMmmrmmmMMm',
+    'mmmmmmmnmmmmmmmn',
+    'nmMmmrmmnmMmmrmm',
+    'mmMMmrrmmmMMmrrm',
+    'mmmmmmrnmmmmmmrn',
+  ],
+};
 // -- Poses de ataque (issue #146) --------------------------------------------
 //
 // Antes el ataque de un enemigo era un cambio de color y nada mas: se ponia
@@ -3474,6 +3503,7 @@ const FIGURAS: Record<string, Figura> = {
   'hud-injerto': HUD_INJERTO,
   'hud-injerto-vacio': HUD_INJERTO_VACIO,
   escama: ESCAMA,
+  'membrana-muro': MEMBRANA_MURO,
   'hud-bisturi': HUD_BISTURI,
   'hud-bisturi-vacio': HUD_BISTURI_VACIO,
   'hud-injertadora': HUD_INJERTADORA,

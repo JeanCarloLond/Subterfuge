@@ -96,6 +96,9 @@ describe('Sin bisturi', () => {
       expect(armado.some((l) => l.startsWith('GOLPEAR'))).toBe(true);
       expect(desarmado.some((l) => l.startsWith('GOLPEAR') || l.startsWith('CARGADO'))).toBe(false);
       expect(desarmado.some((l) => l.includes('rebotas'))).toBe(false);
+      // Clavarse en la membrana tambien es del bisturi (#161).
+      expect(armado.some((l) => l.startsWith('CLAVARSE'))).toBe(true);
+      expect(desarmado.some((l) => l.startsWith('CLAVARSE'))).toBe(false);
       expect(desarmado.some((l) => l.startsWith('EMPUJAR'))).toBe(true);
       expect(desarmado.some((l) => l.startsWith('PARRY'))).toBe(false);
     }

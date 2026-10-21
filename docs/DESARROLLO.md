@@ -157,6 +157,16 @@ suena. Al oír algo se para, ladea la cabeza hacia el sonido (el aviso que se
 aprende) y va a ese sitio; si no encuentra nada, vuelve a su ronda. Quién oye
 qué lo decide `systems/Ruido.ts`: un suelo de por medio se traga el ruido.
 
+**Clavar el bisturí en la carne (#161).** Las paredes de `membranas` (mismo
+formato que `paredes`) chocan igual, pero con el bisturí el Cirujano se clava en
+ellas y se queda: arriba trepa, abajo baja, salto lo despega de la pared hacia
+fuera, y arriba del todo sale con un tirón y elige a qué lado cae. En un muro
+normal, en cambio, solo hay **un agarre por salto**, que vuelve al pisar suelo:
+antes se podía trepar cualquier pared a saltitos, y subir por una pared es cosa
+de la membrana. Trepar y salir de una pared no se recortan al soltar el salto
+(antes se quedaban en nada). `verificar-rutas` cuenta la membrana como subida
+entre los tramos que la tocan.
+
 **Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
 Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
 guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:

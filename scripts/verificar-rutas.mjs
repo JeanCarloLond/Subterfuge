@@ -88,8 +88,30 @@ function alcanzable(desde, hacia) {
   return hueco(desde, hacia) <= conDash;
 }
 
+/**
+ * Las paredes de membrana (#161) son subida: con el bisturi, el Cirujano se
+ * clava y trepa. Dos tramos que tocan la misma membrana se alcanzan entre si,
+ * por alta que este uno sobre otro.
+ */
+function leerMembranas(archivo) {
+  const src = readFileSync(join(raiz, archivo), 'utf8');
+  return leerTuplas(src, 'membranas', /\[\s*(-?\d+),\s*(-?\d+),\s*(-?\d+)\s*\]/g).map((m) => ({
+    x: Number(m[1]),
+    y0: Number(m[2]),
+    y1: Number(m[3]),
+  }));
+}
+
+/** El tramo esta junto a la membrana: se salta a ella desde el, o se sale arriba a el. */
+function junto(tramo, m) {
+  const separacion = Math.max(0, m.x - tramo.der, tramo.izq - (m.x + TILE));
+  return separacion <= 24 && tramo.y >= m.y0 - 40 && tramo.y <= m.y1 + alturaDoble;
+}
+
 function verificar(nombre, archivo) {
   const tramos = leerPlataformas(archivo);
+  const membranas = leerMembranas(archivo);
+  const porMembrana = (a, b) => membranas.some((m) => junto(a, m) && junto(b, m));
   if (tramos.length === 0) {
     console.log(`${nombre}: sin plataformas que verificar`);
     return true;
@@ -105,7 +127,8 @@ function verificar(nombre, archivo) {
   while (cola.length > 0) {
     const actual = cola.pop();
     tramos.forEach((candidato, i) => {
-      if (alcanzados.has(i) || !alcanzable(actual, candidato)) return;
+      if (alcanzados.has(i)) return;
+      if (!alcanzable(actual, candidato) && !porMembrana(actual, candidato)) return;
       alcanzados.add(i);
       cola.push(candidato);
     });

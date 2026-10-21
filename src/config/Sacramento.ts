@@ -112,6 +112,19 @@ export const AGARRE = {
 } as const;
 
 /**
+ * Clavar el bisturi en la carne (#161). En las paredes de membrana, con el
+ * bisturi en la mano, el Cirujano se queda colgado lo que haga falta, trepa a
+ * tirones y salta desde la pared. Es el instrumento, no magia.
+ */
+export const CLAVADO = {
+  /** Lo que sube o baja por la membrana mientras se mantiene arriba o abajo (px/s). */
+  velocidadTrepa: 70,
+  /** El salto desde la pared: hacia fuera y hacia arriba (px/s). */
+  saltoParedX: 180,
+  saltoParedY: 380,
+} as const;
+
+/**
  * Fervor: recurso de devocion.
  *
  * No se regenera solo. Se gana hiriendo y, sobre todo, parando golpes: la

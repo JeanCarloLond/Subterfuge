@@ -33,6 +33,7 @@ export const CONTROLES_COMBATE_TACTIL: readonly string[] = [
   'GOLPEAR   X',
   '          +^ arriba   +v abajo',
   '          abajo y acertar: rebotas',
+  'CLAVARSE  contra la carne, y ^ v',
   'CARGADO   mantener X  (30 Fervor)',
   'PARRY     P',
   'INJERTAR  F  lanzar un injerto',
@@ -59,6 +60,7 @@ export const CONTROLES_COMBATE: readonly string[] = [
   'GOLPEAR   J  o clic izquierdo',
   '          +W arriba  +S abajo',
   '          abajo y acertar: rebotas',
+  'CLAVARSE  contra la carne, y W S',
   'CARGADO   mantener J  (30 Fervor)',
   'PARRY     K  o clic derecho',
   'INJERTAR  F  lanzar un injerto',
@@ -90,6 +92,7 @@ export const CONTROLES_COMBATE_MANDO: readonly string[] = [
   'GOLPEAR   X',
   '          +arriba   +abajo',
   '          abajo y acertar: rebotas',
+  'CLAVARSE  contra la carne, arriba',
   'CARGADO   mantener X  (30 Fervor)',
   'PARRY     LB',
   'INJERTAR  RB  lanzar un injerto',
@@ -111,7 +114,7 @@ function sinBisturi(lineas: readonly string[]): string[] {
   let delFilo = false;
   for (const linea of lineas) {
     // Las lineas que empiezan por espacio continuan la de arriba.
-    if (!linea.startsWith(' ')) delFilo = /^(GOLPEAR|CARGADO)\b/.test(linea);
+    if (!linea.startsWith(' ')) delFilo = /^(GOLPEAR|CARGADO|CLAVARSE)\b/.test(linea);
     if (delFilo) continue;
     quedan.push(linea.replace(/^PARRY {5}/, 'EMPUJAR   '));
   }
