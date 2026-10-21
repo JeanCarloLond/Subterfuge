@@ -1,0 +1,4 @@
+#!/bin/sh
+# Comprueba el nombre del commit antes de crearlo (#179). Se activa solo con
+# `npm install` (script prepare). Las reglas, en scripts/convencion.mjs.
+exec node scripts/verificar-commit.mjs --archivo "$1"

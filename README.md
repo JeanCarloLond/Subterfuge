@@ -237,8 +237,10 @@ Para consultas o comentarios, contactar a los integrantes del equipo.
 
 3. Si el formato se queja, se arregla solo: `npm run format`
 4. Abre un Pull Request con la plantilla rellena. El CI vuelve a comprobarlo
-   todo y, si cambias lógica, pide que traigas su test. Los detalles, en
-   [CONTRIBUTING](CONTRIBUTING.md).
+   todo y, si cambias lógica, pide que traigas su test. `main` está protegida:
+   la PR se fusiona solo con la aprobación del líder del proyecto. Los commits y
+   el título se nombran `<gitmoji> <tipo>(<componente>): <descripción>`. Los
+   detalles, en [CONTRIBUTING](CONTRIBUTING.md).
 
 ### Comandos disponibles
 

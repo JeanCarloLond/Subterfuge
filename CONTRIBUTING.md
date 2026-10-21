@@ -5,8 +5,11 @@ Reglas cortas para que `main` se pueda jugar siempre.
 ## El flujo
 
 1. Cada cambio sale de una **issue**. Si no la hay, se crea primero.
-2. Una **rama** por cambio: `git checkout -b nivel2/geometria`.
-3. Antes de subir:
+2. Una **rama** por cambio, con el tipo delante: `git checkout -b feat/nivel2-geometria`,
+   `fix/umbral-galeria`.
+3. **Commits con nombre** (ver abajo). Tras clonar, `npm install` activa el hook
+   que lo comprueba al hacer `git commit`.
+4. Antes de subir:
 
    ```bash
    npm run verificar
@@ -15,9 +18,61 @@ Reglas cortas para que `main` se pueda jugar siempre.
    Es lo mismo que corre el CI: formato, lint, tipos, **tests**, las
    verificaciones del juego y el build. Si pasa en local, pasa allí.
 
-4. Un **PR** contra `main`, con la plantilla rellena y `Closes #N` si cierra la
+5. Un **PR** contra `main`, con la plantilla rellena y `Closes #N` si cierra la
    issue. Si la deja a medias, `Refs #N` y un comentario en la issue con lo que
-   falta.
+   falta. El título de la PR sigue la misma convención que los commits.
+6. **Revisión.** `main` está protegida: no se sube directo. Cada PR pide revisión
+   al líder del proyecto (@JeanCarloLond, en `.github/CODEOWNERS`) y solo se
+   fusiona con **su aprobación**, el **CI en verde** y las conversaciones
+   resueltas. Si subes cambios después de aprobada, la aprobación se anula y hay
+   que volver a pedirla. Se fusiona con **squash**: el título de la PR es el
+   commit que queda en `main`.
+
+## Commits
+
+Cada commit (y cada título de PR) se nombra así:
+
+```
+<gitmoji> <tipo>(<componente>): <descripción>
+
+✨ feat(juego): la niña sigue al Cirujano por el Nivel 2
+🐛 fix(ui): la E vuelve a llegar al umbral de la Galería
+📝 docs(repo): explica la convención de commits
+```
+
+- **El tipo dice qué clase de cambio es**, y cada uno lleva siempre el mismo
+  gitmoji, para que la lista de commits se lea de un vistazo:
+
+  | Gitmoji | Tipo       | Para                                                 |
+  | ------- | ---------- | ---------------------------------------------------- |
+  | ✨      | `feat`     | algo nuevo para quien juega o lee la web             |
+  | 🐛      | `fix`      | arreglar un fallo                                    |
+  | 📝      | `docs`     | solo documentación                                   |
+  | 🎨      | `style`    | formato o estilo del código, sin cambiar lo que hace |
+  | ♻️      | `refactor` | reordenar código sin cambiar lo que hace             |
+  | ⚡️      | `perf`     | que vaya más rápido o gaste menos                    |
+  | ✅      | `test`     | añadir o arreglar tests                              |
+  | 👷      | `ci`       | el CI y sus comprobaciones                           |
+  | 📦️      | `build`    | el build y las dependencias                          |
+  | 🔧      | `chore`    | mantenimiento y configuración que no cambia el juego |
+  | 🍱      | `assets`   | añadir o cambiar arte, audio u otros recursos        |
+  | ⏪️      | `revert`   | deshacer un commit anterior                          |
+
+- **El componente dice dónde**: `juego` (jugabilidad), `niveles` (diseño de
+  niveles), `ui` (HUD, menús, diálogos), `lore` (textos y canon), `arte`,
+  `audio`, `web` (el portal), `tecnico` (guardado, entrada, motor), `tests`,
+  `ci`, `repo` (configuración, scripts, plantillas) y `docs`. Uno, o dos
+  separados por coma (`fix(ui,juego): …`); si son más, son dos commits.
+- **La descripción**, en español, dice qué cambia en una frase: sin punto final,
+  y la cabecera entera en 72 caracteres como mucho.
+- Un cambio que rompe algo (un guardado que deja de valer) lleva `!`:
+  `♻️ refactor(tecnico)!: el guardado cambia de forma`.
+- Debajo, tras una línea en blanco, el porqué si hace falta, y `Closes #N`.
+- **Sin coautorías de IA** en los commits.
+
+Las reglas viven en `scripts/convencion.mjs`, con sus tests. Si un commit no
+pasa, el error dice qué falla y cómo se escribe. Para comprobar un mensaje a
+mano: `npm run verificar-commit -- --titulo "✨ feat(juego): …"`.
 
 ## Tests
 

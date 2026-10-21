@@ -1,0 +1,2 @@
+# Los hooks son scripts de sh: con finales CRLF el shebang no se lee (#179).
+.githooks/* text eol=lf

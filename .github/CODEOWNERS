@@ -1,0 +1,10 @@
+# Quien revisa que (#179). GitHub pide revision a estas personas en cada PR
+# que toque los archivos de la linea, y la proteccion de main exige su
+# aprobacion para fusionar.
+#
+# Ahora mismo, todo el repo es del lider: cualquier cambio pasa por el. Si
+# algun dia hay responsables por area, se añaden lineas debajo (la ultima que
+# coincide manda), por ejemplo:
+#   /web/    @JeanCarloLond @otra-persona
+
+*  @JeanCarloLond

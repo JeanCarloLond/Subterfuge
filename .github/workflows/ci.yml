@@ -5,7 +5,8 @@ on:
     branches: [main]
   pull_request:
     # labeled/unlabeled: poner o quitar `sin-tests` vuelve a pasar el CI.
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+    # edited: cambiar el titulo de la PR vuelve a comprobar su nombre.
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
   workflow_dispatch:
 
 # Si alguien empuja dos veces seguidas, cancela la ejecución anterior en vez de
@@ -83,6 +84,34 @@ jobs:
         env:
           SIN_TESTS: ${{ contains(github.event.pull_request.labels.*.name, 'sin-tests') && '1' || '0' }}
         run: node scripts/exigir-tests.mjs ${{ github.event.pull_request.base.sha }}
+
+  # Solo en los PR: el titulo y cada commit siguen la convencion
+  # `<gitmoji> <tipo>(<componente>): <descripcion>` (#179). El titulo cuenta
+  # doble: al fusionar con squash, es el mensaje del commit que queda en main.
+  convencion:
+    name: Nombres de commits y PR
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # El titulo entra por variable de entorno, nunca pegado en el comando:
+      # un titulo con comillas o $() no puede ejecutar nada.
+      - name: Título de la PR
+        env:
+          TITULO: ${{ github.event.pull_request.title }}
+        run: node scripts/verificar-commit.mjs --titulo "$TITULO"
+
+      - name: Commits de la PR
+        run: >-
+          node scripts/verificar-commit.mjs --rango
+          ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
 
   # Comprobaciones propias del juego. No son linters: verifican que el
   # contenido siga siendo jugable, que es lo que un linter no puede ver.
