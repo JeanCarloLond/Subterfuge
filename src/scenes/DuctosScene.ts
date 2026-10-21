@@ -24,6 +24,7 @@ export class DuctosScene extends EscenaNivel {
   protected definirNivel(): DefinicionNivel {
     return {
       mundo: { ancho: 640, alto: 960 },
+      telon: 'fondo-costillas',
       colorFondo: '#0d090b',
       musica: 'vientre-humedo',
       inicio: { x: 40, y: 900 },

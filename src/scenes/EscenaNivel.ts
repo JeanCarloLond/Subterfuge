@@ -204,6 +204,11 @@ export interface DefinicionNivel {
    * camara se desplaza mas despacio que el mundo.
    */
   fondo?: readonly Decorado[];
+  /**
+   * Telon de fondo de la zona, por clave de textura (#177). Sin indicar, las
+   * arcadas del Atrio.
+   */
+  telon?: string;
   /** Color del polvo en suspension. Calido arriba, frio y gris abajo. */
   polvo?: number;
   /**
@@ -632,7 +637,8 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const { ancho, alto } = RESOLUCION;
     const esquina = fijo(0, 0);
 
-    const lejano = this.add.tileSprite(esquina.x, esquina.y, ancho, alto, 'fondo-arcos');
+    const textura = this.definicion.telon ?? 'fondo-arcos';
+    const lejano = this.add.tileSprite(esquina.x, esquina.y, ancho, alto, textura);
     lejano.setOrigin(0, 0);
     lejano.setScrollFactor(0);
     // setTileScale agranda el PATRON dentro del telon. Con setScale se agrandaba
@@ -642,7 +648,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     lejano.setDepth(-20);
     this.fondoLejano = lejano;
 
-    const cercano = this.add.tileSprite(esquina.x, esquina.y, ancho, alto, 'fondo-arcos');
+    const cercano = this.add.tileSprite(esquina.x, esquina.y, ancho, alto, textura);
     cercano.setOrigin(0, 0);
     cercano.setScrollFactor(0);
     cercano.setAlpha(0.75);

@@ -30,6 +30,7 @@ export class SalasScene extends EscenaNivel {
     return {
       mundo: { ancho: 1040, alto: 400 },
       // El nivel más oscuro hasta ahora: metal quirúrgico sobre carne.
+      telon: 'fondo-azulejo',
       colorFondo: '#0c0a0c',
       musica: 'salas',
       inicio: { x: 70, y: 260 },

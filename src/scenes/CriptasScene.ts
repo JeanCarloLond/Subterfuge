@@ -29,6 +29,7 @@ export class CriptasScene extends EscenaNivel {
     return {
       mundo: { ancho: 720, alto: 1040 },
       // Mas oscuro que los Pasillos. Penumbra sedada, casi monocromo.
+      telon: 'fondo-nichos',
       colorFondo: '#0b0a0d',
       musica: 'criptas',
       inicio: { x: 60, y: 120 },

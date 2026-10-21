@@ -25,6 +25,7 @@ export class DesagueScene extends EscenaNivel {
   protected definirNivel(): DefinicionNivel {
     return {
       mundo: { ancho: 1280, alto: 480 },
+      telon: 'fondo-tuberias',
       colorFondo: '#0d0b09',
       musica: 'vientre-humedo',
       nina: true,

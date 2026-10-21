@@ -25,6 +25,7 @@ export class GaleriaScene extends EscenaNivel {
   protected definirNivel(): DefinicionNivel {
     return {
       mundo: { ancho: 1440, alto: 400 },
+      telon: 'fondo-bovedas',
       colorFondo: '#090c0a',
       musica: 'vientre-humedo',
       nina: true,

@@ -3573,6 +3573,12 @@ export function generarArteProvisional(escena: Phaser.Scene): void {
   rectangulo(escena, 'chispa-placeholder', 2, 2, 0xffffff);
 
   fondoArcos(escena, 'fondo-arcos');
+  fondoArchivo(escena);
+  fondoNichos(escena);
+  fondoAzulejo(escena);
+  fondoTuberias(escena);
+  fondoBovedas(escena);
+  fondoCostillas(escena);
   resplandor(escena, 'brillo-placeholder', 96);
   vineta(escena, 'vineta-placeholder', 480, 320);
 }
@@ -3678,6 +3684,175 @@ function rectangulo(
  * profundidad. Es arquitectura, no decorado: el Atrio es una ciudad dentro de
  * una catedral, y el fondo tiene que recordarlo.
  */
+// -- Telones de fondo por zona (#177) -----------------------------------------
+//
+// El fondo era la misma arcada del Atrio a los Ductos. Cada zona tiene ahora el
+// suyo, y juntos cuentan la regla del bible: cada capa esta mas lejos de
+// parecer un edificio, hasta que "la arquitectura ya es carne". Son baldosas de
+// 96x96 que se repiten, oscuras a proposito: el primer plano tiene que leerse
+// encima. Un PNG con la misma clave las sustituye.
+
+/** Un lienzo de 96x96 con el color de fondo puesto, y lo que haya que pintar. */
+function telon(
+  escena: Phaser.Scene,
+  clave: string,
+  fondo: number,
+  pintarlo: (g: Phaser.GameObjects.Graphics) => void,
+): void {
+  if (escena.textures.exists(clave)) return;
+  const g = escena.make.graphics({ x: 0, y: 0 }, false);
+  g.fillStyle(fondo, 1);
+  g.fillRect(0, 0, 96, 96);
+  pintarlo(g);
+  g.generateTexture(clave, 96, 96);
+  g.destroy();
+}
+
+/** Pasillos: el archivo. Armarios de cajones y ventanillas de registro. */
+function fondoArchivo(escena: Phaser.Scene): void {
+  telon(escena, 'fondo-archivo', 0x0e0d10, (g) => {
+    for (const y of [6, 54]) {
+      for (const x of [4, 28, 52, 76]) {
+        g.fillStyle(0x17151c, 1);
+        g.fillRect(x, y, 18, 38);
+        g.fillStyle(0x1f1c26, 1);
+        for (const dy of [9, 19, 29]) g.fillRect(x + 1, y + dy, 16, 1);
+        g.fillStyle(0x2a2632, 1);
+        for (const dy of [4, 14, 24, 34]) g.fillRect(x + 8, y + dy, 2, 1);
+      }
+    }
+  });
+}
+
+/** Criptas: nichos en hilera, con su losa, donde se espera dormido. */
+function fondoNichos(escena: Phaser.Scene): void {
+  telon(escena, 'fondo-nichos', 0x0d0c0f, (g) => {
+    for (const y of [10, 42, 74]) {
+      for (const x of [6, 38, 70]) {
+        g.fillStyle(0x16151b, 1);
+        g.fillRect(x, y + 5, 22, 16);
+        g.fillCircle(x + 11, y + 6, 11);
+        g.fillStyle(0x09080b, 1);
+        g.fillRect(x + 3, y + 7, 16, 14);
+        g.fillCircle(x + 11, y + 7, 8);
+        g.fillStyle(0x1c1a21, 1);
+        g.fillRect(x - 2, y + 21, 26, 2);
+      }
+    }
+  });
+}
+
+/** Salas: azulejo de quirofano, con lo que nadie limpia entre las juntas. */
+function fondoAzulejo(escena: Phaser.Scene): void {
+  telon(escena, 'fondo-azulejo', 0x100d0e, (g) => {
+    g.fillStyle(0x1b1618, 1);
+    for (let i = 0; i < 96; i += 12) {
+      g.fillRect(i, 0, 1, 96);
+      g.fillRect(0, i, 96, 1);
+    }
+    // Algunos azulejos mas claros, por sitio y no al azar: sale igual siempre.
+    g.fillStyle(0x151113, 1);
+    for (const [cx, cy] of [
+      [1, 1],
+      [4, 2],
+      [6, 5],
+      [2, 6],
+      [5, 7],
+    ]) {
+      g.fillRect(cx * 12 + 1, cy * 12 + 1, 11, 11);
+    }
+    // Lo que gotea por las juntas.
+    g.fillStyle(0x2a1316, 1);
+    for (const [x, y, largo] of [
+      [24, 13, 9],
+      [60, 37, 14],
+      [84, 61, 7],
+      [36, 73, 11],
+    ]) {
+      g.fillRect(x, y, 1, largo);
+    }
+  });
+}
+
+/** El Desague: tuberias, sus juntas y una rejilla. Ocre y oxido. */
+function fondoTuberias(escena: Phaser.Scene): void {
+  telon(escena, 'fondo-tuberias', 0x0e0c0a, (g) => {
+    for (const [y, alto] of [
+      [18, 6],
+      [62, 9],
+    ]) {
+      g.fillStyle(0x1c1712, 1);
+      g.fillRect(0, y, 96, alto);
+      g.fillStyle(0x261f17, 1);
+      g.fillRect(0, y, 96, 1);
+      g.fillStyle(0x221b14, 1);
+      for (const x of [14, 58]) g.fillRect(x, y - 1, 5, alto + 2);
+    }
+    g.fillStyle(0x1a1511, 1);
+    g.fillRect(38, 0, 6, 96);
+    g.fillStyle(0x231c15, 1);
+    for (const y of [8, 44, 84]) g.fillRect(37, y, 8, 4);
+    // La rejilla.
+    g.fillStyle(0x07060a, 1);
+    g.fillRect(66, 30, 20, 20);
+    g.fillStyle(0x221b14, 1);
+    for (let x = 66; x <= 86; x += 4) g.fillRect(x, 30, 1, 20);
+    g.fillRect(66, 30, 21, 1);
+    g.fillRect(66, 49, 21, 1);
+  });
+}
+
+/** La Galeria: bovedas y raices que bajan de ellas. Verde enfermo. */
+function fondoBovedas(escena: Phaser.Scene): void {
+  telon(escena, 'fondo-bovedas', 0x0b0d0b, (g) => {
+    g.lineStyle(3, 0x151b15, 1);
+    for (const cx of [0, 48, 96]) {
+      g.beginPath();
+      g.arc(cx, 96, 40, Math.PI, Math.PI * 2);
+      g.strokePath();
+    }
+    g.fillStyle(0x1a2116, 1);
+    for (const [x, largo] of [
+      [20, 30],
+      [33, 18],
+      [70, 36],
+      [86, 22],
+    ]) {
+      g.fillRect(x, 0, 1, largo);
+      g.fillRect(x - 2, Math.round(largo * 0.5), 2, 1);
+      g.fillRect(x + 1, Math.round(largo * 0.7), 2, 1);
+    }
+  });
+}
+
+/** Los Ductos: costillas y tejido. Aqui la arquitectura ya es carne. */
+function fondoCostillas(escena: Phaser.Scene): void {
+  telon(escena, 'fondo-costillas', 0x100a0c, (g) => {
+    g.lineStyle(4, 0x21121a, 1);
+    for (const y of [12, 44, 76]) {
+      g.beginPath();
+      g.arc(48, y + 40, 46, Math.PI * 1.15, Math.PI * 1.85);
+      g.strokePath();
+    }
+    g.fillStyle(0x1a0f13, 1);
+    for (const [x, y, r] of [
+      [14, 30, 5],
+      [78, 62, 6],
+      [40, 86, 4],
+    ])
+      g.fillCircle(x, y, r);
+    g.fillStyle(0x2a1218, 1);
+    for (const [x, y, largo] of [
+      [60, 8, 20],
+      [20, 54, 16],
+      [88, 20, 12],
+    ]) {
+      g.fillRect(x, y, 1, largo);
+      g.fillRect(x + 1, y + Math.round(largo / 2), 1, Math.round(largo / 2));
+    }
+  });
+}
+
 function fondoArcos(escena: Phaser.Scene, clave: string): void {
   const ancho = 96;
   const alto = 96;
