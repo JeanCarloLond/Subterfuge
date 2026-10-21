@@ -3622,6 +3622,82 @@ const GUARDIA_ESTOCADA = pose(GUARDIA, {
   33: '......nnnnnnnnnn..........',
 });
 
+// El cazarrecompensas de Elegidos (#164): capucha, abrigo de cuero gastado y
+// la cadena del garfio al cinto. Un rastreador, no un soldado.
+const CAZADOR: Figura = {
+  paleta: {
+    n: 0x14100f, // contorno
+    c: 0x4a3a2e, // el abrigo de cuero, gastado
+    C: 0x6a5240, // el abrigo, luz
+    h: 0x9a7f66, // piel
+    e: 0x1e1611, // el ojo que asoma bajo la capucha
+    M: 0x9ca193, // la cadena al cinto
+    S: 0x5b5c57, // la cadena en sombra
+    b: 0x2e231b, // las botas
+  },
+  // prettier-ignore
+  filas: [
+    '.......nnnnn........',
+    '......nccccCn.......',
+    '.....ncccccCCn......',
+    '.....nccnnnnCn......',
+    '.....ncnhhhhnn......',
+    '.....ncnhehhn.......',
+    '.....ncnhhhhn.......',
+    '......nnhhhn........',
+    '.....nccnnncn.......',
+    '....ncccccccCn......',
+    '...ncccccccccCn.....',
+    '...nccCcccccCcn.....',
+    '...nccCcccccCchn....',
+    '...nccCcccccCnhn....',
+    '...nccMMMMMMcn......',
+    '...ncMSMSMSMcn......',
+    '...nccccccccCn......',
+    '...ncccccccccn......',
+    '...ncccccccccn......',
+    '...nccccnccccn......',
+    '...ncccn.ncccn......',
+    '...ncccn.ncccn......',
+    '...nccn...nccn......',
+    '...nccn...nccn......',
+    '...nccn...nccn......',
+    '...nbbn...nbbn......',
+    '...nbbn...nbbn......',
+    '...nbbn...nbbn......',
+    '...nbbn...nbbn......',
+    '..nbbbn...nbbbn.....',
+    '..nbbbbn..nbbbbn....',
+    '..nnnnnn..nnnnnn....',
+  ],
+};
+// Con el brazo en alto, haciendo girar la cadena: el aviso del garfio.
+// prettier-ignore
+const CAZADOR_GIRA = pose(CAZADOR, {
+  3: '.....nccnnnnCnhn....',
+  4: '.....ncnhhhhnnhn....',
+  5: '.....ncnhehhnnhn....',
+  6: '.....ncnhhhhnnhn....',
+  7: '......nnhhhnncn.....',
+  12: '...nccCcccccCcn.....',
+  13: '...nccCcccccCn......',
+});
+// El garfio, en la punta de la cadena.
+const GARFIO: Figura = {
+  paleta: {
+    M: 0x9ca193,
+    S: 0x5b5c57,
+  },
+  // prettier-ignore
+  filas: [
+    '.MMM.',
+    'M...M',
+    'M....',
+    'MM...',
+    '.SMMS',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -3637,6 +3713,9 @@ const FIGURAS: Record<string, Figura> = {
   guardia: GUARDIA,
   'guardia-alza': GUARDIA_ALZA,
   'guardia-estocada': GUARDIA_ESTOCADA,
+  cazador: CAZADOR,
+  'cazador-gira': CAZADOR_GIRA,
+  garfio: GARFIO,
   'hud-bisturi': HUD_BISTURI,
   'hud-bisturi-vacio': HUD_BISTURI_VACIO,
   'hud-injertadora': HUD_INJERTADORA,

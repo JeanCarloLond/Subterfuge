@@ -164,6 +164,13 @@ maneras: parar su estocada (larga, ≥ 500 ms de aviso), que lo deja aturdido co
 el escudo caído; ponerse a su espalda, porque se gira despacio; o caerle encima,
 porque el golpe hacia abajo no lo para. Pegado a él, barre corto.
 
+**El cazarrecompensas (#164).** Criatura `cazador`. Hace girar la cadena
+(≥ 500 ms de aviso) y lanza el garfio recto hasta 150 px (`systems/Garfio.ts`):
+el parry lo rompe y lo deja aturdido, el dash lo atraviesa, y si engancha
+arrastra al Cirujano (`arrastrarJugador` en el contexto) y le da un tajo, que
+también se para. De cerca es flojo. Va a por el Cirujano: la niña no existe
+para él.
+
 **Clavar el bisturí en la carne (#161).** Las paredes de `membranas` (mismo
 formato que `paredes`) chocan igual, pero con el bisturí el Cirujano se clava en
 ellas y se queda: arriba trepa, abajo baja, salto lo despega de la pared hacia

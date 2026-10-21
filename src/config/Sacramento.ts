@@ -625,6 +625,28 @@ export const ESPECIES = {
     /** Lo que tarda en volverse: la ventana para pasar a su espalda. */
     giroMs: 650,
   },
+  /**
+   * El cazarrecompensas de Elegidos (#164): rastreador, no soldado. Su arma es
+   * el garfio, que arrastra; de cerca es flojo.
+   */
+  cazador: {
+    vida: 6,
+    velocidad: 36,
+    /** Hasta donde llega el garfio (px), y a que velocidad sale (px/s). */
+    alcanceGarfio: 150,
+    velocidadGarfio: 320,
+    /** La cadena girando: el aviso del garfio. Se para con el parry. */
+    anticipacionMs: 560,
+    /** Enganchado, lo trae hacia si a esta velocidad (px/s), como mucho este rato. */
+    velocidadArrastre: 200,
+    arrastreMaxMs: 1200,
+    alcanceCuchillo: 22,
+    anticipacionCuchilloMs: 380,
+    cuchilladaMs: 120,
+    dano: 1,
+    aturdidoMs: 1100,
+    enfriamientoMs: 1300,
+  },
   /** El instrumento tibio: muerde una vez y huye; no acosa. */
   remedo: {
     vida: 2,

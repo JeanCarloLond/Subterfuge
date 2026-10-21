@@ -1412,6 +1412,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
         return false;
       },
       frenarJugador: () => cirujano.cuerpo.setVelocityX(0),
+      arrastrarJugador: (velocidadX) => {
+        if (!cirujano.estaMuerto) cirujano.cuerpo.setVelocityX(velocidadX);
+      },
       escupir: (x, y, direccion, danoDevuelto) =>
         this.lanzarSello(x, y, direccion, { textura: 'escama-placeholder', danoDevuelto }),
       zona: this.scene.key,

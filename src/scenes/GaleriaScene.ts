@@ -102,6 +102,8 @@ export class GaleriaScene extends EscenaNivel {
       ],
 
       criaturas: [
+        // Antes de los Ductos, otro cazarrecompensas (#164).
+        { tipo: 'cazador', x: 1320, y: 320, ronda: { izquierda: 1200, derecha: 1380 } },
         {
           tipo: 'mondador',
           ruta: [

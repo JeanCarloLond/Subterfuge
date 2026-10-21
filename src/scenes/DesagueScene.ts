@@ -74,7 +74,6 @@ export class DesagueScene extends EscenaNivel {
       devotos: [
         { x: 460, y: 288, izquierda: 400, derecha: 530, vendado: true },
         { x: 300, y: 432, izquierda: 60, derecha: 540, vendado: true },
-        { x: 1040, y: 352, izquierda: 950, derecha: 1180, vendado: true },
       ],
 
       altares: [
@@ -113,6 +112,8 @@ export class DesagueScene extends EscenaNivel {
 
       // La Mata crece donde se tira el tejido: junto a los charcos.
       criaturas: [
+        // A la salida, el cazarrecompensas (#164): ya les sigue el rastro.
+        { tipo: 'cazador', x: 1100, y: 352, ronda: { izquierda: 960, derecha: 1180 } },
         { tipo: 'mata', x: 850, y: 304 },
         { tipo: 'mata', x: 140, y: 432 },
       ],

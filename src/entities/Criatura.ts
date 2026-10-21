@@ -9,6 +9,7 @@ import { Cerdo } from './Cerdo';
 import { Cuervo } from './Cuervo';
 import { FlorDeHueso } from './FlorDeHueso';
 import { GuardiaCruzada } from './GuardiaCruzada';
+import { Cazarrecompensas } from './Cazarrecompensas';
 import type { Contrato, Habitante } from './Habitante';
 import { Hongo } from './Hongo';
 import { Mata } from './Mata';
@@ -56,7 +57,8 @@ export type CriaturaDef =
   | { tipo: 'flor'; x: number; y: number }
   /** (x, y): borde izquierdo del hueco, a la altura del suelo; crece a la derecha. */
   | { tipo: 'tejido'; x: number; y: number; anchoTiles: number }
-  | { tipo: 'guardia'; x: number; y: number; ronda: RangoPatrulla };
+  | { tipo: 'guardia'; x: number; y: number; ronda: RangoPatrulla }
+  | { tipo: 'cazador'; x: number; y: number; ronda: RangoPatrulla };
 
 export type TipoCriatura = CriaturaDef['tipo'];
 
@@ -82,6 +84,7 @@ export const CONTRATO: Readonly<Record<TipoCriatura, Contrato>> = {
   flor: 'neutral',
   tejido: 'neutral',
   guardia: 'hostil',
+  cazador: 'hostil',
   zarza: 'peligro',
   alfombra: 'peligro',
   vena: 'peligro',
@@ -108,6 +111,7 @@ export const FICHA_DE_CRIATURA: Readonly<Record<TipoCriatura, string>> = {
   // existe en el Registro, asi que verlo no cataloga nada.
   tejido: 'tejido',
   guardia: 'guardia',
+  cazador: 'cazador',
 };
 
 /**
@@ -163,6 +167,8 @@ export interface ContextoCriatura {
    * (#167). Devuelto quita `danoDevuelto`.
    */
   escupir(x: number, y: number, direccion: number, danoDevuelto: number): void;
+  /** Tira del Cirujano en horizontal a esa velocidad (px/s): el garfio (#164). */
+  arrastrarJugador(velocidadX: number): void;
   /**
    * Gasta un injerto de la Injertadora. Si no hay, avisa y devuelve false:
    * pulsar y que no pase nada se lee como un boton roto.
@@ -201,6 +207,7 @@ const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   flor: (ctx, d) => new FlorDeHueso(ctx, d.x, d.y),
   tejido: (ctx, d) => new PuenteTejido(ctx, d.x, d.y, d.anchoTiles),
   guardia: (ctx, d) => new GuardiaCruzada(ctx, d.x, d.y, d.ronda),
+  cazador: (ctx, d) => new Cazarrecompensas(ctx, d.x, d.y, d.ronda),
 };
 
 /**

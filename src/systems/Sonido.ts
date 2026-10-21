@@ -46,7 +46,8 @@ export type ClaseEnemigo =
   | 'hongo'
   | 'flor'
   | 'tejido'
-  | 'guardia';
+  | 'guardia'
+  | 'cazador';
 
 /** Volumen de la Lluvia Tibia en calma y cuando arrecia con la Marea. */
 const LLUVIA_CALMA = 0.018;
@@ -833,6 +834,12 @@ class Sonido {
   rebote(): void {
     this.tono({ desde: 2600, hasta: 1900, onda: 'triangle', duracion: 0.07, volumen: 0.16 });
     this.tono({ desde: 1300, hasta: 1250, onda: 'square', duracion: 0.05, volumen: 0.06 });
+  }
+
+  /** La cadena del cazarrecompensas: eslabones que giran y se tensan (#164). */
+  cadena(): void {
+    this.ruido({ duracion: 0.12, frecuencia: 4200, tipo: 'highpass', volumen: 0.12 });
+    this.tono({ desde: 900, hasta: 1400, onda: 'square', duracion: 0.06, volumen: 0.05 });
   }
 
   /** La niña golpea una tuberia: metal hueco que resuena (#167). */

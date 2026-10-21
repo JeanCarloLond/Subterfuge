@@ -73,6 +73,20 @@ export const REGISTRO: readonly FichaRegistro[] = [
     ],
   },
   {
+    id: 'cazador',
+    familia: 'oficio',
+    nombre: 'Cazarrecompensas de Elegidos',
+    textura: 'cazador-placeholder',
+    hallazgo: 'visto en los Niveles Reformados',
+    nivel: 2,
+    descripcion: [
+      'Rastrea a Elegidos fugados y a Ayunantes. Cobra en',
+      'diezmo perdonado: cada uno que devuelve es una deuda',
+      'menos en su casa. Lanza un garfio y arrastra; de cerca',
+      'no vale gran cosa, y lo sabe.',
+    ],
+  },
+  {
     id: 'guardia',
     familia: 'fieles',
     nombre: 'Guardia de la Cruzada',
