@@ -2287,11 +2287,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
   }
 
   private actualizarConteo(): void {
-    if (!this.conteo || this.cirujano.estaMuerto) return;
+    if (!this.conteo || this.conteo.terminado || this.cirujano.estaMuerto) return;
     this.conteo.actualizar(
       this.cirujano.sprite.x,
       this.cirujano.sprite.y,
-      this.controles.interactuarPresionado,
+      () => this.controles.interactuarPresionado,
       this.time.now,
     );
   }

@@ -70,8 +70,14 @@ export class ConteoInstrumental {
     return this.conteo.terminado;
   }
 
-  /** @returns true si la E se uso aqui, para que nadie mas la lea. */
-  actualizar(jx: number, jy: number, interactuar: boolean, ahora: number): boolean {
+  /**
+   * La E se pide con `leerE`, y solo con una pieza al alcance: leer la tecla
+   * la consume (JustDown), y leerla siempre dejaba sin ella al umbral, a las
+   * placas y a los fieles de toda la zona (#173).
+   *
+   * @returns true si la E se uso aqui.
+   */
+  actualizar(jx: number, jy: number, leerE: () => boolean, ahora: number): boolean {
     if (this.conteo.terminado || this.ocupado) {
       this.aviso.setVisible(false);
       return false;
@@ -101,7 +107,7 @@ export class ConteoInstrumental {
     this.aviso.setVisible(elegida >= 0);
     if (elegida < 0) return false;
     this.aviso.setX(this.piezas[elegida].sprite.x);
-    if (!interactuar) return false;
+    if (!leerE()) return false;
 
     this.resolver(elegida, this.conteo.tomar(elegida));
     return true;
