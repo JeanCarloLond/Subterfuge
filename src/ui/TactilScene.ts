@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { RESOLUCION } from '../config/Sacramento';
 import { tactil, type AccionTactil } from '../input/Tactil';
 import { toques } from '../input/Toques';
+import { progreso } from '../systems/Progreso';
 
 /**
  * La botonera de los dedos. Solo existe en aparatos tactiles.
@@ -131,6 +132,8 @@ export class TactilScene extends Phaser.Scene {
   private avisoGiro!: Phaser.GameObjects.Container;
   private enVertical = false;
   private tapado = false;
+  /** Sin bisturi el boton de golpear no se dibuja ni responde (#160). */
+  private armado = true;
 
   constructor() {
     super({ key: 'Tactil' });
@@ -143,6 +146,7 @@ export class TactilScene extends Phaser.Scene {
     this.grafico = this.add.graphics().setDepth(10);
     this.puestos = [];
     this.tapado = false;
+    this.armado = progreso.tieneBisturi;
 
     for (const boton of BOTONES) {
       const glifo = this.add
@@ -177,6 +181,7 @@ export class TactilScene extends Phaser.Scene {
     this.avisoGiro = this.crearAvisoGiro();
     this.colocar();
     this.escalaCambiada();
+    this.mostrarGlifos();
 
     const alCambiar = () => {
       this.colocar();
@@ -284,6 +289,11 @@ export class TactilScene extends Phaser.Scene {
    */
   update(): void {
     this.comprobarTapado();
+    if (this.armado !== progreso.tieneBisturi) {
+      this.armado = progreso.tieneBisturi;
+      this.mostrarGlifos();
+      this.dibujar();
+    }
 
     if (this.enVertical || this.tapado) {
       if (this.puestos.some((p) => p.activo)) {
@@ -318,6 +328,7 @@ export class TactilScene extends Phaser.Scene {
     let mejorDistancia = Infinity;
 
     for (const puesto of this.puestos) {
+      if (this.oculto(puesto)) continue;
       const distancia = Phaser.Math.Distance.Between(x, y, puesto.x, puesto.y);
       if (distancia <= puesto.alcance && distancia < mejorDistancia) {
         mejor = puesto;
@@ -347,8 +358,18 @@ export class TactilScene extends Phaser.Scene {
 
     if (tapado === this.tapado) return;
     this.tapado = tapado;
-    for (const puesto of this.puestos) puesto.glifo.setVisible(!tapado);
+    this.mostrarGlifos();
     this.dibujar();
+  }
+
+  private oculto(puesto: Puesto): boolean {
+    return puesto.boton.accion === 'atacar' && !this.armado;
+  }
+
+  private mostrarGlifos(): void {
+    for (const puesto of this.puestos) {
+      puesto.glifo.setVisible(!this.enVertical && !this.tapado && !this.oculto(puesto));
+    }
   }
 
   /**
@@ -363,7 +384,7 @@ export class TactilScene extends Phaser.Scene {
     this.enVertical = vertical;
     this.avisoGiro.setVisible(vertical);
     if (vertical) tactil.soltarTodo();
-    for (const puesto of this.puestos) puesto.glifo.setVisible(!vertical && !this.tapado);
+    this.mostrarGlifos();
     this.dibujar();
   }
 
@@ -372,6 +393,7 @@ export class TactilScene extends Phaser.Scene {
     if (this.enVertical || this.tapado) return;
 
     for (const puesto of this.puestos) {
+      if (this.oculto(puesto)) continue;
       const { x, y, radio, activo } = puesto;
 
       // Un halo oscuro debajo: sobre la piedra clara del Atrio un boton

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { destellar, sacudir } from './Ajustes';
 import { IMPACTO } from '../config/Sacramento';
 import { esfuerzo } from './Esfuerzo';
+import { progreso } from './Progreso';
 import { sonido, type ClaseEnemigo } from './Sonido';
 
 /**
@@ -76,6 +77,13 @@ export class Impacto {
     this.anillo(x, y, 34, 0xe8d9a0, 300);
     this.anillo(x, y, 20, 0xffffff, 200);
     this.chispas(x, y, 0, 16, 0xe8d9a0);
+
+    // Sin bisturi no hay filos que cruzar (#160): el empujon con el
+    // antebrazo se queda en los anillos y el polvo.
+    if (!progreso.tieneBisturi) {
+      this.chispas(x, y, 0, 10, 0x9a8a78);
+      return;
+    }
 
     // Y el gesto: dos filos en cruz que saltan y se abren. Es lo que dice
     // "lo has parado" mas fuerte que un golpe acertado.

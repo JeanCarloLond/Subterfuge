@@ -117,6 +117,18 @@ libro y las zonas que se pueden continuar, y `verificar-rutas` comprueba que
 coincide con la suya. Las tres zonas del Nivel 2 forman una sola capa del
 Vientre, la V (`escenas` en `lore/Vientre.ts`).
 
+**Sin bisturí (#160).** En la cinemática el Cirujano suelta el bisturí, y el
+Nivel 2 empieza con las manos vacías: `progreso.tieneBisturi` es falso desde el
+cierre del Nivel 1 (y con `?nivel=2`). Sin él no hay golpe ni cargado ni
+rebote; el parry se queda, como un empujón con el antebrazo que aturde sin
+herir. La ayuda lo refleja quitando esas líneas (`ayudaDeControles(conDedos,
+armado)`) y la botonera esconde el botón de golpear: no se dice «bloqueado».
+Lo devuelve el **conteo del instrumental** de la Galería (`conteo` en la
+definición del nivel, `objetos/ConteoInstrumental.ts`): bandejas con un
+bisturí de verdad entre Remedos, que tiemblan. Coger un Remedo muerde (nunca
+mata) y la bandeja se vuelve a contar con una pieza menos; la lógica, sin
+Phaser, está en `systems/Conteo.ts`, con sus tests.
+
 **Inicio y guardado (#149, #150).** Se entra por `InicioScene`: Descender,
 Continuar (si hay un descenso guardado), Opciones y el portal. El descenso se
 guarda (`systems/Guardado.ts`) al rezar en un Altar y al entrar en una zona:

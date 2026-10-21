@@ -16,6 +16,7 @@ import { Vestal } from '../entities/Vestal';
 import { Controles } from '../input/Controles';
 import { Altar } from '../objetos/Altar';
 import { FragmentoCodice } from '../objetos/FragmentoCodice';
+import { ConteoInstrumental } from '../objetos/ConteoInstrumental';
 import { Fiel } from '../entities/Fiel';
 import { tactil } from '../input/Tactil';
 import { Injerto } from '../entities/Injerto';
@@ -24,6 +25,7 @@ import { Reliquia } from '../objetos/Reliquia';
 import {
   CAIDA,
   DEVOTO,
+  ESPECIES,
   MAREAS,
   OFRENDA,
   REFORMADO,
@@ -231,6 +233,12 @@ export interface DefinicionNivel {
   llegada?: ClavePensamiento;
   /** Ayuda de controles. Solo el primer nivel la necesita. */
   mostrarAyuda?: boolean;
+  /**
+   * El conteo del instrumental (#160): `piezas` bandejas en fila desde x, con
+   * el bisturi de verdad entre Remedos. Solo aparece si el Cirujano no lo
+   * lleva.
+   */
+  conteo?: { x: number; y: number; piezas: number };
   /** Pista de fondo de la zona. Ver Musica.ts. */
   musica?: Pista;
   /**
@@ -363,6 +371,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     texto: string;
     aviso: Phaser.GameObjects.Text;
   }[] = [];
+  private conteo?: ConteoInstrumental;
   /**
    * Los hostiles: todo lo que el tajo, el injerto y el sello pueden herir. Es
    * el "grupoHostiles" de #90; se queda con su nombre porque Devoto, Vestal y
@@ -486,6 +495,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
 
     this.actualizarParallax();
     this.actualizarAltares();
+    this.actualizarConteo();
     this.actualizarFieles();
     this.actualizarUmbral();
     this.actualizarPlacas();
@@ -534,6 +544,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.charcoPisado = undefined;
     this.salpicaduras = undefined;
     this.placas = [];
+    this.conteo = undefined;
     this.grupoEnemigos = undefined;
     this.grupoNeutrales = undefined;
     this.grupoPeligros = undefined;
@@ -1371,6 +1382,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
       this.placas.push({ sprite, texto, aviso });
     }
 
+    if (this.definicion.conteo) this.crearConteo(this.definicion.conteo);
     if (this.definicion.jefe) this.crearJefe(this.definicion.jefe);
     if (this.definicion.reja) this.crearReja(this.definicion.reja);
     if (this.definicion.umbral) this.crearUmbral(this.definicion.umbral);
@@ -2183,6 +2195,60 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.abrirEncima('Dialogo', { escenaJuego: this.scene.key, dialogo: VOCES[fiel.clave] });
   }
 
+  /**
+   * Las bandejas del conteo (#160). Con el bisturi ya en la mano solo quedan
+   * las bandejas vacias: se ve donde fue, y no se puede repetir.
+   */
+  private crearConteo(datos: NonNullable<DefinicionNivel['conteo']>): void {
+    if (progreso.tieneBisturi) {
+      for (let i = 0; i < datos.piezas; i += 1) {
+        this.add
+          .image(datos.x + i * 20, datos.y, 'bandeja-placeholder')
+          .setOrigin(0.5, 1)
+          .setDepth(-3);
+      }
+      return;
+    }
+
+    this.conteo = new ConteoInstrumental(
+      this,
+      datos.x,
+      datos.y,
+      datos.piezas,
+      (x) => {
+        // Muerde, pero no mata: el conteo no se puede fracasar.
+        if (this.cirujano.vitalidad.puntos > 1) {
+          const resultado = this.cirujano.recibirDano(ESPECIES.remedo.dano, x);
+          if (resultado === 'herido') this.impacto.danoRecibido();
+        }
+      },
+      (x, y) => this.recuperarBisturi(x, y),
+    );
+  }
+
+  private actualizarConteo(): void {
+    if (!this.conteo || this.cirujano.estaMuerto) return;
+    this.conteo.actualizar(
+      this.cirujano.sprite.x,
+      this.cirujano.sprite.y,
+      this.controles.interactuarPresionado,
+      this.time.now,
+    );
+  }
+
+  /** El bisturi de verdad vuelve a la mano: desde aqui, el Nivel 2 se pelea. */
+  private recuperarBisturi(x: number, y: number): void {
+    if (!progreso.recuperarBisturi()) return;
+    sonido.parry();
+    this.impacto.parryLogrado(x, y - 4);
+    this.game.events.emit(EVENTOS_HUD.aviso, 'el bisturí vuelve a la mano');
+    // Ya armado, la ayuda vuelve a nombrar el golpe: se rehace el panel.
+    const visible = this.panelAyuda?.visible === true;
+    this.panelAyuda?.destroy();
+    this.crearAyudaControles(false);
+    this.panelAyuda?.setVisible(visible);
+  }
+
   /** Las placas del Registro se leen de pasada, con E, sin pausar nada. */
   private actualizarPlacas(): void {
     if (this.cirujano.estaMuerto) return;
@@ -2475,7 +2541,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     // En un movil, un panel que dice "SALTAR ESPACIO" es peor que no tener
     // ayuda: nombra teclas que ahi no existen.
     const conDedos = tactil.esAparatoTactil;
-    const ayuda = ayudaDeControles(conDedos);
+    const ayuda = ayudaDeControles(conDedos, progreso.tieneBisturi);
     const movimiento = this.add.text(12, margen, ayuda.movimiento.join('\n'), estilo);
     const combate = this.add.text(236, margen, ayuda.combate.join('\n'), estilo);
 

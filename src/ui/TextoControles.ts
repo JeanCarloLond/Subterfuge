@@ -101,25 +101,49 @@ export const CONTROLES_COMBATE_MANDO: readonly string[] = [
 export const CONTROLES_SISTEMA_MANDO: readonly string[] = ['START     pausa'];
 
 /** La ayuda que toca: la del mando si hay uno, la de los dedos o la del teclado. */
-export function ayudaDeControles(conDedos: boolean): {
+/**
+ * La columna de combate sin bisturi (#160): sin golpear, sin cargado y sin el
+ * rebote, que son del filo; y el parry pasa a llamarse por lo que es, un
+ * empujon con el antebrazo. No se dice "bloqueado": simplemente no esta.
+ */
+function sinBisturi(lineas: readonly string[]): string[] {
+  const quedan: string[] = [];
+  let delFilo = false;
+  for (const linea of lineas) {
+    // Las lineas que empiezan por espacio continuan la de arriba.
+    if (!linea.startsWith(' ')) delFilo = /^(GOLPEAR|CARGADO)\b/.test(linea);
+    if (delFilo) continue;
+    quedan.push(linea.replace(/^PARRY {5}/, 'EMPUJAR   '));
+  }
+  return quedan;
+}
+
+export function ayudaDeControles(
+  conDedos: boolean,
+  armado = true,
+): {
   movimiento: readonly string[];
   combate: readonly string[];
   sistema: readonly string[];
 } {
-  if (mando.conectado) {
-    return {
-      movimiento: CONTROLES_MOVIMIENTO_MANDO,
-      combate: CONTROLES_COMBATE_MANDO,
-      sistema: CONTROLES_SISTEMA_MANDO,
-    };
-  }
-  return conDedos
+  const ayuda = mando.conectado
     ? {
-        movimiento: CONTROLES_MOVIMIENTO_TACTIL,
-        combate: CONTROLES_COMBATE_TACTIL,
-        sistema: CONTROLES_SISTEMA_TACTIL,
+        movimiento: CONTROLES_MOVIMIENTO_MANDO,
+        combate: CONTROLES_COMBATE_MANDO,
+        sistema: CONTROLES_SISTEMA_MANDO,
       }
-    : { movimiento: CONTROLES_MOVIMIENTO, combate: CONTROLES_COMBATE, sistema: CONTROLES_SISTEMA };
+    : conDedos
+      ? {
+          movimiento: CONTROLES_MOVIMIENTO_TACTIL,
+          combate: CONTROLES_COMBATE_TACTIL,
+          sistema: CONTROLES_SISTEMA_TACTIL,
+        }
+      : {
+          movimiento: CONTROLES_MOVIMIENTO,
+          combate: CONTROLES_COMBATE,
+          sistema: CONTROLES_SISTEMA,
+        };
+  return armado ? ayuda : { ...ayuda, combate: sinBisturi(ayuda.combate) };
 }
 
 // Si alguien alarga una linea, que falle aqui y no en la pantalla del jugador.

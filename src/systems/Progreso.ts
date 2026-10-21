@@ -22,6 +22,8 @@ export interface ProgresoGuardado {
   casillas: [string, string[]][];
   mundos: [string, { ancho: number; alto: number }][];
   cargaInjertadora: number;
+  /** Sin el campo, el guardado es de antes del Nivel 2: el bisturi seguia en la mano. */
+  bisturi?: boolean;
 }
 
 /**
@@ -75,6 +77,28 @@ class Progreso {
    * la munición que costo pelear se perderia en la puerta.
    */
   private cargaInjertadora: number = INJERTADORA.cargaInicial;
+  /**
+   * Si el Cirujano lleva el bisturi. Lo suelta en la decision (cinematica,
+   * #147) y baja al Nivel 2 con las manos vacias; lo recupera en el conteo
+   * del instrumental de la Galeria (#160). Vive aqui por lo mismo que la
+   * Injertadora: cada zona construye un Cirujano nuevo.
+   */
+  private bisturi = true;
+
+  get tieneBisturi(): boolean {
+    return this.bisturi;
+  }
+
+  soltarBisturi(): void {
+    this.bisturi = false;
+  }
+
+  /** @returns true si no lo tenia: es la primera vez que vuelve a la mano. */
+  recuperarBisturi(): boolean {
+    if (this.bisturi) return false;
+    this.bisturi = true;
+    return true;
+  }
 
   dejarHuella(id: string): void {
     this.huellas.add(id);
@@ -317,6 +341,7 @@ class Progreso {
       casillas: [...this.casillas].map(([zona, casillas]) => [zona, [...casillas]]),
       mundos: [...this.mundos],
       cargaInjertadora: this.cargaInjertadora,
+      bisturi: this.bisturi,
     };
   }
 
@@ -335,6 +360,7 @@ class Progreso {
       INJERTADORA.cargaMaxima,
       Math.max(0, Math.round(datos.cargaInjertadora)),
     );
+    this.bisturi = datos.bisturi ?? true;
   }
 
   /** Volver al Atrio desde el cierre empieza una partida limpia. */
@@ -348,6 +374,7 @@ class Progreso {
     this.casillas.clear();
     this.mundos.clear();
     this.cargaInjertadora = INJERTADORA.cargaInicial;
+    this.bisturi = true;
   }
 }
 

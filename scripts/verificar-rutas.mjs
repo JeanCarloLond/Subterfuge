@@ -383,6 +383,14 @@ function verificarCriaturas(nombre, src) {
     }
   }
 
+  // Las bandejas del conteo (#160): una cada 20 px, todas sobre suelo.
+  const conteo = src.match(/conteo: \{\s*x: (\d+), y: (\d+), piezas: (\d+)/);
+  if (conteo) {
+    const [x, y, piezas] = conteo.slice(1).map(Number);
+    if (!sueloContinuo(plataformas, x - 8, x + (piezas - 1) * 20 + 8, y))
+      errores.push(`las bandejas del conteo en x=${x} y=${y} no estan enteras sobre el suelo`);
+  }
+
   if (errores.length === 0) {
     console.log(`${nombre}: OK — ${bloque.length} criatura(s) de pie`);
     return true;

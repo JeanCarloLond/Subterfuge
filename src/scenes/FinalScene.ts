@@ -28,6 +28,9 @@ export class FinalScene extends EscenaCierre {
   create(): void {
     this.empezarCierre();
     recordar('hitos', 'final');
+    // En la cinematica el Cirujano suelta el bisturi: baja al Nivel 2 sin el
+    // (#160). Volver al Atrio lo devuelve, porque empieza otra partida.
+    progreso.soltarBisturi();
     // El Nivel 1 ha terminado, el descenso no: si se cierra la pestaña aqui,
     // Continuar lleva al principio de la huida con lo recogido (#149, #156).
     guardado.guardar('Desague', 0);

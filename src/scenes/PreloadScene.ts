@@ -6,6 +6,7 @@ import { generarRetratos } from '../systems/RetratosProvisionales';
 import { generarCinematica } from '../systems/CinematicaProvisional';
 import { ponerCursor } from '../ui/Cursor';
 import { PISTAS, SIN_PRECARGA, type Pista } from '../systems/Musica';
+import { progreso } from '../systems/Progreso';
 
 /**
  * Preload: carga de assets y pantalla de espera.
@@ -121,7 +122,11 @@ export class PreloadScene extends Phaser.Scene {
 /** Por donde empieza el juego, segun los bancos de pruebas de la URL. */
 function escenaDeArranque(consulta: string): string {
   if (consulta.includes('cinematica')) return 'Final';
-  if (new URLSearchParams(consulta).get('nivel') === '2') return 'Desague';
+  if (new URLSearchParams(consulta).get('nivel') === '2') {
+    // Como tras la decision: el bisturi se quedo en la Sala (#160).
+    progreso.soltarBisturi();
+    return 'Desague';
+  }
   if (consulta.includes('tactil') && !consulta.includes('inicio')) return 'Atrio';
   return 'Inicio';
 }

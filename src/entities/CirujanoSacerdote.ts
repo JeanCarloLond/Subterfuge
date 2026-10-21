@@ -68,6 +68,18 @@ const CICLO_PASO = [
 /** Un cuadro cada tantos pixeles recorridos. Menos, y tiembla; mas, y patina. */
 const PX_POR_CUADRO = 9;
 
+/**
+ * Las mismas poses con las manos vacias (#160). En el Nivel 2 el Cirujano baja
+ * sin el bisturi hasta recuperarlo en el conteo del instrumental.
+ */
+const SIN_BISTURI: Readonly<Record<string, string>> = {
+  'cirujano-placeholder': 'cirujano-sin-bisturi-placeholder',
+  'cirujano-paso-a-placeholder': 'cirujano-sin-bisturi-paso-a-placeholder',
+  'cirujano-paso-b-placeholder': 'cirujano-sin-bisturi-paso-b-placeholder',
+  'cirujano-guardia-placeholder': 'cirujano-empujon-placeholder',
+  'cirujano-bebe-placeholder': 'cirujano-bebe-sin-bisturi-placeholder',
+};
+
 export class CirujanoSacerdote {
   readonly sprite: Phaser.Physics.Arcade.Sprite;
   /** Zona de dano del golpe. La escena la cruza con el grupo de enemigos. */
@@ -347,11 +359,27 @@ export class CirujanoSacerdote {
     return !this.enAccionBloqueante() && this.estado !== 'dash' && this.estado !== 'muerto';
   }
 
+  /** Lleva el bisturi. Se lee del Progreso: el conteo lo devuelve en mitad de la zona. */
+  private get armado(): boolean {
+    return progreso.tieneBisturi;
+  }
+
+  /** La pose que toca, con o sin el bisturi en la mano. */
+  private vestir(clave: string): string {
+    return this.armado ? clave : (SIN_BISTURI[clave] ?? clave);
+  }
+
+  /** Cambia el dibujo solo si cambia: setTexture reinicia el cuerpo de fisica. */
+  private ponerPose(clave: string): void {
+    const vestida = this.vestir(clave);
+    if (this.sprite.texture.key !== vestida) this.sprite.setTexture(vestida);
+  }
+
   private procesarEntradasDeCombate(ahora: number): void {
     // La suelta del boton se evalua ANTES del bloqueo de accion: el golpe
     // cargado se decide al soltar, y eso suele ocurrir durante el enfriamiento
     // del basico. Si se perdiera ahi, el cargado no saldria nunca.
-    if (this.controles.ataqueSoltado) {
+    if (this.controles.ataqueSoltado && this.armado) {
       const listo = this.cargaCompleta && this.fervor.alcanzaPara(COMBATE.cargado.costeFervor);
       this.inicioCargaAtaque = -Infinity;
 
@@ -382,7 +410,9 @@ export class CirujanoSacerdote {
       return;
     }
 
-    if (ahora < this.finEnfriamientoAtaque) return;
+    // Sin bisturi no hay golpe (#160): la tecla no hace nada, y la ayuda ni
+    // la nombra. Quedan el empujon, el dash, la Injertadora y la Pocion.
+    if (!this.armado || ahora < this.finEnfriamientoAtaque) return;
 
     // El golpe sale AL PULSAR, no al soltar: la respuesta tiene que ser
     // inmediata o el jugador cree que la tecla no funciona. Seguir manteniendo
@@ -776,7 +806,7 @@ export class CirujanoSacerdote {
     this.sprite.setOrigin(0.5, 1);
 
     this.sprite.setAlpha(1);
-    this.sprite.setTexture('cirujano-placeholder');
+    this.sprite.setTexture(this.vestir('cirujano-placeholder'));
     this.sprite.setPosition(x, y);
     this.inicioCaidaY = y;
     this.enSueloAntes = true;
@@ -1136,7 +1166,7 @@ export class CirujanoSacerdote {
           : null;
     if (pose) {
       this.recorridoPaso = 0;
-      if (this.sprite.texture.key !== pose) this.sprite.setTexture(pose);
+      this.ponerPose(pose);
       return;
     }
 
@@ -1151,9 +1181,7 @@ export class CirujanoSacerdote {
 
     if (quieto) {
       this.recorridoPaso = 0;
-      if (this.sprite.texture.key !== 'cirujano-placeholder') {
-        this.sprite.setTexture('cirujano-placeholder');
-      }
+      this.ponerPose('cirujano-placeholder');
       return;
     }
 
@@ -1162,7 +1190,7 @@ export class CirujanoSacerdote {
     // Un cuadro cada 9 px recorridos: a velocidad de paseo salen unos siete
     // cambios por segundo, que es donde deja de leerse a saltos.
     const clave = CICLO_PASO[Math.floor(this.recorridoPaso / PX_POR_CUADRO) % CICLO_PASO.length];
-    if (this.sprite.texture.key !== clave) this.sprite.setTexture(clave);
+    this.ponerPose(clave);
   }
 
   /**

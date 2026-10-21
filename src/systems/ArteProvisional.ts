@@ -3327,6 +3327,47 @@ const CIRUJANO_SIN_BISTURI_PASO_B = pose(CIRUJANO_PASO_B, {
   36: '...NNNnnnnnNNNNN........',
 });
 
+// Sin bisturi, el parry es un empujon con el antebrazo (#160): la misma
+// guardia, con la mano abierta donde iba el filo.
+// prettier-ignore
+const CIRUJANO_EMPUJON = pose(CIRUJANO_GUARDIA, {
+  16: '..qppPPPPPPPPPppqqpppmm.',
+  17: '..qppPPPPPPPPPppqqqqqmm.',
+});
+
+// Beber sin bisturi: la otra mano, vacia.
+// prettier-ignore
+const CIRUJANO_BEBE_SIN_BISTURI = pose(CIRUJANO_BEBE, {
+  26: '.....NNNNKNNNNm.........',
+  27: '....NpppppppppN.........',
+  28: '....NkKYKkppppN.........',
+  29: '....NpppppppppN.........',
+  30: '....NNNNNNNNNNN.........',
+  31: '....NNNNNNNNNNN.........',
+  32: '....NNNNnNNNNNN.........',
+  33: '....NNNnnNNNNNN.........',
+  34: '...NNNNnnnNNNNNN........',
+  35: '...NNNnnnnnNNNNN........',
+  36: '...NNNnnnnnNNNNN........',
+});
+
+// Un bisturi en su bandeja, para el conteo del instrumental (#160). Los
+// Remedos de al lado son este mismo dibujo: imitan forma y color.
+const BISTURI: Figura = {
+  paleta: {
+    k: 0xe3a940,
+    K: 0xfcd038,
+    Y: 0xf4ed93,
+    j: 0xcb6e2f,
+  },
+  // prettier-ignore
+  filas: [
+    '.......jkkkj',
+    'YYYKKKkjkKKk',
+    '.jjjjjjjkkkj',
+  ],
+};
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -3429,6 +3470,9 @@ const FIGURAS: Record<string, Figura> = {
   'cirujano-sin-bisturi': CIRUJANO_SIN_BISTURI,
   'cirujano-sin-bisturi-paso-a': CIRUJANO_SIN_BISTURI_PASO_A,
   'cirujano-sin-bisturi-paso-b': CIRUJANO_SIN_BISTURI_PASO_B,
+  'cirujano-empujon': CIRUJANO_EMPUJON,
+  'cirujano-bebe-sin-bisturi': CIRUJANO_BEBE_SIN_BISTURI,
+  bisturi: BISTURI,
 };
 
 /**

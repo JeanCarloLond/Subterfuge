@@ -68,6 +68,10 @@ export class GaleriaScene extends EscenaNivel {
 
       fragmentos: [[752, 150, 'codice-09']],
 
+      // El conteo del instrumental (#160): al principio de la galeria, antes
+      // de la Vestal, para que el resto de la zona ya se pelee.
+      conteo: { x: 280, y: 320, piezas: 4 },
+
       reliquias: [[1112, 176, 'galeria-frasco', 'frasco']],
 
       decorado: [
@@ -116,6 +120,12 @@ export class GaleriaScene extends EscenaNivel {
           140,
           320,
           'GALERÍA DE LIMPIEZA. Lo que los Mil rechazan es del Mondador. No se le estorba.',
+        ],
+        // La pista del conteo, en la voz de la Diócesis y con el dicho de la biblia.
+        [
+          236,
+          320,
+          'CONTEO DEL INSTRUMENTAL. Cada pieza, dos veces. Un bisturí tibio es un Remedo.',
         ],
       ],
 
