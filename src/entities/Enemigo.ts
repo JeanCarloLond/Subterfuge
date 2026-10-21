@@ -25,6 +25,12 @@ export interface Enemigo {
    */
   readonly pielDura?: boolean;
 
+  /**
+   * Un escudo que para segun de donde venga el golpe (#166). `origenX` es
+   * quien golpea; `desdeArriba`, si cae desde encima. true: no entra.
+   */
+  bloquea?(origenX: number, desdeArriba: boolean): boolean;
+
   /** @returns true si el golpe conecto. */
   recibirDano(cantidad: number, origenX: number): boolean;
 }

@@ -600,6 +600,31 @@ export const ESPECIES = {
     dano: 1,
     injertosAlMorir: 2,
   },
+  /**
+   * El guardia de la Cruzada (#166): escudo de autoclave que para de frente,
+   * estocada larga y anunciada, y un giro lento que deja ponerse a su espalda.
+   */
+  guardia: {
+    vida: 12,
+    velocidad: 30,
+    /** Desde aqui se pone en guardia y avanza tras el escudo (px). */
+    radioVista: 150,
+    alcanceEstocada: 46,
+    /** El aviso de la estocada: la alabarda atras. Es la lectura del parry. */
+    anticipacionEstocadaMs: 600,
+    estocadaMs: 160,
+    dano: 2,
+    /** Pegado a el (px), barre corto a la altura de las piernas. */
+    radioBarrido: 20,
+    anticipacionBarridoMs: 380,
+    barridoMs: 140,
+    danoBarrido: 1,
+    enfriamientoMs: 1000,
+    /** Parado: el escudo cae, y le entra de frente. Mas que un Devoto parado. */
+    aturdidoMs: 1400,
+    /** Lo que tarda en volverse: la ventana para pasar a su espalda. */
+    giroMs: 650,
+  },
   /** El instrumento tibio: muerde una vez y huye; no acosa. */
   remedo: {
     vida: 2,

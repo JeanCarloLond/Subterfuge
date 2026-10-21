@@ -3492,6 +3492,136 @@ const DEVOTO_VENDADO_GOLPE = pose(DEVOTO_GOLPE, {
   4: '....ndvvvvvvMSd.......',
 });
 
+// El guardia de la Cruzada (#166): coraza de placas de quirofano, alabarda
+// con hoja de bisturi y escudo de autoclave con su ojo de buey. Sin cruces.
+const GUARDIA: Figura = {
+  paleta: {
+    n: 0x14100f, // contorno
+    M: 0x9ca193, // placas de quirofano
+    S: 0x5b5c57, // placas en sombra
+    W: 0xc8ccd0, // placas, brillo
+    t: 0x487b84, // el ojo de buey del autoclave
+    T: 0x7fc9bd, // el ojo de buey, brillo
+    k: 0xe3a940, // la hoja de bisturi
+    K: 0xfcd038, // la hoja, brillo
+    h: 0x5d3927, // el asta
+    p: 0x3a2f45, // el sayo
+  },
+  // prettier-ignore
+  filas: [
+    '....K.....................',
+    '...KkK....................',
+    '...KkK....................',
+    '...KkK.....nnnnn..........',
+    '...nkn....nMMMMMn.........',
+    '....h....nMWWWWMMn........',
+    '....h....nMnnnnnMn........',
+    '....h....nMSSSSSMn........',
+    '....h.....nMMMMMn.........',
+    '....h....nnSSSSSnnnnnnnn..',
+    '....h...nMMWWMMMnSMMMMMSn.',
+    '....h..nMWWMMMMSnMSSSSSMn.',
+    '...nhn.nMWMMMMMSnMSnnnSMn.',
+    '...nhhnnMMMMMMMSnMntTTnMn.',
+    '....h.nMMSSSSMMSnMntTtnMn.',
+    '....h.nMMMMMMMMSnMSnnnSMn.',
+    '....h.npppppppppnMSSSSSMn.',
+    '....h.npppppppppnMMMMMMMn.',
+    '....h.nppppppppnnSMMMMMSn.',
+    '....h..nppppppn.nnnnnnnnn.',
+    '....h..nMMMMMMn...........',
+    '....h..nMSSSSMn...........',
+    '....h..nMMMMMMn...........',
+    '....h..nMMnnMMn...........',
+    '....h..nMMnnMMn...........',
+    '....h..nSSnnSSn...........',
+    '....h..nMMnnMMn...........',
+    '....h..nMMnnMMn...........',
+    '....h..nSSnnSSn...........',
+    '....h..nMMnnMMn...........',
+    '....h..nMMnnMMn...........',
+    '....h.nMMMnnMMMn..........',
+    '....h.nSSSnnSSSn..........',
+    '....h.nnnnnnnnnn..........',
+  ],
+};
+// La alabarda echada atras: el aviso de la estocada, lo que se lee para el parry.
+// prettier-ignore
+const GUARDIA_ALZA = pose(GUARDIA, {
+  0: '..........................',
+  1: '..........................',
+  2: '..........................',
+  3: '...........nnnnn..........',
+  4: '..........nMMMMMn.........',
+  5: '.........nMWWWWMMn........',
+  6: '.........nMnnnnnMn........',
+  7: '.........nMSSSSSMn........',
+  8: '..........nMMMMMn.........',
+  9: '.........nnSSSSSnnnnnnnn..',
+  10: '........nMMWWMMMnSMMMMMSn.',
+  11: '.......nMWWMMMMSnMSSSSSMn.',
+  12: '.......nMWMMMMMSnMSnnnSMn.',
+  13: '......nnMMMMMMMSnMntTTnMn.',
+  14: '......nMMSSSSMMSnMntTtnMn.',
+  15: '......nMMMMMMMMSnMSnnnSMn.',
+  16: '......npppppppppnMSSSSSMn.',
+  17: '......npppppppppnMMMMMMMn.',
+  18: '......nppppppppnnSMMMMMSn.',
+  19: 'K......nppppppn.nnnnnnnnn.',
+  20: 'KkhhhhhnMMMMMMn...........',
+  21: 'K......nMSSSSMn...........',
+  22: '.......nMMMMMMn...........',
+  23: '.......nMMnnMMn...........',
+  24: '.......nMMnnMMn...........',
+  25: '.......nSSnnSSn...........',
+  26: '.......nMMnnMMn...........',
+  27: '.......nMMnnMMn...........',
+  28: '.......nSSnnSSn...........',
+  29: '.......nMMnnMMn...........',
+  30: '.......nMMnnMMn...........',
+  31: '......nMMMnnMMMn..........',
+  32: '......nSSSnnSSSn..........',
+  33: '......nnnnnnnnnn..........',
+});
+// La estocada, por debajo del escudo.
+// prettier-ignore
+const GUARDIA_ESTOCADA = pose(GUARDIA, {
+  0: '..........................',
+  1: '..........................',
+  2: '..........................',
+  3: '...........nnnnn..........',
+  4: '..........nMMMMMn.........',
+  5: '.........nMWWWWMMn........',
+  6: '.........nMnnnnnMn........',
+  7: '.........nMSSSSSMn........',
+  8: '..........nMMMMMn.........',
+  9: '.........nnSSSSSnnnnnnnn..',
+  10: '........nMMWWMMMnSMMMMMSn.',
+  11: '.......nMWWMMMMSnMSSSSSMn.',
+  12: '.......nMWMMMMMSnMSnnnSMn.',
+  13: '......nnMMMMMMMSnMntTTnMn.',
+  14: '......nMMSSSSMMSnMntTtnMn.',
+  15: '......nMMMMMMMMSnMSnnnSMn.',
+  16: '......npppppppppnMSSSSSMn.',
+  17: '......npppppppppnMMMMMMMn.',
+  18: '......nppppppppnnSMMMMMSn.',
+  19: '.......nppppppn.nnnnnnnnnK',
+  20: '.......nMMMMMMhhhhhhhhkK..',
+  21: '.......nMSSSSMn..........K',
+  22: '.......nMMMMMMn...........',
+  23: '.......nMMnnMMn...........',
+  24: '.......nMMnnMMn...........',
+  25: '.......nSSnnSSn...........',
+  26: '.......nMMnnMMn...........',
+  27: '.......nMMnnMMn...........',
+  28: '.......nSSnnSSn...........',
+  29: '.......nMMnnMMn...........',
+  30: '.......nMMnnMMn...........',
+  31: '......nMMMnnMMMn..........',
+  32: '......nSSSnnSSSn..........',
+  33: '......nnnnnnnnnn..........',
+});
+
 const FIGURAS: Record<string, Figura> = {
   cirujano: CIRUJANO,
   'cirujano-paso-a': CIRUJANO_PASO_A,
@@ -3504,6 +3634,9 @@ const FIGURAS: Record<string, Figura> = {
   'hud-injerto-vacio': HUD_INJERTO_VACIO,
   escama: ESCAMA,
   'membrana-muro': MEMBRANA_MURO,
+  guardia: GUARDIA,
+  'guardia-alza': GUARDIA_ALZA,
+  'guardia-estocada': GUARDIA_ESTOCADA,
   'hud-bisturi': HUD_BISTURI,
   'hud-bisturi-vacio': HUD_BISTURI_VACIO,
   'hud-injertadora': HUD_INJERTADORA,

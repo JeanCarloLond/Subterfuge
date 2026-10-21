@@ -73,6 +73,20 @@ export const REGISTRO: readonly FichaRegistro[] = [
     ],
   },
   {
+    id: 'guardia',
+    familia: 'fieles',
+    nombre: 'Guardia de la Cruzada',
+    textura: 'guardia-placeholder',
+    hallazgo: 'visto en los Ductos',
+    nivel: 2,
+    descripcion: [
+      'Custodia las salas vedadas. Coraza de placas de quirófano,',
+      'alabarda con hoja de bisturí y escudo de autoclave:',
+      'lo que se esteriliza no se mancha. De frente no cede.',
+      'Se gira despacio, y eso es lo único que se le reprocha.',
+    ],
+  },
+  {
     id: 'vestal',
     familia: 'fieles',
     nombre: 'Vestal',

@@ -298,6 +298,11 @@ export class CirujanoSacerdote {
     this.eventos.emit('pociones', this.cargasPocion, this.cargasPocionMax);
   }
 
+  /** El golpe en curso va hacia abajo: un escudo de frente no lo para (#166). */
+  get golpeHaciaAbajo(): boolean {
+    return this.direccionAtaque === 'abajo';
+  }
+
   /** Variante del swing en curso, para que la escena module el impacto. */
   get golpeActualEsCargado(): boolean {
     return this.ataqueEnCurso === 'cargado';

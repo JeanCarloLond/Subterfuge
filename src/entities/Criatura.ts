@@ -8,6 +8,7 @@ import { Buitre } from './Buitre';
 import { Cerdo } from './Cerdo';
 import { Cuervo } from './Cuervo';
 import { FlorDeHueso } from './FlorDeHueso';
+import { GuardiaCruzada } from './GuardiaCruzada';
 import type { Contrato, Habitante } from './Habitante';
 import { Hongo } from './Hongo';
 import { Mata } from './Mata';
@@ -54,7 +55,8 @@ export type CriaturaDef =
   | { tipo: 'hongo'; x: number; y: number }
   | { tipo: 'flor'; x: number; y: number }
   /** (x, y): borde izquierdo del hueco, a la altura del suelo; crece a la derecha. */
-  | { tipo: 'tejido'; x: number; y: number; anchoTiles: number };
+  | { tipo: 'tejido'; x: number; y: number; anchoTiles: number }
+  | { tipo: 'guardia'; x: number; y: number; ronda: RangoPatrulla };
 
 export type TipoCriatura = CriaturaDef['tipo'];
 
@@ -79,6 +81,7 @@ export const CONTRATO: Readonly<Record<TipoCriatura, Contrato>> = {
   hongo: 'neutral',
   flor: 'neutral',
   tejido: 'neutral',
+  guardia: 'hostil',
   zarza: 'peligro',
   alfombra: 'peligro',
   vena: 'peligro',
@@ -104,6 +107,7 @@ export const FICHA_DE_CRIATURA: Readonly<Record<TipoCriatura, string>> = {
   // Sin ficha: es la Injertadora haciendo su oficio, no una especie. El id no
   // existe en el Registro, asi que verlo no cataloga nada.
   tejido: 'tejido',
+  guardia: 'guardia',
 };
 
 /**
@@ -196,6 +200,7 @@ const FABRICAS: { readonly [T in TipoCriatura]?: Fabrica<T> } = {
   hongo: (ctx, d) => new Hongo(ctx, d.x, d.y),
   flor: (ctx, d) => new FlorDeHueso(ctx, d.x, d.y),
   tejido: (ctx, d) => new PuenteTejido(ctx, d.x, d.y, d.anchoTiles),
+  guardia: (ctx, d) => new GuardiaCruzada(ctx, d.x, d.y, d.ronda),
 };
 
 /**

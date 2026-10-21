@@ -45,7 +45,8 @@ export type ClaseEnemigo =
   | 'vena'
   | 'hongo'
   | 'flor'
-  | 'tejido';
+  | 'tejido'
+  | 'guardia';
 
 /** Volumen de la Lluvia Tibia en calma y cuando arrecia con la Marea. */
 const LLUVIA_CALMA = 0.018;
@@ -287,6 +288,13 @@ class Sonido {
           volumen: 0.3,
           retardo: 0.03,
         });
+        break;
+
+      case 'guardia':
+        // Placas de quirofano: chapa que suena hueca, y debajo un cuerpo.
+        this.ruido({ duracion: 0.07, frecuencia: 3600, tipo: 'bandpass', volumen: 0.26 });
+        this.tono({ desde: 520, hasta: 380, onda: 'square', duracion: 0.12, volumen: 0.12 });
+        this.tono({ desde: 180, hasta: 110, onda: 'triangle', duracion: 0.1, volumen: 0.18 });
         break;
 
       case 'remedo':

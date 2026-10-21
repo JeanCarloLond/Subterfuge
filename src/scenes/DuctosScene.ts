@@ -123,6 +123,9 @@ export class DuctosScene extends EscenaNivel {
       // ritmo del Latido guardando el Relicario, y una Zarza en una repisa.
       criaturas: [
         { tipo: 'serpiente', x: 440, y: 928, arena: { izquierda: 150, derecha: 600 } },
+        // Delante de la Puerta, el guardia de la Cruzada (#166): se llega por
+        // la derecha y hay que pasarlo para llegar a ella.
+        { tipo: 'guardia', x: 220, y: 160, ronda: { izquierda: 130, derecha: 340 } },
         { tipo: 'vena', x: 548, y: 496, altoTiles: 3 },
         { tipo: 'zarza', x: 110, y: 368, altoTiles: 2 },
       ],

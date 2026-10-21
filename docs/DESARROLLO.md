@@ -157,6 +157,13 @@ suena. Al oír algo se para, ladea la cabeza hacia el sonido (el aviso que se
 aprende) y va a ese sitio; si no encuentra nada, vuelve a su ronda. Quién oye
 qué lo decide `systems/Ruido.ts`: un suelo de por medio se traga el ruido.
 
+**El guardia de la Cruzada (#166).** Criatura `guardia`. Su escudo de autoclave
+para de frente el tajo, el injerto y lo devuelto (`bloquea` en `Enemigo`, regla
+en `systems/Escudo.ts`): el golpe rebota y empuja al que golpea. Se pasa de tres
+maneras: parar su estocada (larga, ≥ 500 ms de aviso), que lo deja aturdido con
+el escudo caído; ponerse a su espalda, porque se gira despacio; o caerle encima,
+porque el golpe hacia abajo no lo para. Pegado a él, barre corto.
+
 **Clavar el bisturí en la carne (#161).** Las paredes de `membranas` (mismo
 formato que `paredes`) chocan igual, pero con el bisturí el Cirujano se clava en
 ellas y se queda: arriba trepa, abajo baja, salto lo despega de la pared hacia

@@ -1899,6 +1899,13 @@ export abstract class EscenaNivel extends Phaser.Scene {
       return;
     }
 
+    // Un escudo de frente (#166): rebota, y empuja hacia atras al que golpea.
+    if (enemigo.bloquea?.(this.cirujano.sprite.x, this.cirujano.golpeHaciaAbajo)) {
+      this.impacto.rebote(puntoX - direccion * 8, puntoY);
+      this.cirujano.cuerpo.setVelocityX(-direccion * 140);
+      return;
+    }
+
     enemigo.recibirDano(dano, this.cirujano.sprite.x);
 
     if (enemigo.estaMuerto) {
@@ -2035,9 +2042,9 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!enemigo || enemigo.estaMuerto) return;
     if (!injerto.consumir()) return;
 
-    if (enemigo.pielDura) {
+    if (enemigo.pielDura || enemigo.bloquea?.(injerto.sprite.x, false)) {
       this.impacto.rebote(injerto.sprite.x, injerto.sprite.y);
-      this.pistaPielDura();
+      if (enemigo.pielDura) this.pistaPielDura();
       injerto.destruir();
       return;
     }
@@ -2099,6 +2106,12 @@ export abstract class EscenaNivel extends Phaser.Scene {
     const enemigo = enemigoDe(spriteEnemigo);
     if (!enemigo || enemigo.estaMuerto) return;
     if (!sello.consumir()) return;
+
+    if (enemigo.bloquea?.(sello.sprite.x, false)) {
+      this.impacto.rebote(sello.sprite.x, sello.sprite.y);
+      sello.destruir();
+      return;
+    }
 
     enemigo.recibirDano(sello.dano, sello.sprite.x);
     this.impacto.golpeAsestado(enemigo.sprite.x, enemigo.sprite.y - 12, 0, true, enemigo.clase);
