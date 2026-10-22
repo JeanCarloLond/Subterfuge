@@ -33,6 +33,7 @@ recorrido = 144.0
 position = Vector2(56, 288)
 
 [node name="Cirujano" parent="." instance=ExtResource("3_cirujano")]
+reliquias_libres = true
 position = Vector2(76, 288)
 
 [node name="Interfaz" parent="." instance=ExtResource("5_interfaz")]

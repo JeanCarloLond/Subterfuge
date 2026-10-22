@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-grietas.png" id="13_mnbeh"]
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="14_24k3j"]
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="20_s3kvr"]
+[ext_resource type="PackedScene" path="res://escenas/reliquia.tscn" id="21_reliq"]
 
 [sub_resource type="Gradient" id="Gradient_l5xs4"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -671,6 +672,15 @@ shape = SubResource("WorldBoundaryShape2D_derecha")
 [node name="Techo" type="CollisionShape2D" parent="Bordes" unique_id=519431073]
 shape = SubResource("WorldBoundaryShape2D_techo")
 
+[node name="Reliquias" type="Node2D" parent="."]
+
+[node name="Pulmon" parent="Reliquias" instance=ExtResource("21_reliq")]
+position = Vector2(288, 688)
+
+[node name="Tendon" parent="Reliquias" instance=ExtResource("21_reliq")]
+position = Vector2(672, 1008)
+id = "tendon"
+
 [node name="Altares" type="Node2D" parent="." unique_id=1284567189]
 
 [node name="Entrada" parent="Altares" unique_id=1707419916 instance=ExtResource("5_altar")]
@@ -760,8 +770,8 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Interfaz" parent="." unique_id=1038421006 instance=ExtResource("7_interfaz")]
-ayuda = "←→ moverse · Espacio saltar · Shift dash · ↑ trepar · Esc salir
-J golpear (mantén: cargado) · K parry, luego J: contragolpe · Q poción · E rezar/ejecutar"
+ayuda = "←→ moverse · Espacio saltar · ↑ trepar · E rezar, tomar o ejecutar · Esc salir
+J golpear (mantén: cargado) · K parry, luego J: contragolpe · Q poción"
 
 [node name="Fin" type="CanvasLayer" parent="." unique_id=811240813]
 visible = false

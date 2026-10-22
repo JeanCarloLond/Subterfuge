@@ -12,6 +12,7 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 [autoload]
 
 Controles="*res://scripts/controles.gd"
+Progreso="*res://scripts/progreso.gd"
 
 [display]
 

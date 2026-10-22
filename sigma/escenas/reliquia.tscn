@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/reliquia.gd" id="1_reliquia"]
+[ext_resource type="Texture2D" path="res://arte/reliquias/pulmon.png" id="2_figura"]
+
+[sub_resource type="Gradient" id="Gradient_luz"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_luz"]
+gradient = SubResource("Gradient_luz")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Reliquia" type="Node2D"]
+script = ExtResource("1_reliquia")
+
+[node name="Luz" type="PointLight2D" parent="."]
+position = Vector2(0, -14)
+color = Color(0.95, 0.45, 0.4, 1)
+energy = 0.9
+texture = SubResource("GradientTexture2D_luz")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -14)
+texture = ExtResource("2_figura")
+
+[node name="Aviso" type="Label" parent="."]
+visible = false
+offset_left = -24.0
+offset_top = -40.0
+offset_right = 24.0
+offset_bottom = -28.0
+theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
+theme_override_font_sizes/font_size = 8
+text = "E  tomar"
+horizontal_alignment = 1

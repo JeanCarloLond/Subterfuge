@@ -57,6 +57,10 @@ const CAIDA_CON_POLVO := 260.0
 const COLOR_POLVO := Color(0.55, 0.47, 0.4, 0.8)
 const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
 
+## En las salas de prueba el cuerpo viene entero; en los niveles, el doble
+## salto y el dash esperan a sus reliquias.
+@export var reliquias_libres := false
+
 var movimiento: Movimiento
 var combate: Combate
 var vitalidad: int = Sacramento.VITALIDAD["maxima"]
@@ -89,6 +93,7 @@ func _ready() -> void:
 	movimiento = Movimiento.new(position.y)
 	movimiento.caida.connect(_al_caer)
 	combate = Combate.new()
+	_aplicar_reliquias()
 	for nombre in Animaciones.RECUENTO:
 		var lista: Array[Texture2D] = []
 		for i in Animaciones.RECUENTO[nombre]:
@@ -152,6 +157,23 @@ func _physics_process(delta: float) -> void:
 ## La caja que choca, en coordenadas del mundo.
 func caja() -> Rect2:
 	return Rect2(position.x - 5.0, position.y - 22.0, 10.0, 22.0)
+
+
+## Toma una reliquia: la habilidad queda para toda la partida.
+func ganar_reliquia(id: String) -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso:
+		progreso.ganar(id)
+	_aplicar_reliquias(id)
+	_chispas(position + Vector2(0, -30))
+
+
+func _aplicar_reliquias(recien := "") -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	var tiene := func(id: String) -> bool:
+		return reliquias_libres or id == recien or (progreso != null and progreso.tiene(id))
+	movimiento.puede_doble_salto = tiene.call("pulmon")
+	movimiento.puede_dash = tiene.call("tendon")
 
 
 ## Un golpe de un enemigo desde `origen_x`. Si la ventana del parry esta

@@ -17,6 +17,8 @@
  * exporta los recursos) y `hoja.png` (todas, ampliadas, para revisarlas de un
  * vistazo). Los PNG se suben al repo, como los provisionales.
  *
+ * Tambien saca las reliquias (`sigma/arte/reliquias/`), con las mismas piezas.
+ *
  * Uso:  npm run sigma:cirujano
  */
 
@@ -62,6 +64,10 @@ const PALETA = {
   venda: trio('#d9cbb0', '#efe5d2', '#a8987c'),
   sangre: trio('#8e2a24', '#a8382f', '#5e1a16'),
   vidrio: trio('#9fb3b8', '#d8e6e8', '#5f7378'),
+  // Las reliquias: restos de los Primigenios.
+  carne: trio('#a8382f', '#c85a4a', '#6e1e18'),
+  tendon: trio('#c8907a', '#e2b6a0', '#8a5a48'),
+  hueso: trio('#d9cbb0', '#f0e6d2', '#a8987c'),
 };
 
 // -- Geometria ----------------------------------------------------------------
@@ -281,9 +287,14 @@ function piezas(p) {
 
 /** Una pose a pixeles: matriz de [r, g, b, a]. */
 export function dibujar(pose) {
+  return rasterizar(piezas(pose), ANCHO, ALTO);
+}
+
+/** Piezas a pixeles, con sombreado por bandas y contorno. */
+function rasterizar(lista, ANCHO, ALTO) {
   const etiqueta = Array.from({ length: ALTO }, () => new Array(ANCHO).fill(-1));
   const materiales = [];
-  piezas(pose).forEach(([forma, material], i) => {
+  lista.forEach(([forma, material], i) => {
     materiales.push(material);
     for (let y = 0; y < ALTO; y += 1)
       for (let x = 0; x < ANCHO; x += 1) if (forma(x, y)) etiqueta[y][x] = i;
@@ -774,6 +785,30 @@ export const ANIMACIONES = {
   tajo,
 };
 
+// -- Las reliquias ------------------------------------------------------------
+//
+// Restos que los Primigenios dejan al compactarse: organos sueltos que aun
+// funcionan. Cada una da una habilidad (sigma/scripts/reliquia.gd). 20x20.
+
+const RELIQUIAS = {
+  // Un pulmon seco que aun respira una vez: el segundo salto.
+  pulmon: [
+    [capsula([10, 3], [10, 9], 1.2), 'hueso'],
+    [elipse([6.5, 11], 4, 6), 'carne'],
+    [elipse([13.5, 11], 4, 6), 'carne'],
+    [capsula([10, 8], [7, 11], 0.8), 'hueso'],
+    [capsula([10, 8], [13, 11], 0.8), 'hueso'],
+  ],
+  // Un tendon que todavia se contrae: el dash.
+  tendon: [
+    [capsula([3, 15], [8, 9], 1.6, 2.2), 'tendon'],
+    [capsula([8, 9], [13, 11], 2.2), 'tendon'],
+    [capsula([13, 11], [17, 4], 2.2, 1.6), 'tendon'],
+    [elipse([3, 16], 2.2, 2.2), 'hueso'],
+    [elipse([17, 3.5], 2.2, 2.2), 'hueso'],
+  ],
+};
+
 // -- PNG ----------------------------------------------------------------------
 
 const TABLA_CRC = Array.from({ length: 256 }, (_, n) => {
@@ -868,6 +903,11 @@ if (esPrincipal) {
     ].join('\n'),
   );
   writeFileSync(join(destino, 'hoja.png'), png(hoja(cuadros)));
+  const reliquias = join(raiz, 'sigma/arte/reliquias');
+  mkdirSync(reliquias, { recursive: true });
+  for (const [nombre, lista] of Object.entries(RELIQUIAS)) {
+    writeFileSync(join(reliquias, `${nombre}.png`), png(rasterizar(lista, 20, 20)));
+  }
   const total = Object.values(recuento).reduce((a, b) => a + b, 0);
   console.log(
     `${total} fotogramas en ${Object.keys(recuento).length} animaciones -> sigma/arte/cirujano/`,

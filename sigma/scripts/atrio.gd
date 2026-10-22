@@ -6,6 +6,12 @@
 ## muros quien es el Cirujano, lleva la interfaz y mira la caida al vacio y el
 ## umbral.
 ##
+## Las reliquias: el Pulmon Vacio (doble salto) a media bajada, en el camino y
+## lejos del Altar (una E no debe rezar y tomar a la vez), y el Tendon del
+## Mil (dash) en el nicho del fondo, al que solo se llega con el doble salto.
+## Con las dos se abre el camino alto de la derecha: el Atrio se vuelve a
+## recorrer, como un metroidvania.
+##
 ## La compactacion (#189): un techo que late bajo el segundo Altar. Avisa y
 ## baja, pero siempre deja sitio: aqui se aprende el aviso sin pagarlo. Los
 ## cierres van a los Pasillos: el Atrio es abierto, en zigzag, y en un sitio
@@ -38,6 +44,11 @@ func _ready() -> void:
 	for altar in $Altares.get_children():
 		altar.cirujano = _cirujano
 		altar.rezado.connect(_al_rezar.bind(altar))
+	for reliquia in $Reliquias.get_children():
+		reliquia.cirujano = _cirujano
+		reliquia.recogida.connect(func(nombre: String, efecto: String) -> void:
+			_interfaz.avisar("%s. %s" % [nombre, efecto])
+		)
 	_interfaz.conectar(_cirujano)
 
 

@@ -385,3 +385,17 @@ func test_saltar_de_espaldas_despega_hacia_fuera() -> void:
 	afirmar(mundo.mov.estado != Movimiento.Estado.AGARRE, "se suelta")
 	afirmar(mundo.mov.velocidad.x < 0.0, "hacia fuera")
 	afirmar(mundo.mov.velocidad.y < -300.0, "y hacia arriba, con fuerza")
+
+
+func test_sin_el_pulmon_no_hay_doble_salto() -> void:
+	var mundo := Mundo.new(-500.0)
+	mundo.mov.puede_doble_salto = false
+	mundo.paso(_entrada(0, true))
+	afirmar(mundo.mov.velocidad.y > -400.0, "en el aire, saltar no hace nada")
+
+
+func test_sin_el_tendon_no_hay_dash() -> void:
+	var mundo := Mundo.new()
+	mundo.mov.puede_dash = false
+	mundo.paso(_entrada(1, false, false, true))
+	afirmar(mundo.mov.estado != Movimiento.Estado.DASH, "Shift no hace nada")

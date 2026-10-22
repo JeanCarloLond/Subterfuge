@@ -73,6 +73,11 @@ var _fin_bloqueo_agarre := -INF
 ## Un agarre por salto: se gasta al engancharse y vuelve al tocar suelo.
 var _agarre_gastado := false
 var _direccion_agarre := 1
+## Lo que da cada reliquia (sigma/scripts/reliquia.gd). De serie, si: los tests
+## del movimiento prueban el cuerpo entero; el Cirujano los apaga hasta que
+## encuentra la reliquia.
+var puede_doble_salto := true
+var puede_dash := true
 ## Colgado de espaldas a la pared, listo para saltar hacia fuera.
 var agarre_girado := false
 var _sin_corte_hasta := -INF
@@ -159,7 +164,7 @@ func _resolver_salto(en_suelo: bool) -> void:
 	if en_suelo or ahora - _ultimo_en_suelo <= M["coyote_ms"]:
 		_saltar(M["impulso_salto"])
 		_saltos_restantes = 1
-	elif _saltos_restantes > 0:
+	elif _saltos_restantes > 0 and puede_doble_salto:
 		_saltar(M["impulso_doble_salto"])
 		_saltos_restantes -= 1
 
@@ -182,6 +187,8 @@ func _recortar_salto(entrada: Entrada) -> void:
 # -- Dash ----------------------------------------------------------------------
 
 func _intentar_dash(entrada: Entrada, en_suelo: bool) -> void:
+	if not puede_dash:
+		return
 	if ahora < _fin_enfriamiento_dash:
 		return
 	if estado == Estado.DASH or estado == Estado.AGARRE or _quieto():
