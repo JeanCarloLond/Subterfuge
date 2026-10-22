@@ -79,6 +79,14 @@ func caer_al_vacio() -> void:
 		_volver()
 
 
+## Aplastado entre un muro que avanza y la piedra (#186): cuesta vitalidad y
+## devuelve al Altar. El muro ya ha avisado antes de moverse.
+func aplastar(dano: int) -> void:
+	_perder(dano)
+	if vitalidad > 0:
+		_volver()
+
+
 ## Rezar en un Altar: se arrodilla, se cura del todo y ese Altar es el nuevo
 ## sitio donde vuelve. Devuelve false si no puede (en el aire, en un dash...).
 func rezar(altar: Vector2) -> bool:

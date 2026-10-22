@@ -14,8 +14,9 @@ Hace falta [Godot 4.7](https://godotengine.org/download), la versión estándar 
 `brew install --cask godot`. Luego, desde la raíz del repo:
 
 ```bash
-npm run sigma                # la portada: Espacio, el Atrio; E, la sala de prueba
-npm run sigma -- atrio       # directo a una escena de escenas/
+npm run sigma                # la portada: ↑↓ elige, Espacio entra
+npm run sigma -- atrio       # directo a una escena de escenas/ (atrio,
+                             # sala_prueba, sala_compactacion)
 npm run sigma:editor         # el proyecto en el editor de Godot
 npm run sigma:tests          # los tests
 ```
@@ -28,7 +29,11 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
 - **El Atrio** (#185): el mismo trazado que en Phaser, con la sillería del equipo, un
   Devoto, los dos Altares y el umbral del final. El Devoto todavía no se puede herir (el
   combate es #183): se esquiva o se le pasa a través con el dash.
-- **La sala de prueba** (#182): una repisa a cada altura que importa para el movimiento.
+- **La sala del movimiento** (#182): una repisa a cada altura que importa para el
+  movimiento.
+- **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un
+  pilar. Avisan antes de moverse (dos latidos, polvo, temblor) y, si aplastan, cuestan 2
+  puntos y devuelven al Altar.
 
 ## Probarlo
 
@@ -67,6 +72,10 @@ CI los pasa en cada push y cada PR.
   Phaser a la rejilla; no se vuelve a correr, porque pisaría lo pintado a mano.
 - **Capas de colisión**: 1 el mundo, 2 el Cirujano, 3 los enemigos. Los cuerpos solo
   chocan con el mundo; el daño se resuelve con las cajas.
+- **La compactación**: `scripts/compactacion.gd` es el ciclo, sin física (latido: reposo,
+  aviso, avance, cerrado, retroceso; o cierre: quieto hasta que se dispara y luego cerrado
+  para siempre). `scripts/muro.gd` es el muro: piedra de la capa 1 que se pisa y se agarra.
+  Los sonidos los calcula `scripts/sonidos.gd`, sin muestras, hasta que haya foley.
 - **La gravedad es 1000 de verdad**: el salto sube 92 px en continuo (88,9 a 60 Hz). En
   Phaser se sumaba dos veces y el salto real era de unos 43 px (#182).
 - Los archivos `.uid` que crea Godot se suben; la carpeta `.godot/` no.

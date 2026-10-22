@@ -69,6 +69,18 @@ const DEVOTO := {
 	"memoria_ms": 2000.0,
 }
 
+## La compactacion (#186): los muros que se mueven. Avisan antes de moverse
+## (dos latidos) y van despacio: se esquivan pensando, no con reflejos.
+const COMPACTACION := {
+	"aviso_ms": 1500.0,
+	"velocidad_avance": 32.0,
+	"cerrado_ms": 2000.0,
+	"velocidad_retroceso": 48.0,
+	"reposo_ms": 4000.0,
+	## Quedar entre un muro y la piedra: cuesta esto y devuelve al Altar.
+	"dano_aplastado": 2,
+}
+
 const DANO_POR_CAIDA := {
 	"sin_dano_hasta": 160.0,
 	"px_por_punto": 120.0,

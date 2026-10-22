@@ -82,7 +82,7 @@ sigue pendiente del equipo.
 - **Comandos** (desde la raíz del repo):
 
   ```bash
-  npm run sigma             # jugar (portada: Espacio el Atrio, E la sala de prueba)
+  npm run sigma             # jugar (la portada es un menú)
   npm run sigma -- atrio    # directo a una escena
   npm run sigma:editor      # el editor de Godot
   npm run sigma:tests       # importar y pasar los tests
@@ -114,6 +114,12 @@ cura y fija la vuelta), la caída al vacío y el umbral con el fin del prototipo
 `sigma/herramientas/importar_atrio.gd` **una sola vez**: desde entonces se edita en el
 editor.
 
+#186 la **compactación**: el ciclo en `sigma/scripts/compactacion.gd` (latido o cierre; nunca
+se mueve sin avisar, y hay test de eso), los muros en `muro.gd` (empujan; si aplastan contra
+la piedra cuestan 2 puntos y devuelven al Altar) y una sala de prueba
+(`sala_compactacion.tscn`). El aviso son dos latidos, polvo y temblor; los sonidos se
+calculan en `sonidos.gd`.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -121,7 +127,8 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 
 1. #185 sigue abierta hasta que **Jean y Alejo comparen** el Atrio de Sigma con el de Phaser y
    anoten qué se siente mejor y qué peor (en la issue).
-2. #186 la compactación (paredes que se mueven): lo que hace distinto a Sigma.
+2. La compactación en el Atrio: muros que laten y pasillos que se cierran detrás, en el nivel
+   de verdad (issue nueva tras #186).
 3. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms. Con él, el
    Devoto del Atrio se puede herir.
 4. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
