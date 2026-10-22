@@ -17,7 +17,6 @@ const LETRA_S := 0.035
 const LECTURA_S := 1.8
 ## Las fuentes: Jacquard, pixel gotica (SIL OFL, arte/fuentes/OFL.txt).
 const FUENTE_TITULO := preload("res://arte/fuentes/Jacquard12-Regular.ttf")
-const FUENTE_NARRACION := preload("res://arte/fuentes/JacquardaBastarda9-Regular.ttf")
 
 var _plano: Node2D
 var _texto: Label
@@ -39,11 +38,17 @@ func _ready() -> void:
 	_texto.anchor_right = 1.0
 	_texto.anchor_top = 1.0
 	_texto.anchor_bottom = 1.0
-	_texto.offset_top = -72.0
-	_texto.offset_bottom = -40.0
+	# La narracion en la letra legible (VT323) a 32 px, el doble de su tamano:
+	# nitida y con presencia. En gotica no se entendia (feedback de Jean). Las
+	# frases largas parten en dos lineas.
+	_texto.offset_left = 24.0
+	_texto.offset_right = -24.0
+	_texto.offset_top = -104.0
+	_texto.offset_bottom = -24.0
 	_texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_texto.add_theme_font_override("font", FUENTE_NARRACION)
-	_texto.add_theme_font_size_override("font_size", 18)
+	_texto.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_texto.add_theme_font_size_override("font_size", 32)
 	_texto.add_theme_color_override("font_color", TEXTO)
 	_texto.add_theme_color_override("font_outline_color", FONDO)
 	_texto.add_theme_constant_override("outline_size", 4)
