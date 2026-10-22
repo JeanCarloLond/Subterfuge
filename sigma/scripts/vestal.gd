@@ -15,6 +15,7 @@ extends CharacterBody2D
 signal lanzo(sitio: Vector2, direccion: int)
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Herida := preload("res://scripts/herida.gd")
 const Sello := preload("res://scripts/sello.gd")
 const V := Sacramento.VESTAL
 const M := Sacramento.MOVIMIENTO
@@ -24,7 +25,6 @@ const MARCA := preload("res://arte/provisional/bisturi.png")
 const COLOR_DESTELLO := Color(1.6, 1.6, 1.6)
 const COLOR_ATURDIDO := Color(0.91, 0.851, 0.627)
 const COLOR_SANGRE := Color(0.62, 0.08, 0.07)
-const HERIDO_MS := 90.0
 const LANZA_MS := 220.0
 const CAIDA_MS := 500.0
 const PX_POR_CUADRO := 6.0
@@ -46,7 +46,8 @@ var vida: int = V["vida"]
 var _fin_accion := -INF
 var _fin_enfriamiento := -INF
 var _ultimo_avistamiento := -INF
-var _fin_destello := -INF
+## Cuando le entro el ultimo golpe: de ahi salen el blanco y la sangre.
+var _herido_en := -INF
 var _fin_lanza := -INF
 var _cayendo := false
 ## Aturdida por su propio sello: la unica forma de que se la pueda ejecutar.
@@ -60,6 +61,7 @@ var _marca: Sprite2D
 
 
 func _ready() -> void:
+	Herida.preparar($Figura/Sprite)
 	add_to_group("enemigos")
 	for nombre in CUADROS:
 		var lista: Array[Texture2D] = []
@@ -124,7 +126,9 @@ func recibir_dano(cantidad: int, origen_x: float) -> void:
 	if estado == Estado.MUERTO:
 		return
 	vida = maxi(0, vida - cantidad)
-	_fin_destello = ahora + HERIDO_MS
+	_herido_en = ahora
+	var hacia := -1.0 if origen_x > position.x else 1.0
+	Herida.salpicar(get_parent(), position + Vector2(0, -20), hacia, 22 if vida == 0 else 8)
 	if vida == 0:
 		_voz("muerte")
 		_morir()
@@ -166,7 +170,7 @@ func rematar() -> void:
 	if estado == Estado.MUERTO:
 		return
 	vida = 0
-	_fin_destello = ahora + HERIDO_MS
+	_herido_en = ahora
 	_voz("muerte")
 	_salpicar()
 	_morir()
@@ -269,9 +273,8 @@ func _pintar(delta: float) -> void:
 	if _marca.visible:
 		_marca.scale = Vector2.ONE * (1.0 + 0.15 * sin(ahora / 80.0))
 	_figura.rotation = sin(ahora / 50.0) * 0.06 if estado == Estado.ATURDIDO else 0.0
-	if ahora < _fin_destello:
-		_figura.modulate = COLOR_DESTELLO
-	elif estado == Estado.ATURDIDO or estado == Estado.EJECUTADO:
+	Herida.pintar(_sprite, ahora - _herido_en)
+	if estado == Estado.ATURDIDO or estado == Estado.EJECUTADO:
 		_figura.modulate = COLOR_ATURDIDO
 	else:
 		_figura.modulate = Color.WHITE

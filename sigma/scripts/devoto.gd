@@ -11,6 +11,7 @@
 extends CharacterBody2D
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Herida := preload("res://scripts/herida.gd")
 const Cirujano := preload("res://scripts/cirujano.gd")
 const D := Sacramento.DEVOTO
 const M := Sacramento.MOVIMIENTO
@@ -37,7 +38,9 @@ const MARCA := preload("res://arte/provisional/bisturi.png")
 const COLOR_SANGRE := Color(0.62, 0.08, 0.07)
 
 ## Lo que dura el destello de un golpe recibido, y lo que tarda en irse al caer.
-const HERIDO_MS := 90.0
+## El reculon al recibir un golpe: velocidad y lo que dura (unos 9 px).
+const RETROCESO := 100.0
+const RETROCESO_MS := 90.0
 const CAIDA_MS := 400.0
 
 enum Estado { PATRULLA, PERSECUCION, ANTICIPANDO, ATACANDO, ATURDIDO, EJECUTADO, MUERTO }
@@ -59,7 +62,10 @@ var _fin_enfriamiento := -INF
 var _ultimo_avistamiento := -INF
 ## Un golpe hiere una vez por ventana.
 var _ya_golpeo := false
-var _fin_destello := -INF
+## Cuando le entro el ultimo golpe: de ahi salen el blanco y la sangre.
+var _herido_en := -INF
+var _fin_retroceso := -INF
+var _retroceso_x := 0.0
 var _fin_pose_golpe := -INF
 var _figura_de := "devoto"
 var _cayendo := false
@@ -72,6 +78,7 @@ var _marca: Sprite2D
 
 
 func _ready() -> void:
+	Herida.preparar($Figura/Sprite)
 	add_to_group("enemigos")
 	_figura_de = variante(position)
 	for nombre in CUADROS:
@@ -106,6 +113,8 @@ func _physics_process(delta: float) -> void:
 			_caer()
 		return
 	pensar(delta, objetivo.position)
+	if ahora < _fin_retroceso:
+		velocity.x = _retroceso_x
 	velocity.y = minf(velocity.y + M["gravedad"] * delta, M["velocidad_caida_max"])
 	move_and_slide()
 	_herir_si_toca()
@@ -139,12 +148,17 @@ func recibir_dano(cantidad: int, origen_x: float) -> void:
 	if estado == Estado.MUERTO:
 		return
 	vida = maxi(0, vida - cantidad)
-	_fin_destello = ahora + HERIDO_MS
+	_herido_en = ahora
+	var hacia := -1.0 if origen_x > position.x else 1.0
+	Herida.salpicar(get_parent(), position + Vector2(0, -16), hacia, 22 if vida == 0 else 8)
 	if vida == 0:
 		_voz("muerte")
 		_morir()
 		return
 	_voz("herida")
+	# Recula un palmo: el golpe se nota tambien en el cuerpo.
+	_retroceso_x = hacia * RETROCESO
+	_fin_retroceso = ahora + RETROCESO_MS
 	_ultimo_avistamiento = ahora
 	mirando = 1 if origen_x > position.x else -1
 	if estado == Estado.PATRULLA:
@@ -189,7 +203,7 @@ func rematar() -> void:
 	if estado == Estado.MUERTO:
 		return
 	vida = 0
-	_fin_destello = ahora + HERIDO_MS
+	_herido_en = ahora
 	_voz("muerte")
 	_salpicar()
 	_morir()
@@ -338,9 +352,8 @@ func _pintar(delta: float) -> void:
 	_figura.rotation = sin(ahora / 50.0) * 0.06 if estado == Estado.ATURDIDO else 0.0
 
 	# El tinte rojo del aviso y su destello final son el tell: se quedan.
-	if ahora < _fin_destello:
-		_figura.modulate = COLOR_DESTELLO
-	elif estado == Estado.ATURDIDO or estado == Estado.EJECUTADO:
+	Herida.pintar(_sprite, ahora - _herido_en)
+	if estado == Estado.ATURDIDO or estado == Estado.EJECUTADO:
 		_figura.modulate = COLOR_ATURDIDO
 	elif estado != Estado.ANTICIPANDO:
 		_figura.modulate = Color.WHITE
