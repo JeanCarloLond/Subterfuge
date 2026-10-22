@@ -43,8 +43,9 @@ class Mundo:
 			paso(entrada)
 
 
-func _entrada(eje := 0, saltar := false, mantener := false, dash := false, arriba := false, abajo := false) -> Movimiento.Entrada:
+func _entrada(eje := 0, saltar := false, mantener := false, dash := false, arriba := false, abajo := false, clavar := false) -> Movimiento.Entrada:
 	var e := Movimiento.Entrada.new()
+	e.clavar = clavar
 	e.eje_x = eje
 	e.saltar_pulsado = saltar
 	e.saltar_mantenido = saltar or mantener
@@ -208,7 +209,7 @@ func test_solo_un_dash_en_el_aire() -> void:
 	afirmar(mundo.mov.estado != Movimiento.Estado.DASH, "el segundo no")
 
 
-## Salta pegado a una pared y empuja contra ella hasta engancharse.
+## Salta pegado a una pared y clava el bisturi (K) hasta engancharse.
 func _agarrado() -> Mundo:
 	var mundo := Mundo.new()
 	mundo.pared_x = 20.0
@@ -217,7 +218,8 @@ func _agarrado() -> Mundo:
 	for i in 60:
 		if mundo.mov.estado == Movimiento.Estado.AGARRE:
 			break
-		mundo.paso(_entrada(1, false, true))
+		# Al caer, como antes: los tests de abajo cuentan con engancharse arriba.
+		mundo.paso(_entrada(1, false, true, false, false, false, mundo.pared != 0 and mundo.mov.velocidad.y >= 0.0))
 	return mundo
 
 
@@ -233,7 +235,7 @@ func test_un_solo_agarre_por_salto() -> void:
 	var mundo := _agarrado()
 	mundo.paso(_entrada(0, false, false, false, false, true)) # abajo: se suelta
 	mundo.pasos(15, _entrada()) # 250 ms: pasado el bloqueo
-	mundo.pasos(5, _entrada(1))
+	mundo.pasos(5, _entrada(1, false, false, false, false, false, true))
 	afirmar(mundo.mov.estado != Movimiento.Estado.AGARRE, "no se vuelve a enganchar")
 	afirmar(not mundo.en_suelo, "sin haber tocado el suelo")
 
@@ -247,7 +249,7 @@ func test_al_tocar_suelo_vuelve_el_agarre() -> void:
 	for i in 60:
 		if mundo.mov.estado == Movimiento.Estado.AGARRE:
 			break
-		mundo.paso(_entrada(1, false, true))
+		mundo.paso(_entrada(1, false, true, false, false, false, mundo.pared != 0))
 	afirmar_igual(mundo.mov.estado, Movimiento.Estado.AGARRE, "en el salto siguiente se engancha otra vez")
 
 
@@ -409,3 +411,13 @@ func test_una_accion_en_pleno_dash_no_deja_flotando() -> void:
 	mundo.pasos(60, _entrada())
 	afirmar(mundo.pos.y > -250.0, "acabada la accion, cae (y = %.0f)" % mundo.pos.y)
 	afirmar(absf(mundo.mov.velocidad.x) <= 130.0, "y sin la velocidad del dash")
+
+
+func test_chocar_con_la_pared_no_engancha_sin_clavar() -> void:
+	var mundo := Mundo.new()
+	mundo.pared_x = 20.0
+	mundo.pos.x = 10.0
+	mundo.paso(_entrada(1, true))
+	for i in 60:
+		mundo.paso(_entrada(1, false, true))
+	afirmar(mundo.mov.estado != Movimiento.Estado.AGARRE, "empujar contra la pared ya no basta: hace falta K")

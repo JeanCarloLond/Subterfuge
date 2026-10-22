@@ -170,6 +170,17 @@ const COMPACTACION := {
 	"dano_aplastado": 2,
 }
 
+## Los temblores: de vez en cuando el templo se encoge un poco, lejos. No hacen
+## dano: son el aviso de fondo de que todo se esta compactando. El primero llega
+## pronto, para que se vea; luego, cada medio minuto o asi, sin regla fija.
+const TEMBLOR := {
+	"primero_s": 8.0,
+	"cada_min_s": 25.0,
+	"cada_max_s": 45.0,
+	"dura_s": 1.6,
+	"amplitud_px": 2.0,
+}
+
 const DANO_POR_CAIDA := {
 	"sin_dano_hasta": 160.0,
 	"px_por_punto": 120.0,

@@ -89,3 +89,10 @@ func test_el_empuje_saca_la_caja_por_delante_del_muro() -> void:
 	afirmar_igual(Compactacion.empuje(caja, Rect2(0, -40, 200, 50), Vector2(0, 1)), Vector2(0, 10), "un techo que baja")
 	afirmar_igual(Compactacion.empuje(caja, Rect2(0, 200, 200, 50), Vector2(0, 1)), Vector2.ZERO, "si no se tocan, nada")
 	afirmar_igual(Compactacion.empuje(caja, Rect2(105, 0, 50, 50), Vector2(-1, 0)), Vector2.ZERO, "rozar el borde no es tocar")
+
+
+func test_el_retumbo_del_temblor_dura_lo_que_el_temblor() -> void:
+	var retumbo := preload("res://scripts/sonidos.gd").retumbo()
+	var segundos := retumbo.data.size() / 2.0 / retumbo.mix_rate
+	var dura: float = preload("res://scripts/sacramento.gd").TEMBLOR["dura_s"]
+	afirmar(segundos >= dura, "suena al menos lo que tiembla (%.2f s)" % segundos)

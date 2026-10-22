@@ -106,6 +106,11 @@ func _physics_process(delta: float) -> void:
 	lucha.golpe_pulsado = Input.is_action_just_pressed("golpear")
 	lucha.golpe_soltado = Input.is_action_just_released("golpear")
 	lucha.parry_pulsado = Input.is_action_just_pressed("parry")
+	# K en el aire pegado a una pared no es un parry: clava el bisturi en ella.
+	var pared_al_lado := 0 if is_on_floor() else _pared_al_lado()
+	var clavar := lucha.parry_pulsado and pared_al_lado != 0
+	if clavar:
+		lucha.parry_pulsado = false
 	lucha.pocion_pulsada = Input.is_action_just_pressed("pocion")
 	lucha.arriba = Input.is_action_pressed("arriba")
 	lucha.abajo = Input.is_action_pressed("abajo")
@@ -134,9 +139,12 @@ func _physics_process(delta: float) -> void:
 	entrada.dash_pulsado = Input.is_action_just_pressed("dash")
 	entrada.arriba = lucha.arriba
 	entrada.abajo = lucha.abajo
+	entrada.clavar = clavar
 
 	# La normal de la pared apunta hacia fuera: una pared a la derecha da -1.
 	var pared := -int(signf(get_wall_normal().x)) if is_on_wall() else 0
+	if clavar and pared == 0:
+		pared = pared_al_lado
 
 	movimiento.velocidad = velocity
 	movimiento.paso(delta, entrada, is_on_floor(), pared, position.y)
@@ -152,6 +160,15 @@ func _physics_process(delta: float) -> void:
 	if combate.cargas_pocion != cargas_antes:
 		pociones_cambio.emit(combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
 	_pintar(delta)
+
+
+## Si hay una pared pegada a un lado (primero hacia donde mira): -1, 1 o 0.
+## Sin empujar contra ella, is_on_wall no la ve.
+func _pared_al_lado() -> int:
+	for lado in [movimiento.mirando, -movimiento.mirando]:
+		if test_move(global_transform, Vector2(lado * 3.0, 0.0)):
+			return lado
+	return 0
 
 
 ## La caja que choca, en coordenadas del mundo.

@@ -4,6 +4,7 @@ extends Node2D
 
 ## [nombre, escena].
 const DESTINOS := [
+	["Empezar", "res://escenas/intro.tscn"],
 	["El Atrio", "res://escenas/atrio.tscn"],
 	["Sala del movimiento", "res://escenas/sala_prueba.tscn"],
 	["Sala de la compactación", "res://escenas/sala_compactacion.tscn"],

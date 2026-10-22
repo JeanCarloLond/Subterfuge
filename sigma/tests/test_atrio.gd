@@ -18,6 +18,8 @@ func test_todo_lo_que_se_pisa_esta_sobre_piedra() -> void:
 		afirmar(_solido_bajo(capa, altar.position), "el Altar %s" % altar.name)
 	for reliquia in atrio.get_node("Reliquias").get_children():
 		afirmar(_solido_bajo(capa, reliquia.position), "la reliquia %s" % reliquia.name)
+	for pieza in atrio.get_node("Atrezo").piezas:
+		afirmar(_solido_bajo(capa, Vector2(pieza[1], pieza[2])), "el atrezo %s en %s,%s" % pieza)
 	for devoto in atrio.get_node("Devotos").get_children():
 		afirmar(_solido_bajo(capa, devoto.position), "el Devoto %s" % devoto.name)
 		for x in [devoto.ronda_izquierda, devoto.ronda_derecha]:

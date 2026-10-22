@@ -27,6 +27,9 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
 
 **Lo que hay:**
 
+- **La escena inicial**: «Empezar» en la portada abre el contexto en cinco planos,
+  como las de _Blasphemous_: un dios nuevo que no llega, la duda en la Sala N.º 7, la
+  carne que no llega y las paredes que se mueven, y el título. Se salta con Espacio.
 - **El Atrio** (#185): el mismo trazado que en Phaser, con la sillería del equipo, los
   cinco Devotos, los dos Altares, un techo que late y el umbral del final.
 - **El combate** (#183): J golpea (mantenido carga un golpe más fuerte que gasta 30 de
@@ -44,8 +47,13 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   camino alto de la derecha. Se toman con E y duran toda la partida (el autoload
   `Progreso`; aún no se guarda en disco). En las salas de prueba el cuerpo viene entero
   (`reliquias_libres`).
-- **Trepar**: colgado de la pared con el bisturí clavado. Empujar hacia fuera lo gira de
-  espaldas a la pared, y saltar así lo despega hacia fuera.
+- **Trepar**: no es automático. En el aire, pegado a una pared, K clava el bisturí y el
+  Cirujano queda colgado (en el suelo, K sigue siendo el parry). Empujar hacia fuera lo
+  gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑
+  trepan al borde.
+- **Los temblores**: cada medio minuto, más o menos, el templo se encoge un poco, lejos:
+  la cámara tiembla, cae polvo y alguna piedra y suena un retumbo grave
+  (`scripts/temblor.gd`). No hacen daño; son el aviso de fondo de que todo se mueve.
 - **La sala del movimiento** (#182): una repisa a cada altura que importa para el
   movimiento.
 - **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un
@@ -132,6 +140,13 @@ costillas (los dioses son el templo), columnas colosales con venas y una jaula c
 y un primer plano de siluetas que pasa por delante del Cirujano. Cada capa va a otra
 velocidad. Las saca `npm run sigma:fondos` a `sigma/arte/fondos/`, con colores planos,
 sombreado por bandas y trama ordenada en vez de degradados.
+
+**El atrezo** (`npm run sigma:atrezo`, `scripts/atrezo.gd`) sale del canon del Atrio
+("pabellones, talleres, terrazas de hongos, capillas con su Piedra Tibia"): el **Muro de
+los Dientes** (los dientes de leche engastados en oro, el hito del Atrio), la **Piedra
+Tibia** que echa vapor, candelabros que titilan y hongos de lámpara que respiran. Cada
+pieza con su luz; se colocan en `piezas` del nodo `Atrezo`, y un test comprueba que
+se apoyan en piedra.
 
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
