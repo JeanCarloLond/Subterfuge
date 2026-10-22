@@ -102,3 +102,22 @@ func test_parado_se_queda_aturdido_900_ms_sin_golpear() -> void:
 	_pensar(devoto, 6, cerca)
 	afirmar(devoto.estado != Devoto.Estado.ATURDIDO, "a los 933 ms ya no")
 	devoto.free()
+
+
+func test_aturdido_se_ejecuta_y_cae_al_rematar() -> void:
+	var devoto := _devoto()
+	var cerca := Vector2(20, 0)
+	_pensar(devoto, 2, cerca)
+	afirmar(not devoto.ejecutable(), "en pie no se le ejecuta")
+	devoto.aturdir()
+	afirmar(devoto.ejecutable(), "aturdido si")
+	devoto.ejecutar(30.0)
+	afirmar_igual(devoto.estado, Devoto.Estado.EJECUTADO, "de rodillas")
+	afirmar_igual(devoto.mirando, 1, "mirando al Cirujano")
+	afirmar(not devoto.ejecutable(), "no se le ejecuta dos veces")
+	_pensar(devoto, 60, cerca) # 1 s: el aturdimiento ya habria acabado
+	afirmar_igual(devoto.estado, Devoto.Estado.EJECUTADO, "espera el tajo, no se levanta")
+	afirmar_igual(devoto.velocity.x, 0.0, "quieto")
+	devoto.rematar()
+	afirmar(not devoto.vivo(), "el tajo lo mata con la vida que tenga")
+	devoto.free()

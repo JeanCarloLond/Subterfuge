@@ -32,6 +32,10 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   Fervor), con ↑ o ↓ golpea hacia arriba o hacia abajo (en el aire, y al conectar rebota),
   K para el golpe enemigo si se pulsa a tiempo (140 ms) y Q bebe la Poción de Carne. El
   Fervor se gana golpeando y parando; los Altares llenan el frasco.
+- **Lo de _Blasphemous_**: tras un parry, J en los 400 ms siguientes saca el
+  **contragolpe** (se adelanta y pega como el cargado, sin gastar Fervor). El parado
+  queda aturdido con un bisturí encima: con E se le **ejecuta** (alza el bisturí, la
+  cámara se acerca, tajo y sangre), muere sea cual sea su vida y da 25 de Fervor.
 - **La sala del movimiento** (#182): una repisa a cada altura que importa para el
   movimiento.
 - **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un

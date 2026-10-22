@@ -79,6 +79,34 @@ const COMBATE := {
 		"enfriamiento_ms": 480.0,
 		"aturdimiento_ms": 900.0,
 	},
+	## Golpear justo despues de un parry (Blasphemous): sale casi sin aviso, se
+	## adelanta y pega como el cargado sin gastar Fervor. Es el premio a leer
+	## el golpe; la ventana es corta para que no salga sin querer.
+	"contragolpe": {
+		"ventana_ms": 400.0,
+		"dano": 6,
+		"anticipacion_ms": 30.0,
+		"duracion_ms": 130.0,
+		"enfriamiento_ms": 300.0,
+		"alcance": 44.0,
+		"alto": 24.0,
+		"embestida_px": 12.0,
+	},
+}
+
+## Rematar a un enemigo aturdido con interactuar (Blasphemous): lo mata sea
+## cual sea su vida y paga Fervor. Mientras dura, el Cirujano no recibe golpes:
+## una ejecucion interrumpida no se lee como tal.
+const EJECUCION := {
+	## Hasta donde llega: pegado al aturdido, como en Blasphemous.
+	"alcance_x": 28.0,
+	"alcance_y": 14.0,
+	## Alza el bisturi y espera; luego el tajo, y el cuerpo cae.
+	"alza_ms": 280.0,
+	"duracion_ms": 720.0,
+	"fervor": 25,
+	"pausa_ms": 170.0,
+	"zoom": 1.25,
 }
 
 ## El Fervor se gana con el cuerpo y paga el golpe cargado.
@@ -101,6 +129,7 @@ const IMPACTO := {
 	"golpe_ms": 55.0,
 	"cargado_ms": 90.0,
 	"parry_ms": 130.0,
+	"contragolpe_ms": 120.0,
 }
 
 ## Rozar el cuerpo de un enemigo: no se para con el parry, solo con i-frames.

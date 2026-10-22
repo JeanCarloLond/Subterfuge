@@ -1,7 +1,8 @@
 ## El Cirujano (#182): lee los controles, le pasa a movimiento.gd y a
 ## combate.gd lo que toca y mueve el cuerpo con lo que devuelven. Lleva su
 ## vitalidad y el sitio donde reaparece (#185), y resuelve sus golpes contra
-## los enemigos (#183).
+## los enemigos (#183): tambien el contragolpe tras un parry y la ejecucion de
+## un aturdido, como en Blasphemous.
 ##
 ## El origen esta en los pies. La caja que choca es la del original, 10x22: la
 ## mascara y la mitra no chocan, porque un pico que tocara los techos volveria
@@ -23,6 +24,12 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 ## cargado, mas claro, al filo del blanco.
 const COLOR_TAJO := Color(0.988, 0.816, 0.22)
 const COLOR_TAJO_CARGADO := Color(0.957, 0.929, 0.576)
+## El contragolpe, al blanco: es el golpe mas limpio. La ejecucion, con sangre.
+const COLOR_TAJO_CONTRAGOLPE := Color(1.0, 0.97, 0.86)
+const COLOR_TAJO_EJECUCION := Color(0.86, 0.24, 0.18)
+## Lo que se ve el tajo de la ejecucion, y cuanto tiembla la camara con el.
+const TAJO_EJECUCION_MS := 160.0
+const SACUDIDA_PX := 3.0
 
 ## El arte provisional del original (#184), hasta que llegue el de Mariana.
 const POSES := {
@@ -31,6 +38,7 @@ const POSES := {
 	"paso_b": preload("res://arte/provisional/cirujano-paso-b.png"),
 	"guardia": preload("res://arte/provisional/cirujano-guardia.png"),
 	"bebe": preload("res://arte/provisional/cirujano-bebe.png"),
+	"alza": preload("res://arte/provisional/cirujano-alza.png"),
 }
 ## Contacto, paso, contacto al reves, paso: la pose quieta hace de contacto.
 const CICLO_PASO := ["quieto", "paso_a", "paso_b", "paso_a"]
@@ -46,6 +54,10 @@ var punto_reaparicion := Vector2.ZERO
 ## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
 ## Contra una pared no se avanza, y las piernas no deben moverse.
 var _recorrido := 0.0
+## A quien esta ejecutando, y si ya bajo el bisturi.
+var _victima: Node2D
+var _rematada := false
+var _fin_tajo_ejecucion := -INF
 
 @onready var _figura: Node2D = $Figura
 @onready var _sprite: Sprite2D = $Figura/Sprite
@@ -73,8 +85,17 @@ func _physics_process(delta: float) -> void:
 	combate.paso(delta, lucha, movimiento.libre(), is_on_floor())
 	if combate.bloqueo_ms > 0.0:
 		movimiento.bloquear(combate.bloqueo_ms)
+		if combate.accion == Combate.Accion.GOLPE and combate.tipo == Combate.Tipo.CONTRAGOLPE:
+			_embestir()
 	if combate.curar > 0:
 		_curar(combate.curar)
+	if Input.is_action_just_pressed("interactuar"):
+		_intentar_ejecutar()
+	if combate.accion == Combate.Accion.EJECUCION:
+		if combate.ejecucion_golpea() and not _rematada:
+			_rematar()
+	elif _victima != null:
+		_victima = null
 
 	var entrada := Movimiento.Entrada.new()
 	entrada.eje_x = int(signf(Input.get_axis("izquierda", "derecha")))
@@ -169,12 +190,87 @@ func _golpear_enemigos() -> void:
 		if dano == 0:
 			continue
 		enemigo.recibir_dano(dano, position.x)
-		var cargado := combate.tipo == Combate.Tipo.CARGADO
-		_pausa_de_impacto(Sacramento.IMPACTO["cargado_ms" if cargado else "golpe_ms"])
+		_pausa_de_impacto(_pausa_del_golpe())
 		if combate.direccion == Combate.Direccion.ABAJO:
 			combate.rebotar()
 			movimiento.rebotar()
 			velocity = movimiento.velocidad
+
+
+func _pausa_del_golpe() -> float:
+	match combate.tipo:
+		Combate.Tipo.CARGADO:
+			return Sacramento.IMPACTO["cargado_ms"]
+		Combate.Tipo.CONTRAGOLPE:
+			return Sacramento.IMPACTO["contragolpe_ms"]
+	return Sacramento.IMPACTO["golpe_ms"]
+
+
+## El contragolpe se adelanta un palmo hacia quien acaba de golpear: con
+## colision, para no meterse en la piedra.
+func _embestir() -> void:
+	move_and_collide(Vector2(movimiento.mirando * Sacramento.COMBATE["contragolpe"]["embestida_px"], 0.0))
+
+
+## Interactuar junto a un aturdido lo ejecuta. Si hay varios, el mas cercano.
+func _intentar_ejecutar() -> void:
+	var E: Dictionary = Sacramento.EJECUCION
+	var mejor: Node2D = null
+	for enemigo in get_tree().get_nodes_in_group("enemigos"):
+		if not enemigo.has_method("ejecutable") or not enemigo.ejecutable():
+			continue
+		var dx: float = absf(enemigo.position.x - position.x)
+		if dx > E["alcance_x"] or absf(enemigo.position.y - position.y) > E["alcance_y"]:
+			continue
+		if mejor == null or dx < absf(mejor.position.x - position.x):
+			mejor = enemigo
+	if mejor == null or not combate.ejecutar(movimiento.libre()):
+		return
+
+	_victima = mejor
+	_rematada = false
+	movimiento.mirando = 1 if mejor.position.x >= position.x else -1
+	# Se coloca a un palmo, de frente: la ejecucion no se hace desde lejos.
+	var sitio: float = mejor.position.x - movimiento.mirando * 16.0
+	move_and_collide(Vector2(sitio - position.x, 0.0))
+	mejor.ejecutar(position.x)
+	movimiento.bloquear(E["duracion_ms"])
+	movimiento.blindar(E["duracion_ms"])
+	fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
+	_acercar_camara(E["duracion_ms"])
+
+
+## Baja el bisturi: el aturdido cae, el mundo se para y la camara tiembla.
+func _rematar() -> void:
+	_rematada = true
+	if is_instance_valid(_victima):
+		_victima.rematar()
+	_fin_tajo_ejecucion = combate.ahora + TAJO_EJECUCION_MS
+	_sacudir()
+	_pausa_de_impacto(Sacramento.EJECUCION["pausa_ms"])
+
+
+## La camara se acerca mientras dura la ejecucion y vuelve despues.
+func _acercar_camara(ms: float) -> void:
+	var camara := get_viewport().get_camera_2d()
+	if camara == null:
+		return
+	var zoom: float = Sacramento.EJECUCION["zoom"]
+	var acercar := create_tween()
+	acercar.tween_property(camara, "zoom", Vector2.ONE * zoom, 0.18).set_ease(Tween.EASE_OUT)
+	acercar.tween_interval(ms / 1000.0 - 0.18)
+	acercar.tween_property(camara, "zoom", Vector2.ONE, 0.25).set_ease(Tween.EASE_IN_OUT)
+
+
+func _sacudir() -> void:
+	var camara := get_viewport().get_camera_2d()
+	if camara == null:
+		return
+	var sacudida := create_tween()
+	for i in 4:
+		var lado := 1.0 if i % 2 == 0 else -1.0
+		sacudida.tween_property(camara, "offset", Vector2(lado * SACUDIDA_PX, -lado * SACUDIDA_PX / 2.0), 0.03)
+	sacudida.tween_property(camara, "offset", Vector2.ZERO, 0.04)
 
 
 ## La pausa al conectar (hitstop): el mundo se para un instante. El temporizador
@@ -223,7 +319,10 @@ func _pintar(delta: float) -> void:
 	var en_suelo := is_on_floor()
 
 	var pose := "quieto"
-	if combate.accion == Combate.Accion.PARRY:
+	var ejecutando := combate.accion == Combate.Accion.EJECUCION
+	if ejecutando:
+		pose = "quieto" if combate.ejecucion_golpea() else "alza"
+	elif combate.accion == Combate.Accion.PARRY:
 		pose = "guardia"
 	elif combate.accion == Combate.Accion.POCION:
 		pose = "bebe"
@@ -235,11 +334,19 @@ func _pintar(delta: float) -> void:
 	var escala := Vector2.ONE
 	if estado == Movimiento.Estado.REZANDO:
 		escala = Vector2(1.1, 0.78) # arrodillado
+	elif ejecutando:
+		# Se estira con el bisturi en alto; al bajarlo, se aplasta en el tajo.
+		escala = Vector2(1.2, 0.85) if combate.ejecucion_golpea() else Vector2(0.9, 1.12)
 	elif combate.anticipando():
 		escala = Vector2(0.9, 1.08) # se recoge antes del golpe
 	elif combate.accion == Combate.Accion.GOLPE:
-		var cargado := combate.tipo == Combate.Tipo.CARGADO
-		escala = Vector2(1.22, 0.86) if cargado else Vector2(1.14, 0.92) # y se lanza
+		match combate.tipo: # y se lanza
+			Combate.Tipo.CARGADO:
+				escala = Vector2(1.22, 0.86)
+			Combate.Tipo.CONTRAGOLPE:
+				escala = Vector2(1.28, 0.84)
+			_:
+				escala = Vector2(1.14, 0.92)
 	elif estado == Movimiento.Estado.DASH:
 		escala = Vector2(1.18, 0.86)
 	elif not en_suelo:
@@ -252,15 +359,26 @@ func _pintar(delta: float) -> void:
 		escala = Vector2(1.0 - paso * 0.025, 1.0 + paso * 0.035) # cabeceo al andar
 	_figura.scale = Vector2(escala.x * movimiento.mirando, escala.y)
 
-	var alfa := 0.5 if movimiento.invulnerable else 1.0
+	# La ejecucion blinda, pero no es un golpe recibido: no parpadea.
+	var alfa := 0.5 if movimiento.invulnerable and not ejecutando else 1.0
 	_figura.modulate = Color(1, 1, 1, alfa)
 
-	_tajo.visible = combate.zona_activa()
-	if _tajo.visible:
+	var tajo_ejecucion := ejecutando and combate.ahora < _fin_tajo_ejecucion
+	_tajo.visible = combate.zona_activa() or tajo_ejecucion
+	if tajo_ejecucion:
+		var zona := Rect2(Vector2(movimiento.mirando * 18.0 - 18.0, -32.0), Vector2(36.0, 30.0))
+		_tajo.color = COLOR_TAJO_EJECUCION
+		_tajo.polygon = _media_luna(zona, Combate.Direccion.LATERAL, movimiento.mirando)
+	elif _tajo.visible:
 		var zona := combate.zona(position, movimiento.mirando)
 		zona.position -= position
-		var cargado := combate.tipo == Combate.Tipo.CARGADO
-		_tajo.color = COLOR_TAJO_CARGADO if cargado else COLOR_TAJO
+		match combate.tipo:
+			Combate.Tipo.CARGADO:
+				_tajo.color = COLOR_TAJO_CARGADO
+			Combate.Tipo.CONTRAGOLPE:
+				_tajo.color = COLOR_TAJO_CONTRAGOLPE
+			_:
+				_tajo.color = COLOR_TAJO
 		_tajo.polygon = _media_luna(zona, combate.direccion, movimiento.mirando)
 
 

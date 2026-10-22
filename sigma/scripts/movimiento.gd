@@ -321,6 +321,12 @@ func reaparecer(y: float) -> void:
 	_fin_invulnerable = ahora + Sacramento.VITALIDAD["invulnerabilidad_ms"]
 
 
+## Invulnerable durante `ms` sin haber sido herido: la ejecucion (Blasphemous)
+## no se interrumpe. No acorta unos i-frames que ya estuvieran corriendo.
+func blindar(ms: float) -> void:
+	_fin_invulnerable = maxf(_fin_invulnerable, ahora + ms)
+
+
 ## Si el cuerpo puede empezar una accion de combate.
 func libre() -> bool:
 	return estado == Estado.SUELO or estado == Estado.AIRE

@@ -191,3 +191,73 @@ func test_soltar_sin_haber_cargado_no_saca_el_cargado() -> void:
 	combate.paso(DT, _entrada(false, true), true, true)
 	afirmar(combate.accion != Combate.Accion.GOLPE, "si lo hieren cargando, la carga se pierde")
 	afirmar_igual(combate.fervor, 40, "y el Fervor no se gasta")
+
+
+# -- Lo de Blasphemous: contragolpe y ejecucion --------------------------------
+
+## Para un golpe con el parry y devuelve el combate justo despues.
+func _tras_parry() -> Combate:
+	var combate := Combate.new()
+	combate.paso(DT, _entrada(false, false, true), true, true)
+	_pasos(combate, 3)
+	afirmar(combate.parar(), "el parry para")
+	return combate
+
+
+func test_golpear_tras_un_parry_saca_el_contragolpe() -> void:
+	var combate := _tras_parry()
+	afirmar(combate.contragolpe_listo(), "la ventana se abre al parar")
+	# El parry aun tiene quieto al cuerpo: el contragolpe tiene que cortarlo.
+	combate.paso(DT, _entrada(true), false, true)
+	afirmar_igual(combate.accion, Combate.Accion.GOLPE, "sale aunque el parry no haya acabado")
+	afirmar_igual(combate.tipo, Combate.Tipo.CONTRAGOLPE, "y es el contragolpe")
+	afirmar(not combate.contragolpe_listo(), "uno por parry")
+	afirmar_cerca(_ms_hasta(combate, combate.zona_activa), 30.0, 17.0, "casi sin aviso: 30 ms")
+	afirmar_igual(combate.registrar_golpe(1), 6, "pega como el cargado")
+	afirmar_igual(combate.fervor, 26, "sin gastar Fervor: 20 del parry y 6 del golpe")
+
+
+func test_el_contragolpe_caduca_a_los_400_ms() -> void:
+	var combate := _tras_parry()
+	_pasos(combate, 25) # 417 ms
+	afirmar(not combate.contragolpe_listo(), "a los 417 ms ya no")
+	combate.paso(DT, _entrada(true), true, true)
+	afirmar_igual(combate.tipo, Combate.Tipo.BASICO, "sale el golpe de siempre")
+
+
+func test_sin_parry_no_hay_contragolpe() -> void:
+	var combate := Combate.new()
+	combate.paso(DT, _entrada(true), true, true)
+	afirmar_igual(combate.tipo, Combate.Tipo.BASICO, "golpear sin parar antes es el basico")
+
+
+func test_el_contragolpe_va_siempre_de_frente() -> void:
+	var combate := _tras_parry()
+	combate.paso(DT, _entrada(true, false, false, false, true), false, true)
+	afirmar_igual(combate.direccion, Combate.Direccion.LATERAL, "aunque se pulse arriba")
+
+
+func test_herido_se_pierde_el_contragolpe() -> void:
+	var combate := _tras_parry()
+	combate.cancelar()
+	afirmar(not combate.contragolpe_listo(), "un golpe recibido cierra la ventana")
+
+
+func test_la_ejecucion_dura_720_ms_y_paga_25_de_fervor() -> void:
+	var combate := Combate.new()
+	afirmar(combate.ejecutar(true), "libre, empieza")
+	afirmar_igual(combate.accion, Combate.Accion.EJECUCION, "ejecutando")
+	afirmar_cerca(combate.bloqueo_ms, 720.0, 0.01, "quieto lo que dura")
+	afirmar_igual(combate.fervor, 25, "paga 25 de Fervor")
+	afirmar(not combate.ejecucion_golpea(), "primero alza el bisturi")
+	afirmar_cerca(_ms_hasta(combate, combate.ejecucion_golpea), 280.0, 17.0, "lo baja a los 280 ms")
+	afirmar_cerca(
+		_ms_hasta(combate, func() -> bool: return combate.accion == Combate.Accion.NINGUNA),
+		440.0, 17.0, "y acaba a los 720")
+
+
+func test_ocupado_no_ejecuta() -> void:
+	var combate := Combate.new()
+	afirmar(not combate.ejecutar(false), "con el cuerpo ocupado, no")
+	combate.paso(DT, _entrada(true), true, true)
+	afirmar(not combate.ejecutar(true), "en mitad de un golpe, tampoco")
