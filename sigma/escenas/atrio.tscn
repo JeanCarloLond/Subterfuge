@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://escenas/reliquia.tscn" id="21_reliq"]
 [ext_resource type="Script" path="res://scripts/nave.gd" id="22_nave"]
 [ext_resource type="Script" path="res://scripts/temblor.gd" id="23_temblor"]
+[ext_resource type="Script" path="res://scripts/atrezo.gd" id="24_atrezo"]
 
 [sub_resource type="Gradient" id="Gradient_l5xs4"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -676,6 +677,10 @@ shape = SubResource("WorldBoundaryShape2D_derecha")
 
 [node name="Techo" type="CollisionShape2D" parent="Bordes" unique_id=519431073]
 shape = SubResource("WorldBoundaryShape2D_techo")
+
+[node name="Atrezo" type="Node2D" parent="."]
+script = ExtResource("24_atrezo")
+piezas = [["muro-dientes", 300, 288], ["candelabro", 336, 288], ["candelabro", 70, 688], ["hongos", 30, 128], ["hongos", 440, 240], ["hongos", 640, 528], ["hongos", 360, 928], ["piedra-tibia", 200, 1008], ["candelabro", 236, 1008]]
 
 [node name="Temblor" type="Node2D" parent="."]
 script = ExtResource("23_temblor")

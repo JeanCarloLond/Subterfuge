@@ -141,6 +141,13 @@ y un primer plano de siluetas que pasa por delante del Cirujano. Cada capa va a 
 velocidad. Las saca `npm run sigma:fondos` a `sigma/arte/fondos/`, con colores planos,
 sombreado por bandas y trama ordenada en vez de degradados.
 
+**El atrezo** (`npm run sigma:atrezo`, `scripts/atrezo.gd`) sale del canon del Atrio
+("pabellones, talleres, terrazas de hongos, capillas con su Piedra Tibia"): el **Muro de
+los Dientes** (los dientes de leche engastados en oro, el hito del Atrio), la **Piedra
+Tibia** que echa vapor, candelabros que titilan y hongos de lámpara que respiran. Cada
+pieza con su luz; se colocan en `piezas` del nodo `Atrezo`, y un test comprueba que
+se apoyan en piedra.
+
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
 polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivos.
