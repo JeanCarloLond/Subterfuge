@@ -2,31 +2,18 @@
 
 [ext_resource type="Script" path="res://scripts/principal.gd" id="1_principal"]
 [ext_resource type="Script" path="res://scripts/telon.gd" id="9_telon"]
-[ext_resource type="FontFile" path="res://arte/fuentes/Jacquard12-Regular.ttf" id="f_titulo"]
-[ext_resource type="FontFile" path="res://arte/fuentes/JacquardaBastarda9-Regular.ttf" id="f_narracion"]
+[ext_resource type="Script" path="res://scripts/logo.gd" id="10_logo"]
+[ext_resource type="Shader" path="res://arte/vineta.gdshader" id="11_vineta"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vineta"]
+shader = ExtResource("11_vineta")
 
 [node name="Principal" type="Node2D"]
 script = ExtResource("1_principal")
 
-[node name="Titulo" type="Label" parent="."]
-theme_override_fonts/font = ExtResource("f_titulo")
-theme_override_font_sizes/font_size = 24
-offset_top = 120.0
-offset_right = 640.0
-offset_bottom = 156.0
-theme_override_colors/font_color = Color(0.549, 0.184, 0.184, 1)
-text = "Subterfuge Sigma"
-horizontal_alignment = 1
-
-[node name="Lema" type="Label" parent="."]
-theme_override_fonts/font = ExtResource("f_narracion")
-theme_override_font_sizes/font_size = 18
-offset_top = 160.0
-offset_right = 640.0
-offset_bottom = 184.0
-theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
-text = "El templo se está compactando."
-horizontal_alignment = 1
+[node name="Logo" type="Node2D" parent="."]
+position = Vector2(320, 44)
+script = ExtResource("10_logo")
 
 [node name="Menu" type="Label" parent="."]
 offset_top = 204.0
@@ -45,3 +32,11 @@ horizontal_alignment = 1
 
 [node name="Telon" type="CanvasLayer" parent="."]
 script = ExtResource("9_telon")
+
+[node name="Vineta" type="CanvasLayer" parent="."]
+
+[node name="Velo" type="ColorRect" parent="Vineta"]
+material = SubResource("ShaderMaterial_vineta")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
