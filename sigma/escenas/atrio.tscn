@@ -762,11 +762,11 @@ offset = Vector2(-10, -34)
 
 [node name="Aviso" type="Label" parent="Umbral" unique_id=1919604291]
 visible = false
-offset_left = -32.0
-offset_top = -48.0
-offset_right = 32.0
-offset_bottom = -36.0
-theme_override_font_sizes/font_size = 8
+z_index = 20
+offset_left = -56.0
+offset_top = -70.0
+offset_right = 56.0
+offset_bottom = -54.0
 theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
 text = "E  descender"
 horizontal_alignment = 1
@@ -797,8 +797,10 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Interfaz" parent="." unique_id=1038421006 instance=ExtResource("7_interfaz")]
-ayuda = "←→ moverse · Espacio saltar · K en un muro: clavarse · E rezar, tomar o ejecutar · Esc salir
-J golpear (mantén: cargado) · K parry, luego J: contragolpe · Q poción"
+ayuda = "←→ moverse · Espacio saltar · Shift dash
+J golpear (mantén: cargado) · ↑ ↓ + J: arriba, abajo
+K parry, luego J: contragolpe · K en un muro: clavarse
+E rezar, tomar o ejecutar · Q poción · Esc salir"
 
 [node name="Fin" type="CanvasLayer" parent="." unique_id=811240813]
 visible = false
@@ -812,9 +814,8 @@ color = Color(0.0784, 0.0627, 0.0784, 0.92)
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -24.0
-offset_bottom = 24.0
-theme_override_font_sizes/font_size = 8
+offset_top = -40.0
+offset_bottom = 40.0
 theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
 text = "Aquí empiezan los Pasillos.
 Fin del prototipo del Atrio.

@@ -1,9 +1,10 @@
 ## La interfaz de las salas, ornamentada como la de Blasphemous
 ## (scripts/hud-sigma.mjs): arriba a la izquierda, el medallon con el rostro
 ## del Cirujano, la vida en seis segmentos de sangre, el Fervor en ambar y los
-## frascos de Pocion. Los avisos, en el centro, en gotica; la ayuda de los
-## controles, abajo y en la fuente legible. Cada sala la conecta a su Cirujano
-## y pone su propia ayuda.
+## frascos de Pocion. Los avisos, en el centro; la ayuda de los controles,
+## abajo, plegada: con H se abre y se cierra (el texto fijo en pantalla
+## estorbaba y no se leia). Todo en la letra legible del tema (arte/tema.tres).
+## Cada sala la conecta a su Cirujano y pone su propia ayuda.
 extends CanvasLayer
 
 const Sacramento := preload("res://scripts/sacramento.gd")
@@ -11,12 +12,16 @@ const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
 const FRASCO_VACIO := preload("res://arte/hud/frasco-vacio.png")
 ## Lo que dura un aviso en pantalla.
 const AVISO_S := 2.5
+## Lo que se ve con la ayuda plegada.
+const AYUDA_PLEGADA := "H  controles"
 
 @export_multiline var ayuda := "":
 	set(valor):
 		ayuda = valor
 		if is_node_ready():
-			_ayuda.text = valor
+			_pintar_ayuda()
+
+var _ayuda_abierta := false
 
 @onready var _ayuda: Label = $Ayuda
 @onready var _vida: TextureProgressBar = $Vida
@@ -27,7 +32,17 @@ const AVISO_S := 2.5
 
 
 func _ready() -> void:
-	_ayuda.text = ayuda
+	_pintar_ayuda()
+
+
+func _unhandled_input(evento: InputEvent) -> void:
+	if evento.is_action_pressed("ayuda"):
+		_ayuda_abierta = not _ayuda_abierta
+		_pintar_ayuda()
+
+
+func _pintar_ayuda() -> void:
+	_ayuda.text = ayuda if _ayuda_abierta else AYUDA_PLEGADA
 
 
 func conectar(cirujano: CharacterBody2D) -> void:

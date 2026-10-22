@@ -55,7 +55,6 @@ func _poner_bloque(rect: Rect2, cartel: String) -> void:
 	if cartel != "":
 		var etiqueta := Label.new()
 		etiqueta.text = cartel
-		etiqueta.add_theme_font_size_override("font_size", 8)
 		etiqueta.add_theme_color_override("font_color", COLOR_CARTEL)
 		etiqueta.position = Vector2(rect.position.x, rect.position.y + 2.0)
 		add_child(etiqueta)

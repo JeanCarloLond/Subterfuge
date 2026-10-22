@@ -174,10 +174,14 @@ de _Blasphemous_: arriba a la izquierda, un medallón con el rostro vendado del 
 dentro de un marco de oro con remate, y los frascos de Poción. La ayuda de controles,
 abajo.
 
-**Las fuentes** son _Jacquard 12_ (títulos, a 24 px) y _Jacquarda Bastarda 9_
-(narración y avisos, a 18 px), pixel góticas de The Soft Type Project con licencia SIL
-OFL 1.1 (`arte/fuentes/OFL.txt`). Solo son nítidas a esos tamaños y con el suavizado
-apagado (ya está en sus `.import`). La ayuda de controles sigue en la fuente legible.
+**Las fuentes.** Las góticas son para leer despacio: _Jacquard 12_ en los títulos (24 px) y
+_Jacquarda Bastarda 9_ en la narración de la intro (18 px), de The Soft Type Project (SIL
+OFL 1.1, `arte/fuentes/OFL.txt`). Todo lo que se lee jugando (menú, avisos, «E rezar»,
+carteles, la ayuda) va en _VT323_ a 16 px (SIL OFL 1.1, `arte/fuentes/OFL-VT323.txt`), que es
+la fuente por defecto del proyecto: `arte/tema.tres`, con contorno oscuro. Un texto nuevo no
+necesita nada para leerse bien; si se le pone otra fuente o tamaño, que sea a propósito. Las
+tres solo son nítidas a esos tamaños y sin suavizado (ya está en sus `.import`). La ayuda de
+controles va plegada: H la abre y la cierra.
 
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el

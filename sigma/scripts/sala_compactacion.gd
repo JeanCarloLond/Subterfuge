@@ -44,7 +44,6 @@ func _ready() -> void:
 	for cartel in CARTELES:
 		var etiqueta := Label.new()
 		etiqueta.text = cartel[2]
-		etiqueta.add_theme_font_size_override("font_size", 8)
 		etiqueta.add_theme_color_override("font_color", Color(0.929, 0.894, 0.847))
 		etiqueta.position = Vector2(cartel[0], cartel[1])
 		add_child(etiqueta)
