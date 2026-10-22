@@ -121,3 +121,14 @@ func test_aturdido_se_ejecuta_y_cae_al_rematar() -> void:
 	devoto.rematar()
 	afirmar(not devoto.vivo(), "el tajo lo mata con la vida que tenga")
 	devoto.free()
+
+
+func test_no_golpea_a_quien_salta_por_encima() -> void:
+	var devoto := _devoto()
+	var encima := Vector2(10, -40)
+	_pensar(devoto, 30, encima)
+	afirmar(devoto.estado != Devoto.Estado.ANTICIPANDO, "con el Cirujano 40 px por encima no se prepara")
+	afirmar_igual(devoto.velocity.x, 0.0, "espera debajo, quieto")
+	_pensar(devoto, 2, Vector2(10, 0))
+	afirmar_igual(devoto.estado, Devoto.Estado.ANTICIPANDO, "cuando baja a su altura, si")
+	devoto.free()

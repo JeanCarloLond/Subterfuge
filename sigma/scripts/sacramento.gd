@@ -149,6 +149,9 @@ const DEVOTO := {
 	"velocidad_persecucion": 80.0,
 	"rango_deteccion": 130.0,
 	"rango_ataque": 26.0,
+	## Solo golpea a quien esta a su altura: el bisturi del Devoto no llega a
+	## quien salta por encima, y golpear al aire se leia como una trampa.
+	"alcance_vertical": 14.0,
 	"anticipacion_ataque_ms": 420.0,
 	"duracion_ataque_ms": 120.0,
 	"enfriamiento_ataque_ms": 1100.0,

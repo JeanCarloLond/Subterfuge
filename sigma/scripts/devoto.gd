@@ -223,11 +223,16 @@ func _perseguir(hacia: Vector2) -> void:
 		return
 
 	var distancia := hacia.x - position.x
+	var a_su_altura := absf(hacia.y - position.y) <= D["alcance_vertical"]
 	mirando = 1 if distancia > 0.0 else -1
-	if absf(distancia) <= D["rango_ataque"] and ahora >= _fin_enfriamiento:
+	if absf(distancia) <= D["rango_ataque"] and a_su_altura and ahora >= _fin_enfriamiento:
 		estado = Estado.ANTICIPANDO
 		_fin_accion = ahora + D["anticipacion_ataque_ms"]
 		_ya_golpeo = false
+		velocity.x = 0.0
+		return
+	# Si esta encima, espera debajo mirandolo en vez de dar vueltas bajo el.
+	if absf(distancia) <= D["rango_ataque"]:
 		velocity.x = 0.0
 		return
 	velocity.x = signf(distancia) * D["velocidad_persecucion"]
