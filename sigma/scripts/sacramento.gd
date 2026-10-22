@@ -29,6 +29,7 @@ const DASH := {
 }
 
 const AGARRE := {
+	"deslizamiento": 0.0,
 	"bloqueo_tras_soltar_ms": 220.0,
 	"impulso_trepar": 300.0,
 }

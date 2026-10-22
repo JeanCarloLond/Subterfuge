@@ -90,19 +90,29 @@ sigue pendiente del equipo.
   en `main`).
 
 **Hecho:** #180 proyecto base (resolución 480×320 pixel-perfect, controles del original con
-teclado y mando, los números del original en `scripts/sacramento.gd`, 8 tests). #181 el
-canon está escrito; sigue abierto hasta que **Jean y Alejo lo lean**.
+teclado y mando, los números del original en `scripts/sacramento.gd`). #181 el canon está
+escrito; sigue abierto hasta que **Jean y Alejo lo lean**. #182 el Cirujano se mueve: la
+lógica en `scripts/movimiento.gd` (sin física, probada paso a paso en
+`tests/test_movimiento.gd`), el cuerpo en `escenas/cirujano.tscn` y una sala de prueba en
+`escenas/sala_prueba.tscn` (se entra desde la portada con Espacio). Sin el clavado en
+membranas todavía: llega con el bisturí.
+
+**Decidido en #182: la gravedad es la de diseño, 1000.** En Phaser se aplica dos veces (la del
+mundo en `main.ts` y la del cuerpo con `setGravityY`), así que allí cae con 2000 y el salto
+real sube unos 43 px, no los 92 que dicen los comentarios y `verificar-rutas`. Sigma usa
+1000 de verdad: a 60 Hz el salto sube 88,9 px y con el doble 150,7. Phaser no se toca
+(congelado).
+
+**Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
+https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
 **Lo siguiente, en orden:**
 
-1. #182 el Cirujano con `CharacterBody2D` y los números del original (salto 92 px, doble
-   salto, dash 54 px con invulnerabilidad, agarre de un uso por salto, coyote, buffer, salto
-   variable, daño por caída).
-2. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms.
-3. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
+1. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms.
+2. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
    saca a `web/generado`) e importarlas; flujo de Aseprite.
-4. #185 prototipo del Atrio con TileMaps, para comparar la sensación con Phaser.
-5. #186 la compactación (paredes que se mueven), #187 los eslabones, #188 la niña que guía.
+3. #185 prototipo del Atrio con TileMaps, para comparar la sensación con Phaser.
+4. #186 la compactación (paredes que se mueven), #187 los eslabones, #188 las visiones de la niña.
 
 ## Trampas ya pisadas
 
@@ -116,6 +126,10 @@ canon está escrito; sigue abierto hasta que **Jean y Alejo lo lean**.
   inicializa donde aparece el Cirujano (#174).
 - **Un enemigo dentro de la arena** se comía las escamas devueltas a la Serpiente: el nido es
   solo de ella (#167).
+- **La gravedad de Arcade se suma:** la del mundo más la del cuerpo. En Phaser el Cirujano cae
+  con 2000 (ver #182). En Godot, `movimiento.gd` pone la suya y no usa la del proyecto.
+- **`MainLoop._physics_process` devuelve `bool`** en un script de `-s`: sin `-> bool` y
+  `return false` no compila.
 - **Python con heredoc en Windows** rompe tildes y barras: escribir los scripts con la
   herramienta Write en el scratchpad y ejecutarlos.
 - **Git Bash reescribe rutas** que empiezan por `/`: `MSYS_NO_PATHCONV=1` si hace falta.

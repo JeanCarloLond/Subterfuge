@@ -1,6 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/principal.gd" id="1_principal"]
+
 [node name="Principal" type="Node2D"]
+script = ExtResource("1_principal")
 
 [node name="Fondo" type="ColorRect" parent="."]
 offset_right = 480.0
@@ -22,4 +25,13 @@ offset_bottom = 186.0
 theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
 theme_override_font_sizes/font_size = 8
 text = "El templo se está compactando."
+horizontal_alignment = 1
+
+[node name="Entrar" type="Label" parent="."]
+offset_top = 280.0
+offset_right = 480.0
+offset_bottom = 296.0
+theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
+theme_override_font_sizes/font_size = 8
+text = "Espacio para entrar"
 horizontal_alignment = 1

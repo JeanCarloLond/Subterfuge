@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/cirujano.gd" id="1_cirujano"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_caja"]
+size = Vector2(10, 22)
+
+[node name="Cirujano" type="CharacterBody2D"]
+script = ExtResource("1_cirujano")
+
+[node name="Caja" type="CollisionShape2D" parent="."]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_caja")
+
+[node name="Figura" type="Node2D" parent="."]
+
+[node name="Tunica" type="Polygon2D" parent="Figura"]
+color = Color(0.42, 0.353, 0.306, 1)
+polygon = PackedVector2Array(-5, 0, 5, 0, 5, -16, -5, -16)
+
+[node name="Mascara" type="Polygon2D" parent="Figura"]
+color = Color(0.929, 0.894, 0.847, 1)
+polygon = PackedVector2Array(-4, -16, 3, -16, 8, -19, 3, -22, -4, -22)
