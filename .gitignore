@@ -25,3 +25,6 @@ dist-ssr
 
 # Generado por scripts/exportar-arte.mjs antes de cada build
 web/generado
+
+# Subterfuge Sigma: la cache que Godot regenera al importar (#180).
+sigma/.godot/

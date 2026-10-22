@@ -143,6 +143,37 @@ jobs:
       - name: Textos visibles
         run: npm run verificar-textos
 
+  # Subterfuge Sigma, el remake en Godot (#180): se importa el proyecto y se
+  # pasan sus tests, sin abrir el editor y sin plugins.
+  sigma:
+    name: Subterfuge Sigma (Godot)
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: 4.7.2
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Godot en caché
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Instalar Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          curl -fsSL -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
+
+      - name: Importar el proyecto
+        run: ~/godot/godot --headless --path sigma --import
+
+      - name: Tests de Sigma
+        run: ~/godot/godot --headless --path sigma -s res://tests/ejecutar.gd
+
   # El build es lo que de verdad demuestra que la rama no está rota.
   build:
     name: Build de producción

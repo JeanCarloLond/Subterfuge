@@ -60,7 +60,8 @@ Cada commit (y cada título de PR) se nombra así:
 
 - **El componente dice dónde**: `juego` (jugabilidad), `niveles` (diseño de
   niveles), `ui` (HUD, menús, diálogos), `lore` (textos y canon), `arte`,
-  `audio`, `web` (el portal), `tecnico` (guardado, entrada, motor), `tests`,
+  `audio`, `web` (el portal), `sigma` (el remake en Godot), `tecnico` (guardado,
+  entrada, motor), `tests`,
   `ci`, `repo` (configuración, scripts, plantillas) y `docs`. Uno, o dos
   separados por coma (`fix(ui,juego): …`); si son más, son dos commits.
 - **La descripción**, en español, dice qué cambia en una frase: sin punto final,

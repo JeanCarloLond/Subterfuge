@@ -41,6 +41,7 @@ export const COMPONENTES = {
   arte: 'arte provisional y sprites',
   audio: 'música y sonido',
   web: 'el portal de la Diócesis',
+  sigma: 'Subterfuge Sigma, el remake en Godot (sigma/)',
   tecnico: 'base técnica: guardado, entrada, motor, rendimiento',
   tests: 'los tests',
   ci: 'el CI',
