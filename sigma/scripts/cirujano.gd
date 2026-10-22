@@ -11,6 +11,8 @@
 extends CharacterBody2D
 
 signal vitalidad_cambio(actual: int, maxima: int)
+## Se ha quedado sin vitalidad: la interfaz pone el aviso de la muerte.
+signal murio
 signal fervor_cambio(actual: int, maximo: int)
 signal pociones_cambio(cargas: int, maximas: int)
 
@@ -66,6 +68,8 @@ var combate: Combate
 var vitalidad: int = Sacramento.VITALIDAD["maxima"]
 ## Donde vuelve al morir o al caer al vacio: el ultimo Altar, o donde empezo.
 var punto_reaparicion := Vector2.ZERO
+## Sin vitalidad, hasta volver al Altar.
+var muerto := false
 
 ## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
 ## Contra una pared no se avanza, y las piernas no deben moverse.
@@ -102,6 +106,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if muerto:
+		# El cuerpo cae donde estaba, sin control, hasta volver al Altar.
+		velocity.x = 0.0
+		velocity.y = minf(velocity.y + Sacramento.MOVIMIENTO["gravedad"] * delta, Sacramento.MOVIMIENTO["velocidad_caida_max"])
+		move_and_slide()
+		return
 	var lucha := Combate.Entrada.new()
 	lucha.golpe_pulsado = Input.is_action_just_pressed("golpear")
 	lucha.golpe_soltado = Input.is_action_just_released("golpear")
@@ -210,6 +220,8 @@ func _aplicar_reliquias(recien := "") -> void:
 ## Un golpe de un enemigo desde `origen_x`. Si la ventana del parry esta
 ## abierta lo para; si no, hiere, salvo en un dash o con i-frames.
 func recibir_golpe(origen_x: float, dano: int) -> Resultado:
+	if muerto:
+		return Resultado.IGNORADO
 	if combate.parar():
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
 		_chispas(position + Vector2(movimiento.mirando * 8.0, -26.0))
@@ -227,6 +239,8 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 ## Rozar a un enemigo: el mismo dano que un golpe, con otro empujon. El parry
 ## no lo para: lee golpes, no evita chocarse.
 func recibir_contacto(origen_x: float) -> bool:
+	if muerto:
+		return false
 	var retroceso := Vector2(Sacramento.CONTACTO["retroceso_x"], Sacramento.CONTACTO["retroceso_y"])
 	if not movimiento.herir(position.x, origen_x, retroceso):
 		return false
@@ -238,6 +252,8 @@ func recibir_contacto(origen_x: float) -> bool:
 
 ## Caer al vacio: cuesta un punto y devuelve al Altar, pero no es morir.
 func caer_al_vacio() -> void:
+	if muerto:
+		return
 	_perder(1)
 	if vitalidad > 0:
 		_volver()
@@ -246,6 +262,8 @@ func caer_al_vacio() -> void:
 ## Aplastado entre un muro que avanza y la piedra (#186): cuesta vitalidad y
 ## devuelve al Altar. El muro ya ha avisado antes de moverse.
 func aplastar(dano: int) -> void:
+	if muerto:
+		return
 	_perder(dano)
 	if vitalidad > 0:
 		_volver()
@@ -437,18 +455,39 @@ func _al_caer(dano: int, _altura: float) -> void:
 
 
 func _perder(dano: int) -> void:
+	if muerto:
+		return
 	vitalidad = maxi(0, vitalidad - dano)
 	vitalidad_cambio.emit(vitalidad, Sacramento.VITALIDAD["maxima"])
 	if vitalidad == 0:
-		# Todavia no hay pantalla de muerte: vuelve al Altar entero. Diferido,
-		# porque esto puede llegar en mitad de un paso del movimiento.
+		# Diferido: esto puede llegar en mitad de un paso del movimiento.
 		_morir.call_deferred()
 
 
+## Se desploma a la vista (como en el original: se aplasta, se tine de carne
+## y se apaga), la interfaz pone el aviso, y al rato vuelve al Altar entero.
+## Mientras, no hay control ni golpes que valgan.
 func _morir() -> void:
+	if muerto:
+		return
+	muerto = true
 	_voz("muerte")
+	combate.cancelar()
+	movimiento.blindar(Sacramento.MUERTE["reaparecer_ms"])
+	var desplome := create_tween()
+	var duracion: float = Sacramento.MUERTE["desplome_ms"] / 1000.0
+	desplome.tween_property(_figura, "scale", Vector2(1.3 * movimiento.mirando, 0.3), duracion).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	desplome.parallel().tween_property(_figura, "modulate", Color(0.55, 0.18, 0.18, 0.35), duracion)
+	murio.emit()
+	get_tree().create_timer(Sacramento.MUERTE["reaparecer_ms"] / 1000.0).timeout.connect(_revivir)
+
+
+func _revivir() -> void:
+	muerto = false
 	vitalidad = Sacramento.VITALIDAD["maxima"]
 	vitalidad_cambio.emit(vitalidad, Sacramento.VITALIDAD["maxima"])
+	_figura.scale = Vector2(movimiento.mirando, 1.0)
+	_figura.modulate = Color.WHITE
 	_volver()
 
 
@@ -467,6 +506,8 @@ func _volver() -> void:
 
 ## La figura: el fotograma de lo que esta haciendo, mirando hacia donde va.
 func _pintar(delta: float) -> void:
+	if muerto:
+		return
 	var cuadro := _cuadro(delta)
 	var lista: Array = _cuadros[cuadro[0]]
 	_sprite.texture = lista[clampi(cuadro[1], 0, lista.size() - 1)]

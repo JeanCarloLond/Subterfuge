@@ -14,6 +14,11 @@ const FRASCO_VACIO := preload("res://arte/hud/frasco-vacio.png")
 const AVISO_S := 2.5
 ## Lo que se ve con la ayuda plegada.
 const AYUDA_PLEGADA := "H  controles"
+## El aviso de la muerte, a lo Dark Souls pero con el mundo: en la Diocesis el
+## diezmo es la carne que se cobra a cada casa, y morir es pagar el tuyo.
+const TEXTO_MUERTE := "Diezmado"
+const FUENTE_MUERTE := preload("res://arte/fuentes/Jacquard12-Regular.ttf")
+const COLOR_MUERTE := Color(0.66, 0.1, 0.09)
 
 @export_multiline var ayuda := "":
 	set(valor):
@@ -22,6 +27,9 @@ const AYUDA_PLEGADA := "H  controles"
 			_pintar_ayuda()
 
 var _ayuda_abierta := false
+var _velo: ColorRect
+var _banda: ColorRect
+var _muerte: Label
 
 @onready var _ayuda: Label = $Ayuda
 @onready var _vida: TextureProgressBar = $Vida
@@ -33,6 +41,7 @@ var _ayuda_abierta := false
 
 func _ready() -> void:
 	_pintar_ayuda()
+	_preparar_muerte()
 
 
 func _unhandled_input(evento: InputEvent) -> void:
@@ -46,6 +55,7 @@ func _pintar_ayuda() -> void:
 
 
 func conectar(cirujano: CharacterBody2D) -> void:
+	cirujano.murio.connect(morir)
 	cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)
 	cirujano.fervor_cambio.connect(_al_cambiar_fervor)
 	cirujano.pociones_cambio.connect(_pintar_frascos)
@@ -83,3 +93,63 @@ func _pintar_frascos(cargas: int, maximas: int) -> void:
 		var frasco := TextureRect.new()
 		frasco.texture = FRASCO_LLENO if i < cargas else FRASCO_VACIO
 		_frascos.add_child(frasco)
+
+
+## El aviso de la muerte: entra despacio una banda oscura con el texto, el
+## Vientre se apaga a negro con el aviso aun encima, y la luz vuelve ya en el
+## Altar. Los tiempos van con los del Cirujano (Sacramento.MUERTE).
+func morir() -> void:
+	var M: Dictionary = Sacramento.MUERTE
+	for nodo in [_banda, _muerte, _velo]:
+		nodo.modulate.a = 0.0
+		nodo.visible = true
+	_muerte.scale = Vector2.ONE
+	var aviso := create_tween()
+	aviso.tween_interval(M["aviso_desde_ms"] / 1000.0)
+	aviso.tween_property(_banda, "modulate:a", 1.0, M["aviso_entrada_ms"] / 1000.0)
+	aviso.parallel().tween_property(_muerte, "modulate:a", 1.0, M["aviso_entrada_ms"] / 1000.0)
+	# Crece un poco mientras se lee: el aviso pesa, no parpadea.
+	aviso.parallel().tween_property(_muerte, "scale", Vector2.ONE * 1.06, (M["reaparecer_ms"] - M["aviso_desde_ms"]) / 1000.0)
+	var negro := create_tween()
+	negro.tween_interval(M["fundido_desde_ms"] / 1000.0)
+	negro.tween_property(_velo, "modulate:a", 1.0, M["fundido_ms"] / 1000.0)
+	negro.tween_interval((M["reaparecer_ms"] - M["fundido_desde_ms"] - M["fundido_ms"]) / 1000.0)
+	negro.tween_callback(func() -> void:
+		_banda.visible = false
+		_muerte.visible = false
+	)
+	negro.tween_property(_velo, "modulate:a", 0.0, M["vuelta_ms"] / 1000.0)
+	negro.tween_callback(func() -> void: _velo.visible = false)
+
+
+func _preparar_muerte() -> void:
+	_velo = ColorRect.new()
+	_velo.name = "Velo"
+	_velo.color = Color(0.02, 0.01, 0.015)
+	_velo.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_velo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banda = ColorRect.new()
+	_banda.name = "Banda"
+	_banda.color = Color(0.03, 0.015, 0.02, 0.8)
+	_banda.set_anchors_preset(Control.PRESET_CENTER_LEFT)
+	_banda.anchor_right = 1.0
+	_banda.offset_top = -34.0
+	_banda.offset_bottom = 34.0
+	_banda.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_muerte = Label.new()
+	_muerte.name = "Muerte"
+	_muerte.text = TEXTO_MUERTE
+	_muerte.add_theme_font_override("font", FUENTE_MUERTE)
+	_muerte.add_theme_font_size_override("font_size", 48)
+	_muerte.add_theme_color_override("font_color", COLOR_MUERTE)
+	_muerte.add_theme_color_override("font_outline_color", Color(0.02, 0.01, 0.015))
+	_muerte.add_theme_constant_override("outline_size", 6)
+	_muerte.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_muerte.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_muerte.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# El velo debajo: el aviso se queda un momento sobre el negro.
+	for nodo in [_velo, _banda, _muerte]:
+		nodo.visible = false
+		add_child(nodo)
+	# Que crezca desde el centro de la pantalla, no desde la esquina.
+	_muerte.resized.connect(func() -> void: _muerte.pivot_offset = _muerte.size / 2.0)

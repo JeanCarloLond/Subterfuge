@@ -211,6 +211,25 @@ const TEMBLOR := {
 	"amplitud_px": 2.0,
 }
 
+## La muerte del Cirujano (feedback de Jean: «a lo Dark Souls»). Los tiempos
+## van encadenados, como en el original: primero el cuerpo se desploma a la
+## vista, luego entra el aviso despacio, el Vientre se apaga y se vuelve al
+## Altar. El aviso tiene que quedarse un momento sobre el negro.
+const MUERTE := {
+	## Lo que tarda el cuerpo en doblarse hasta quedar hecho un monton.
+	"desplome_ms": 900.0,
+	## Cuando empieza a entrar el aviso, y lo que tarda.
+	"aviso_desde_ms": 500.0,
+	"aviso_entrada_ms": 1000.0,
+	## Cuando empieza a apagarse el Vientre, y lo que tarda.
+	"fundido_desde_ms": 2300.0,
+	"fundido_ms": 800.0,
+	## Del ultimo golpe a estar otra vez en pie en el Altar.
+	"reaparecer_ms": 3300.0,
+	## Lo que tarda en volver la luz, ya en el Altar.
+	"vuelta_ms": 700.0,
+}
+
 const DANO_POR_CAIDA := {
 	"sin_dano_hasta": 160.0,
 	"px_por_punto": 120.0,
