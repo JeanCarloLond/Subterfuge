@@ -13,6 +13,8 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 
 Controles="*res://scripts/controles.gd"
 Progreso="*res://scripts/progreso.gd"
+Musica="*res://scripts/musica.gd"
+Voces="*res://scripts/voces.gd"
 
 [display]
 

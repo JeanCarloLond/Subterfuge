@@ -141,8 +141,10 @@ func recibir_dano(cantidad: int, origen_x: float) -> void:
 	vida = maxi(0, vida - cantidad)
 	_fin_destello = ahora + HERIDO_MS
 	if vida == 0:
+		_voz("muerte")
 		_morir()
 		return
+	_voz("herida")
 	_ultimo_avistamiento = ahora
 	mirando = 1 if origen_x > position.x else -1
 	if estado == Estado.PATRULLA:
@@ -157,6 +159,14 @@ func aturdir() -> void:
 	_fin_accion = ahora + Sacramento.COMBATE["parry"]["aturdimiento_ms"]
 	_fin_enfriamiento = _fin_accion
 	velocity.x = 0.0
+
+
+func _voz(voz: String) -> void:
+	if not is_inside_tree():
+		return
+	var voces := get_node_or_null("/root/Voces")
+	if voces:
+		voces.enemigo("devoto", voz, self)
 
 
 ## Si se le puede ejecutar: solo aturdido, abierto tras un parry.
@@ -180,6 +190,7 @@ func rematar() -> void:
 		return
 	vida = 0
 	_fin_destello = ahora + HERIDO_MS
+	_voz("muerte")
 	_salpicar()
 	_morir()
 
@@ -224,6 +235,7 @@ func _perseguir(hacia: Vector2) -> void:
 	mirando = 1 if distancia > 0.0 else -1
 	if absf(distancia) <= D["rango_ataque"] and a_su_altura and ahora >= _fin_enfriamiento:
 		estado = Estado.ANTICIPANDO
+		_voz("ataque")
 		_fin_accion = ahora + D["anticipacion_ataque_ms"]
 		_ya_golpeo = false
 		velocity.x = 0.0

@@ -29,6 +29,7 @@
     "sigma:cirujano": "node scripts/cirujano-sigma.mjs",
     "sigma:devoto": "node scripts/devoto-sigma.mjs",
     "sigma:atrezo": "node scripts/atrezo-sigma.mjs",
+    "sigma:hud": "node scripts/hud-sigma.mjs",
     "sigma:fondos": "node scripts/fondos-sigma.mjs",
     "prepare": "git config core.hooksPath .githooks || true"
   },
