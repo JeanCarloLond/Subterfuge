@@ -12,7 +12,10 @@ var _actual: AudioStreamPlayer
 var _nombre := ""
 
 
-func poner(nombre: String) -> void:
+## Pone la pista `nombre` con un fundido cruzado de `fundido_s`. Entre pistas
+## muy distintas (de la portada epica al Atrio quieto) conviene uno largo: si
+## no, se pasa de mucho a poco de golpe.
+func poner(nombre: String, fundido_s := FUNDIDO_S) -> void:
 	if nombre == _nombre:
 		return
 	_nombre = nombre
@@ -24,9 +27,9 @@ func poner(nombre: String) -> void:
 	add_child(nuevo)
 	nuevo.play()
 	var fundido := create_tween()
-	fundido.tween_property(nuevo, "volume_db", VOLUMEN_DB, FUNDIDO_S)
+	fundido.tween_property(nuevo, "volume_db", VOLUMEN_DB, fundido_s)
 	if _actual:
 		var viejo := _actual
-		fundido.parallel().tween_property(viejo, "volume_db", SILENCIO_DB, FUNDIDO_S)
+		fundido.parallel().tween_property(viejo, "volume_db", SILENCIO_DB, fundido_s)
 		fundido.tween_callback(viejo.queue_free)
 	_actual = nuevo

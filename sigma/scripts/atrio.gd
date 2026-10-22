@@ -41,7 +41,6 @@ func _ready() -> void:
 		vestal.objetivo = _cirujano
 	for muro in $Muros.get_children():
 		muro.objetivo = _cirujano
-		muro.aplasto.connect(_interfaz.avisar.bind("Aplastado: vuelves al Altar"))
 		muro.cerrado.connect(_interfaz.avisar.bind("El camino de vuelta se ha cerrado"))
 	for altar in $Altares.get_children():
 		altar.cirujano = _cirujano
@@ -55,7 +54,9 @@ func _ready() -> void:
 	_continuar()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
-		musica.poner("atrio-santuario")
+		# Desde la portada y la intro (el tema epico): fundido largo, que la
+		# epica se apague mientras el santuario entra por debajo.
+		musica.poner("atrio-santuario", 4.0)
 
 
 ## Si la partida guardada rezo en un Altar de esta sala, se empieza en el.
