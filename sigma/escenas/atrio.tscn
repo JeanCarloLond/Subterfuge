@@ -774,7 +774,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Interfaz" parent="." unique_id=1038421006 instance=ExtResource("7_interfaz")]
-ayuda = "←→ moverse · Espacio saltar · ↑ trepar · E rezar, tomar o ejecutar · Esc salir
+ayuda = "←→ moverse · Espacio saltar · K en un muro: clavarse · E rezar, tomar o ejecutar · Esc salir
 J golpear (mantén: cargado) · K parry, luego J: contragolpe · Q poción"
 
 [node name="Fin" type="CanvasLayer" parent="." unique_id=811240813]

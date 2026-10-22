@@ -44,8 +44,10 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   camino alto de la derecha. Se toman con E y duran toda la partida (el autoload
   `Progreso`; aún no se guarda en disco). En las salas de prueba el cuerpo viene entero
   (`reliquias_libres`).
-- **Trepar**: colgado de la pared con el bisturí clavado. Empujar hacia fuera lo gira de
-  espaldas a la pared, y saltar así lo despega hacia fuera.
+- **Trepar**: no es automático. En el aire, pegado a una pared, K clava el bisturí y el
+  Cirujano queda colgado (en el suelo, K sigue siendo el parry). Empujar hacia fuera lo
+  gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑
+  trepan al borde.
 - **La sala del movimiento** (#182): una repisa a cada altura que importa para el
   movimiento.
 - **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un

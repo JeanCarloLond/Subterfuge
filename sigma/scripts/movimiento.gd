@@ -49,6 +49,8 @@ class Entrada:
 	var dash_pulsado := false
 	var arriba := false
 	var abajo := false
+	## Clavar el bisturi en la pared: K en el aire, pegado a una pared.
+	var clavar := false
 
 
 var velocidad := Vector2.ZERO
@@ -226,10 +228,9 @@ func _actualizar_dash() -> void:
 func _intentar_agarre(entrada: Entrada, pared: int) -> void:
 	if ahora < _fin_bloqueo_agarre:
 		return
-	if velocidad.y < 0.0:
-		return # solo al caer
-	# Hay que empujar contra la pared para engancharse.
-	if pared == 0 or entrada.eje_x != pared:
+	# No es automatico: hay que estar pegado a la pared y clavar el bisturi
+	# (K). Subiendo tambien: el gesto ya es una decision.
+	if pared == 0 or not entrada.clavar:
 		return
 	if _agarre_gastado:
 		return
