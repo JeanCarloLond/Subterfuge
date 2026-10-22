@@ -1,7 +1,8 @@
 # Subterfuge Sigma
 
 El remake de Subterfuge en **Godot 4.7**, con el lore nuevo: el templo se está
-compactando. El canon está en [docs/canon.md](docs/canon.md).
+compactando. El canon está en [docs/canon.md](docs/canon.md) y la propuesta de mapa,
+en [docs/mapa.md](docs/mapa.md).
 
 > En construcción. Se enseña al equipo cuando haya una base sólida. Las tareas son las
 > issues con la etiqueta
@@ -32,6 +33,19 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   Fervor), con ↑ o ↓ golpea hacia arriba o hacia abajo (en el aire, y al conectar rebota),
   K para el golpe enemigo si se pulsa a tiempo (140 ms) y Q bebe la Poción de Carne. El
   Fervor se gana golpeando y parando; los Altares llenan el frasco.
+- **Lo de _Blasphemous_**: tras un parry, J en los 400 ms siguientes saca el
+  **contragolpe** (se adelanta y pega como el cargado, sin gastar Fervor). El parado
+  queda aturdido con un bisturí encima: con E se le **ejecuta** (alza el bisturí, la
+  cámara se acerca, tajo y sangre), muere sea cual sea su vida y da 25 de Fervor.
+- **Las reliquias**: el doble salto y el dash ya no vienen de serie. Son restos que los
+  Primigenios dejan al compactarse, órganos sueltos que aún funcionan: **el Pulmón
+  Vacío** (doble salto), a media bajada del Atrio, y **el Tendón del Mil** (dash), en el
+  nicho del fondo, al que solo se llega con el doble salto. Con los dos se abre el
+  camino alto de la derecha. Se toman con E y duran toda la partida (el autoload
+  `Progreso`; aún no se guarda en disco). En las salas de prueba el cuerpo viene entero
+  (`reliquias_libres`).
+- **Trepar**: colgado de la pared con el bisturí clavado. Empujar hacia fuera lo gira de
+  espaldas a la pared, y saltar así lo despega hacia fuera.
 - **La sala del movimiento** (#182): una repisa a cada altura que importa para el
   movimiento.
 - **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un
@@ -52,7 +66,27 @@ CI los pasa en cada push y cada PR.
 
 ## El arte
 
-Todo el arte es pixel art hecho a mano. Mientras llega el de Mariana, Sigma usa el arte
+**El Cirujano** es el de Sigma, no el del original: en tres cuartos, de unos 50 px de
+alto (lo que mide el Penitente de _Blasphemous_ a 640×360), con la cara vendada, la
+paleta de carne y óxido y 53 fotogramas en 18 animaciones (reposo, carrera, salto,
+caída, aterrizaje, dash, agarre, herido, rezar, guardia, golpe, cargado, arriba, abajo,
+contragolpe, poción y ejecución). Cada golpe tiene aviso sostenido, un fotograma de
+_smear_ (el arco del bisturí), impacto y recuperación.
+
+No se dibuja cuadro a cuadro: `scripts/cirujano-sigma.mjs` describe cada fotograma como
+una pose (cadera, inclinación, ángulos de los brazos, zancada) y pinta las piezas del
+cuerpo píxel a píxel en esa pose, sin girar imágenes, así que no se emborronan. Luego
+sombrea por bandas y contornea. Una animación nueva es una lista de poses:
+
+```bash
+npm run sigma:cirujano   # vuelve a sacar sigma/arte/cirujano/ (y hoja.png, para revisar)
+```
+
+Es provisional hasta que llegue el de Mariana: sus PNG pisan a estos con el mismo nombre
+(`golpe-2.png`…). El lienzo es de 48×58 con la cadera en la columna 21 y los pies en la
+fila 56.
+
+El resto del arte es pixel art hecho a mano. Mientras llega el de Mariana, Sigma usa el arte
 provisional del original: las figuras de `src/systems/ArteProvisional.ts`, escritas píxel a
 píxel, y la sillería del equipo (`public/assets/tilesets/`).
 
@@ -85,6 +119,20 @@ Cuando haya animaciones de verdad (más cuadros por pose), el paso siguiente es 
 [Aseprite Wizard](https://github.com/viniciusgerevini/godot-aseprite-wizard) (libre, MIT),
 que importa los tags como animaciones.
 
+**El Devoto** también es de Sigma (`npm run sigma:devoto`, el mismo títere): en tres
+cuartos, más bajo y ancho que el Cirujano (~42 px), con sayo, mandil de cuero, la venda en
+los ojos y una cicatriz de oro (la biblia: casi enteros, marcas menores). Dos variantes,
+como en el original: con un aparato de metal (brazo con garra y pierna) o con un brazo de
+carne injertada. Anda, avisa alzando el brazo, golpea con su smear, se tambalea aturdido
+y se arrodilla para la ejecución.
+
+**Los fondos** son grandes y en capas, como en _Blasphemous_ y _Hollow Knight_
+(`scripts/nave.gd`): la vidriera-pantalla moribunda con sus haces de luz, una bóveda de
+costillas (los dioses son el templo), columnas colosales con venas y una jaula colgada,
+y un primer plano de siluetas que pasa por delante del Cirujano. Cada capa va a otra
+velocidad. Las saca `npm run sigma:fondos` a `sigma/arte/fondos/`, con colores planos,
+sombreado por bandas y trama ordenada en vez de degradados.
+
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
 polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivos.
@@ -100,8 +148,9 @@ polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivo
 | `herramientas/` | Scripts de un solo uso: pasar el Atrio de Phaser y vestirlo.         |
 | `docs/`         | El canon de Sigma.                                                   |
 
-- **Resolución** lógica de 480×320, escalada a un múltiplo entero y con filtro nearest:
-  pixel art nítido en cualquier pantalla.
+- **Resolución** lógica de 640×360, la de _Blasphemous_, escalada a un múltiplo entero
+  y con filtro nearest: pixel art nítido en cualquier pantalla (1080p es justo 3×). La
+  interfaz y los velos van anclados a la pantalla, no a medidas fijas.
 - **Controles**: los mismos del original, registrados en `scripts/controles.gd`, con
   teclado, ratón y mando.
 - **Los números** del Cirujano (salto, dash, agarre…) vienen de `src/config/Sacramento.ts`

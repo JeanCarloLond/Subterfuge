@@ -1,5 +1,7 @@
 ## El combate del Cirujano (#183): golpe, golpe cargado, arriba y abajo con
 ## rebote, parry, Fervor y la Pocion de Carne, con los numeros del original.
+## Y lo de Blasphemous: el contragolpe tras un parry y la ejecucion de un
+## aturdido.
 ##
 ## Como el movimiento, va aparte del nodo para probarlo sin fisica: recibe lo
 ## que se pulsa y deja dicho que ha empezado (`bloqueo_ms`, `curar`). El
@@ -10,9 +12,10 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 const C := Sacramento.COMBATE
 const F := Sacramento.FERVOR
 const P := Sacramento.POCION
+const E := Sacramento.EJECUCION
 
-enum Accion { NINGUNA, GOLPE, PARRY, POCION }
-enum Tipo { BASICO, CARGADO }
+enum Accion { NINGUNA, GOLPE, PARRY, POCION, EJECUCION }
+enum Tipo { BASICO, CARGADO, CONTRAGOLPE }
 enum Direccion { LATERAL, ARRIBA, ABAJO }
 
 
@@ -39,10 +42,13 @@ var bloqueo_ms := 0.0
 var curar := 0
 
 var _inicio_zona := INF
+var _inicio_accion := -INF
 var _fin_accion := -INF
 var _fin_enfriamiento_golpe := -INF
 var _fin_ventana_parry := -INF
 var _fin_enfriamiento_parry := -INF
+## Tras un parry logrado: golpear antes de esto saca el contragolpe.
+var _fin_ventana_contragolpe := -INF
 var _inicio_carga := -INF
 ## A quien ha dado ya este golpe: uno por enemigo y golpe.
 var _golpeados := {}
@@ -67,11 +73,21 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 			_golpear(Tipo.CARGADO, entrada, en_suelo)
 			return
 
+	# El contragolpe va antes del bloqueo: el parry deja al cuerpo quieto lo
+	# que dura su ventana, y el contragolpe tiene que poder cortarla. Fuera del
+	# parry, solo con el cuerpo libre: en un dash o colgado no sale.
+	if entrada.golpe_pulsado and ahora < _fin_ventana_contragolpe:
+		if accion == Accion.PARRY or (libre and accion == Accion.NINGUNA):
+			_fin_ventana_contragolpe = -INF
+			_golpear(Tipo.CONTRAGOLPE, entrada, en_suelo)
+			return
+
 	if not libre or accion != Accion.NINGUNA:
 		return
 
 	if entrada.parry_pulsado and ahora >= _fin_enfriamiento_parry:
 		accion = Accion.PARRY
+		_inicio_accion = ahora
 		_fin_ventana_parry = ahora + C["parry"]["ventana_ms"]
 		_fin_accion = _fin_ventana_parry
 		_fin_enfriamiento_parry = _fin_ventana_parry + C["parry"]["enfriamiento_ms"]
@@ -82,6 +98,7 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 		if cargas_pocion > 0:
 			cargas_pocion -= 1
 			accion = Accion.POCION
+			_inicio_accion = ahora
 			_fin_accion = ahora + P["duracion_ms"]
 			bloqueo_ms = P["duracion_ms"]
 			curar = P["curacion"]
@@ -98,6 +115,16 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 ## carga empezada no: soltar tras un golpe recibido no saca un cargado.
 func carga_completa() -> bool:
 	return _inicio_carga > -INF and ahora - _inicio_carga >= C["cargado"]["tiempo_carga_ms"]
+
+
+## Lo que lleva la accion en curso, en ms: para elegir el fotograma.
+func ms_de_accion() -> float:
+	return ahora - _inicio_accion
+
+
+## Lo que dura el aviso del golpe en curso, en ms.
+func anticipacion_ms() -> float:
+	return _perfil()["anticipacion_ms"]
 
 
 ## Si el golpe se esta preparando: aun no corta.
@@ -149,14 +176,41 @@ func parar() -> bool:
 	if ahora >= _fin_ventana_parry:
 		return false
 	_fin_ventana_parry = -INF
+	_fin_ventana_contragolpe = ahora + C["contragolpe"]["ventana_ms"]
 	_ganar_fervor(F["por_parry"])
 	return true
+
+
+## Si golpear ahora sacaria el contragolpe.
+func contragolpe_listo() -> bool:
+	return ahora < _fin_ventana_contragolpe
+
+
+## Rematar a un aturdido. El Cirujano decide si hay a quien: aqui solo se
+## mira que el cuerpo este libre. Devuelve true si empieza.
+func ejecutar(libre: bool) -> bool:
+	if not libre or accion != Accion.NINGUNA:
+		return false
+	accion = Accion.EJECUCION
+	_inicio_accion = ahora
+	_fin_ventana_contragolpe = -INF
+	_inicio_carga = -INF
+	_fin_accion = ahora + E["duracion_ms"]
+	bloqueo_ms = E["duracion_ms"]
+	_ganar_fervor(E["fervor"])
+	return true
+
+
+## Si la ejecucion en curso ya ha bajado el bisturi: el cuerpo cae entonces.
+func ejecucion_golpea() -> bool:
+	return accion == Accion.EJECUCION and ahora >= _fin_accion - E["duracion_ms"] + E["alza_ms"]
 
 
 ## Herido: se corta lo que estuviera haciendo, y la carga.
 func cancelar() -> void:
 	accion = Accion.NINGUNA
 	_fin_ventana_parry = -INF
+	_fin_ventana_contragolpe = -INF
 	_inicio_carga = -INF
 
 
@@ -169,8 +223,11 @@ func _golpear(nuevo: Tipo, entrada: Entrada, en_suelo: bool) -> void:
 	if nuevo == Tipo.CARGADO:
 		fervor -= C["cargado"]["coste_fervor"]
 	tipo = nuevo
+	# El contragolpe va siempre de frente: es contra quien acaba de golpear.
 	# Abajo solo tiene sentido en el aire: en el suelo golpearia la piedra.
-	if entrada.abajo and not en_suelo:
+	if nuevo == Tipo.CONTRAGOLPE:
+		direccion = Direccion.LATERAL
+	elif entrada.abajo and not en_suelo:
 		direccion = Direccion.ABAJO
 	elif entrada.arriba:
 		direccion = Direccion.ARRIBA
@@ -179,6 +236,7 @@ func _golpear(nuevo: Tipo, entrada: Entrada, en_suelo: bool) -> void:
 
 	var perfil := _perfil()
 	accion = Accion.GOLPE
+	_inicio_accion = ahora
 	_golpeados.clear()
 	_inicio_zona = ahora + perfil["anticipacion_ms"]
 	_fin_accion = _inicio_zona + perfil["duracion_ms"]
@@ -187,7 +245,12 @@ func _golpear(nuevo: Tipo, entrada: Entrada, en_suelo: bool) -> void:
 
 
 func _perfil() -> Dictionary:
-	return C["cargado"] if tipo == Tipo.CARGADO else C["ataque"]
+	match tipo:
+		Tipo.CARGADO:
+			return C["cargado"]
+		Tipo.CONTRAGOLPE:
+			return C["contragolpe"]
+	return C["ataque"]
 
 
 func _ganar_fervor(cantidad: int) -> void:

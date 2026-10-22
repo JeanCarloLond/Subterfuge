@@ -9,6 +9,7 @@
 script = ExtResource("1_sala")
 
 [node name="Cirujano" parent="." instance=ExtResource("2_cirujano")]
+reliquias_libres = true
 position = Vector2(104, 304)
 
 [node name="Interfaz" parent="." instance=ExtResource("3_interfaz")]

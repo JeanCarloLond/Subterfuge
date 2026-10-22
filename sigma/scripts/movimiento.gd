@@ -73,6 +73,13 @@ var _fin_bloqueo_agarre := -INF
 ## Un agarre por salto: se gasta al engancharse y vuelve al tocar suelo.
 var _agarre_gastado := false
 var _direccion_agarre := 1
+## Lo que da cada reliquia (sigma/scripts/reliquia.gd). De serie, si: los tests
+## del movimiento prueban el cuerpo entero; el Cirujano los apaga hasta que
+## encuentra la reliquia.
+var puede_doble_salto := true
+var puede_dash := true
+## Colgado de espaldas a la pared, listo para saltar hacia fuera.
+var agarre_girado := false
 var _sin_corte_hasta := -INF
 var _fin_quieto := -INF
 var _en_suelo_antes := false
@@ -157,7 +164,7 @@ func _resolver_salto(en_suelo: bool) -> void:
 	if en_suelo or ahora - _ultimo_en_suelo <= M["coyote_ms"]:
 		_saltar(M["impulso_salto"])
 		_saltos_restantes = 1
-	elif _saltos_restantes > 0:
+	elif _saltos_restantes > 0 and puede_doble_salto:
 		_saltar(M["impulso_doble_salto"])
 		_saltos_restantes -= 1
 
@@ -180,6 +187,8 @@ func _recortar_salto(entrada: Entrada) -> void:
 # -- Dash ----------------------------------------------------------------------
 
 func _intentar_dash(entrada: Entrada, en_suelo: bool) -> void:
+	if not puede_dash:
+		return
 	if ahora < _fin_enfriamiento_dash:
 		return
 	if estado == Estado.DASH or estado == Estado.AGARRE or _quieto():
@@ -235,11 +244,32 @@ func _intentar_agarre(entrada: Entrada, pared: int) -> void:
 	_saltos_restantes = 1
 	_dashes_en_aire = D["usos_en_aire"]
 	mirando = pared
+	agarre_girado = false
 
 
+## Colgado del bisturi clavado en la pared. Empujar hacia fuera no suelta: el
+## cuerpo se gira de espaldas a la pared, y saltar asi lo despega hacia fuera
+## (como en el original, #161). De cara a la pared, saltar o arriba trepan al
+## borde. Abajo suelta.
 func _actualizar_agarre(entrada: Entrada) -> void:
+	if entrada.eje_x == -_direccion_agarre:
+		agarre_girado = true
+	elif entrada.eje_x == _direccion_agarre:
+		agarre_girado = false
+	mirando = -_direccion_agarre if agarre_girado else _direccion_agarre
+
+	var salto := ahora - _salto_encolado <= M["buffer_salto_ms"]
+	if salto and agarre_girado:
+		_soltar_agarre()
+		# Hacia fuera a la velocidad de andar: mas, y el tope de velocidad lo
+		# recortaria igual en el paso siguiente.
+		velocidad = Vector2(-_direccion_agarre * M["velocidad_caminar"], -Sacramento.CLAVADO["salto_pared_y"])
+		_sin_corte_hasta = ahora + SIN_CORTE_MS
+		_salto_encolado = -INF
+		return
+
 	# Trepar: arriba o saltar impulsa hacia el borde.
-	if entrada.arriba or ahora - _salto_encolado <= M["buffer_salto_ms"]:
+	if entrada.arriba or salto:
 		_soltar_agarre()
 		velocidad = Vector2(
 			_direccion_agarre * M["velocidad_caminar"] * EMPUJE_TREPAR,
@@ -249,8 +279,7 @@ func _actualizar_agarre(entrada: Entrada) -> void:
 		_salto_encolado = -INF
 		return
 
-	# Soltarse: abajo, o empujar hacia el otro lado.
-	if entrada.abajo or entrada.eje_x == -_direccion_agarre:
+	if entrada.abajo:
 		_soltar_agarre()
 		return
 
@@ -258,6 +287,7 @@ func _actualizar_agarre(entrada: Entrada) -> void:
 
 
 func _soltar_agarre() -> void:
+	agarre_girado = false
 	_gravedad = true
 	_fin_bloqueo_agarre = ahora + A["bloqueo_tras_soltar_ms"]
 	estado = Estado.AIRE
@@ -321,16 +351,26 @@ func reaparecer(y: float) -> void:
 	_fin_invulnerable = ahora + Sacramento.VITALIDAD["invulnerabilidad_ms"]
 
 
+## Invulnerable durante `ms` sin haber sido herido: la ejecucion (Blasphemous)
+## no se interrumpe. No acorta unos i-frames que ya estuvieran corriendo.
+func blindar(ms: float) -> void:
+	_fin_invulnerable = maxf(_fin_invulnerable, ahora + ms)
+
+
 ## Si el cuerpo puede empezar una accion de combate.
 func libre() -> bool:
 	return estado == Estado.SUELO or estado == Estado.AIRE
 
 
 ## Una accion de combate: sin control durante `ms`. En el suelo se queda
-## clavado; en el aire conserva la inercia.
+## clavado; en el aire conserva la inercia y cae. Si llegara en mitad de un
+## dash o de un agarre, que le quitan la gravedad, se la devuelve: si no,
+## quedaria flotando para siempre.
 func bloquear(ms: float) -> void:
 	estado = Estado.ACCION
 	_fin_quieto = ahora + ms
+	_gravedad = true
+	_velocidad_max_x = M["velocidad_caminar"]
 
 
 ## Un golpe hacia abajo ha conectado: sale despedido hacia arriba y recupera el

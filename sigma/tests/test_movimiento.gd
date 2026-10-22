@@ -366,3 +366,46 @@ func test_el_rebote_sube_unos_80_px_sin_mantener_saltar() -> void:
 	afirmar(y - cima > 70.0, "no se corta al no mantener saltar (subio %.1f)" % (y - cima))
 	mundo.paso(_entrada(0, true))
 	afirmar(mundo.mov.velocidad.y < 0.0, "y recupera el doble salto")
+
+
+func test_empujar_hacia_fuera_gira_y_no_suelta() -> void:
+	var mundo := _agarrado()
+	mundo.pasos(5, _entrada(-1))
+	afirmar_igual(mundo.mov.estado, Movimiento.Estado.AGARRE, "sigue colgado del bisturi")
+	afirmar(mundo.mov.agarre_girado, "de espaldas a la pared")
+	afirmar_igual(mundo.mov.mirando, -1, "mirando hacia fuera")
+	mundo.pasos(2, _entrada(1))
+	afirmar(not mundo.mov.agarre_girado, "empujar otra vez contra la pared lo vuelve de cara")
+
+
+func test_saltar_de_espaldas_despega_hacia_fuera() -> void:
+	var mundo := _agarrado()
+	mundo.pasos(3, _entrada(-1))
+	mundo.paso(_entrada(-1, true))
+	afirmar(mundo.mov.estado != Movimiento.Estado.AGARRE, "se suelta")
+	afirmar(mundo.mov.velocidad.x < 0.0, "hacia fuera")
+	afirmar(mundo.mov.velocidad.y < -300.0, "y hacia arriba, con fuerza")
+
+
+func test_sin_el_pulmon_no_hay_doble_salto() -> void:
+	var mundo := Mundo.new(-500.0)
+	mundo.mov.puede_doble_salto = false
+	mundo.paso(_entrada(0, true))
+	afirmar(mundo.mov.velocidad.y > -400.0, "en el aire, saltar no hace nada")
+
+
+func test_sin_el_tendon_no_hay_dash() -> void:
+	var mundo := Mundo.new()
+	mundo.mov.puede_dash = false
+	mundo.paso(_entrada(1, false, false, true))
+	afirmar(mundo.mov.estado != Movimiento.Estado.DASH, "Shift no hace nada")
+
+
+func test_una_accion_en_pleno_dash_no_deja_flotando() -> void:
+	var mundo := Mundo.new(-300.0)
+	mundo.paso(_entrada(1, false, false, true))
+	afirmar_igual(mundo.mov.estado, Movimiento.Estado.DASH, "en dash, sin gravedad")
+	mundo.mov.bloquear(170.0)
+	mundo.pasos(60, _entrada())
+	afirmar(mundo.pos.y > -250.0, "acabada la accion, cae (y = %.0f)" % mundo.pos.y)
+	afirmar(absf(mundo.mov.velocidad.x) <= 130.0, "y sin la velocidad del dash")

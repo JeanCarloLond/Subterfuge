@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/devoto.gd" id="1_devoto"]
-[ext_resource type="Texture2D" path="res://arte/provisional/devoto.png" id="2_figura"]
+[ext_resource type="Texture2D" path="res://arte/devoto/aparato-andar-0.png" id="2_figura"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_caja"]
 size = Vector2(12, 22)
@@ -19,9 +19,4 @@ shape = SubResource("RectangleShape2D_caja")
 [node name="Sprite" type="Sprite2D" parent="Figura"]
 texture = ExtResource("2_figura")
 centered = false
-offset = Vector2(-11, -34)
-
-[node name="Tajo" type="Polygon2D" parent="Figura"]
-visible = false
-color = Color(0.788, 0.82, 0.769, 0.8)
-polygon = PackedVector2Array(6, -22, 22, -18, 30, -11, 22, -4, 6, -2, 18, -11)
+offset = Vector2(-19, -49)
