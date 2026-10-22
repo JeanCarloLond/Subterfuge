@@ -74,11 +74,11 @@ if (modo === '--editor') {
   codigo = correr(godot, ['--headless', '--import']);
   if (codigo === 0) codigo = correr(godot, ['--headless', '-s', 'res://tests/ejecutar.gd']);
 } else {
-  // La primera vez, o tras un pull con archivos nuevos, Godot tiene que
-  // importar el arte antes de poder jugarlo.
-  if (!existsSync(join(proyecto, '.godot', 'imported'))) {
-    correr(godot, ['--headless', '--import']);
-  }
+  // Tras un pull con arte, audio o fuentes nuevos, Godot tiene que importarlos
+  // antes de poder jugar; si no, la escena arranca llena de errores. Se importa
+  // siempre: Godot solo rehace lo que ha cambiado, asi que sin nada nuevo es
+  // un momento.
+  correr(godot, ['--headless', '--import']);
   const escena = modo ? [`res://escenas/${modo.replace(/\.tscn$/, '')}.tscn`] : [];
   codigo = correr(godot, [...escena, ...resto]);
 }
