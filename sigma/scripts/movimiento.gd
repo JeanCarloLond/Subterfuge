@@ -1,5 +1,6 @@
 ## El movimiento del Cirujano (#182): correr, saltar, doble salto, dash,
-## agarre y dano por caida, con los numeros del original.
+## agarre y dano por caida, con los numeros del original. Tambien lo que lo
+## para: un golpe, una mala caida o rezar en un Altar (#185).
 ##
 ## Va aparte del nodo para poder probarlo sin escena ni fisica: recibe lo que
 ## se pulsa y lo que se toca, y deja la velocidad en `velocidad`. cirujano.gd
@@ -31,8 +32,11 @@ const SIN_CORTE_MS := 350.0
 const EMPUJE_TREPAR := 0.6
 ## Por debajo de esta velocidad de caida, tocar suelo no es aterrizar.
 const CAIDA_QUE_CUENTA := 120.0
+## Lo que dura sin control tras un golpe o un roce.
+const HERIDO_MS := 220.0
 
-enum Estado { SUELO, AIRE, DASH, AGARRE, ATURDIDO }
+## ATURDIDO y REZANDO son "quieto": sin control hasta que pasa el rato.
+enum Estado { SUELO, AIRE, DASH, AGARRE, ATURDIDO, REZANDO }
 
 
 ## Lo que el jugador pulsa en este fotograma.
@@ -68,7 +72,7 @@ var _fin_bloqueo_agarre := -INF
 var _agarre_gastado := false
 var _direccion_agarre := 1
 var _sin_corte_hasta := -INF
-var _fin_aturdido := -INF
+var _fin_quieto := -INF
 var _en_suelo_antes := false
 var _caida_previa := 0.0
 var _inicio_caida_y := 0.0
@@ -93,7 +97,7 @@ func paso(delta: float, entrada: Entrada, en_suelo: bool, pared: int, y: float) 
 		_ultimo_en_suelo = ahora
 		_agarre_gastado = false
 		_dashes_en_aire = D["usos_en_aire"]
-		if estado != Estado.ATURDIDO:
+		if not _quieto():
 			_saltos_restantes = 1
 		if not _en_suelo_antes and _caida_previa > CAIDA_QUE_CUENTA:
 			_resolver_caida(y)
@@ -115,8 +119,8 @@ func paso(delta: float, entrada: Entrada, en_suelo: bool, pared: int, y: float) 
 			_actualizar_dash()
 		Estado.AGARRE:
 			_actualizar_agarre(entrada)
-		Estado.ATURDIDO:
-			_actualizar_aturdido(en_suelo)
+		Estado.ATURDIDO, Estado.REZANDO:
+			_actualizar_quieto(en_suelo)
 		_:
 			_actualizar_locomocion(entrada, en_suelo, pared)
 
@@ -176,7 +180,7 @@ func _recortar_salto(entrada: Entrada) -> void:
 func _intentar_dash(entrada: Entrada, en_suelo: bool) -> void:
 	if ahora < _fin_enfriamiento_dash:
 		return
-	if estado == Estado.DASH or estado == Estado.AGARRE or estado == Estado.ATURDIDO:
+	if estado == Estado.DASH or estado == Estado.AGARRE or _quieto():
 		return
 	if not en_suelo:
 		if _dashes_en_aire <= 0:
@@ -268,17 +272,63 @@ func _resolver_caida(y: float) -> void:
 
 	var dano := mini(DC["dano_maximo"], ceili((altura - DC["sin_dano_hasta"]) / DC["px_por_punto"]))
 	estado = Estado.ATURDIDO
-	_fin_aturdido = ahora + DC["aturdimiento_ms"]
+	_fin_quieto = ahora + DC["aturdimiento_ms"]
 	velocidad.x = 0.0
 	caida.emit(dano, altura)
 
 
-func _actualizar_aturdido(en_suelo: bool) -> void:
+# -- Golpes, rezo y vuelta -----------------------------------------------------
+
+## Un golpe o un roce desde `origen_x`: empujon hacia el otro lado, un instante
+## sin control e invulnerable un rato. Devuelve false si no entra: el dash y
+## los i-frames lo evitan.
+func herir(x: float, origen_x: float, retroceso: Vector2) -> bool:
+	if estado == Estado.DASH or invulnerable:
+		return false
+
+	var direccion := -1.0 if x < origen_x else 1.0
+	estado = Estado.ATURDIDO
+	_fin_quieto = ahora + HERIDO_MS
+	_fin_invulnerable = ahora + Sacramento.VITALIDAD["invulnerabilidad_ms"]
+	_gravedad = true
+	_velocidad_max_x = M["velocidad_caminar"]
+	velocidad = Vector2(direccion * retroceso.x, -retroceso.y)
+	return true
+
+
+## Arrodillarse ante un Altar. Solo de pie en el suelo: es un acto, no un boton.
+func rezar() -> bool:
+	if estado != Estado.SUELO:
+		return false
+	estado = Estado.REZANDO
+	_fin_quieto = ahora + Sacramento.REZO_MS
+	velocidad.x = 0.0
+	return true
+
+
+## Vuelve a aparecer en otro sitio (un Altar, tras caer al vacio o morir): la
+## caida se mide desde ahi y la llegada no cuenta como aterrizaje.
+func reaparecer(y: float) -> void:
+	estado = Estado.AIRE
+	velocidad = Vector2.ZERO
+	_gravedad = true
+	_velocidad_max_x = M["velocidad_caminar"]
+	_inicio_caida_y = y
+	_en_suelo_antes = true
+	_caida_previa = 0.0
+	_fin_invulnerable = ahora + Sacramento.VITALIDAD["invulnerabilidad_ms"]
+
+
+func _quieto() -> bool:
+	return estado == Estado.ATURDIDO or estado == Estado.REZANDO
+
+
+func _actualizar_quieto(en_suelo: bool) -> void:
 	# En suelo se queda clavado; en el aire conserva la inercia.
 	if en_suelo:
 		_aceleracion_x = 0.0
 		_friccion_x = M["friccion_suelo"] * 2.0
-	if ahora >= _fin_aturdido:
+	if ahora >= _fin_quieto:
 		estado = Estado.SUELO if en_suelo else Estado.AIRE
 
 

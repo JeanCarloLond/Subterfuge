@@ -47,6 +47,28 @@ const VITALIDAD := {
 	"retroceso_y": 180.0,
 }
 
+## Rozar el cuerpo de un enemigo: no se para con el parry, solo con i-frames.
+const CONTACTO := {
+	"dano": 1,
+	"retroceso_x": 160.0,
+	"retroceso_y": 140.0,
+}
+
+## Lo que el Cirujano tarda arrodillado ante un Altar.
+const REZO_MS := 1100.0
+
+const DEVOTO := {
+	"dano": 1,
+	"velocidad_patrulla": 40.0,
+	"velocidad_persecucion": 80.0,
+	"rango_deteccion": 130.0,
+	"rango_ataque": 26.0,
+	"anticipacion_ataque_ms": 420.0,
+	"duracion_ataque_ms": 120.0,
+	"enfriamiento_ataque_ms": 1100.0,
+	"memoria_ms": 2000.0,
+}
+
 const DANO_POR_CAIDA := {
 	"sin_dano_hasta": 160.0,
 	"px_por_punto": 120.0,

@@ -288,3 +288,55 @@ func test_tras_una_mala_caida_no_puede_saltar_un_rato() -> void:
 	mundo.pasos(20, _entrada()) # 333 ms
 	mundo.paso(_entrada(0, true))
 	afirmar(mundo.mov.velocidad.y < 0.0, "pasados 320 ms ya salta")
+
+
+func test_un_golpe_empuja_hacia_el_otro_lado_y_deja_sin_control() -> void:
+	var mundo := Mundo.new()
+	afirmar(mundo.mov.herir(0.0, 10.0, Vector2(140, 180)), "el golpe entra")
+	afirmar(mundo.mov.velocidad.x < 0.0 and mundo.mov.velocidad.y < 0.0, "sale hacia atras y hacia arriba")
+	mundo.paso(_entrada(1, true))
+	afirmar(mundo.mov.velocidad.x < 0.0, "durante el golpe no se controla")
+	mundo.pasos(14, _entrada()) # 250 ms
+	afirmar(mundo.mov.estado != Movimiento.Estado.ATURDIDO, "a los 220 ms vuelve el control")
+
+
+func test_tras_un_golpe_es_invulnerable_700_ms() -> void:
+	var mundo := Mundo.new()
+	mundo.mov.herir(0.0, 10.0, Vector2(140, 180))
+	mundo.pasos(41, _entrada()) # 683 ms
+	afirmar(not mundo.mov.herir(0.0, 10.0, Vector2(140, 180)), "a los 683 ms no entra")
+	mundo.pasos(2, _entrada()) # 717 ms
+	afirmar(mundo.mov.herir(0.0, 10.0, Vector2(140, 180)), "pasados los 700 ms ya si")
+
+
+func test_el_dash_atraviesa_los_golpes() -> void:
+	var mundo := Mundo.new()
+	mundo.paso(_entrada(1, false, false, true))
+	mundo.pasos(8, _entrada(1)) # 133 ms: pasados los i-frames, aun en dash
+	afirmar_igual(mundo.mov.estado, Movimiento.Estado.DASH, "sigue en dash")
+	afirmar(not mundo.mov.herir(0.0, 10.0, Vector2(140, 180)), "en dash no entra")
+
+
+func test_rezar_solo_de_pie_y_lo_deja_quieto_1100_ms() -> void:
+	var mundo := _en_la_cima()
+	afirmar(not mundo.mov.rezar(), "en el aire no se reza")
+	mundo = Mundo.new()
+	mundo.paso(_entrada())
+	afirmar(mundo.mov.rezar(), "de pie si")
+	mundo.pasos(65, _entrada(1, true)) # 1083 ms
+	afirmar_igual(mundo.pos.x, 0.0, "arrodillado no anda")
+	mundo.pasos(2, _entrada()) # 1117 ms
+	mundo.paso(_entrada(1))
+	afirmar(mundo.mov.velocidad.x > 0.0, "acabado el rezo, anda")
+
+
+func test_reaparecer_no_cuenta_como_caida() -> void:
+	var danos := []
+	var mundo := Mundo.new(-400.0)
+	mundo.mov.caida.connect(func(dano: int, _altura: float) -> void: danos.append(dano))
+	mundo.pasos(20, _entrada()) # cayendo deprisa
+	mundo.pos.y = 0.0
+	mundo.en_suelo = true
+	mundo.mov.reaparecer(0.0)
+	mundo.pasos(5, _entrada())
+	afirmar_igual(danos, [], "aparecer en el Altar no hace dano")

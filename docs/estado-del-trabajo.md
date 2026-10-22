@@ -82,9 +82,13 @@ sigue pendiente del equipo.
 - **Comandos** (desde la raíz del repo):
 
   ```bash
-  godot --headless --path sigma --import
-  godot --headless --path sigma -s res://tests/ejecutar.gd
+  npm run sigma             # jugar (portada: Espacio el Atrio, E la sala de prueba)
+  npm run sigma -- atrio    # directo a una escena
+  npm run sigma:editor      # el editor de Godot
+  npm run sigma:tests       # importar y pasar los tests
   ```
+
+  `scripts/sigma.mjs` encuentra Godot solo (variable `GODOT`, PATH, winget o la app de macOS).
 
 - **El CI** importa el proyecto y pasa los tests (job «Subterfuge Sigma (Godot)», obligatorio
   en `main`).
@@ -103,16 +107,26 @@ real sube unos 43 px, no los 92 que dicen los comentarios y `verificar-rutas`. S
 1000 de verdad: a 60 Hz el salto sube 88,9 px y con el doble 150,7. Phaser no se toca
 (congelado).
 
+#185 el **Atrio** jugable de principio a fin: el trazado de Phaser redondeado a la rejilla de
+16 px en un `TileMapLayer` con la sillería de agr-23 (`sigma/arte/silleria/`), un Devoto que
+patrulla, persigue y avisa del golpe (aún no se le puede herir), los dos Altares (E reza,
+cura y fija la vuelta), la caída al vacío y el umbral con el fin del prototipo. Se pasó con
+`sigma/herramientas/importar_atrio.gd` **una sola vez**: desde entonces se edita en el
+editor.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
 **Lo siguiente, en orden:**
 
-1. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms.
-2. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
-   saca a `web/generado`) e importarlas; flujo de Aseprite.
-3. #185 prototipo del Atrio con TileMaps, para comparar la sensación con Phaser.
-4. #186 la compactación (paredes que se mueven), #187 los eslabones, #188 las visiones de la niña.
+1. #185 sigue abierta hasta que **Jean y Alejo comparen** el Atrio de Sigma con el de Phaser y
+   anoten qué se siente mejor y qué peor (en la issue).
+2. #186 la compactación (paredes que se mueven): lo que hace distinto a Sigma.
+3. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms. Con él, el
+   Devoto del Atrio se puede herir.
+4. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
+   saca a `web/generado`) e importarlas; flujo de Aseprite. Implica contarle a Mariana.
+5. #187 los eslabones, #188 las visiones de la niña.
 
 ## Trampas ya pisadas
 
@@ -128,6 +142,9 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
   solo de ella (#167).
 - **La gravedad de Arcade se suma:** la del mundo más la del cuerpo. En Phaser el Cirujano cae
   con 2000 (ver #182). En Godot, `movimiento.gd` pone la suya y no usa la del proyecto.
+- **Guardar una escena desde un script** con `PackedScene.pack` necesita instanciarla con
+  `GEN_EDIT_STATE_INSTANCE`: si no, las instancias se guardan con todas sus propiedades
+  copiadas y dejan de seguir a su escena original.
 - **`MainLoop._physics_process` devuelve `bool`** en un script de `-s`: sin `-> bool` y
   `return false` no compila.
 - **Python con heredoc en Windows** rompe tildes y barras: escribir los scripts con la

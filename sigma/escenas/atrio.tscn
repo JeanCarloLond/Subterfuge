@@ -1,0 +1,135 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://scripts/atrio.gd" id="1_atrio"]
+[ext_resource type="TileSet" path="res://arte/silleria/vientre.tres" id="2_silleria"]
+[ext_resource type="PackedScene" path="res://escenas/cirujano.tscn" id="3_cirujano"]
+[ext_resource type="PackedScene" path="res://escenas/devoto.tscn" id="4_devoto"]
+[ext_resource type="PackedScene" path="res://escenas/altar.tscn" id="5_altar"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_izquierda"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_derecha"]
+normal = Vector2(-1, 0)
+distance = -960.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_techo"]
+normal = Vector2(0, 1)
+
+[node name="Atrio" type="Node2D" unique_id=539269822]
+script = ExtResource("1_atrio")
+
+[node name="Silleria" type="TileMapLayer" parent="." unique_id=1856867813]
+modulate = Color(0.91, 0.894, 0.878, 1)
+tile_map_data = PackedByteArray("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AAA7ABgAAAAGAAAAAAA7ABkAAAAHAAAAAAA7ABoAAAAEAAAAAAA7ABsAAAAEAAAAAAA7ABwAAAAAAAAAAAA7AB0AAAABAAAAAAA7AB4AAAADAAAAAAA7AB8AAAAAAAAAAAA7ACAAAAAAAAAAAAA7ACEAAAAHAAAAAAA7ACIAAAABAAAAAAA7ACMAAAAEAAAAAAA7ACQAAAAFAAAAAAA7ACUAAAABAAAAAAA7ACYAAAAEAAAAAAA7ACcAAAAFAAAAAAA7ACgAAAAHAAAAAAA7ACkAAAADAAAAAAA7ACoAAAAFAAAAAAA7ACsAAAAEAAAAAAA7ACwAAAACAAAAAAA7AC0AAAAAAAAAAAA7AC4AAAAEAAAAAAA7AC8AAAAGAAAAAAA7ADAAAAAAAAAAAAA7ADEAAAACAAAAAAA7ADIAAAAEAAAAAAA7ADMAAAAHAAAAAAA7ADQAAAAGAAAAAAA7ADUAAAACAAAAAAA7ADYAAAAGAAAAAAA7ADcAAAAAAAAAAAA7ADgAAAAFAAAAAAA7ADkAAAABAAAAAAA7ADoAAAAEAAAAAAAjACYAAAAHAAAAAAAjACcAAAAFAAAAAAAjACgAAAAHAAAAAAAjACkAAAAAAAAAAAAjACoAAAADAAAAAAAjACsAAAABAAAAAAAjACwAAAAGAAAAAAAjAC0AAAAFAAAAAAAjAC4AAAACAAAAAAAjAC8AAAABAAAAAAAjADAAAAAFAAAAAAAAAAkAAAADAAAAAAAAAAoAAAAAAAAAAAAAAAsAAAACAAAAAAAAAAwAAAAGAAAAAAAsADsAAAACAAAAAAAsADwAAAADAAAAAAAsAD0AAAADAAAAAAAsAD4AAAAFAAAAAAA=")
+tile_set = ExtResource("2_silleria")
+
+[node name="Bordes" type="StaticBody2D" parent="." unique_id=297208611]
+
+[node name="Izquierda" type="CollisionShape2D" parent="Bordes" unique_id=1508765158]
+shape = SubResource("WorldBoundaryShape2D_izquierda")
+
+[node name="Derecha" type="CollisionShape2D" parent="Bordes" unique_id=502086061]
+shape = SubResource("WorldBoundaryShape2D_derecha")
+
+[node name="Techo" type="CollisionShape2D" parent="Bordes" unique_id=519431073]
+shape = SubResource("WorldBoundaryShape2D_techo")
+
+[node name="Altares" type="Node2D" parent="." unique_id=1284567189]
+
+[node name="Entrada" parent="Altares" unique_id=1707419916 instance=ExtResource("5_altar")]
+position = Vector2(120, 288)
+
+[node name="Bajada" parent="Altares" unique_id=1800583528 instance=ExtResource("5_altar")]
+position = Vector2(100, 688)
+
+[node name="Devotos" type="Node2D" parent="." unique_id=397143128]
+
+[node name="Devoto" parent="Devotos" unique_id=1706918666 instance=ExtResource("4_devoto")]
+position = Vector2(250, 288)
+ronda_izquierda = 180.0
+ronda_derecha = 330.0
+
+[node name="Umbral" type="Marker2D" parent="." unique_id=240077641]
+position = Vector2(380, 1008)
+
+[node name="Marca" type="Polygon2D" parent="Umbral" unique_id=1297770718]
+color = Color(0.36, 0.122, 0.141, 1)
+polygon = PackedVector2Array(-12, 0, 12, 0, 12, -28, 0, -34, -12, -28)
+
+[node name="Aviso" type="Label" parent="Umbral" unique_id=1919604291]
+visible = false
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = -36.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
+text = "E  descender"
+horizontal_alignment = 1
+
+[node name="Cirujano" parent="." unique_id=1190024062 instance=ExtResource("3_cirujano")]
+position = Vector2(80, 208)
+
+[node name="Camara" type="Camera2D" parent="Cirujano" unique_id=61475076]
+limit_left = 0
+limit_top = 0
+limit_right = 960
+limit_bottom = 1120
+position_smoothing_enabled = true
+position_smoothing_speed = 7.2
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.125
+drag_top_margin = 0.125
+drag_right_margin = 0.125
+drag_bottom_margin = 0.125
+
+[node name="Interfaz" type="CanvasLayer" parent="." unique_id=870503877]
+
+[node name="Ayuda" type="Label" parent="Interfaz" unique_id=287654896]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
+text = "←→ moverse · Espacio saltar · Shift dash · ↑ trepar · E rezar · Esc salir"
+
+[node name="Vitalidad" type="Label" parent="Interfaz" unique_id=591885276]
+offset_left = 392.0
+offset_top = 4.0
+offset_right = 472.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
+text = "Vitalidad 6/6"
+horizontal_alignment = 2
+
+[node name="Aviso" type="Label" parent="Interfaz" unique_id=2048529389]
+visible = false
+offset_top = 40.0
+offset_right = 480.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.89, 0.663, 0.251, 1)
+horizontal_alignment = 1
+
+[node name="Fin" type="ColorRect" parent="Interfaz" unique_id=610797084]
+visible = false
+offset_right = 480.0
+offset_bottom = 320.0
+color = Color(0.0784, 0.0627, 0.0784, 0.92)
+
+[node name="Texto" type="Label" parent="Interfaz/Fin" unique_id=2129797548]
+layout_mode = 0
+offset_top = 136.0
+offset_right = 480.0
+offset_bottom = 184.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
+text = "Aquí empiezan los Pasillos.
+Fin del prototipo del Atrio.
+
+Esc para volver a la portada"
+horizontal_alignment = 1

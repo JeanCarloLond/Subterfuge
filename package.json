@@ -22,6 +22,9 @@
     "verificar": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run verificar-arte && npm run verificar-rutas && npm run verificar-textos && npm run build",
     "exigir-tests": "node scripts/exigir-tests.mjs",
     "verificar-commit": "node scripts/verificar-commit.mjs",
+    "sigma": "node scripts/sigma.mjs",
+    "sigma:editor": "node scripts/sigma.mjs --editor",
+    "sigma:tests": "node scripts/sigma.mjs --tests",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {

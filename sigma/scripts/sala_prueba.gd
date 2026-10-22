@@ -63,5 +63,10 @@ func _poner_bloque(rect: Rect2, cartel: String) -> void:
 		add_child(etiqueta)
 
 
+func _unhandled_input(evento: InputEvent) -> void:
+	if evento.is_action_pressed("pausa"):
+		get_tree().change_scene_to_file("res://escenas/principal.tscn")
+
+
 func _al_cambiar_vitalidad(actual: int, maxima: int) -> void:
 	_vitalidad.text = "Vitalidad %d/%d" % [actual, maxima]
