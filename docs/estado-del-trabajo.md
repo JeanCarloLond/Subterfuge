@@ -120,6 +120,9 @@ la piedra cuestan 2 puntos y devuelven al Altar) y una sala de prueba
 (`sala_compactacion.tscn`). El aviso son dos latidos, polvo y temblor; los sonidos se
 calculan en `sonidos.gd`.
 
+#189 un **techo que late** en el Atrio, bajo el segundo Altar: avisa y baja, pero deja 32 px
+debajo, así que se aprende el aviso sin pagarlo.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -127,8 +130,9 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 
 1. #185 sigue abierta hasta que **Jean y Alejo comparen** el Atrio de Sigma con el de Phaser y
    anoten qué se siente mejor y qué peor (en la issue).
-2. La compactación en el Atrio: muros que laten y pasillos que se cierran detrás, en el nivel
-   de verdad (issue nueva tras #186).
+2. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
+   cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
+   repisa, y ningún muro lo sella sin que se rodee (#189).
 3. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms. Con él, el
    Devoto del Atrio se puede herir.
 4. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las

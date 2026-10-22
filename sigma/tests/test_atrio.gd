@@ -32,3 +32,31 @@ func test_las_repisas_del_campanario_estan_a_80_px() -> void:
 	afirmar(capa.get_cell_source_id(Vector2i(4, 13)) != -1, "repisa baja")
 	afirmar(capa.get_cell_source_id(Vector2i(1, 8)) != -1, "repisa alta")
 	atrio.free()
+
+
+## Lo que ocupa un muro con este avance, sin escena en marcha.
+func _rect(muro: Node, avance: float) -> Rect2:
+	return Rect2(muro.position + muro.direccion * avance, Vector2(muro.tiles * 16))
+
+
+## La primera fila de piedra por debajo de `y` en la columna de `x`.
+func _suelo_bajo(capa: TileMapLayer, x: float, y: float) -> float:
+	var celda := capa.local_to_map(Vector2(x, y))
+	for fila in range(celda.y, 80):
+		if capa.get_cell_source_id(Vector2i(celda.x, fila)) != -1:
+			return fila * 16.0
+	return INF
+
+
+func test_el_techo_que_late_avisa_pero_no_aplasta() -> void:
+	var atrio := ESCENA.instantiate()
+	var capa: TileMapLayer = atrio.get_node("Silleria")
+	var techo := atrio.get_node("Muros/Techo")
+	afirmar(techo.ciclico, "late")
+	var abajo := _rect(techo, techo.recorrido)
+	for x in [abajo.position.x + 1.0, abajo.end.x - 1.0]:
+		var hueco := _suelo_bajo(capa, x, abajo.end.y) - abajo.end.y
+		# Si debajo cabe el Cirujano con holgura, ni aplasta ni corta el paso.
+		afirmar(hueco > 22.0 + 4.0, "en x=%d deja %d px: el Cirujano cabe de sobra" % [x, hueco])
+	atrio.free()
+

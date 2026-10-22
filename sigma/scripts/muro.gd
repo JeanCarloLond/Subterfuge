@@ -8,6 +8,8 @@
 extends AnimatableBody2D
 
 signal aplasto
+## Un cierre ha terminado de cerrarse: ya no hay vuelta.
+signal cerrado
 
 const Compactacion := preload("res://scripts/compactacion.gd")
 const Sacramento := preload("res://scripts/sacramento.gd")
@@ -127,6 +129,8 @@ func _avisar() -> void:
 			_segundo_latido = ciclo.ahora + SEGUNDO_LATIDO_MS
 		elif estado == Compactacion.Estado.AVANCE:
 			_proximo_crujido = ciclo.ahora
+		elif estado == Compactacion.Estado.CERRADO and not ciclico:
+			cerrado.emit()
 
 	if estado == Compactacion.Estado.AVISO and ciclo.ahora >= _segundo_latido:
 		_latido.play()

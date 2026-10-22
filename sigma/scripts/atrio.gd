@@ -2,8 +2,14 @@
 ## para comparar la sensacion. La silleria es un TileMapLayer: se edita en el
 ## editor de Godot (la saco una vez herramientas/importar_atrio.gd).
 ##
-## El nivel solo une las piezas: le dice a los Devotos y a los Altares quien es
-## el Cirujano, lleva la interfaz y mira la caida al vacio y el umbral.
+## El nivel solo une las piezas: le dice a los Devotos, a los Altares y a los
+## muros quien es el Cirujano, lleva la interfaz y mira la caida al vacio y el
+## umbral.
+##
+## La compactacion (#189): un techo que late bajo el segundo Altar. Avisa y
+## baja, pero siempre deja sitio: aqui se aprende el aviso sin pagarlo. Los
+## cierres van a los Pasillos: el Atrio es abierto, en zigzag, y en un sitio
+## abierto no hay pasillo que cerrar.
 extends Node2D
 
 const PORTADA := "res://escenas/principal.tscn"
@@ -28,6 +34,10 @@ var _terminado := false
 func _ready() -> void:
 	for devoto in $Devotos.get_children():
 		devoto.objetivo = _cirujano
+	for muro in $Muros.get_children():
+		muro.objetivo = _cirujano
+		muro.aplasto.connect(_avisar.bind("Aplastado: vuelves al Altar"))
+		muro.cerrado.connect(_avisar.bind("El camino de vuelta se ha cerrado"))
 	for altar in $Altares.get_children():
 		altar.cirujano = _cirujano
 		altar.rezado.connect(_al_rezar.bind(altar))

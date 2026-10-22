@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://escenas/cirujano.tscn" id="3_cirujano"]
 [ext_resource type="PackedScene" path="res://escenas/devoto.tscn" id="4_devoto"]
 [ext_resource type="PackedScene" path="res://escenas/altar.tscn" id="5_altar"]
+[ext_resource type="Script" path="res://scripts/muro.gd" id="6_muro"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_izquierda"]
 normal = Vector2(1, 0)
@@ -42,6 +43,15 @@ position = Vector2(120, 288)
 
 [node name="Bajada" parent="Altares" unique_id=1800583528 instance=ExtResource("5_altar")]
 position = Vector2(100, 688)
+
+[node name="Muros" type="Node2D" parent="."]
+
+[node name="Techo" type="AnimatableBody2D" parent="Muros"]
+position = Vector2(176, 704)
+script = ExtResource("6_muro")
+tiles = Vector2i(4, 3)
+direccion = Vector2(0, 1)
+recorrido = 64.0
 
 [node name="Devotos" type="Node2D" parent="." unique_id=397143128]
 
