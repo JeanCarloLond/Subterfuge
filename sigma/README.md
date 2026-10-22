@@ -118,6 +118,13 @@ Cuando haya animaciones de verdad (más cuadros por pose), el paso siguiente es 
 [Aseprite Wizard](https://github.com/viniciusgerevini/godot-aseprite-wizard) (libre, MIT),
 que importa los tags como animaciones.
 
+**Los fondos** son grandes y en capas, como en _Blasphemous_ y _Hollow Knight_
+(`scripts/nave.gd`): la vidriera-pantalla moribunda con sus haces de luz, una bóveda de
+costillas (los dioses son el templo), columnas colosales con venas y una jaula colgada,
+y un primer plano de siluetas que pasa por delante del Cirujano. Cada capa va a otra
+velocidad. Las saca `npm run sigma:fondos` a `sigma/arte/fondos/`, con colores planos,
+sombreado por bandas y trama ordenada en vez de degradados.
+
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
 polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivos.

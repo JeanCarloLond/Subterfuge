@@ -78,7 +78,7 @@ const mas = (a, b) => [a[0] + b[0], a[1] + b[1]];
 /** Un angulo medido desde la vertical hacia abajo; positivo, hacia delante. */
 const hacia = (theta, largo) => [Math.sin(theta) * largo, Math.cos(theta) * largo];
 
-function poligono(puntos) {
+export function poligono(puntos) {
   return (x, y) => {
     const px = x + 0.5;
     const py = y + 0.5;
@@ -93,7 +93,7 @@ function poligono(puntos) {
   };
 }
 
-function capsula(a, b, r0, r1 = r0) {
+export function capsula(a, b, r0, r1 = r0) {
   return (x, y) => {
     const px = x + 0.5;
     const py = y + 0.5;
@@ -106,7 +106,7 @@ function capsula(a, b, r0, r1 = r0) {
   };
 }
 
-function elipse(c, rx, ry) {
+export function elipse(c, rx, ry) {
   return (x, y) => ((x + 0.5 - c[0]) / rx) ** 2 + ((y + 0.5 - c[1]) / ry) ** 2 <= 1;
 }
 
@@ -832,7 +832,7 @@ function trozo(tipo, datos) {
   return Buffer.concat([largo, cuerpo, crc]);
 }
 
-function png(pixeles) {
+export function png(pixeles) {
   const alto = pixeles.length;
   const ancho = pixeles[0].length;
   const crudo = Buffer.alloc(alto * (1 + ancho * 4));
