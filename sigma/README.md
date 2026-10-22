@@ -154,6 +154,12 @@ se apoyan en piedra.
 `Musica`: la portada, la intro y el Atrio) y las voces del Cirujano y los Devotos al
 atacar, saltar, recibir y morir, como en el original (el autoload `Voces`).
 
+**La interfaz** (`npm run sigma:hud`, `escenas/interfaz.tscn`) es ornamentada, como la
+de _Blasphemous_: arriba a la izquierda, un medallón con el rostro vendado del Cirujano
+(destella en rojo al recibir), la vida en seis segmentos de sangre y el Fervor en ámbar
+dentro de un marco de oro con remate, y los frascos de Poción. La ayuda de controles,
+abajo.
+
 **Las fuentes** son _Jacquard 12_ (títulos, a 24 px) y _Jacquarda Bastarda 9_
 (narración y avisos, a 18 px), pixel góticas de The Soft Type Project con licencia SIL
 OFL 1.1 (`arte/fuentes/OFL.txt`). Solo son nítidas a esos tamaños y con el suavizado

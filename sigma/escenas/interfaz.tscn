@@ -2,55 +2,74 @@
 
 [ext_resource type="Script" path="res://scripts/interfaz.gd" id="1_interfaz"]
 [ext_resource type="FontFile" path="res://arte/fuentes/JacquardaBastarda9-Regular.ttf" id="f_narracion"]
+[ext_resource type="Texture2D" path="res://arte/hud/medallon.png" id="2_medallon"]
+[ext_resource type="Texture2D" path="res://arte/hud/marco.png" id="3_marco"]
+[ext_resource type="Texture2D" path="res://arte/hud/vida-llena.png" id="4_vida"]
+[ext_resource type="Texture2D" path="res://arte/hud/vida-vacia.png" id="5_vida_vacia"]
+[ext_resource type="Texture2D" path="res://arte/hud/fervor-lleno.png" id="6_fervor"]
+[ext_resource type="Texture2D" path="res://arte/hud/fervor-vacio.png" id="7_fervor_vacio"]
 
 [node name="Interfaz" type="CanvasLayer"]
 script = ExtResource("1_interfaz")
 
 [node name="Ayuda" type="Label" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 4.0
-offset_right = 500.0
-offset_bottom = 28.0
+offset_top = -28.0
+offset_right = 520.0
+offset_bottom = -4.0
 theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
 theme_override_font_sizes/font_size = 8
 theme_override_colors/font_outline_color = Color(0.05, 0.035, 0.05, 1)
 theme_override_constants/outline_size = 3
+vertical_alignment = 2
 
-[node name="Vitalidad" type="Label" parent="."]
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -120.0
-offset_top = 4.0
-offset_right = -8.0
-offset_bottom = 16.0
-theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
-theme_override_font_sizes/font_size = 8
-theme_override_colors/font_outline_color = Color(0.05, 0.035, 0.05, 1)
-theme_override_constants/outline_size = 3
-text = "Vitalidad 6/6"
-horizontal_alignment = 2
+[node name="Marco" type="TextureRect" parent="."]
+offset_left = 38.0
+offset_top = 8.0
+offset_right = 162.0
+offset_bottom = 30.0
+texture = ExtResource("3_marco")
 
-[node name="Recursos" type="Label" parent="."]
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -120.0
-offset_top = 15.0
-offset_right = -8.0
+[node name="Vida" type="TextureProgressBar" parent="."]
+offset_left = 40.0
+offset_top = 10.0
+offset_right = 148.0
+offset_bottom = 20.0
+value = 100.0
+texture_under = ExtResource("5_vida_vacia")
+texture_progress = ExtResource("4_vida")
+
+[node name="Fervor" type="TextureProgressBar" parent="."]
+offset_left = 40.0
+offset_top = 21.0
+offset_right = 132.0
 offset_bottom = 27.0
-theme_override_colors/font_color = Color(0.89, 0.663, 0.251, 1)
-theme_override_font_sizes/font_size = 8
-theme_override_colors/font_outline_color = Color(0.05, 0.035, 0.05, 1)
-theme_override_constants/outline_size = 3
-text = "Fervor 0 · Pociones 3"
-horizontal_alignment = 2
+texture_under = ExtResource("7_fervor_vacio")
+texture_progress = ExtResource("6_fervor")
+
+[node name="Frascos" type="HBoxContainer" parent="."]
+offset_left = 40.0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 42.0
+theme_override_constants/separation = 2
+
+[node name="Medallon" type="TextureRect" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_medallon")
 
 [node name="Aviso" type="Label" parent="."]
-theme_override_fonts/font = ExtResource("f_narracion")
-theme_override_font_sizes/font_size = 18
 visible = false
 anchor_right = 1.0
 offset_top = 52.0
 offset_bottom = 74.0
+theme_override_fonts/font = ExtResource("f_narracion")
+theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.89, 0.663, 0.251, 1)
 theme_override_colors/font_outline_color = Color(0.05, 0.035, 0.05, 1)
 theme_override_constants/outline_size = 3
