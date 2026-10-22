@@ -8,6 +8,7 @@ extends Node2D
 
 const PORTADA := "res://escenas/principal.tscn"
 const SILLERIA := preload("res://arte/silleria/vientre.tres")
+const Silleria := preload("res://scripts/silleria.gd")
 
 ## [columna, fila, ancho, alto], en tiles de 16 px.
 const PIEDRA := [
@@ -35,7 +36,8 @@ func _ready() -> void:
 	for p in PIEDRA:
 		for x in range(p[0], p[0] + p[2]):
 			for y in range(p[1], p[1] + p[3]):
-				capa.set_cell(Vector2i(x, y), 0, Vector2i((x * 3 + y * 5) % 8, 0))
+				capa.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
+	Silleria.vestir(capa)
 	add_child(capa)
 	move_child(capa, 0)
 

@@ -158,6 +158,36 @@ const DEVOTO := {
 	"memoria_ms": 2000.0,
 }
 
+## La Vestal: clero de la Diocesis. No pelea, administra: mantiene la distancia
+## y lanza sellos del diezmo; si el Cirujano se le acerca, retrocede. Los
+## numeros del original (src/config/Sacramento.ts).
+const VESTAL := {
+	"vida": 5,
+	"velocidad": 55.0,
+	"rango_deteccion": 210.0,
+	## La distancia que intenta mantener, y la que la hace retroceder.
+	"rango_preferido": 115.0,
+	"rango_huida": 72.0,
+	## Mas largo que el aviso del Devoto: se ve venir.
+	"anticipacion_ms": 520.0,
+	"enfriamiento_ms": 1500.0,
+	"retroceso": 90.0,
+	"memoria_ms": 2400.0,
+	## Herida, se tambalea un instante; con su propio sello devuelto, lo que
+	## un parado (Sigma): asi se la puede ejecutar.
+	"aturdimiento_ms": 260.0,
+}
+
+## El sello del diezmo, el proyectil de la Vestal. Parado con el parry, sale
+## rebotado mas rapido y hiere a quien lo lanzo.
+const SELLO := {
+	"velocidad": 165.0,
+	"dano": 1,
+	"vida_ms": 3200.0,
+	"velocidad_devuelto": 260.0,
+	"dano_devuelto": 3,
+}
+
 ## La compactacion (#186): los muros que se mueven. Avisan antes de moverse
 ## (dos latidos) y van despacio: se esquivan pensando, no con reflejos.
 const COMPACTACION := {

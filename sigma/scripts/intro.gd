@@ -211,15 +211,17 @@ func _suelo(y: float) -> void:
 	_plano.add_child(suelo)
 
 
+## Un muro de la silleria de Sigma, vestido como los del juego.
 func _muro(sitio: Vector2) -> Node2D:
-	var muro := Sprite2D.new()
-	muro.texture = load("res://arte/silleria/vientre.png")
-	muro.centered = false
-	muro.region_enabled = true
-	muro.region_rect = Rect2(0, 0, 240, 360)
-	muro.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	var muro := TileMapLayer.new()
+	muro.tile_set = preload("res://arte/silleria/vientre.tres")
+	muro.collision_enabled = false
+	for x in 15:
+		for y in 23:
+			muro.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
+	preload("res://scripts/silleria.gd").vestir(muro)
 	muro.position = sitio
-	muro.modulate = Color(0.48, 0.4, 0.4)
+	muro.modulate = Color(0.75, 0.66, 0.66)
 	_plano.add_child(muro)
 	return muro
 

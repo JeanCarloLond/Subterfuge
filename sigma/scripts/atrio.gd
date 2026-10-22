@@ -37,6 +37,8 @@ var _terminado := false
 func _ready() -> void:
 	for devoto in $Devotos.get_children():
 		devoto.objetivo = _cirujano
+	for vestal in $Vestales.get_children():
+		vestal.objetivo = _cirujano
 	for muro in $Muros.get_children():
 		muro.objetivo = _cirujano
 		muro.aplasto.connect(_interfaz.avisar.bind("Aplastado: vuelves al Altar"))

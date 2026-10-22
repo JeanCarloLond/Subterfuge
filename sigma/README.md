@@ -134,6 +134,13 @@ como en el original: con un aparato de metal (brazo con garra y pierna) o con un
 carne injertada. Anda, avisa alzando el brazo, golpea con su smear, se tambalea aturdido
 y se arrodilla para la ejecución.
 
+**La Vestal** (`npm run sigma:vestal`): clero, no pelea, administra. Alba de hueso, toca
+alta con velo, la venda roja de las intérpretes y el sello del diezmo en la mano.
+Mantiene la distancia, huye si te acercas y lanza sellos con un aviso largo (el sello
+se enciende al alzarlo). Parado con K, el sello vuelve más rápido, le quita 3 y la deja
+aturdida como un parado: entonces, y solo entonces, se la puede ejecutar. Hay dos en el
+Atrio: una abajo, junto al umbral, y otra en el camino alto de las reliquias.
+
 **Los fondos** son grandes y en capas, como en _Blasphemous_ y _Hollow Knight_
 (`scripts/nave.gd`): la vidriera-pantalla moribunda con sus haces de luz, una bóveda de
 costillas (los dioses son el templo), columnas colosales con venas y una jaula colgada,
@@ -153,6 +160,13 @@ se apoyan en piedra.
 `sigma/audio/LICENCIAS.md`). Una pista por escena con fundido cruzado (el autoload
 `Musica`: la portada, la intro y el Atrio) y las voces del Cirujano y los Devotos al
 atacar, saltar, recibir y morir, como en el original (el autoload `Voces`).
+
+**La piedra** (`npm run sigma:silleria`) es de Sigma: una baldosa por cada combinación de
+lados al aire, en cuatro variantes, con la cara de arriba clara, los cantos con bisel y
+el interior en sombra (y vetas de carne en una de cada cuatro). `scripts/silleria.gd`
+la viste al cargar según las vecinas de cada piedra: el mapa se sigue pintando con
+cualquier baldosa en el editor. La usan el Atrio, los muros que se mueven, la sala de
+compactación y la intro.
 
 **La interfaz** (`npm run sigma:hud`, `escenas/interfaz.tscn`) es ornamentada, como la
 de _Blasphemous_: arriba a la izquierda, un medallón con el rostro vendado del Cirujano

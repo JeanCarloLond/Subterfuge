@@ -18,6 +18,10 @@ func test_todo_lo_que_se_pisa_esta_sobre_piedra() -> void:
 		afirmar(_solido_bajo(capa, altar.position), "el Altar %s" % altar.name)
 	for reliquia in atrio.get_node("Reliquias").get_children():
 		afirmar(_solido_bajo(capa, reliquia.position), "la reliquia %s" % reliquia.name)
+	for vestal in atrio.get_node("Vestales").get_children():
+		afirmar(_solido_bajo(capa, vestal.position), "la Vestal %s" % vestal.name)
+		for x in [vestal.ronda_izquierda, vestal.ronda_derecha]:
+			afirmar(_solido_bajo(capa, Vector2(x, vestal.position.y)), "el tramo de %s llega a %s" % [vestal.name, x])
 	for pieza in atrio.get_node("Atrezo").piezas:
 		afirmar(_solido_bajo(capa, Vector2(pieza[1], pieza[2])), "el atrezo %s en %s,%s" % pieza)
 	for devoto in atrio.get_node("Devotos").get_children():
@@ -76,4 +80,17 @@ func test_el_decorado_se_apoya_en_la_piedra() -> void:
 		var cuelga: bool = pieza.offset.y >= 0.0
 		var apoyo: Vector2 = pieza.position + (Vector2(0, -8) if cuelga else Vector2(0, 8))
 		afirmar(capa.get_cell_source_id(capa.local_to_map(apoyo)) != -1, "%s en %s flota" % [pieza.name, pieza.position])
+	atrio.free()
+
+
+func test_la_silleria_pone_la_cara_clara_arriba() -> void:
+	const Silleria := preload("res://scripts/silleria.gd")
+	var atrio := ESCENA.instantiate()
+	var capa: TileMapLayer = atrio.get_node("Silleria")
+	Silleria.vestir(capa)
+	# El suelo inicial (fila 18) tiene el aire encima; la repisa alta (fila 8),
+	# tambien, y su primera piedra, ademas, el canto de la izquierda.
+	afirmar(capa.get_cell_atlas_coords(Vector2i(4, 18)).x & 1, "el suelo, con su cara de arriba")
+	afirmar_igual(capa.get_cell_atlas_coords(Vector2i(59, 30)).x & 1, 0, "un muro por dentro no tiene cara arriba")
+	afirmar(capa.get_cell_source_id(Vector2i(4, 18)) != -1, "y sigue siendo piedra")
 	atrio.free()

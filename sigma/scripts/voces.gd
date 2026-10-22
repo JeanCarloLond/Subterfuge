@@ -6,7 +6,7 @@
 ## Una voz que se repite en cada tajo cansa enseguida: el ataque grita uno de
 ## cada dos y el salto uno de cada tres, con un descanso minimo entre voces del
 ## mismo cuerpo. El golpe recibido y la muerte, siempre. Los Devotos usan la
-## voz del Cirujano mas grave.
+## voz del Cirujano mas grave, y las Vestales, mas aguda.
 extends Node
 
 const RUTA := "res://audio/voces/%s.mp3"
@@ -24,7 +24,7 @@ const TOMAS := {
 	"monstruo-muerte": 2,
 }
 ## La voz y el tono de cada enemigo.
-const ENEMIGOS := {"devoto": ["cirujano", 0.8]}
+const ENEMIGOS := {"devoto": ["cirujano", 0.8], "vestal": ["cirujano", 1.3]}
 
 var _ultima := {}
 var _azar := RandomNumberGenerator.new()

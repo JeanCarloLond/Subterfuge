@@ -15,6 +15,7 @@ const Compactacion := preload("res://scripts/compactacion.gd")
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Sonidos := preload("res://scripts/sonidos.gd")
 const SILLERIA := preload("res://arte/silleria/vientre.tres")
+const Silleria := preload("res://scripts/silleria.gd")
 
 ## La piedra viva tira a carne: se distingue de la quieta.
 const TINTE := Color(0.95, 0.76, 0.74)
@@ -66,7 +67,8 @@ func _ready() -> void:
 	_figura.modulate = TINTE
 	for x in tiles.x:
 		for y in tiles.y:
-			_figura.set_cell(Vector2i(x, y), 0, Vector2i((x * 5 + y * 3) % 8, 0))
+			_figura.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
+	Silleria.vestir(_figura)
 	add_child(_figura)
 
 	_polvo = _crear_polvo(tamano)
