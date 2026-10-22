@@ -91,6 +91,27 @@ func test_la_silleria_pone_la_cara_clara_arriba() -> void:
 	# El suelo inicial (fila 18) tiene el aire encima; la repisa alta (fila 8),
 	# tambien, y su primera piedra, ademas, el canto de la izquierda.
 	afirmar(capa.get_cell_atlas_coords(Vector2i(4, 18)).x & 1, "el suelo, con su cara de arriba")
-	afirmar_igual(capa.get_cell_atlas_coords(Vector2i(59, 30)).x & 1, 0, "un muro por dentro no tiene cara arriba")
+	# Un muro por dentro: dos piedras apiladas en una capa de prueba (en el
+	# Atrio los muros de agarre son membrana, en otra capa).
+	var muro := TileMapLayer.new()
+	muro.tile_set = capa.tile_set
+	muro.set_cell(Vector2i(0, 0), 0, Vector2i.ZERO)
+	muro.set_cell(Vector2i(0, 1), 0, Vector2i.ZERO)
+	Silleria.vestir(muro)
+	afirmar_igual(muro.get_cell_atlas_coords(Vector2i(0, 1)).x & 1, 0, "un muro por dentro no tiene cara arriba")
+	muro.free()
 	afirmar(capa.get_cell_source_id(Vector2i(4, 18)) != -1, "y sigue siendo piedra")
+	atrio.free()
+
+
+func test_solo_las_paredes_de_agarre_son_membrana() -> void:
+	var atrio := ESCENA.instantiate()
+	var membranas: TileMapLayer = atrio.get_node("Membranas")
+	var silleria: TileMapLayer = atrio.get_node("Silleria")
+	afirmar(membranas.is_in_group("clavable"), "en la membrana se clava el bisturi")
+	afirmar(not silleria.is_in_group("clavable"), "en la piedra, no")
+	# La pared del campanario, la de la derecha y la que cierra el nicho.
+	for celda in [Vector2i(0, 10), Vector2i(59, 30), Vector2i(44, 60)]:
+		afirmar(membranas.get_cell_source_id(celda) != -1, "%s es membrana" % celda)
+		afirmar_igual(silleria.get_cell_source_id(celda), -1, "%s ya no es piedra" % celda)
 	atrio.free()

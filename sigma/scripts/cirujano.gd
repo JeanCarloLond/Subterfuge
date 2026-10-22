@@ -137,9 +137,10 @@ func _physics_process(delta: float) -> void:
 	lucha.golpe_pulsado = Input.is_action_just_pressed("golpear")
 	lucha.golpe_soltado = Input.is_action_just_released("golpear")
 	lucha.parry_pulsado = Input.is_action_just_pressed("parry")
-	# K en el aire pegado a una pared no es un parry: clava el bisturi en ella.
+	# K en el aire pegado a una membrana no es un parry: clava el bisturi en
+	# ella. En la piedra no entra, y K sigue siendo el parry.
 	var pared_al_lado := 0 if is_on_floor() else _pared_al_lado()
-	var clavar := lucha.parry_pulsado and pared_al_lado != 0
+	var clavar := lucha.parry_pulsado and pared_al_lado != 0 and _clavable(pared_al_lado)
 	if clavar:
 		lucha.parry_pulsado = false
 	lucha.pocion_pulsada = Input.is_action_just_pressed("pocion")
@@ -206,6 +207,19 @@ func _pared_al_lado() -> int:
 		if test_move(global_transform, Vector2(lado * 3.0, 0.0)):
 			return lado
 	return 0
+
+
+## Si la pared de ese lado es membrana (o algo del grupo «clavable»): solo en
+## ella entra el bisturi (feedback de Jean: engancharse a cualquier pared era
+## confuso). Se mira el punto donde entraria la hoja, a media altura.
+func _clavable(lado: int) -> bool:
+	var consulta := PhysicsPointQueryParameters2D.new()
+	consulta.position = global_position + Vector2(lado * 7.0, -12.0)
+	consulta.collision_mask = 1
+	for choque in get_world_2d().direct_space_state.intersect_point(consulta, 4):
+		if choque["collider"] is Node and choque["collider"].is_in_group("clavable"):
+			return true
+	return false
 
 
 func _voz(voz: String) -> void:

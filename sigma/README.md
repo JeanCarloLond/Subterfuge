@@ -50,8 +50,11 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   escribe en `user://partida.cfg` las reliquias y el último Altar al tomar una reliquia y
   al rezar; en la portada, «Continuar» vuelve a ese Altar y «Empezar» abre una partida
   nueva (borra la guardada).
-- **Trepar**: no es automático. En el aire, pegado a una pared, K clava el bisturí y el
-  Cirujano queda colgado (en el suelo, K sigue siendo el parry). Empujar hacia fuera lo
+- **Trepar**: no es automático, y no en cualquier pared. En el aire, pegado a una
+  **membrana** (tejido vivo sobre la piedra, se ve distinta), K clava el bisturí y el
+  Cirujano queda colgado; en la piedra no entra, y K sigue siendo el parry. En el Atrio,
+  las membranas son la capa `Membranas` (grupo `clavable`): se pintan en el editor con
+  `arte/silleria/membrana.tres`. Empujar hacia fuera lo
   gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑
   trepan al borde.
 - **Los temblores**: cada medio minuto, más o menos, el templo se encoge un poco, lejos:

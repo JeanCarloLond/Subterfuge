@@ -21,11 +21,14 @@ const BLOQUES := [
 	# A la misma altura, con 80 px de hueco: salto con carrerilla.
 	[264, 164, 48, 16, "hueco de 80"],
 	# La torre: 100 px por encima de la anterior. Doble salto, o salto,
-	# agarrarse a la pared y trepar. Bajar por el otro lado duele.
+	# clavarse en ella (es membrana) y trepar. Bajar por el otro lado duele.
 	[344, 64, 48, 240, "240 px: duele"],
 ]
+## Los bloques de membrana: en ellos se clava el bisturi (K en el aire).
+const MEMBRANAS := [Rect2(344, 64, 48, 240)]
 
 const COLOR_PIEDRA := Color(0.227, 0.18, 0.188)
+const COLOR_MEMBRANA := Color(0.5, 0.2, 0.22)
 const COLOR_CARTEL := Color(0.541, 0.49, 0.439)
 
 @onready var _cirujano: CharacterBody2D = $Cirujano
@@ -43,6 +46,9 @@ func _ready() -> void:
 
 func _poner_bloque(rect: Rect2, cartel: String) -> void:
 	var cuerpo := StaticBody2D.new()
+	var membrana := rect in MEMBRANAS
+	if membrana:
+		cuerpo.add_to_group("clavable")
 	cuerpo.position = rect.get_center()
 	var forma := RectangleShape2D.new()
 	forma.size = rect.size
@@ -50,7 +56,7 @@ func _poner_bloque(rect: Rect2, cartel: String) -> void:
 	colision.shape = forma
 	cuerpo.add_child(colision)
 	var dibujo := ColorRect.new()
-	dibujo.color = COLOR_PIEDRA
+	dibujo.color = COLOR_MEMBRANA if membrana else COLOR_PIEDRA
 	dibujo.position = -rect.size / 2.0
 	dibujo.size = rect.size
 	cuerpo.add_child(dibujo)
