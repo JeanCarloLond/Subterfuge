@@ -70,10 +70,12 @@ sigue pendiente del equipo.
 - **El lore nuevo** está en [`sigma/docs/canon.md`](../sigma/docs/canon.md): los dioses (ciegos;
   corazones, cerebros, estómagos) son el templo y se compactan para ser un solo sistema; la
   niña son sus ojos y manipula al Cirujano; él es el villano sin saberlo; los «enemigos» son
-  los últimos eslabones. Decidido: el apodo es **el Último Sacramento**; hay **dos finales**
-  (la unión egoísta con la niña o el sacrificio que acaba con ella); la niña **no ha nacido** y
-  solo existe en las visiones del Cirujano. **Abierto:** qué había en la camilla, quién firmó
-  la inscripción y desde cuándo la ve.
+  los últimos eslabones. Decidido: la niña **no es parte activa del juego**; solo se le
+  aparece al Cirujano en **visiones**, desde que toca un artefacto en un laboratorio de
+  Génesis Vestal mientras investiga la compactación; no ha nacido, por eso los eslabones no
+  la atacan. El apodo es **el Último Sacramento**. Hay **dos finales**: la unión egoísta con
+  la niña (fin de la carne) o el sacrificio de él, que acaba con ella. **Abierto:** qué es el
+  artefacto y cómo nota el jugador que solo él la ve.
 - **Godot en la máquina de Jean:** instalado con winget en
   `%LOCALAPPDATA%\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_*\`. Para la consola y
   los tests, el `Godot_v4.7.2-stable_win64_console.exe` (no hay alias en el PATH).
