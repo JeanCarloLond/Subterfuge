@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/muro.gd" id="2_muro"]
 [ext_resource type="PackedScene" path="res://escenas/cirujano.tscn" id="3_cirujano"]
 [ext_resource type="PackedScene" path="res://escenas/altar.tscn" id="4_altar"]
+[ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="5_interfaz"]
 
 [node name="SalaCompactacion" type="Node2D"]
 script = ExtResource("1_sala")
@@ -33,32 +34,6 @@ position = Vector2(56, 288)
 [node name="Cirujano" parent="." instance=ExtResource("3_cirujano")]
 position = Vector2(76, 288)
 
-[node name="Interfaz" type="CanvasLayer" parent="."]
-
-[node name="Ayuda" type="Label" parent="Interfaz"]
-offset_left = 8.0
-offset_top = 4.0
-offset_right = 400.0
-offset_bottom = 16.0
-theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
-theme_override_font_sizes/font_size = 8
-text = "Escucha el Latido: los muros avisan antes de moverse · E rezar · Esc salir"
-
-[node name="Vitalidad" type="Label" parent="Interfaz"]
-offset_left = 392.0
-offset_top = 4.0
-offset_right = 472.0
-offset_bottom = 16.0
-theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
-theme_override_font_sizes/font_size = 8
-text = "Vitalidad 6/6"
-horizontal_alignment = 2
-
-[node name="Aviso" type="Label" parent="Interfaz"]
-visible = false
-offset_top = 40.0
-offset_right = 480.0
-offset_bottom = 56.0
-theme_override_colors/font_color = Color(0.89, 0.663, 0.251, 1)
-theme_override_font_sizes/font_size = 8
-horizontal_alignment = 1
+[node name="Interfaz" parent="." instance=ExtResource("5_interfaz")]
+ayuda = "Escucha el Latido: los muros avisan antes de moverse
+E rezar · Esc salir"

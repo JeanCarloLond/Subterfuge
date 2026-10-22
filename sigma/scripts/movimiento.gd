@@ -1,6 +1,7 @@
 ## El movimiento del Cirujano (#182): correr, saltar, doble salto, dash,
 ## agarre y dano por caida, con los numeros del original. Tambien lo que lo
-## para: un golpe, una mala caida o rezar en un Altar (#185).
+## para: un golpe, una mala caida, rezar en un Altar (#185) o sus propias
+## acciones de combate, y el rebote de un golpe hacia abajo (#183).
 ##
 ## Va aparte del nodo para poder probarlo sin escena ni fisica: recibe lo que
 ## se pulsa y lo que se toca, y deja la velocidad en `velocidad`. cirujano.gd
@@ -35,8 +36,9 @@ const CAIDA_QUE_CUENTA := 120.0
 ## Lo que dura sin control tras un golpe o un roce.
 const HERIDO_MS := 220.0
 
-## ATURDIDO y REZANDO son "quieto": sin control hasta que pasa el rato.
-enum Estado { SUELO, AIRE, DASH, AGARRE, ATURDIDO, REZANDO }
+## ATURDIDO, REZANDO y ACCION son "quieto": sin control hasta que pasa el rato.
+## ACCION es golpear, parar o beber: lo decide el combate.
+enum Estado { SUELO, AIRE, DASH, AGARRE, ATURDIDO, REZANDO, ACCION }
 
 
 ## Lo que el jugador pulsa en este fotograma.
@@ -119,7 +121,7 @@ func paso(delta: float, entrada: Entrada, en_suelo: bool, pared: int, y: float) 
 			_actualizar_dash()
 		Estado.AGARRE:
 			_actualizar_agarre(entrada)
-		Estado.ATURDIDO, Estado.REZANDO:
+		Estado.ATURDIDO, Estado.REZANDO, Estado.ACCION:
 			_actualizar_quieto(en_suelo)
 		_:
 			_actualizar_locomocion(entrada, en_suelo, pared)
@@ -319,8 +321,32 @@ func reaparecer(y: float) -> void:
 	_fin_invulnerable = ahora + Sacramento.VITALIDAD["invulnerabilidad_ms"]
 
 
+## Si el cuerpo puede empezar una accion de combate.
+func libre() -> bool:
+	return estado == Estado.SUELO or estado == Estado.AIRE
+
+
+## Una accion de combate: sin control durante `ms`. En el suelo se queda
+## clavado; en el aire conserva la inercia.
+func bloquear(ms: float) -> void:
+	estado = Estado.ACCION
+	_fin_quieto = ahora + ms
+
+
+## Un golpe hacia abajo ha conectado: sale despedido hacia arriba y recupera el
+## doble salto y el dash, para seguir peleando desde el aire. No es un salto:
+## no se corta al soltar (en Phaser si, y el rebote se quedaba en nada si no se
+## mantenia saltar).
+func rebotar() -> void:
+	estado = Estado.AIRE
+	velocidad.y = -Sacramento.COMBATE["rebote"]["impulso"]
+	_saltos_restantes = 1
+	_dashes_en_aire = D["usos_en_aire"]
+	_sin_corte_hasta = ahora + SIN_CORTE_MS
+
+
 func _quieto() -> bool:
-	return estado == Estado.ATURDIDO or estado == Estado.REZANDO
+	return estado == Estado.ATURDIDO or estado == Estado.REZANDO or estado == Estado.ACCION
 
 
 func _actualizar_quieto(en_suelo: bool) -> void:

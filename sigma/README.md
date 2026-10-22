@@ -26,9 +26,12 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
 
 **Lo que hay:**
 
-- **El Atrio** (#185): el mismo trazado que en Phaser, con la sillería del equipo, un
-  Devoto, los dos Altares y el umbral del final. El Devoto todavía no se puede herir (el
-  combate es #183): se esquiva o se le pasa a través con el dash.
+- **El Atrio** (#185): el mismo trazado que en Phaser, con la sillería del equipo, los
+  cinco Devotos, los dos Altares, un techo que late y el umbral del final.
+- **El combate** (#183): J golpea (mantenido carga un golpe más fuerte que gasta 30 de
+  Fervor), con ↑ o ↓ golpea hacia arriba o hacia abajo (en el aire, y al conectar rebota),
+  K para el golpe enemigo si se pulsa a tiempo (140 ms) y Q bebe la Poción de Carne. El
+  Fervor se gana golpeando y parando; los Altares llenan el frasco.
 - **La sala del movimiento** (#182): una repisa a cada altura que importa para el
   movimiento.
 - **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un
@@ -72,6 +75,10 @@ CI los pasa en cada push y cada PR.
   Phaser a la rejilla; no se vuelve a correr, porque pisaría lo pintado a mano.
 - **Capas de colisión**: 1 el mundo, 2 el Cirujano, 3 los enemigos. Los cuerpos solo
   chocan con el mundo; el daño se resuelve con las cajas.
+- **El combate** va como el movimiento: `scripts/combate.gd` es la lógica (ventanas,
+  Fervor, cargado, parry, Poción), sin física; `cirujano.gd` resuelve los golpes contra los
+  nodos del grupo `enemigos` y hace la pausa al conectar. `escenas/interfaz.tscn` es la
+  interfaz de todas las salas.
 - **La compactación**: `scripts/compactacion.gd` es el ciclo, sin física (latido: reposo,
   aviso, avance, cerrado, retroceso; o cierre: quieto hasta que se dispara y luego cerrado
   para siempre). `scripts/muro.gd` es el muro: piedra de la capa 1 que se pisa y se agarra.

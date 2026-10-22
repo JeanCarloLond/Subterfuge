@@ -340,3 +340,29 @@ func test_reaparecer_no_cuenta_como_caida() -> void:
 	mundo.mov.reaparecer(0.0)
 	mundo.pasos(5, _entrada())
 	afirmar_igual(danos, [], "aparecer en el Altar no hace dano")
+
+
+func test_una_accion_deja_quieto_y_luego_suelta() -> void:
+	var mundo := Mundo.new()
+	mundo.paso(_entrada())
+	afirmar(mundo.mov.libre(), "de pie puede actuar")
+	mundo.mov.bloquear(170.0)
+	afirmar(not mundo.mov.libre(), "golpeando no empieza otra cosa")
+	mundo.pasos(9, _entrada(1, true)) # 150 ms
+	afirmar_igual(mundo.pos.x, 0.0, "en el suelo no anda mientras golpea")
+	mundo.pasos(3, _entrada(1))
+	afirmar(mundo.mov.velocidad.x > 0.0, "acabado el golpe, anda")
+
+
+func test_el_rebote_sube_unos_80_px_sin_mantener_saltar() -> void:
+	var mundo := _en_la_cima()
+	var y := mundo.pos.y
+	mundo.mov.rebotar()
+	var cima := y
+	mundo.paso(_entrada())
+	while mundo.mov.velocidad.y < 0.0:
+		mundo.paso(_entrada())
+		cima = minf(cima, mundo.pos.y)
+	afirmar(y - cima > 70.0, "no se corta al no mantener saltar (subio %.1f)" % (y - cima))
+	mundo.paso(_entrada(0, true))
+	afirmar(mundo.mov.velocidad.y < 0.0, "y recupera el doble salto")

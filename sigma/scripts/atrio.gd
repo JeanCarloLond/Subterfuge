@@ -13,8 +13,6 @@
 extends Node2D
 
 const PORTADA := "res://escenas/principal.tscn"
-## Lo que dura un aviso en pantalla.
-const AVISO_S := 2.5
 ## Lo cerca del umbral que hay que estar para descender.
 const ALCANCE_UMBRAL := 20.0
 
@@ -25,10 +23,9 @@ var _terminado := false
 
 @onready var _cirujano: CharacterBody2D = $Cirujano
 @onready var _umbral: Marker2D = $Umbral
-@onready var _vitalidad: Label = $Interfaz/Vitalidad
-@onready var _aviso: Label = $Interfaz/Aviso
+@onready var _interfaz: CanvasLayer = $Interfaz
 @onready var _aviso_umbral: Label = $Umbral/Aviso
-@onready var _fin: Control = $Interfaz/Fin
+@onready var _fin: CanvasLayer = $Fin
 
 
 func _ready() -> void:
@@ -36,19 +33,18 @@ func _ready() -> void:
 		devoto.objetivo = _cirujano
 	for muro in $Muros.get_children():
 		muro.objetivo = _cirujano
-		muro.aplasto.connect(_avisar.bind("Aplastado: vuelves al Altar"))
-		muro.cerrado.connect(_avisar.bind("El camino de vuelta se ha cerrado"))
+		muro.aplasto.connect(_interfaz.avisar.bind("Aplastado: vuelves al Altar"))
+		muro.cerrado.connect(_interfaz.avisar.bind("El camino de vuelta se ha cerrado"))
 	for altar in $Altares.get_children():
 		altar.cirujano = _cirujano
 		altar.rezado.connect(_al_rezar.bind(altar))
-	_cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)
-	_al_cambiar_vitalidad(_cirujano.vitalidad, _cirujano.vitalidad)
+	_interfaz.conectar(_cirujano)
 
 
 func _physics_process(_delta: float) -> void:
 	if _cirujano.position.y > limite_caida:
 		_cirujano.caer_al_vacio()
-		_avisar("Caída al vacío: vuelves al Altar")
+		_interfaz.avisar("Caída al vacío: vuelves al Altar")
 
 	var cerca := _cirujano.position.distance_to(_umbral.position) <= ALCANCE_UMBRAL
 	_aviso_umbral.visible = cerca and not _terminado
@@ -66,17 +62,4 @@ func _al_rezar(altar: Node2D) -> void:
 	for otro in $Altares.get_children():
 		if otro != altar:
 			otro.encendido = false
-	_avisar("Altar: aquí volverás")
-
-
-func _al_cambiar_vitalidad(actual: int, maxima: int) -> void:
-	_vitalidad.text = "Vitalidad %d/%d" % [actual, maxima]
-
-
-func _avisar(texto: String) -> void:
-	_aviso.text = texto
-	_aviso.visible = true
-	get_tree().create_timer(AVISO_S).timeout.connect(func() -> void:
-		if _aviso.text == texto:
-			_aviso.visible = false
-	)
+	_interfaz.avisar("Altar: aquí volverás")

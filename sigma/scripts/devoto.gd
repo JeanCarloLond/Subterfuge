@@ -2,14 +2,15 @@
 ## Patrulla su ronda, persigue al Cirujano si lo tiene cerca y avisa del golpe
 ## 420 ms antes de darlo, para que se pueda leer.
 ##
-## Todavia no se le puede pegar: eso llega con el combate (#183). De momento se
-## esquiva, o se le pasa a traves con el dash.
+## Se le hiere con el bisturi (#183), y si se le para el golpe con el parry se
+## queda aturdido 900 ms: abierto, para castigarlo.
 ##
 ## Esta en la capa 3 y solo choca con el mundo. El dano al Cirujano se mira con
 ## las cajas, no con la fisica.
 extends CharacterBody2D
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Cirujano := preload("res://scripts/cirujano.gd")
 const D := Sacramento.DEVOTO
 const M := Sacramento.MOVIMIENTO
 
@@ -17,8 +18,13 @@ const M := Sacramento.MOVIMIENTO
 const DESTELLO_MS := 110.0
 const COLOR_AVISO := Color(0.898, 0.541, 0.502)
 const COLOR_DESTELLO := Color(1.6, 1.6, 1.6)
+## Aturdido: amarillo palido, para ver de un vistazo que esta abierto.
+const COLOR_ATURDIDO := Color(0.91, 0.851, 0.627)
+## Lo que dura el destello de un golpe recibido, y lo que tarda en irse al caer.
+const HERIDO_MS := 90.0
+const CAIDA_MS := 400.0
 
-enum Estado { PATRULLA, PERSECUCION, ANTICIPANDO, ATACANDO }
+enum Estado { PATRULLA, PERSECUCION, ANTICIPANDO, ATACANDO, ATURDIDO, MUERTO }
 
 ## Los extremos de la ronda, en x del mundo.
 @export var ronda_izquierda := 0.0
@@ -30,20 +36,31 @@ var objetivo: CharacterBody2D
 var estado := Estado.PATRULLA
 var mirando := 1
 var ahora := 0.0
+var vida: int = D["vida"]
 
 var _fin_accion := -INF
 var _fin_enfriamiento := -INF
 var _ultimo_avistamiento := -INF
 ## Un golpe hiere una vez por ventana.
 var _ya_golpeo := false
+var _fin_destello := -INF
+var _cayendo := false
 
 @onready var _figura: Node2D = $Figura
 @onready var _brazo_alto: Node2D = $Figura/BrazoAlto
 @onready var _tajo: Node2D = $Figura/Tajo
 
 
+func _ready() -> void:
+	add_to_group("enemigos")
+
+
 func _physics_process(delta: float) -> void:
 	if objetivo == null:
+		return
+	if estado == Estado.MUERTO:
+		if not _cayendo:
+			_caer()
 		return
 	pensar(delta, objetivo.position)
 	velocity.y = minf(velocity.y + M["gravedad"] * delta, M["velocidad_caida_max"])
@@ -64,6 +81,37 @@ func pensar(delta: float, hacia: Vector2) -> void:
 			_anticipar()
 		Estado.ATACANDO:
 			_atacar()
+		Estado.ATURDIDO:
+			_esperar_aturdido()
+
+
+func vivo() -> bool:
+	return estado != Estado.MUERTO
+
+
+## Un golpe del bisturi. Lo pone en alerta aunque no hubiera visto al Cirujano.
+func recibir_dano(cantidad: int, origen_x: float) -> void:
+	if estado == Estado.MUERTO:
+		return
+	vida = maxi(0, vida - cantidad)
+	_fin_destello = ahora + HERIDO_MS
+	if vida == 0:
+		_morir()
+		return
+	_ultimo_avistamiento = ahora
+	mirando = 1 if origen_x > position.x else -1
+	if estado == Estado.PATRULLA:
+		estado = Estado.PERSECUCION
+
+
+## El parry le ha parado el golpe: se queda abierto un rato, sin golpear.
+func aturdir() -> void:
+	if estado == Estado.MUERTO:
+		return
+	estado = Estado.ATURDIDO
+	_fin_accion = ahora + Sacramento.COMBATE["parry"]["aturdimiento_ms"]
+	_fin_enfriamiento = _fin_accion
+	velocity.x = 0.0
 
 
 ## La caja que choca, 12x22 con los pies en el origen, en coordenadas del mundo.
@@ -127,21 +175,55 @@ func _atacar() -> void:
 		estado = Estado.PERSECUCION
 
 
+func _esperar_aturdido() -> void:
+	velocity.x = 0.0
+	if ahora >= _fin_accion:
+		_ultimo_avistamiento = ahora
+		estado = Estado.PERSECUCION
+
+
+## Ya no estorba ni hace dano. La caida se dibuja en el paso siguiente.
+func _morir() -> void:
+	estado = Estado.MUERTO
+	velocity = Vector2.ZERO
+	$Caja.set_deferred("disabled", true)
+
+
+## Cae de lado y se va.
+func _caer() -> void:
+	_cayendo = true
+	_tajo.visible = false
+	_brazo_alto.visible = false
+	var caida := create_tween()
+	caida.tween_property(_figura, "rotation", -mirando * PI / 2.0, CAIDA_MS / 1000.0)
+	caida.parallel().tween_property(_figura, "modulate:a", 0.0, CAIDA_MS / 1000.0)
+	caida.tween_callback(queue_free)
+
+
 func _herir_si_toca() -> void:
 	var suya: Rect2 = objetivo.caja()
 	if estado == Estado.ATACANDO and not _ya_golpeo and zona_golpe().intersects(suya):
-		_ya_golpeo = objetivo.recibir_golpe(position.x, D["dano"])
+		var resultado: Cirujano.Resultado = objetivo.recibir_golpe(position.x, D["dano"])
+		_ya_golpeo = resultado != Cirujano.Resultado.IGNORADO
+		if resultado == Cirujano.Resultado.PARADO:
+			aturdir()
 	elif caja().intersects(suya):
 		objetivo.recibir_contacto(position.x)
 
 
 ## Figura provisional hasta que llegue el arte (#184): el brazo en alto y el
-## tinte rojo son el aviso; el tajo, el golpe.
+## tinte rojo son el aviso; el tajo, el golpe; el amarillo y el vaiven, que
+## esta aturdido.
 func _pintar() -> void:
 	_figura.scale.x = mirando
 	_brazo_alto.visible = estado == Estado.ANTICIPANDO
 	_tajo.visible = estado == Estado.ATACANDO
-	if estado != Estado.ANTICIPANDO:
+	_figura.rotation = sin(ahora / 50.0) * 0.1 if estado == Estado.ATURDIDO else 0.0
+	if ahora < _fin_destello:
+		_figura.modulate = COLOR_DESTELLO
+	elif estado == Estado.ATURDIDO:
+		_figura.modulate = COLOR_ATURDIDO
+	elif estado != Estado.ANTICIPANDO:
 		_figura.modulate = Color.WHITE
 	elif _fin_accion - ahora <= DESTELLO_MS:
 		_figura.modulate = COLOR_DESTELLO

@@ -8,7 +8,6 @@ extends Node2D
 
 const PORTADA := "res://escenas/principal.tscn"
 const SILLERIA := preload("res://arte/silleria/vientre.tres")
-const AVISO_S := 2.5
 
 ## [columna, fila, ancho, alto], en tiles de 16 px.
 const PIEDRA := [
@@ -27,8 +26,7 @@ const CARTELES := [
 ]
 
 @onready var _cirujano: CharacterBody2D = $Cirujano
-@onready var _vitalidad: Label = $Interfaz/Vitalidad
-@onready var _aviso: Label = $Interfaz/Aviso
+@onready var _interfaz: CanvasLayer = $Interfaz
 
 
 func _ready() -> void:
@@ -51,27 +49,13 @@ func _ready() -> void:
 
 	for muro in $Muros.get_children():
 		muro.objetivo = _cirujano
-		muro.aplasto.connect(_avisar.bind("Aplastado: vuelves al Altar"))
+		muro.aplasto.connect(_interfaz.avisar.bind("Aplastado: vuelves al Altar"))
 	for altar in $Altares.get_children():
 		altar.cirujano = _cirujano
-		altar.rezado.connect(_avisar.bind("Altar: aquí volverás"))
-	_cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)
-	_al_cambiar_vitalidad(_cirujano.vitalidad, _cirujano.vitalidad)
+		altar.rezado.connect(_interfaz.avisar.bind("Altar: aquí volverás"))
+	_interfaz.conectar(_cirujano)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
 	if evento.is_action_pressed("pausa"):
 		get_tree().change_scene_to_file(PORTADA)
-
-
-func _al_cambiar_vitalidad(actual: int, maxima: int) -> void:
-	_vitalidad.text = "Vitalidad %d/%d" % [actual, maxima]
-
-
-func _avisar(texto: String) -> void:
-	_aviso.text = texto
-	_aviso.visible = true
-	get_tree().create_timer(AVISO_S).timeout.connect(func() -> void:
-		if _aviso.text == texto:
-			_aviso.visible = false
-	)

@@ -123,6 +123,12 @@ calculan en `sonidos.gd`.
 #189 un **techo que late** en el Atrio, bajo el segundo Altar: avisa y baja, pero deja 32 px
 debajo, así que se aprende el aviso sin pagarlo.
 
+#183 el **combate**: `sigma/scripts/combate.gd` (golpe con anticipación, cargado con Fervor,
+arriba y abajo con rebote, parry de 140 ms, Poción de Carne), el Devoto se puede herir (8 de
+vida) y el parry lo aturde 900 ms, pausa al conectar (hitstop) y una interfaz común
+(`escenas/interfaz.tscn`). El Atrio tiene ya los cinco Devotos del original. La Injertadora va
+aparte (#191): en el original se gana al vencer al primer jefe y aquí aún no hay jefe.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -133,8 +139,7 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 2. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
    cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
    repisa, y ningún muro lo sella sin que se rodee (#189).
-3. #183 combate: golpe, cargado, arriba/abajo con rebote, parry de 140 ms. Con él, el
-   Devoto del Atrio se puede herir.
+3. #191 la Injertadora, cuando se decida cómo se gana en Sigma.
 4. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
    saca a `web/generado`) e importarlas; flujo de Aseprite. Implica contarle a Mariana.
 5. #187 los eslabones, #188 las visiones de la niña.
@@ -156,6 +161,12 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 - **Guardar una escena desde un script** con `PackedScene.pack` necesita instanciarla con
   `GEN_EDIT_STATE_INSTANCE`: si no, las instancias se guardan con todas sus propiedades
   copiadas y dejan de seguir a su escena original.
+- **`ahora - (-INF)` es infinito**: un «desde cuándo» sin empezar (`-INF`) da por cumplida
+  cualquier espera. Pasó con la carga del golpe: soltar sin haber cargado sacaba el cargado.
+  Comprobar que el inicio existe antes de restar.
+- **La pausa al conectar para el tiempo** (`Engine.time_scale = 0`): los pasos de física
+  siguen llegando, pero con delta 0. En un script de prueba que cuenta fotogramas, pulsar
+  durante esa pausa no hace nada.
 - **`MainLoop._physics_process` devuelve `bool`** en un script de `-s`: sin `-> bool` y
   `return false` no compila.
 - **Python con heredoc en Windows** rompe tildes y barras: escribir los scripts con la

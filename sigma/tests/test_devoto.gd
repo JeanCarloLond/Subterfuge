@@ -77,3 +77,28 @@ func test_si_te_pierde_vuelve_a_su_ronda_a_los_2_s() -> void:
 	_pensar(devoto, 10, LEJOS)
 	afirmar_igual(devoto.estado, Devoto.Estado.PATRULLA, "se olvida")
 	devoto.free()
+
+
+func test_cuatro_golpes_lo_tumban() -> void:
+	var devoto := _devoto()
+	for i in 3:
+		devoto.recibir_dano(2, -20.0)
+	afirmar(devoto.vivo(), "con 6 de dano sigue en pie")
+	afirmar_igual(devoto.estado, Devoto.Estado.PERSECUCION, "y un golpe lo pone en alerta")
+	afirmar_igual(devoto.mirando, -1, "mirando a quien le pega")
+	devoto.recibir_dano(2, -20.0)
+	afirmar(not devoto.vivo(), "el cuarto lo tumba")
+	devoto.free()
+
+
+func test_parado_se_queda_aturdido_900_ms_sin_golpear() -> void:
+	var devoto := _devoto()
+	var cerca := Vector2(20, 0)
+	_pensar(devoto, 2, cerca)
+	devoto.aturdir()
+	_pensar(devoto, 50, cerca) # 833 ms
+	afirmar_igual(devoto.estado, Devoto.Estado.ATURDIDO, "aun aturdido a los 833 ms")
+	afirmar_igual(devoto.velocity.x, 0.0, "quieto")
+	_pensar(devoto, 6, cerca)
+	afirmar(devoto.estado != Devoto.Estado.ATURDIDO, "a los 933 ms ya no")
+	devoto.free()

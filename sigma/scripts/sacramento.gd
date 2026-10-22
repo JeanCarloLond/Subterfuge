@@ -47,6 +47,62 @@ const VITALIDAD := {
 	"retroceso_y": 180.0,
 }
 
+## El bisturi (#183). El golpe sale al pulsar; mantenido, carga el siguiente.
+const COMBATE := {
+	"ataque": {
+		"dano": 2,
+		"anticipacion_ms": 60.0,
+		"duracion_ms": 110.0,
+		"enfriamiento_ms": 300.0,
+		"alcance": 34.0,
+		"alto": 22.0,
+	},
+	"cargado": {
+		"dano": 6,
+		"tiempo_carga_ms": 450.0,
+		"coste_fervor": 30,
+		"anticipacion_ms": 110.0,
+		"duracion_ms": 150.0,
+		"enfriamiento_ms": 520.0,
+		"alcance": 42.0,
+		"alto": 26.0,
+	},
+	## Golpe hacia abajo que conecta: sale despedido hacia arriba y recupera el
+	## doble salto y el dash. Los rebotes se encadenan.
+	"rebote": {
+		"impulso": 400.0,
+		"enfriamiento_ms": 90.0,
+	},
+	## Una lectura, no un escudo: la ventana es corta a proposito.
+	"parry": {
+		"ventana_ms": 140.0,
+		"enfriamiento_ms": 480.0,
+		"aturdimiento_ms": 900.0,
+	},
+}
+
+## El Fervor se gana con el cuerpo y paga el golpe cargado.
+const FERVOR := {
+	"maximo": 100,
+	"inicial": 0,
+	"por_golpe_asestado": 6,
+	"por_parry": 20,
+}
+
+## La Pocion de Carne: el trago deja quieto y vulnerable.
+const POCION := {
+	"cargas_maximas": 3,
+	"curacion": 3,
+	"duracion_ms": 600.0,
+}
+
+## La pausa al conectar (hitstop): lo que hace que un golpe se sienta solido.
+const IMPACTO := {
+	"golpe_ms": 55.0,
+	"cargado_ms": 90.0,
+	"parry_ms": 130.0,
+}
+
 ## Rozar el cuerpo de un enemigo: no se para con el parry, solo con i-frames.
 const CONTACTO := {
 	"dano": 1,
@@ -58,6 +114,7 @@ const CONTACTO := {
 const REZO_MS := 1100.0
 
 const DEVOTO := {
+	"vida": 8,
 	"dano": 1,
 	"velocidad_patrulla": 40.0,
 	"velocidad_persecucion": 80.0,

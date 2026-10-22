@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://escenas/devoto.tscn" id="4_devoto"]
 [ext_resource type="PackedScene" path="res://escenas/altar.tscn" id="5_altar"]
 [ext_resource type="Script" path="res://scripts/muro.gd" id="6_muro"]
+[ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="7_interfaz"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_izquierda"]
 normal = Vector2(1, 0)
@@ -60,6 +61,26 @@ position = Vector2(250, 288)
 ronda_izquierda = 180.0
 ronda_derecha = 330.0
 
+[node name="Tramo528" parent="Devotos" instance=ExtResource("4_devoto")]
+position = Vector2(380, 528)
+ronda_izquierda = 340.0
+ronda_derecha = 420.0
+
+[node name="Bajada" parent="Devotos" instance=ExtResource("4_devoto")]
+position = Vector2(150, 688)
+ronda_izquierda = 70.0
+ronda_derecha = 300.0
+
+[node name="Fondo" parent="Devotos" instance=ExtResource("4_devoto")]
+position = Vector2(430, 928)
+ronda_izquierda = 360.0
+ronda_derecha = 520.0
+
+[node name="Capilla" parent="Devotos" instance=ExtResource("4_devoto")]
+position = Vector2(610, 528)
+ronda_izquierda = 570.0
+ronda_derecha = 660.0
+
 [node name="Umbral" type="Marker2D" parent="." unique_id=240077641]
 position = Vector2(380, 1008)
 
@@ -95,49 +116,24 @@ drag_top_margin = 0.125
 drag_right_margin = 0.125
 drag_bottom_margin = 0.125
 
-[node name="Interfaz" type="CanvasLayer" parent="." unique_id=870503877]
+[node name="Interfaz" parent="." instance=ExtResource("7_interfaz")]
+ayuda = "←→ moverse · Espacio saltar · Shift dash · ↑ trepar
+J golpear (mantén: cargado) · K parry · Q poción · E rezar · Esc salir"
 
-[node name="Ayuda" type="Label" parent="Interfaz" unique_id=287654896]
-offset_left = 8.0
-offset_top = 4.0
-offset_right = 400.0
-offset_bottom = 16.0
-theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color(0.541, 0.49, 0.439, 1)
-text = "←→ moverse · Espacio saltar · Shift dash · ↑ trepar · E rezar · Esc salir"
-
-[node name="Vitalidad" type="Label" parent="Interfaz" unique_id=591885276]
-offset_left = 392.0
-offset_top = 4.0
-offset_right = 472.0
-offset_bottom = 16.0
-theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
-text = "Vitalidad 6/6"
-horizontal_alignment = 2
-
-[node name="Aviso" type="Label" parent="Interfaz" unique_id=2048529389]
+[node name="Fin" type="CanvasLayer" parent="."]
 visible = false
-offset_top = 40.0
-offset_right = 480.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color(0.89, 0.663, 0.251, 1)
-horizontal_alignment = 1
 
-[node name="Fin" type="ColorRect" parent="Interfaz" unique_id=610797084]
-visible = false
+[node name="Velo" type="ColorRect" parent="Fin"]
 offset_right = 480.0
 offset_bottom = 320.0
 color = Color(0.0784, 0.0627, 0.0784, 0.92)
 
-[node name="Texto" type="Label" parent="Interfaz/Fin" unique_id=2129797548]
-layout_mode = 0
+[node name="Texto" type="Label" parent="Fin"]
 offset_top = 136.0
 offset_right = 480.0
 offset_bottom = 184.0
-theme_override_font_sizes/font_size = 8
 theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
+theme_override_font_sizes/font_size = 8
 text = "Aquí empiezan los Pasillos.
 Fin del prototipo del Atrio.
 

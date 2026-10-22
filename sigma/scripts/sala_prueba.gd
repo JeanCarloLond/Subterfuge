@@ -29,14 +29,12 @@ const COLOR_PIEDRA := Color(0.227, 0.18, 0.188)
 const COLOR_CARTEL := Color(0.541, 0.49, 0.439)
 
 @onready var _cirujano: CharacterBody2D = $Cirujano
-@onready var _vitalidad: Label = $Interfaz/Vitalidad
 
 
 func _ready() -> void:
 	for bloque in BLOQUES:
 		_poner_bloque(Rect2(bloque[0], bloque[1], bloque[2], bloque[3]), bloque[4])
-	_cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)
-	_al_cambiar_vitalidad(_cirujano.vitalidad, _cirujano.vitalidad)
+	$Interfaz.conectar(_cirujano)
 
 
 func _poner_bloque(rect: Rect2, cartel: String) -> void:
@@ -66,7 +64,3 @@ func _poner_bloque(rect: Rect2, cartel: String) -> void:
 func _unhandled_input(evento: InputEvent) -> void:
 	if evento.is_action_pressed("pausa"):
 		get_tree().change_scene_to_file("res://escenas/principal.tscn")
-
-
-func _al_cambiar_vitalidad(actual: int, maxima: int) -> void:
-	_vitalidad.text = "Vitalidad %d/%d" % [actual, maxima]
