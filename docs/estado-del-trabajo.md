@@ -8,9 +8,12 @@
 ## Reglas que no se discuten
 
 - **Nada de coautorías de IA** en commits ni PR. Es rechazo inmediato para el equipo.
-- **El arte es pixel art a mano, sin IA.** El provisional se escribe en código; el
-  definitivo (Aseprite, de Mariana Echeverri) entra con la misma clave.
-- **Los Primigenios son ciegos y nunca se muestran.** Nada dice que «miren» o «vean».
+- **El arte es pixel art a mano, sin IA.** El provisional se escribe en código (en Sigma,
+  también por poses de un esqueleto, `scripts/*-sigma.mjs`); el definitivo (Aseprite, de
+  Mariana Echeverri) entra con el mismo nombre.
+- **Los Primigenios son ciegos y nunca se muestran.** Nada dice que «miren» o «vean». La
+  única excepción, decidida por Jean en #192: en Sigma, el cuerpo a medio formar detrás de
+  la Puerta, al final.
 - **Léxico del mundo** en lo que se lee: nunca «checkpoint», «HP», «boss», «mana», «NPC»
   ni «stamina». Lo visible lleva tildes; identificadores y comentarios, no.
 - **Sin cruces cristianas** en el arte ni en los textos.
@@ -74,8 +77,15 @@ sigue pendiente del equipo.
   aparece al Cirujano en **visiones**, desde que toca un artefacto en un laboratorio de
   Génesis Vestal mientras investiga la compactación; no ha nacido, por eso los eslabones no
   la atacan. El apodo es **el Último Sacramento**. Hay **dos finales**: la unión egoísta con
-  la niña (fin de la carne) o el sacrificio de él, que acaba con ella. **Abierto:** qué es el
-  artefacto y cómo nota el jugador que solo él la ve.
+  la niña (fin de la carne) o el sacrificio de él, que acaba con ella. Decidido en #192 (Jean
+  y Alejo): **la unión es el final canónico**; al Cirujano lo mueven la **duda** en el altar
+  y el **hambre** (la carne deja de llegar); la niña es **perfecta** en las visiones y solo
+  al final se la ve como es. **Sigma, por la desviación estándar.** **Abierto:** qué es el
+  artefacto, cómo nota el jugador que solo él la ve, qué pide el final B y la niña del altar
+  del original.
+- **La dirección:** que se vea y se sienta como _Blasphemous_, con identidad propia de
+  catedral-hospital. Jean aprobó el **rediseño del Cirujano** de Alejo (tres cuartos, hábito
+  de hueso, mitra, cara vendada, carne y óxido) en lugar del médico de la peste del teaser.
 - **Godot en la máquina de Jean:** instalado con winget en
   `%LOCALAPPDATA%\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_*\`. Para la consola y
   los tests, el `Godot_v4.7.2-stable_win64_console.exe` (no hay alias en el PATH).
@@ -137,6 +147,16 @@ telón de arcadas con parallax, atrezo lejano, decorado con vida, grietas y musg
 luz de velas, polvo y viñeta. Arreglado de paso un fallo viejo del lector de arte: la columna
 y la cadena salían mal (también en la web).
 
+**#192–#196, de Alejo** (revisadas, arregladas y fusionadas en orden el 22 de octubre): el
+canon decidido; **640×360**; el Cirujano en tres cuartos con 19 animaciones; **contragolpe**
+tras el parry y **ejecución** del aturdido (E); el doble salto y el dash se ganan con
+**reliquias** (el Pulmón Vacío y el Tendón del Mil); colgarse es **clavar el bisturí con K**;
+fondos grandes en capas (`nave.gd`); temblores de fondo; una **intro** de 30 s; música y voces
+del original; fuentes góticas (OFL); interfaz con medallón; la piedra por vecinas
+(`silleria.gd`) y la **Vestal**, que se vence devolviéndole el sello. Arreglado al revisar: el
+contragolpe en un dash dejaba al Cirujano flotando. Una **propuesta de mapa** en
+`sigma/docs/mapa.md`, por decidir.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -144,13 +164,16 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 
 1. #185 sigue abierta hasta que **Jean y Alejo comparen** el Atrio de Sigma con el de Phaser y
    anoten qué se siente mejor y qué peor (en la issue).
-2. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
+2. **Decidir el mapa** (`sigma/docs/mapa.md`) antes de rehacer niveles, y rehacer el Atrio a
+   640×360: el salto al nicho del Tendón aterriza 4 px pasado el borde; la caja de 10×22 se
+   queda corta con un sprite de 50 px; las reliquias aún no se guardan en disco.
+3. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
    cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
    repisa, y ningún muro lo sella sin que se rodee (#189).
-3. #191 la Injertadora, cuando se decida cómo se gana en Sigma.
-4. Vestir las salas de prueba y los niveles que lleguen como el Atrio, y el arte de Mariana
+4. #191 la Injertadora, cuando se decida cómo se gana en Sigma.
+5. Vestir las salas de prueba y los niveles que lleguen como el Atrio, y el arte de Mariana
    cuando se le cuente (el flujo de `.aseprite` está en `sigma/README.md`).
-5. #187 los eslabones, #188 las visiones de la niña.
+6. #187 los eslabones, #188 las visiones de la niña.
 
 ## Trampas ya pisadas
 
@@ -172,6 +195,13 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 - **Leer código con expresiones regulares pierde casos**: el lector de `ArteProvisional.ts` no
   entendía `.fill('...').slice(...)` ni `.map(...)`, y la columna y la cadena salían mal en la
   web durante meses. Ahora evalúa las filas como JS en `node:vm`.
+- **PR apiladas con squash**: al fusionar la de abajo, las de encima siguen llevando sus
+  commits viejos. Para cada una: `git rebase --onto origin/main <punta vieja de la de abajo>`,
+  **cambiar primero la base a `main`** (`gh pr edit N --base main`) y después subir con
+  `--force-with-lease`. Al revés, el CI corre dos veces, una se cancela y GitHub bloquea la
+  fusión hasta relanzarla.
+- **Push con 403 desde un worktree**: el gestor de credenciales de git puede coger otra
+  cuenta. `git -c credential.helper= -c "credential.helper=!gh auth git-credential" push`.
 - **`ahora - (-INF)` es infinito**: un «desde cuándo» sin empezar (`-INF`) da por cumplida
   cualquier espera. Pasó con la carga del golpe: soltar sin haber cargado sacaba el cargado.
   Comprobar que el inicio existe antes de restar.
