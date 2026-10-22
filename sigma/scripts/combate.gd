@@ -74,9 +74,10 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 			return
 
 	# El contragolpe va antes del bloqueo: el parry deja al cuerpo quieto lo
-	# que dura su ventana, y el contragolpe tiene que poder cortarla.
+	# que dura su ventana, y el contragolpe tiene que poder cortarla. Fuera del
+	# parry, solo con el cuerpo libre: en un dash o colgado no sale.
 	if entrada.golpe_pulsado and ahora < _fin_ventana_contragolpe:
-		if accion == Accion.NINGUNA or accion == Accion.PARRY:
+		if accion == Accion.PARRY or (libre and accion == Accion.NINGUNA):
 			_fin_ventana_contragolpe = -INF
 			_golpear(Tipo.CONTRAGOLPE, entrada, en_suelo)
 			return

@@ -399,3 +399,13 @@ func test_sin_el_tendon_no_hay_dash() -> void:
 	mundo.mov.puede_dash = false
 	mundo.paso(_entrada(1, false, false, true))
 	afirmar(mundo.mov.estado != Movimiento.Estado.DASH, "Shift no hace nada")
+
+
+func test_una_accion_en_pleno_dash_no_deja_flotando() -> void:
+	var mundo := Mundo.new(-300.0)
+	mundo.paso(_entrada(1, false, false, true))
+	afirmar_igual(mundo.mov.estado, Movimiento.Estado.DASH, "en dash, sin gravedad")
+	mundo.mov.bloquear(170.0)
+	mundo.pasos(60, _entrada())
+	afirmar(mundo.pos.y > -250.0, "acabada la accion, cae (y = %.0f)" % mundo.pos.y)
+	afirmar(absf(mundo.mov.velocidad.x) <= 130.0, "y sin la velocidad del dash")

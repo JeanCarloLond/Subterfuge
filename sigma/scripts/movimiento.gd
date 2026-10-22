@@ -363,10 +363,14 @@ func libre() -> bool:
 
 
 ## Una accion de combate: sin control durante `ms`. En el suelo se queda
-## clavado; en el aire conserva la inercia.
+## clavado; en el aire conserva la inercia y cae. Si llegara en mitad de un
+## dash o de un agarre, que le quitan la gravedad, se la devuelve: si no,
+## quedaria flotando para siempre.
 func bloquear(ms: float) -> void:
 	estado = Estado.ACCION
 	_fin_quieto = ahora + ms
+	_gravedad = true
+	_velocidad_max_x = M["velocidad_caminar"]
 
 
 ## Un golpe hacia abajo ha conectado: sale despedido hacia arriba y recupera el

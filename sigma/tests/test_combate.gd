@@ -261,3 +261,15 @@ func test_ocupado_no_ejecuta() -> void:
 	afirmar(not combate.ejecutar(false), "con el cuerpo ocupado, no")
 	combate.paso(DT, _entrada(true), true, true)
 	afirmar(not combate.ejecutar(true), "en mitad de un golpe, tampoco")
+
+
+func test_el_contragolpe_no_sale_en_un_dash() -> void:
+	var combate := Combate.new()
+	combate.paso(DT, _entrada(false, false, true), true, true)
+	combate.parar()
+	_pasos(combate, 9) # acabada la ventana del parry: el cuerpo ya puede hacer un dash
+	combate.paso(DT, _entrada(true), false, false) # J en pleno dash: no esta libre
+	afirmar_igual(combate.accion, Combate.Accion.NINGUNA, "en un dash no sale")
+	afirmar(combate.contragolpe_listo(), "la ventana sigue para cuando acabe el dash")
+	combate.paso(DT, _entrada(true), true, false)
+	afirmar_igual(combate.tipo, Combate.Tipo.CONTRAGOLPE, "con el cuerpo libre, si")
