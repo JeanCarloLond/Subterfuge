@@ -10,6 +10,7 @@ const RECUENTO := {
 	"aterrizaje": 1,
 	"dash": 1,
 	"agarre": 1,
+	"agarre-girado": 1,
 	"herido": 1,
 	"rezar": 1,
 	"guardia": 2,

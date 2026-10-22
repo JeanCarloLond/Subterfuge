@@ -410,16 +410,37 @@ const dash = [
     sway: -4,
   },
 ];
+// Colgado del bisturi clavado en la pared (la pared, a la derecha, a ~5 px
+// de la cadera): de cara a ella, con la hoja metida en horizontal y la otra
+// mano en el mango. Y girado: de espaldas a la pared, colgado del brazo de
+// atras, listo para saltar hacia fuera.
 const agarre = [
   {
-    lean: 0.08,
-    alzaCerca: 3,
-    alzaLejos: 2,
-    zancadaCerca: 2,
-    zancadaLejos: 3,
-    cerca: [2.75, 0.1],
-    lejos: [2.6, 0.1],
-    hoja: 0.4,
+    cadera: baja(0, -1),
+    lean: 0.18,
+    cabeceo: -0.1,
+    alzaCerca: 2,
+    alzaLejos: 1,
+    zancadaCerca: 3,
+    zancadaLejos: 4,
+    cerca: [2.5, 0.3],
+    hoja: -1.25,
+    lejos: [2.3, 0.5],
+  },
+];
+const agarreGirado = [
+  {
+    cadera: baja(0, 2),
+    lean: -0.22,
+    cabeceo: 0.1,
+    alzaCerca: 2,
+    alzaLejos: 3,
+    zancadaCerca: -4,
+    zancadaLejos: 0,
+    cerca: [-2.45, -0.25],
+    hoja: 1.15,
+    lejos: [0.7, 0.7],
+    sway: 1,
   },
 ];
 const herido = [
@@ -739,6 +760,7 @@ export const ANIMACIONES = {
   aterrizaje,
   dash,
   agarre,
+  'agarre-girado': agarreGirado,
   herido,
   rezar,
   guardia,

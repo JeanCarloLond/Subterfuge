@@ -78,6 +78,7 @@ var _en_suelo_antes := true
 var _fin_aterrizaje := -INF
 var _proxima_estela := -INF
 var _caida_antes := 0.0
+var _colgado_antes := false
 
 @onready var _figura: Node2D = $Figura
 @onready var _sprite: Sprite2D = $Figura/Sprite
@@ -278,8 +279,14 @@ func _rematar() -> void:
 	_pausa_de_impacto(Sacramento.EJECUCION["pausa_ms"])
 
 
-## Polvo al aterrizar de una caida larga y estela en el dash y el contragolpe.
+## Polvo al aterrizar de una caida larga, chispas al clavarse en la pared y
+## estela en el dash y el contragolpe.
 func _efectos_de_movimiento() -> void:
+	# Al clavar el bisturi en la pared salta un chispazo donde entra la hoja.
+	var colgado := movimiento.estado == Movimiento.Estado.AGARRE
+	if colgado and not _colgado_antes:
+		_chispas(position + Vector2(movimiento.mirando * 9.0, -40.0))
+	_colgado_antes = colgado
 	if is_on_floor() and not _en_suelo_antes and _caida_antes > CAIDA_CON_POLVO:
 		_polvo(position, 10)
 	var rapido := movimiento.estado == Movimiento.Estado.DASH or (
@@ -440,7 +447,7 @@ func _cuadro(delta: float) -> Array:
 		Movimiento.Estado.DASH:
 			return ["dash", 0]
 		Movimiento.Estado.AGARRE:
-			return ["agarre", 0]
+			return ["agarre-girado" if movimiento.agarre_girado else "agarre", 0]
 	if not en_suelo:
 		if velocity.y < -40.0:
 			return ["salto", 0]

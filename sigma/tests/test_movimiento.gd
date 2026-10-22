@@ -366,3 +366,22 @@ func test_el_rebote_sube_unos_80_px_sin_mantener_saltar() -> void:
 	afirmar(y - cima > 70.0, "no se corta al no mantener saltar (subio %.1f)" % (y - cima))
 	mundo.paso(_entrada(0, true))
 	afirmar(mundo.mov.velocidad.y < 0.0, "y recupera el doble salto")
+
+
+func test_empujar_hacia_fuera_gira_y_no_suelta() -> void:
+	var mundo := _agarrado()
+	mundo.pasos(5, _entrada(-1))
+	afirmar_igual(mundo.mov.estado, Movimiento.Estado.AGARRE, "sigue colgado del bisturi")
+	afirmar(mundo.mov.agarre_girado, "de espaldas a la pared")
+	afirmar_igual(mundo.mov.mirando, -1, "mirando hacia fuera")
+	mundo.pasos(2, _entrada(1))
+	afirmar(not mundo.mov.agarre_girado, "empujar otra vez contra la pared lo vuelve de cara")
+
+
+func test_saltar_de_espaldas_despega_hacia_fuera() -> void:
+	var mundo := _agarrado()
+	mundo.pasos(3, _entrada(-1))
+	mundo.paso(_entrada(-1, true))
+	afirmar(mundo.mov.estado != Movimiento.Estado.AGARRE, "se suelta")
+	afirmar(mundo.mov.velocidad.x < 0.0, "hacia fuera")
+	afirmar(mundo.mov.velocidad.y < -300.0, "y hacia arriba, con fuerza")

@@ -73,6 +73,8 @@ var _fin_bloqueo_agarre := -INF
 ## Un agarre por salto: se gasta al engancharse y vuelve al tocar suelo.
 var _agarre_gastado := false
 var _direccion_agarre := 1
+## Colgado de espaldas a la pared, listo para saltar hacia fuera.
+var agarre_girado := false
 var _sin_corte_hasta := -INF
 var _fin_quieto := -INF
 var _en_suelo_antes := false
@@ -235,11 +237,32 @@ func _intentar_agarre(entrada: Entrada, pared: int) -> void:
 	_saltos_restantes = 1
 	_dashes_en_aire = D["usos_en_aire"]
 	mirando = pared
+	agarre_girado = false
 
 
+## Colgado del bisturi clavado en la pared. Empujar hacia fuera no suelta: el
+## cuerpo se gira de espaldas a la pared, y saltar asi lo despega hacia fuera
+## (como en el original, #161). De cara a la pared, saltar o arriba trepan al
+## borde. Abajo suelta.
 func _actualizar_agarre(entrada: Entrada) -> void:
+	if entrada.eje_x == -_direccion_agarre:
+		agarre_girado = true
+	elif entrada.eje_x == _direccion_agarre:
+		agarre_girado = false
+	mirando = -_direccion_agarre if agarre_girado else _direccion_agarre
+
+	var salto := ahora - _salto_encolado <= M["buffer_salto_ms"]
+	if salto and agarre_girado:
+		_soltar_agarre()
+		# Hacia fuera a la velocidad de andar: mas, y el tope de velocidad lo
+		# recortaria igual en el paso siguiente.
+		velocidad = Vector2(-_direccion_agarre * M["velocidad_caminar"], -Sacramento.CLAVADO["salto_pared_y"])
+		_sin_corte_hasta = ahora + SIN_CORTE_MS
+		_salto_encolado = -INF
+		return
+
 	# Trepar: arriba o saltar impulsa hacia el borde.
-	if entrada.arriba or ahora - _salto_encolado <= M["buffer_salto_ms"]:
+	if entrada.arriba or salto:
 		_soltar_agarre()
 		velocidad = Vector2(
 			_direccion_agarre * M["velocidad_caminar"] * EMPUJE_TREPAR,
@@ -249,8 +272,7 @@ func _actualizar_agarre(entrada: Entrada) -> void:
 		_salto_encolado = -INF
 		return
 
-	# Soltarse: abajo, o empujar hacia el otro lado.
-	if entrada.abajo or entrada.eje_x == -_direccion_agarre:
+	if entrada.abajo:
 		_soltar_agarre()
 		return
 
@@ -258,6 +280,7 @@ func _actualizar_agarre(entrada: Entrada) -> void:
 
 
 func _soltar_agarre() -> void:
+	agarre_girado = false
 	_gravedad = true
 	_fin_bloqueo_agarre = ahora + A["bloqueo_tras_soltar_ms"]
 	estado = Estado.AIRE
