@@ -4,6 +4,9 @@ Qué hay en esta carpeta y para quién es.
 
 ## Para desarrollar
 
+- **[estado-del-trabajo.md](estado-del-trabajo.md)**: el traspaso entre sesiones. Qué
+  reglas mandan, qué está hecho, qué sigue (también en Subterfuge Sigma) y qué trampas ya
+  se han pisado. Para retomar el trabajo, primero esto.
 - **[DESARROLLO.md](DESARROLLO.md)**: cómo está hecho el juego y el portal. La
   estructura, el flujo de escenas, el combate, los tests, cada sistema y por qué
   se decidió así. Es lo primero que hay que leer antes de tocar código.
