@@ -27,6 +27,9 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
 
 **Lo que hay:**
 
+- **La escena inicial**: «Empezar» en la portada abre el contexto en cinco planos,
+  como las de _Blasphemous_: un dios nuevo que no llega, la duda en la Sala N.º 7, la
+  carne que no llega y las paredes que se mueven, y el título. Se salta con Espacio.
 - **El Atrio** (#185): el mismo trazado que en Phaser, con la sillería del equipo, los
   cinco Devotos, los dos Altares, un techo que late y el umbral del final.
 - **El combate** (#183): J golpea (mantenido carga un golpe más fuerte que gasta 30 de
