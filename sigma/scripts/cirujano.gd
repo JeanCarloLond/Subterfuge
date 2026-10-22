@@ -254,19 +254,17 @@ func recibir_contacto(origen_x: float) -> bool:
 func caer_al_vacio() -> void:
 	if muerto:
 		return
-	_perder(1)
+	_perder(Sacramento.DANO_VACIO)
 	if vitalidad > 0:
 		_volver()
 
 
-## Aplastado entre un muro que avanza y la piedra (#186): cuesta vitalidad y
-## devuelve al Altar. El muro ya ha avisado antes de moverse.
-func aplastar(dano: int) -> void:
+## Aplastado entre un muro y la piedra (#186): muere. El muro ya ha avisado
+## antes de moverse, y un cuerpo aplastado no se levanta con un punto menos.
+func aplastar() -> void:
 	if muerto:
 		return
-	_perder(dano)
-	if vitalidad > 0:
-		_volver()
+	_perder(vitalidad)
 
 
 ## Rezar en un Altar: se arrodilla, se cura del todo, llena el frasco y ese

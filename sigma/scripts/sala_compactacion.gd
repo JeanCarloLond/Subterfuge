@@ -50,7 +50,6 @@ func _ready() -> void:
 
 	for muro in $Muros.get_children():
 		muro.objetivo = _cirujano
-		muro.aplasto.connect(_interfaz.avisar.bind("Aplastado: vuelves al Altar"))
 	for altar in $Altares.get_children():
 		altar.cirujano = _cirujano
 		altar.rezado.connect(_interfaz.avisar.bind("Altar: aquí volverás"))

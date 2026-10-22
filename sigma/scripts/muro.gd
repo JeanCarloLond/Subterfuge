@@ -97,17 +97,19 @@ func _physics_process(delta: float) -> void:
 	var movido := ciclo.paso(delta)
 	position += direccion * movido
 	_avisar()
-	if movido > 0.0 and objetivo != null:
-		_empujar()
+	if movido != 0.0 and objetivo != null:
+		_empujar(direccion * signf(movido))
 
 
-func _empujar() -> void:
-	var empuje := Compactacion.empuje(objetivo.caja(), rect(), direccion)
+## Empuja al Cirujano hacia donde se mueve el muro, avance o vuelva: al volver
+## tambien arrastra a quien va encima, y lo puede aplastar contra el techo.
+func _empujar(hacia: Vector2) -> void:
+	var empuje := Compactacion.empuje(objetivo.caja(), rect(), hacia)
 	if empuje == Vector2.ZERO:
 		return
 	objetivo.position += empuje
 	if _contra_la_piedra():
-		objetivo.aplastar(Sacramento.COMPACTACION["dano_aplastado"])
+		objetivo.aplastar()
 		aplasto.emit()
 
 

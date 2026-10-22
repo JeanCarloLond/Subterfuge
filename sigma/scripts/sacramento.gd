@@ -196,8 +196,6 @@ const COMPACTACION := {
 	"cerrado_ms": 2000.0,
 	"velocidad_retroceso": 48.0,
 	"reposo_ms": 4000.0,
-	## Quedar entre un muro y la piedra: cuesta esto y devuelve al Altar.
-	"dano_aplastado": 2,
 }
 
 ## Los temblores: de vez en cuando el templo se encoge un poco, lejos. No hacen
@@ -229,6 +227,10 @@ const MUERTE := {
 	## Lo que tarda en volver la luz, ya en el Altar.
 	"vuelta_ms": 700.0,
 }
+
+## Caer al vacio: lo que cuesta, y se vuelve al Altar. Es un plataformas: fallar
+## un salto tiene que doler (feedback de Jean; era 1).
+const DANO_VACIO := 2
 
 const DANO_POR_CAIDA := {
 	"sin_dano_hasta": 160.0,
