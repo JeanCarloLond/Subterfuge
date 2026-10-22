@@ -23,6 +23,7 @@
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="20_s3kvr"]
 [ext_resource type="PackedScene" path="res://escenas/reliquia.tscn" id="21_reliq"]
 [ext_resource type="Script" path="res://scripts/nave.gd" id="22_nave"]
+[ext_resource type="Script" path="res://scripts/temblor.gd" id="23_temblor"]
 
 [sub_resource type="Gradient" id="Gradient_l5xs4"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -675,6 +676,9 @@ shape = SubResource("WorldBoundaryShape2D_derecha")
 
 [node name="Techo" type="CollisionShape2D" parent="Bordes" unique_id=519431073]
 shape = SubResource("WorldBoundaryShape2D_techo")
+
+[node name="Temblor" type="Node2D" parent="."]
+script = ExtResource("23_temblor")
 
 [node name="Reliquias" type="Node2D" parent="."]
 

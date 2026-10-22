@@ -48,6 +48,9 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   Cirujano queda colgado (en el suelo, K sigue siendo el parry). Empujar hacia fuera lo
   gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑
   trepan al borde.
+- **Los temblores**: cada medio minuto, más o menos, el templo se encoge un poco, lejos:
+  la cámara tiembla, cae polvo y alguna piedra y suena un retumbo grave
+  (`scripts/temblor.gd`). No hacen daño; son el aviso de fondo de que todo se mueve.
 - **La sala del movimiento** (#182): una repisa a cada altura que importa para el
   movimiento.
 - **La sala de la compactación** (#186): un techo que late y un muro que empuja contra un

@@ -35,6 +35,28 @@ static func crujido() -> AudioStreamWAV:
 	return _wav(muestras)
 
 
+## El retumbo de un temblor: lo mas grave posible, que crece, se sostiene y se
+## apaga, con piedrecitas que caen. Se oye mas con el cuerpo que con el oido.
+static func retumbo() -> AudioStreamWAV:
+	var azar := RandomNumberGenerator.new()
+	azar.seed = 77
+	var duracion := 1.8
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * duracion))
+	var grave := 0.0
+	var fase := 0.0
+	for i in muestras.size():
+		var t := float(i) / MEZCLA
+		var envolvente := minf(1.0, t / 0.35) * minf(1.0, (duracion - t) / 0.7)
+		grave += (azar.randf_range(-1.0, 1.0) - grave) * 0.015
+		# Un seno de 34 Hz que late lento debajo del ruido: el templo entero.
+		fase += TAU * 34.0 / MEZCLA
+		var fondo := sin(fase) * (0.6 + 0.4 * sin(t * TAU * 3.0))
+		var piedra := azar.randf_range(-1.0, 1.0) * 0.35 if azar.randf() < 0.0015 else 0.0
+		muestras[i] = (grave * 5.0 + fondo * 0.45 + piedra) * envolvente * 0.6
+	return _wav(muestras)
+
+
 ## Un golpe de bombo: un seno que cae de tono, con ataque rapido y cola corta.
 static func _golpe(muestras: PackedFloat32Array, inicio_s: float, dura_s: float, hz: float, volumen: float) -> void:
 	var primera := int(inicio_s * MEZCLA)
