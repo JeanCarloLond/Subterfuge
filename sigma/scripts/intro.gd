@@ -15,6 +15,9 @@ const TITULO := Color(0.62, 0.17, 0.15)
 ## Lo que tarda en escribirse cada letra, y lo que se queda la frase entera.
 const LETRA_S := 0.035
 const LECTURA_S := 1.8
+## Las fuentes: Jacquard, pixel gotica (SIL OFL, arte/fuentes/OFL.txt).
+const FUENTE_TITULO := preload("res://arte/fuentes/Jacquard12-Regular.ttf")
+const FUENTE_NARRACION := preload("res://arte/fuentes/JacquardaBastarda9-Regular.ttf")
 
 var _plano: Node2D
 var _texto: Label
@@ -36,10 +39,11 @@ func _ready() -> void:
 	_texto.anchor_right = 1.0
 	_texto.anchor_top = 1.0
 	_texto.anchor_bottom = 1.0
-	_texto.offset_top = -64.0
-	_texto.offset_bottom = -36.0
+	_texto.offset_top = -72.0
+	_texto.offset_bottom = -40.0
 	_texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_texto.add_theme_font_size_override("font_size", 8)
+	_texto.add_theme_font_override("font", FUENTE_NARRACION)
+	_texto.add_theme_font_size_override("font_size", 18)
 	_texto.add_theme_color_override("font_color", TEXTO)
 	_texto.add_theme_color_override("font_outline_color", FONDO)
 	_texto.add_theme_constant_override("outline_size", 4)
@@ -161,11 +165,13 @@ func _paredes() -> void:
 func _titulo() -> void:
 	_nuevo_plano()
 	var titulo := Label.new()
-	titulo.text = "SUBTERFUGE SIGMA"
+	# En gotica, las mayusculas seguidas no se leen: va en minusculas.
+	titulo.text = "Subterfuge Sigma"
 	titulo.position = Vector2(0, 140)
 	titulo.size = Vector2(640, 32)
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	titulo.add_theme_color_override("font_color", TITULO)
+	titulo.add_theme_font_override("font", FUENTE_TITULO)
 	titulo.add_theme_font_size_override("font_size", 24)
 	_plano.add_child(titulo)
 	await _abrir()

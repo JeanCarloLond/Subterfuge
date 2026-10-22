@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/interfaz.gd" id="1_interfaz"]
+[ext_resource type="FontFile" path="res://arte/fuentes/JacquardaBastarda9-Regular.ttf" id="f_narracion"]
 
 [node name="Interfaz" type="CanvasLayer"]
 script = ExtResource("1_interfaz")
@@ -44,12 +45,13 @@ text = "Fervor 0 · Pociones 3"
 horizontal_alignment = 2
 
 [node name="Aviso" type="Label" parent="."]
+theme_override_fonts/font = ExtResource("f_narracion")
+theme_override_font_sizes/font_size = 18
 visible = false
 anchor_right = 1.0
-offset_top = 40.0
-offset_bottom = 56.0
+offset_top = 52.0
+offset_bottom = 74.0
 theme_override_colors/font_color = Color(0.89, 0.663, 0.251, 1)
-theme_override_font_sizes/font_size = 8
 theme_override_colors/font_outline_color = Color(0.05, 0.035, 0.05, 1)
 theme_override_constants/outline_size = 3
 horizontal_alignment = 1

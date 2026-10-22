@@ -154,6 +154,11 @@ se apoyan en piedra.
 `Musica`: la portada, la intro y el Atrio) y las voces del Cirujano y los Devotos al
 atacar, saltar, recibir y morir, como en el original (el autoload `Voces`).
 
+**Las fuentes** son _Jacquard 12_ (títulos, a 24 px) y _Jacquarda Bastarda 9_
+(narración y avisos, a 18 px), pixel góticas de The Soft Type Project con licencia SIL
+OFL 1.1 (`arte/fuentes/OFL.txt`). Solo son nítidas a esos tamaños y con el suavizado
+apagado (ya está en sus `.import`). La ayuda de controles sigue en la fuente legible.
+
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
 polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivos.
