@@ -15,6 +15,7 @@ Controles="*res://scripts/controles.gd"
 Progreso="*res://scripts/progreso.gd"
 Musica="*res://scripts/musica.gd"
 Voces="*res://scripts/voces.gd"
+Efectos="*res://scripts/efectos.gd"
 
 [display]
 

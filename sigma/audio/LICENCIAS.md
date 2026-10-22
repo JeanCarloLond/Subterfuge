@@ -24,6 +24,26 @@ Las otras dos, CC0 (https://creativecommons.org/publicdomain/zero/1.0/):
 - «Cathedral in the forest (ambient loop)», de congusbongus
   (https://opengameart.org/content/cathedral-in-the-forest-ambient-loop).
 
+## Efectos
+
+Del pack «50 RPG sound effects» de **Kenney** (www.kenney.nl,
+https://opengameart.org/content/50-rpg-sound-effects), CC0: el autor dice que el crédito
+no es obligatorio, pero lo damos. Renombrados al uso que tienen aquí:
+
+| Archivo                      | Original              | Uso                              |
+| ---------------------------- | --------------------- | -------------------------------- |
+| `efectos/paso-0..9.ogg`      | `footstep00..09.ogg`  | Los pasos                        |
+| `efectos/tajo-0..2.ogg`      | `drawKnife1..3.ogg`   | El bisturí cortando el aire      |
+| `efectos/golpe-0..1.ogg`     | `knifeSlice.ogg`, `2` | Un golpe que entra               |
+| `efectos/golpe-fuerte-0.ogg` | `chop.ogg`            | Cargado, contragolpe y ejecución |
+| `efectos/guardia-0.ogg`      | `metalClick.ogg`      | Alzar la guardia (parry)         |
+| `efectos/parada-0..2.ogg`    | `metalPot1..3.ogg`    | Un parry logrado                 |
+| `efectos/salto-0..3.ogg`     | `cloth1..4.ogg`       | El salto                         |
+| `efectos/caida-0.ogg`        | `dropLeather.ogg`     | Tocar suelo                      |
+
+El trago de la Poción no es un archivo: se calcula en `scripts/sonidos.gd`, como el Latido y
+el crujido de los muros.
+
 ## Voces
 
 Los mismos archivos que usa el juego original, copiados aquí porque Godot solo carga lo que

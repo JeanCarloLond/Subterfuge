@@ -57,6 +57,27 @@ static func retumbo() -> AudioStreamWAV:
 	return _wav(muestras)
 
 
+## El trago de la Pocion de Carne: dos «glug» espesos, un seno grave que sube de
+## tono en cada uno (el liquido que pasa), con algo de burbuja. No habia uno
+## libre que convenciera: calculado, como el Latido.
+static func trago() -> AudioStreamWAV:
+	var azar := RandomNumberGenerator.new()
+	azar.seed = 9
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * 0.55))
+	for inicio in [0.0, 0.24]:
+		var primera := int(inicio * MEZCLA)
+		var fase := 0.0
+		var dura := 0.13
+		for i in int(dura * MEZCLA):
+			var t := float(i) / MEZCLA
+			var envolvente := minf(1.0, t / 0.01) * exp(-t / (dura * 0.35))
+			fase += TAU * (110.0 + 900.0 * t) / MEZCLA
+			var burbuja := azar.randf_range(-1.0, 1.0) * 0.18
+			muestras[primera + i] += (sin(fase) * 0.8 + burbuja) * envolvente * 0.7
+	return _wav(muestras)
+
+
 ## Un golpe de bombo: un seno que cae de tono, con ataque rapido y cola corta.
 static func _golpe(muestras: PackedFloat32Array, inicio_s: float, dura_s: float, hz: float, volumen: float) -> void:
 	var primera := int(inicio_s * MEZCLA)

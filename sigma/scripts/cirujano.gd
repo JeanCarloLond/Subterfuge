@@ -56,6 +56,8 @@ const ESTELA_DURA := 0.22
 const COLOR_ESTELA := Color(0.85, 0.75, 0.6, 0.55)
 ## Lo que tiene que caer para levantar polvo al aterrizar (px/s).
 const CAIDA_CON_POLVO := 260.0
+## Lo que tiene que caer para que el aterrizaje suene (px/s).
+const CAIDA_QUE_SUENA := 120.0
 const COLOR_POLVO := Color(0.55, 0.47, 0.4, 0.8)
 const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
 ## La carga del golpe con Fervor: el cuerpo se calienta hacia el ambar del
@@ -94,6 +96,7 @@ var _colgado_antes := false
 ## Brasas que suben mientras carga el golpe con Fervor.
 var _brasas: CPUParticles2D
 var _cargado_avisado := false
+var _paso_antes := -1
 
 @onready var _figura: Node2D = $Figura
 @onready var _sprite: Sprite2D = $Figura/Sprite
@@ -154,10 +157,14 @@ func _physics_process(delta: float) -> void:
 		movimiento.bloquear(combate.bloqueo_ms)
 		if combate.accion == Combate.Accion.GOLPE:
 			_voz("ataque")
+			_sonar("tajo")
+		elif combate.accion == Combate.Accion.PARRY:
+			_sonar("guardia")
 		if combate.accion == Combate.Accion.GOLPE and combate.tipo == Combate.Tipo.CONTRAGOLPE:
 			_embestir()
 	if combate.curar > 0:
 		_curar(combate.curar)
+		_sonar("trago")
 	if Input.is_action_just_pressed("interactuar"):
 		_intentar_ejecutar()
 	if combate.accion == Combate.Accion.EJECUCION:
@@ -187,6 +194,7 @@ func _physics_process(delta: float) -> void:
 	# Un salto: la velocidad pasa de golpe a subir.
 	if entrada.saltar_pulsado and velocity.y < -250.0 and velocity.y < subia - 200.0:
 		_voz("salto")
+		_sonar("salto")
 	_caida_antes = velocity.y
 	move_and_slide()
 	_efectos_de_movimiento()
@@ -220,6 +228,13 @@ func _clavable(lado: int) -> bool:
 		if choque["collider"] is Node and choque["collider"].is_in_group("clavable"):
 			return true
 	return false
+
+
+## Un efecto del cuerpo o del combate (autoload Efectos).
+func _sonar(efecto: String, volumen_db := 0.0) -> void:
+	var efectos := get_node_or_null("/root/Efectos")
+	if efectos:
+		efectos.sonar(efecto, volumen_db)
 
 
 func _voz(voz: String) -> void:
@@ -258,6 +273,7 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	if muerto:
 		return Resultado.IGNORADO
 	if combate.parar():
+		_sonar("parada")
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
 		_chispas(position + Vector2(movimiento.mirando * 8.0, -26.0))
 		_pausa_de_impacto(Sacramento.IMPACTO["parry_ms"])
@@ -324,6 +340,7 @@ func _golpear_enemigos() -> void:
 		if dano == 0:
 			continue
 		enemigo.recibir_dano(dano, position.x)
+		_sonar("golpe" if combate.tipo == Combate.Tipo.BASICO else "golpe-fuerte")
 		_pausa_de_impacto(_pausa_del_golpe())
 		if combate.tipo != Combate.Tipo.BASICO:
 			_sacudir()
@@ -381,6 +398,7 @@ func _rematar() -> void:
 	_rematada = true
 	if is_instance_valid(_victima):
 		_victima.rematar()
+	_sonar("golpe-fuerte")
 	_sacudir()
 	_pausa_de_impacto(Sacramento.EJECUCION["pausa_ms"])
 
@@ -393,6 +411,9 @@ func _efectos_de_movimiento() -> void:
 	if colgado and not _colgado_antes:
 		_chispas(position + Vector2(movimiento.mirando * 9.0, -40.0))
 	_colgado_antes = colgado
+	if is_on_floor() and not _en_suelo_antes and _caida_antes > CAIDA_QUE_SUENA:
+		# Al tocar suelo: mas fuerte cuanto mas cae.
+		_sonar("caida", -8.0 if _caida_antes < CAIDA_CON_POLVO else 0.0)
 	if is_on_floor() and not _en_suelo_antes and _caida_antes > CAIDA_CON_POLVO:
 		_polvo(position, 10)
 	var rapido := movimiento.estado == Movimiento.Estado.DASH or (
@@ -613,7 +634,12 @@ func _cuadro(delta: float) -> Array:
 		return ["aterrizaje", 0]
 	if absf(velocity.x) > 20.0:
 		_recorrido += absf(velocity.x) * delta
-		return ["correr", int(_recorrido / PX_POR_CUADRO) % _cuadros["correr"].size()]
+		var paso: int = int(_recorrido / PX_POR_CUADRO) % _cuadros["correr"].size()
+		# Un paso cada vez que apoya un pie: el primer cuadro de cada zancada.
+		if paso != _paso_antes and paso % (_cuadros["correr"].size() / 2) == 0:
+			_sonar("paso")
+		_paso_antes = paso
+		return ["correr", paso]
 	return ["reposo", int(Time.get_ticks_msec() / REPOSO_MS) % _cuadros["reposo"].size()]
 
 

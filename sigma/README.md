@@ -165,7 +165,7 @@ se apoyan en piedra.
 siguiente escena usa la misma, sigue sin cortarse). La portada y la intro, un tema
 orquestal y trágico de ProjectHelmet (CC-BY 4.0: el crédito es obligatorio); el Atrio,
 _Dark Shrine Loop_ (CC0); el siguiente nivel tendrá _Cathedral in the forest_ (CC0), que
-mientras suena en las salas de prueba. Las voces del Cirujano y los Devotos al atacar,
+mientras suena en las salas de prueba. Los efectos (pasos, tajo, golpe, guardia, parry logrado, salto, caída y trago) los pone el autoload `Efectos`, con sonidos CC0 de Kenney y el trago calculado. Las voces del Cirujano y los Devotos al atacar,
 saltar, recibir y morir son las del original (el autoload `Voces`). Autoría y licencias de
 todo en `sigma/audio/LICENCIAS.md`: **una pista nueva no entra sin su línea ahí**.
 
