@@ -26,6 +26,7 @@
 [ext_resource type="Script" path="res://scripts/temblor.gd" id="23_temblor"]
 [ext_resource type="Script" path="res://scripts/atrezo.gd" id="24_atrezo"]
 [ext_resource type="Script" path="res://scripts/silleria.gd" id="25_silleria"]
+[ext_resource type="PackedScene" path="res://escenas/vestal.tscn" id="26_vestal"]
 
 [sub_resource type="Gradient" id="Gradient_l5xs4"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -685,6 +686,18 @@ piezas = [["muro-dientes", 300, 288], ["candelabro", 336, 288], ["candelabro", 7
 
 [node name="Temblor" type="Node2D" parent="."]
 script = ExtResource("23_temblor")
+
+[node name="Vestales" type="Node2D" parent="."]
+
+[node name="Vestal" parent="Vestales" instance=ExtResource("26_vestal")]
+position = Vector2(500, 928)
+ronda_izquierda = 350.0
+ronda_derecha = 520.0
+
+[node name="Vestal2" parent="Vestales" instance=ExtResource("26_vestal")]
+position = Vector2(600, 128)
+ronda_izquierda = 548.0
+ronda_derecha = 620.0
 
 [node name="Reliquias" type="Node2D" parent="."]
 
