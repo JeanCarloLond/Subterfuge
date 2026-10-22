@@ -19,6 +19,7 @@ import { FragmentoCodice } from '../objetos/FragmentoCodice';
 import { ConteoInstrumental } from '../objetos/ConteoInstrumental';
 import { Bocadillos } from '../ui/Bocadillos';
 import { Turnos } from '../systems/Turnos';
+import { Eco, avanzarVuelta } from '../systems/Eco';
 import { SIN_BISTURI } from '../lore/Frases';
 import { CHARLAS, FRASES_NINA, type ZonaCharla } from '../lore/Charlas';
 import type { Pensamiento } from '../lore/Pensamientos';
@@ -41,6 +42,7 @@ import {
   ESPECIES,
   MAREAS,
   OFRENDA,
+  PERSECUCION,
   REFORMADO,
   RESOLUCION,
   RUIDO,
@@ -268,6 +270,17 @@ export interface DefinicionNivel {
    * lleva.
    */
   conteo?: { x: number; y: number; piezas: number };
+  /**
+   * Una persecucion (#162). Al pasar por `inicio`, algo viene detras
+   * repitiendo el camino del Cirujano con retraso; si lo alcanza, vuelve al
+   * ultimo punto de vuelta (`inicio` y luego `vueltas`, en orden). Al llegar
+   * a `fin` se acaba, y no se repite en la partida.
+   */
+  persecucion?: {
+    inicio: { x: number; y: number };
+    fin: { x: number; y: number };
+    vueltas: ReadonlyArray<readonly [number, number]>;
+  };
   /** La niña huye con el Cirujano (#157): las zonas del Nivel 2. */
   nina?: boolean;
   /** Donde se esconde ella mientras pelea la Serpiente (#167): pies del nicho. */
@@ -415,6 +428,14 @@ export abstract class EscenaNivel extends Phaser.Scene {
     aviso: Phaser.GameObjects.Text;
   }[] = [];
   private conteo?: ConteoInstrumental;
+  /** La persecucion en curso (#162), si la zona tiene y aun no se ha escapado. */
+  private huida?: {
+    eco: Eco;
+    perseguidor: Phaser.GameObjects.Sprite;
+    puntos: ReadonlyArray<readonly [number, number]>;
+    vuelta: number;
+    activa: boolean;
+  };
   /** Tiles de membrana, por "x,y" de su esquina (#161). */
   private tilesMembrana = new Set<string>();
   private nina?: Nina;
@@ -511,6 +532,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     this.prepararNido();
+    this.prepararPersecucion();
     this.crearLuces();
     this.crearPolvo();
     if (this.definicion.lluvia) this.crearLluvia();
@@ -574,6 +596,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     }
 
     this.actualizarParallax();
+    this.actualizarPersecucion();
     this.actualizarNina();
     this.bocadillos.actualizar();
     this.actualizarAltares();
@@ -628,6 +651,7 @@ export abstract class EscenaNivel extends Phaser.Scene {
     this.salpicaduras = undefined;
     this.placas = [];
     this.conteo = undefined;
+    this.huida = undefined;
     this.tilesMembrana = new Set();
     this.nina = undefined;
     this.avisoCharla = undefined;
@@ -2442,9 +2466,11 @@ export abstract class EscenaNivel extends Phaser.Scene {
     if (!this.nina) return;
     const { sprite } = this.cirujano;
     const cuerpo = sprite.body as Phaser.Physics.Arcade.Body;
-    const aCuestas = (this.definicion.aCuestas ?? []).some(
-      ([x0, y0, x1, y1]) => sprite.x >= x0 && sprite.x <= x1 && sprite.y >= y0 && sprite.y <= y1,
-    );
+    const aCuestas =
+      this.huida?.activa === true ||
+      (this.definicion.aCuestas ?? []).some(
+        ([x0, y0, x1, y1]) => sprite.x >= x0 && sprite.x <= x1 && sprite.y >= y0 && sprite.y <= y1,
+      );
     this.nina.actualizar(
       {
         x: sprite.x,
@@ -2614,6 +2640,105 @@ export abstract class EscenaNivel extends Phaser.Scene {
       piezas.push(pieza);
     }
     return piezas;
+  }
+
+  /** El perseguidor espera, oculto, a que se pase por el inicio. */
+  private prepararPersecucion(): void {
+    const def = this.definicion.persecucion;
+    if (!def || progreso.hayHuella(`persecucion:${this.scene.key}`)) return;
+    const perseguidor = this.add
+      .sprite(def.inicio.x, def.inicio.y, 'cazador-placeholder')
+      .setOrigin(0.5, 1)
+      .setTint(0x803038)
+      .setDepth(8)
+      .setVisible(false);
+    this.huida = {
+      eco: new Eco(PERSECUCION.retrasoMs),
+      perseguidor,
+      puntos: [[def.inicio.x, def.inicio.y], ...def.vueltas],
+      vuelta: 0,
+      activa: false,
+    };
+  }
+
+  /**
+   * La huida (#162). Lo que viene detras no piensa: va por donde fue el
+   * Cirujano, un rato despues (systems/Eco.ts). Si lo alcanza, se vuelve al
+   * ultimo punto de vuelta, sin mas castigo; si muere de otra cosa, la
+   * persecucion se reinicia al volver a pasar por el inicio.
+   */
+  private actualizarPersecucion(): void {
+    const huida = this.huida;
+    const def = this.definicion.persecucion;
+    if (!huida || !def) return;
+    const { x, y } = this.cirujano.sprite;
+    const ahora = this.time.now;
+    const cerca = (p: { x: number; y: number }, radio: number) =>
+      Math.abs(p.x - x) <= radio && Math.abs(p.y - y) <= radio;
+
+    if (this.cirujano.estaMuerto) {
+      if (huida.activa) this.cortarPersecucion();
+      return;
+    }
+
+    if (!huida.activa) {
+      if (!cerca(def.inicio, 24)) return;
+      huida.activa = true;
+      huida.vuelta = 0;
+      huida.eco.reiniciar();
+      sonido.cadena();
+      sonido.latido(1);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'te siguen');
+      const sentido = Math.sign(def.fin.x - def.inicio.x) || 1;
+      this.cameras.main.setFollowOffset(-sentido * PERSECUCION.adelantoCamara, 0);
+      return;
+    }
+
+    huida.eco.grabar(ahora, x, y);
+    huida.vuelta = avanzarVuelta(huida.puntos, huida.vuelta, x, y);
+
+    if (cerca(def.fin, 28)) {
+      progreso.dejarHuella(`persecucion:${this.scene.key}`);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'se ha quedado atrás');
+      this.cortarPersecucion();
+      this.huida = undefined;
+      return;
+    }
+
+    const donde = huida.eco.donde(ahora);
+    const perseguidor = huida.perseguidor;
+    if (!donde) {
+      perseguidor.setVisible(false);
+      return;
+    }
+    if (perseguidor.visible) perseguidor.setFlipX(donde.x < perseguidor.x);
+    perseguidor.setVisible(true).setPosition(donde.x, donde.y);
+
+    if (Math.abs(donde.x - x) <= PERSECUCION.alcance && Math.abs(donde.y - y) <= 20) {
+      // Alcanzado: al ultimo punto de vuelta, y lo de detras vuelve a empezar.
+      const [vx, vy] = huida.puntos[huida.vuelta];
+      this.cameras.main.flash(200, 11, 9, 11);
+      sonido.cadena();
+      this.cirujano.cuerpo.reset(vx, vy - 2);
+      huida.eco.reiniciar();
+      perseguidor.setVisible(false);
+      this.game.events.emit(EVENTOS_HUD.aviso, 'te alcanza');
+    }
+  }
+
+  /** Se acaba o se corta: lo de detras se va y la camara vuelve a su sitio. */
+  private cortarPersecucion(): void {
+    const huida = this.huida;
+    if (!huida) return;
+    huida.activa = false;
+    huida.eco.reiniciar();
+    this.cameras.main.setFollowOffset(0, 0);
+    this.tweens.add({
+      targets: huida.perseguidor,
+      alpha: 0,
+      duration: 500,
+      onComplete: () => huida.perseguidor.setVisible(false).setAlpha(1),
+    });
   }
 
   /** Una frase de ella sobre su cabeza, con un respiro opcional antes. */

@@ -425,6 +425,20 @@ export const VENDADO = {
   llegadaPx: 8,
 } as const;
 
+/**
+ * Las persecuciones (#162): lo que viene detras repite el camino del Cirujano
+ * con este retraso, y si lo alcanza, se vuelve al ultimo punto de vuelta.
+ */
+export const PERSECUCION = {
+  retrasoMs: 1500,
+  /** A esta distancia (px), el perseguidor lo alcanza. */
+  alcance: 14,
+  /** Ningun tramo sin punto de vuelta mas de esto: lo comprueba verificar-rutas. */
+  maximoEntreVueltasS: 20,
+  /** Lo que la camara se adelanta en la direccion de la huida (px). */
+  adelantoCamara: 60,
+} as const;
+
 /** A cuantos px se oye cada cosa. Andar no suena: no esta aqui. */
 export const RUIDO = {
   /** Caer desde alto: el mismo golpe seco que suena al aterrizar fuerte. */

@@ -92,6 +92,14 @@ export class DuctosScene extends EscenaNivel {
 
       reliquias: [[592, 496, 'ductos-relicario', 'relicario']],
 
+      // La persecucion final (#162): en lo alto del ducto, el cazarrecompensas
+      // sube detras hasta el rellano de la Puerta.
+      persecucion: {
+        inicio: { x: 300, y: 288 },
+        vueltas: [[496, 224]],
+        fin: { x: 370, y: 160 },
+      },
+
       // El nido de la Serpiente (#167): el fondo del ducto. Mientras viva, un
       // tapon de tejido cierra la subida; ella se esconde en el nicho.
       nicho: { x: 40, y: 864 },

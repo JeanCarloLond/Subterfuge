@@ -171,6 +171,14 @@ arrastra al Cirujano (`arrastrarJugador` en el contexto) y le da un tajo, que
 también se para. De cerca es flojo. Va a por el Cirujano: la niña no existe
 para él.
 
+**Persecuciones (#162).** `persecucion` en la definición: al pasar por `inicio`,
+el cazarrecompensas viene detrás repitiendo el camino del Cirujano con 1,5 s de
+retraso (`systems/Eco.ts`), así que va por donde él pudo pasar y nada más. Si lo
+alcanza, se vuelve al último punto de vuelta (`inicio` y luego `vueltas`), sin más
+castigo. Durante la huida la niña va a cuestas y la cámara se adelanta; al llegar a
+`fin` se acaba y no se repite. `verificar-rutas` comprueba que cada punto esté en el
+suelo y que no haya más de 20 s entre dos.
+
 **Clavar el bisturí en la carne (#161).** Las paredes de `membranas` (mismo
 formato que `paredes`) chocan igual, pero con el bisturí el Cirujano se clava en
 ellas y se queda: arriba trepa, abajo baja, salto lo despega de la pared hacia

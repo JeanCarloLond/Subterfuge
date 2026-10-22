@@ -406,6 +406,32 @@ function verificarCriaturas(nombre, src) {
     }
   }
 
+  // La persecucion (#162): el inicio, el fin y cada punto de vuelta, en el
+  // suelo (se reaparece en ellos), y ningun tramo mas de 20 s sin uno.
+  const huida = src.match(/persecucion: \{([\s\S]*?)\n {6}\},/);
+  if (huida) {
+    const punto = (campo) => {
+      const m = huida[1].match(new RegExp(`${campo}: \\{ x: (\\d+), y: (\\d+) \\}`));
+      return m ? [Number(m[1]), Number(m[2])] : null;
+    };
+    const vueltas = [
+      ...(huida[1].match(/vueltas: \[([\s\S]*?)\],\n/)?.[1] ?? '').matchAll(/\[(\d+), (\d+)\]/g),
+    ].map((m) => [Number(m[1]), Number(m[2])]);
+    const camino = [punto('inicio'), ...vueltas, punto('fin')];
+    for (const p of camino) {
+      if (!p) errores.push('la persecucion no tiene inicio o fin');
+      else if (!haySuelo(plataformas, p[0], p[1]))
+        errores.push(`el punto de la persecucion x=${p[0]} y=${p[1]} esta en el aire`);
+    }
+    // Andando a 130 px/s, 20 s son 2600 px en linea recta: holgado a proposito.
+    for (let i = 1; i < camino.length; i += 1) {
+      if (!camino[i] || !camino[i - 1]) continue;
+      const d = Math.hypot(camino[i][0] - camino[i - 1][0], camino[i][1] - camino[i - 1][1]);
+      if (d / 130 > 20)
+        errores.push(`entre dos puntos de vuelta hay mas de 20 s (${Math.round(d)} px)`);
+    }
+  }
+
   // Las bandejas del conteo (#160): una cada 20 px, todas sobre suelo.
   const conteo = src.match(/conteo: \{\s*x: (\d+), y: (\d+), piezas: (\d+)/);
   if (conteo) {

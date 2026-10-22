@@ -39,6 +39,14 @@ export class DesagueScene extends EscenaNivel {
       lluvia: true,
       polvo: 0xa08060,
 
+      // La alarma (#162): pasado el segundo Altar, la Diocesis ya sabe que la
+      // camilla esta vacia, y algo viene detras hasta la salida.
+      persecucion: {
+        inicio: { x: 740, y: 352 },
+        vueltas: [[850, 304]],
+        fin: { x: 1180, y: 352 },
+      },
+
       // El canal del fondo se inunda (#163): la raya de sedimento de la pared
       // dice hasta donde. No llega a ningún escalón, y el Relicario del rincón
       // hay que cogerlo entre dos crecidas.
