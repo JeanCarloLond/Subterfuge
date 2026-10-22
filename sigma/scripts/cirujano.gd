@@ -20,30 +20,42 @@ const Movimiento := preload("res://scripts/movimiento.gd")
 const Combate := preload("res://scripts/combate.gd")
 const Sacramento := preload("res://scripts/sacramento.gd")
 
-## El bisturi es de oro: el tajo tiene que leerse como esa herramienta. El
-## cargado, mas claro, al filo del blanco.
-const COLOR_TAJO := Color(0.988, 0.816, 0.22)
-const COLOR_TAJO_CARGADO := Color(0.957, 0.929, 0.576)
-## El contragolpe, al blanco: es el golpe mas limpio. La ejecucion, con sangre.
-const COLOR_TAJO_CONTRAGOLPE := Color(1.0, 0.97, 0.86)
-const COLOR_TAJO_EJECUCION := Color(0.86, 0.24, 0.18)
-## Lo que se ve el tajo de la ejecucion, y cuanto tiembla la camara con el.
-const TAJO_EJECUCION_MS := 160.0
-const SACUDIDA_PX := 3.0
-
-## El arte provisional del original (#184), hasta que llegue el de Mariana.
-const POSES := {
-	"quieto": preload("res://arte/provisional/cirujano.png"),
-	"paso_a": preload("res://arte/provisional/cirujano-paso-a.png"),
-	"paso_b": preload("res://arte/provisional/cirujano-paso-b.png"),
-	"guardia": preload("res://arte/provisional/cirujano-guardia.png"),
-	"bebe": preload("res://arte/provisional/cirujano-bebe.png"),
-	"alza": preload("res://arte/provisional/cirujano-alza.png"),
+## El Cirujano de Sigma, en tres cuartos y fotograma a fotograma
+## (scripts/cirujano-sigma.mjs): una animacion por cosa que hace.
+const ARTE := "res://arte/cirujano/"
+const Animaciones := preload("res://arte/cirujano/animaciones.gd")
+## Las fases de cada golpe, como en Blasphemous: los fotogramas de aviso, el del
+## smear (el arco del bisturi), el del impacto, que se sostiene, y los de la
+## recuperacion, que se ven ya con el cuerpo libre.
+const FASES := {
+	"golpe": {"aviso": [0, 1], "smear": 2, "impacto": 3, "recuperacion": [4, 5]},
+	"cargado": {"aviso": [0, 1], "smear": 2, "impacto": 3, "recuperacion": [4, 5]},
+	"arriba": {"aviso": [0], "smear": 1, "impacto": 2, "recuperacion": [3]},
+	"abajo": {"aviso": [0], "smear": 1, "impacto": 2, "recuperacion": []},
+	"contragolpe": {"aviso": [0], "smear": 1, "impacto": 2, "recuperacion": [3]},
 }
-## Contacto, paso, contacto al reves, paso: la pose quieta hace de contacto.
-const CICLO_PASO := ["quieto", "paso_a", "paso_b", "paso_a"]
-## Un cuadro cada tantos pixeles andados. Menos, y tiembla; mas, y patina.
-const PX_POR_CUADRO := 9.0
+## El smear dura un par de fotogramas de juego: si dura mas, se lee como un
+## escudo y no como un tajo.
+const SMEAR_MS := 40.0
+const RECUPERACION_MS := 70.0
+const REPOSO_MS := 220.0
+const ATERRIZAJE_MS := 90.0
+## La ejecucion: el bisturi en alto cambia de cuadro a mitad; el tajo, cada 60.
+const ALZA_MS := 140.0
+const TAJO_MS := 60.0
+## Un cuadro de carrera cada tantos pixeles andados. Menos, y tiembla; mas, y
+## patina.
+const PX_POR_CUADRO := 7.0
+const SACUDIDA_PX := 3.0
+## La estela del dash y del contragolpe: una copia del fotograma cada tantos ms,
+## que se apaga. Es lo que en pixel art hace de desenfoque de movimiento.
+const ESTELA_CADA_MS := 35.0
+const ESTELA_DURA := 0.22
+const COLOR_ESTELA := Color(0.85, 0.75, 0.6, 0.55)
+## Lo que tiene que caer para levantar polvo al aterrizar (px/s).
+const CAIDA_CON_POLVO := 260.0
+const COLOR_POLVO := Color(0.55, 0.47, 0.4, 0.8)
+const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
 
 var movimiento: Movimiento
 var combate: Combate
@@ -57,11 +69,18 @@ var _recorrido := 0.0
 ## A quien esta ejecutando, y si ya bajo el bisturi.
 var _victima: Node2D
 var _rematada := false
-var _fin_tajo_ejecucion := -INF
+## Los fotogramas de cada animacion.
+var _cuadros := {}
+## El golpe que acaba de terminar, para su recuperacion, y hasta cuando dura.
+var _recuperacion := ""
+var _fin_recuperacion := -INF
+var _en_suelo_antes := true
+var _fin_aterrizaje := -INF
+var _proxima_estela := -INF
+var _caida_antes := 0.0
 
 @onready var _figura: Node2D = $Figura
 @onready var _sprite: Sprite2D = $Figura/Sprite
-@onready var _tajo: Polygon2D = $Tajo
 
 
 func _ready() -> void:
@@ -69,6 +88,11 @@ func _ready() -> void:
 	movimiento = Movimiento.new(position.y)
 	movimiento.caida.connect(_al_caer)
 	combate = Combate.new()
+	for nombre in Animaciones.RECUENTO:
+		var lista: Array[Texture2D] = []
+		for i in Animaciones.RECUENTO[nombre]:
+			lista.append(load("%s%s-%d.png" % [ARTE, nombre, i]))
+		_cuadros[nombre] = lista
 
 
 func _physics_process(delta: float) -> void:
@@ -111,7 +135,9 @@ func _physics_process(delta: float) -> void:
 	movimiento.velocidad = velocity
 	movimiento.paso(delta, entrada, is_on_floor(), pared, position.y)
 	velocity = movimiento.velocidad
+	_caida_antes = velocity.y
 	move_and_slide()
+	_efectos_de_movimiento()
 
 	if combate.zona_activa():
 		_golpear_enemigos()
@@ -132,6 +158,7 @@ func caja() -> Rect2:
 func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	if combate.parar():
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
+		_chispas(position + Vector2(movimiento.mirando * 8.0, -26.0))
 		_pausa_de_impacto(Sacramento.IMPACTO["parry_ms"])
 		return Resultado.PARADO
 	var retroceso := Vector2(Sacramento.VITALIDAD["retroceso_x"], Sacramento.VITALIDAD["retroceso_y"])
@@ -191,6 +218,8 @@ func _golpear_enemigos() -> void:
 			continue
 		enemigo.recibir_dano(dano, position.x)
 		_pausa_de_impacto(_pausa_del_golpe())
+		if combate.tipo != Combate.Tipo.BASICO:
+			_sacudir()
 		if combate.direccion == Combate.Direccion.ABAJO:
 			combate.rebotar()
 			movimiento.rebotar()
@@ -245,9 +274,63 @@ func _rematar() -> void:
 	_rematada = true
 	if is_instance_valid(_victima):
 		_victima.rematar()
-	_fin_tajo_ejecucion = combate.ahora + TAJO_EJECUCION_MS
 	_sacudir()
 	_pausa_de_impacto(Sacramento.EJECUCION["pausa_ms"])
+
+
+## Polvo al aterrizar de una caida larga y estela en el dash y el contragolpe.
+func _efectos_de_movimiento() -> void:
+	if is_on_floor() and not _en_suelo_antes and _caida_antes > CAIDA_CON_POLVO:
+		_polvo(position, 10)
+	var rapido := movimiento.estado == Movimiento.Estado.DASH or (
+		combate.accion == Combate.Accion.GOLPE and combate.tipo == Combate.Tipo.CONTRAGOLPE)
+	if rapido and combate.ahora >= _proxima_estela:
+		_proxima_estela = combate.ahora + ESTELA_CADA_MS
+		_estela()
+
+
+## Una copia del fotograma de ahora, quieta donde estaba, que se apaga.
+func _estela() -> void:
+	var copia := Sprite2D.new()
+	copia.texture = _sprite.texture
+	copia.centered = false
+	copia.offset = _sprite.offset
+	copia.scale = _figura.scale
+	copia.position = position
+	copia.modulate = COLOR_ESTELA
+	copia.z_index = -1
+	get_parent().add_child(copia)
+	var apagar := copia.create_tween()
+	apagar.tween_property(copia, "modulate:a", 0.0, ESTELA_DURA)
+	apagar.tween_callback(copia.queue_free)
+
+
+func _polvo(donde: Vector2, cuantas: int) -> void:
+	_rafaga(donde, cuantas, COLOR_POLVO, Vector2(0, -1), 80.0, 20.0, 60.0, Vector2(0, 60), 0.45)
+
+
+## Las chispas del parry: el metal contra el metal, lo unico limpio del juego.
+func _chispas(donde: Vector2) -> void:
+	_rafaga(donde, 14, COLOR_CHISPA, Vector2(movimiento.mirando, -0.3), 70.0, 60.0, 160.0, Vector2(0, 300), 0.3)
+
+
+func _rafaga(donde: Vector2, cuantas: int, color: Color, direccion: Vector2, abertura: float,
+		v_min: float, v_max: float, gravedad: Vector2, vida: float) -> void:
+	var r := CPUParticles2D.new()
+	r.position = donde
+	r.one_shot = true
+	r.explosiveness = 0.95
+	r.amount = cuantas
+	r.lifetime = vida
+	r.direction = direccion
+	r.spread = abertura
+	r.initial_velocity_min = v_min
+	r.initial_velocity_max = v_max
+	r.gravity = gravedad
+	r.color = color
+	get_parent().add_child(r)
+	r.emitting = true
+	get_tree().create_timer(vida + 0.2).timeout.connect(r.queue_free)
 
 
 ## La camara se acerca mientras dura la ejecucion y vuelve despues.
@@ -312,93 +395,97 @@ func _volver() -> void:
 	combate.cancelar()
 
 
-## La figura: la pose, y como se estira y se aplasta. Es lo del original:
-## quita la rigidez de un dibujo quieto mientras no hay animaciones de verdad.
+## La figura: el fotograma de lo que esta haciendo, mirando hacia donde va.
 func _pintar(delta: float) -> void:
-	var estado := movimiento.estado
-	var en_suelo := is_on_floor()
-
-	var pose := "quieto"
-	var ejecutando := combate.accion == Combate.Accion.EJECUCION
-	if ejecutando:
-		pose = "quieto" if combate.ejecucion_golpea() else "alza"
-	elif combate.accion == Combate.Accion.PARRY:
-		pose = "guardia"
-	elif combate.accion == Combate.Accion.POCION:
-		pose = "bebe"
-	elif en_suelo and absf(velocity.x) > 20.0:
-		_recorrido += absf(velocity.x) * delta
-		pose = CICLO_PASO[int(_recorrido / PX_POR_CUADRO) % CICLO_PASO.size()]
-	_sprite.texture = POSES[pose]
-
-	var escala := Vector2.ONE
-	if estado == Movimiento.Estado.REZANDO:
-		escala = Vector2(1.1, 0.78) # arrodillado
-	elif ejecutando:
-		# Se estira con el bisturi en alto; al bajarlo, se aplasta en el tajo.
-		escala = Vector2(1.2, 0.85) if combate.ejecucion_golpea() else Vector2(0.9, 1.12)
-	elif combate.anticipando():
-		escala = Vector2(0.9, 1.08) # se recoge antes del golpe
-	elif combate.accion == Combate.Accion.GOLPE:
-		match combate.tipo: # y se lanza
-			Combate.Tipo.CARGADO:
-				escala = Vector2(1.22, 0.86)
-			Combate.Tipo.CONTRAGOLPE:
-				escala = Vector2(1.28, 0.84)
-			_:
-				escala = Vector2(1.14, 0.92)
-	elif estado == Movimiento.Estado.DASH:
-		escala = Vector2(1.18, 0.86)
-	elif not en_suelo:
-		# Subiendo estira; cayendo, menos, para no parecer de goma.
-		var vertical := clampf(velocity.y / Sacramento.MOVIMIENTO["velocidad_caida_max"], -1.0, 1.0)
-		var intensidad := 0.14 if vertical < 0.0 else 0.09
-		escala = Vector2(1.0 - absf(vertical) * intensidad * 0.7, 1.0 + absf(vertical) * intensidad)
-	elif absf(velocity.x) > 20.0:
-		var paso := sin(Time.get_ticks_msec() / 90.0)
-		escala = Vector2(1.0 - paso * 0.025, 1.0 + paso * 0.035) # cabeceo al andar
-	_figura.scale = Vector2(escala.x * movimiento.mirando, escala.y)
-
+	var cuadro := _cuadro(delta)
+	var lista: Array = _cuadros[cuadro[0]]
+	_sprite.texture = lista[clampi(cuadro[1], 0, lista.size() - 1)]
+	_figura.scale = Vector2(movimiento.mirando, 1.0)
 	# La ejecucion blinda, pero no es un golpe recibido: no parpadea.
+	var ejecutando := combate.accion == Combate.Accion.EJECUCION
 	var alfa := 0.5 if movimiento.invulnerable and not ejecutando else 1.0
 	_figura.modulate = Color(1, 1, 1, alfa)
 
-	var tajo_ejecucion := ejecutando and combate.ahora < _fin_tajo_ejecucion
-	_tajo.visible = combate.zona_activa() or tajo_ejecucion
-	if tajo_ejecucion:
-		var zona := Rect2(Vector2(movimiento.mirando * 18.0 - 18.0, -32.0), Vector2(36.0, 30.0))
-		_tajo.color = COLOR_TAJO_EJECUCION
-		_tajo.polygon = _media_luna(zona, Combate.Direccion.LATERAL, movimiento.mirando)
-	elif _tajo.visible:
-		var zona := combate.zona(position, movimiento.mirando)
-		zona.position -= position
-		match combate.tipo:
-			Combate.Tipo.CARGADO:
-				_tajo.color = COLOR_TAJO_CARGADO
-			Combate.Tipo.CONTRAGOLPE:
-				_tajo.color = COLOR_TAJO_CONTRAGOLPE
-			_:
-				_tajo.color = COLOR_TAJO
-		_tajo.polygon = _media_luna(zona, combate.direccion, movimiento.mirando)
+
+## Que animacion y que fotograma: [nombre, indice]. Primero lo que hace con el
+## bisturi, luego lo que hace el cuerpo.
+func _cuadro(delta: float) -> Array:
+	var en_suelo := is_on_floor()
+	if en_suelo and not _en_suelo_antes:
+		_fin_aterrizaje = combate.ahora + ATERRIZAJE_MS
+	_en_suelo_antes = en_suelo
+	var ms := combate.ms_de_accion()
+
+	match combate.accion:
+		Combate.Accion.EJECUCION:
+			if not combate.ejecucion_golpea():
+				return ["alza", 0 if ms < ALZA_MS else 1]
+			return ["tajo", int((ms - Sacramento.EJECUCION["alza_ms"]) / TAJO_MS)]
+		Combate.Accion.PARRY:
+			return ["guardia", 0 if ms < 70.0 else 1]
+		Combate.Accion.POCION:
+			return ["bebe", 0 if ms < 150.0 else (1 if ms < 450.0 else 2)]
+		Combate.Accion.GOLPE:
+			return _cuadro_de_golpe(ms)
+
+	var recuperando := _cuadro_de_recuperacion(en_suelo)
+	if not recuperando.is_empty():
+		return recuperando
+
+	match movimiento.estado:
+		Movimiento.Estado.REZANDO:
+			return ["rezar", 0]
+		Movimiento.Estado.ATURDIDO:
+			return ["herido", 0]
+		Movimiento.Estado.DASH:
+			return ["dash", 0]
+		Movimiento.Estado.AGARRE:
+			return ["agarre", 0]
+	if not en_suelo:
+		if velocity.y < -40.0:
+			return ["salto", 0]
+		return ["caida", int(Time.get_ticks_msec() / 120.0) % 2]
+	if combate.ahora < _fin_aterrizaje:
+		return ["aterrizaje", 0]
+	if absf(velocity.x) > 20.0:
+		_recorrido += absf(velocity.x) * delta
+		return ["correr", int(_recorrido / PX_POR_CUADRO) % _cuadros["correr"].size()]
+	return ["reposo", int(Time.get_ticks_msec() / REPOSO_MS) % _cuadros["reposo"].size()]
 
 
-## Una media luna dentro de `zona`, con la panza hacia donde va el golpe: el
-## arco del bisturi. Sin el, el golpe no se ve hasta que toca algo.
-static func _media_luna(zona: Rect2, direccion: Combate.Direccion, mirando: int) -> PackedVector2Array:
-	var puntos: Array[Vector2] = [
-		Vector2(0.0, 0.0), Vector2(0.7, 0.12), Vector2(1.0, 0.5),
-		Vector2(0.7, 0.88), Vector2(0.0, 1.0), Vector2(0.45, 0.5),
-	]
-	var forma := PackedVector2Array()
-	for p in puntos:
-		var q := p
-		match direccion:
-			Combate.Direccion.ARRIBA:
-				q = Vector2(p.y, 1.0 - p.x)
-			Combate.Direccion.ABAJO:
-				q = Vector2(p.y, p.x)
-			_:
-				if mirando < 0:
-					q = Vector2(1.0 - p.x, p.y)
-		forma.append(zona.position + q * zona.size)
-	return forma
+func _cuadro_de_golpe(ms: float) -> Array:
+	var nombre := "golpe"
+	match combate.tipo:
+		Combate.Tipo.CARGADO:
+			nombre = "cargado"
+		Combate.Tipo.CONTRAGOLPE:
+			nombre = "contragolpe"
+	if combate.direccion == Combate.Direccion.ARRIBA:
+		nombre = "arriba"
+	elif combate.direccion == Combate.Direccion.ABAJO:
+		nombre = "abajo"
+	var fases: Dictionary = FASES[nombre]
+	_recuperacion = nombre
+	_fin_recuperacion = -INF
+	var aviso := combate.anticipacion_ms()
+	if ms < aviso:
+		var avisos: Array = fases["aviso"]
+		return [nombre, avisos[mini(avisos.size() - 1, int(ms / aviso * avisos.size()))]]
+	if ms < aviso + SMEAR_MS:
+		return [nombre, fases["smear"]]
+	return [nombre, fases["impacto"]]
+
+
+## La recuperacion del golpe que acaba de terminar, si el cuerpo sigue quieto
+## en el suelo; si se mueve o salta, se corta: el control manda.
+func _cuadro_de_recuperacion(en_suelo: bool) -> Array:
+	if _recuperacion == "":
+		return []
+	var cuadros: Array = FASES[_recuperacion]["recuperacion"]
+	if _fin_recuperacion == -INF:
+		_fin_recuperacion = combate.ahora + RECUPERACION_MS * cuadros.size()
+	if cuadros.is_empty() or combate.ahora >= _fin_recuperacion or not en_suelo or absf(velocity.x) > 20.0:
+		_recuperacion = ""
+		return []
+	var hecho := cuadros.size() - 1 - int((_fin_recuperacion - combate.ahora) / RECUPERACION_MS)
+	return [_recuperacion, cuadros[clampi(hecho, 0, cuadros.size() - 1)]]

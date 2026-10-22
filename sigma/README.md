@@ -56,7 +56,27 @@ CI los pasa en cada push y cada PR.
 
 ## El arte
 
-Todo el arte es pixel art hecho a mano. Mientras llega el de Mariana, Sigma usa el arte
+**El Cirujano** es el de Sigma, no el del original: en tres cuartos, de unos 50 px de
+alto (lo que mide el Penitente de _Blasphemous_ a 640×360), con la cara vendada, la
+paleta de carne y óxido y 53 fotogramas en 18 animaciones (reposo, carrera, salto,
+caída, aterrizaje, dash, agarre, herido, rezar, guardia, golpe, cargado, arriba, abajo,
+contragolpe, poción y ejecución). Cada golpe tiene aviso sostenido, un fotograma de
+_smear_ (el arco del bisturí), impacto y recuperación.
+
+No se dibuja cuadro a cuadro: `scripts/cirujano-sigma.mjs` describe cada fotograma como
+una pose (cadera, inclinación, ángulos de los brazos, zancada) y pinta las piezas del
+cuerpo píxel a píxel en esa pose, sin girar imágenes, así que no se emborronan. Luego
+sombrea por bandas y contornea. Una animación nueva es una lista de poses:
+
+```bash
+npm run sigma:cirujano   # vuelve a sacar sigma/arte/cirujano/ (y hoja.png, para revisar)
+```
+
+Es provisional hasta que llegue el de Mariana: sus PNG pisan a estos con el mismo nombre
+(`golpe-2.png`…). El lienzo es de 48×58 con la cadera en la columna 21 y los pies en la
+fila 56.
+
+El resto del arte es pixel art hecho a mano. Mientras llega el de Mariana, Sigma usa el arte
 provisional del original: las figuras de `src/systems/ArteProvisional.ts`, escritas píxel a
 píxel, y la sillería del equipo (`public/assets/tilesets/`).
 
@@ -104,8 +124,9 @@ polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivo
 | `herramientas/` | Scripts de un solo uso: pasar el Atrio de Phaser y vestirlo.         |
 | `docs/`         | El canon de Sigma.                                                   |
 
-- **Resolución** lógica de 480×320, escalada a un múltiplo entero y con filtro nearest:
-  pixel art nítido en cualquier pantalla.
+- **Resolución** lógica de 640×360, la de _Blasphemous_, escalada a un múltiplo entero
+  y con filtro nearest: pixel art nítido en cualquier pantalla (1080p es justo 3×). La
+  interfaz y los velos van anclados a la pantalla, no a medidas fijas.
 - **Controles**: los mismos del original, registrados en `scripts/controles.gd`, con
   teclado, ratón y mando.
 - **Los números** del Cirujano (salto, dash, agarre…) vienen de `src/config/Sacramento.ts`

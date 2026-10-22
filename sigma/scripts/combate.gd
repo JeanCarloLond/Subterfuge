@@ -42,6 +42,7 @@ var bloqueo_ms := 0.0
 var curar := 0
 
 var _inicio_zona := INF
+var _inicio_accion := -INF
 var _fin_accion := -INF
 var _fin_enfriamiento_golpe := -INF
 var _fin_ventana_parry := -INF
@@ -85,6 +86,7 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 
 	if entrada.parry_pulsado and ahora >= _fin_enfriamiento_parry:
 		accion = Accion.PARRY
+		_inicio_accion = ahora
 		_fin_ventana_parry = ahora + C["parry"]["ventana_ms"]
 		_fin_accion = _fin_ventana_parry
 		_fin_enfriamiento_parry = _fin_ventana_parry + C["parry"]["enfriamiento_ms"]
@@ -95,6 +97,7 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 		if cargas_pocion > 0:
 			cargas_pocion -= 1
 			accion = Accion.POCION
+			_inicio_accion = ahora
 			_fin_accion = ahora + P["duracion_ms"]
 			bloqueo_ms = P["duracion_ms"]
 			curar = P["curacion"]
@@ -111,6 +114,16 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 ## carga empezada no: soltar tras un golpe recibido no saca un cargado.
 func carga_completa() -> bool:
 	return _inicio_carga > -INF and ahora - _inicio_carga >= C["cargado"]["tiempo_carga_ms"]
+
+
+## Lo que lleva la accion en curso, en ms: para elegir el fotograma.
+func ms_de_accion() -> float:
+	return ahora - _inicio_accion
+
+
+## Lo que dura el aviso del golpe en curso, en ms.
+func anticipacion_ms() -> float:
+	return _perfil()["anticipacion_ms"]
 
 
 ## Si el golpe se esta preparando: aun no corta.
@@ -178,6 +191,7 @@ func ejecutar(libre: bool) -> bool:
 	if not libre or accion != Accion.NINGUNA:
 		return false
 	accion = Accion.EJECUCION
+	_inicio_accion = ahora
 	_fin_ventana_contragolpe = -INF
 	_inicio_carga = -INF
 	_fin_accion = ahora + E["duracion_ms"]
@@ -221,6 +235,7 @@ func _golpear(nuevo: Tipo, entrada: Entrada, en_suelo: bool) -> void:
 
 	var perfil := _perfil()
 	accion = Accion.GOLPE
+	_inicio_accion = ahora
 	_golpeados.clear()
 	_inicio_zona = ahora + perfil["anticipacion_ms"]
 	_fin_accion = _inicio_zona + perfil["duracion_ms"]

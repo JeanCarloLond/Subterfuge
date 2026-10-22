@@ -254,7 +254,7 @@ func _vineta() -> Node:
 	capa.name = "Vineta"
 	var velo := ColorRect.new()
 	velo.name = "Velo"
-	velo.size = Vector2(480, 320)
+	velo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	velo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var material := ShaderMaterial.new()
 	material.shader = VINETA

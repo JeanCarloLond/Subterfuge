@@ -26,6 +26,7 @@
     "sigma:editor": "node scripts/sigma.mjs --editor",
     "sigma:tests": "node scripts/sigma.mjs --tests",
     "sigma:arte": "node scripts/arte-sigma.mjs",
+    "sigma:cirujano": "node scripts/cirujano-sigma.mjs",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
