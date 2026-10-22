@@ -26,7 +26,7 @@ func _ready() -> void:
 	_pintar()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
-		musica.poner("vientre-humedo-mazmorra")
+		musica.poner("portada-arcanos")
 
 
 func _unhandled_input(evento: InputEvent) -> void:

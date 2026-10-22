@@ -60,7 +60,7 @@ func _ready() -> void:
 	capa.add_child(salto)
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
-		musica.poner("criptas-redoble-ominoso")
+		musica.poner("portada-arcanos")
 	_secuencia()
 
 

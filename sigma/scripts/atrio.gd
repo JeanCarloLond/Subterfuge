@@ -55,7 +55,7 @@ func _ready() -> void:
 	_continuar()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
-		musica.poner("atrio-redoble")
+		musica.poner("atrio-santuario")
 
 
 ## Si la partida guardada rezo en un Altar de esta sala, se empieza en el.

@@ -55,6 +55,10 @@ func _ready() -> void:
 		altar.cirujano = _cirujano
 		altar.rezado.connect(_interfaz.avisar.bind("Altar: aquí volverás"))
 	_interfaz.conectar(_cirujano)
+	# La pista del siguiente nivel suena aqui mientras no hay siguiente nivel.
+	var musica := get_node_or_null("/root/Musica")
+	if musica:
+		musica.poner("catedral-bosque")
 
 
 func _unhandled_input(evento: InputEvent) -> void:

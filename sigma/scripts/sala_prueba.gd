@@ -35,6 +35,10 @@ func _ready() -> void:
 	for bloque in BLOQUES:
 		_poner_bloque(Rect2(bloque[0], bloque[1], bloque[2], bloque[3]), bloque[4])
 	$Interfaz.conectar(_cirujano)
+	# La pista del siguiente nivel suena aqui mientras no hay siguiente nivel.
+	var musica := get_node_or_null("/root/Musica")
+	if musica:
+		musica.poner("catedral-bosque")
 
 
 func _poner_bloque(rect: Rect2, cartel: String) -> void:

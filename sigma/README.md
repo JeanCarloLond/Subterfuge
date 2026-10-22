@@ -158,11 +158,13 @@ Tibia** que echa vapor, candelabros que titilan y hongos de lámpara que respira
 pieza con su luz; se colocan en `piezas` del nodo `Atrezo`, y un test comprueba que
 se apoyan en piedra.
 
-**El audio**: la música y las voces de esfuerzo son las del juego original, copiadas a
-`sigma/audio/` (Godot solo carga lo que está en su proyecto; autoría en
-`sigma/audio/LICENCIAS.md`). Una pista por escena con fundido cruzado (el autoload
-`Musica`: la portada, la intro y el Atrio) y las voces del Cirujano y los Devotos al
-atacar, saltar, recibir y morir, como en el original (el autoload `Voces`).
+**El audio**: una pista por escena con fundido cruzado (el autoload `Musica`; si la
+siguiente escena usa la misma, sigue sin cortarse). La portada y la intro, un tema
+orquestal y trágico de ProjectHelmet (CC-BY 4.0: el crédito es obligatorio); el Atrio,
+_Dark Shrine Loop_ (CC0); el siguiente nivel tendrá _Cathedral in the forest_ (CC0), que
+mientras suena en las salas de prueba. Las voces del Cirujano y los Devotos al atacar,
+saltar, recibir y morir son las del original (el autoload `Voces`). Autoría y licencias de
+todo en `sigma/audio/LICENCIAS.md`: **una pista nueva no entra sin su línea ahí**.
 
 **La piedra** (`npm run sigma:silleria`) es de Sigma: una baldosa por cada combinación de
 lados al aire, en cuatro variantes, con la cara de arriba clara, los cantos con bisel y
