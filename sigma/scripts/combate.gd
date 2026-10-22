@@ -111,6 +111,18 @@ func paso(delta: float, entrada: Entrada, libre: bool, en_suelo: bool) -> void:
 		_inicio_carga = ahora
 
 
+## Cuanto lleva cargado el golpe, de 0 a 1, y si alcanza el Fervor para
+## soltarlo. Para pintar la carga: sin Fervor no se enciende nada.
+func progreso_carga() -> float:
+	if _inicio_carga == -INF:
+		return 0.0
+	return clampf((ahora - _inicio_carga) / C["cargado"]["tiempo_carga_ms"], 0.0, 1.0)
+
+
+func carga_posible() -> bool:
+	return fervor >= C["cargado"]["coste_fervor"]
+
+
 ## Mantenido el boton lo bastante, el cargado esta listo para soltarse. Sin
 ## carga empezada no: soltar tras un golpe recibido no saca un cargado.
 func carga_completa() -> bool:

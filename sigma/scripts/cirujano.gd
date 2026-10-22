@@ -58,6 +58,10 @@ const COLOR_ESTELA := Color(0.85, 0.75, 0.6, 0.55)
 const CAIDA_CON_POLVO := 260.0
 const COLOR_POLVO := Color(0.55, 0.47, 0.4, 0.8)
 const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
+## La carga del golpe con Fervor: el cuerpo se calienta hacia el ambar del
+## Fervor mientras carga, suben brasas, y al completarse da un destello.
+const AMBAR := Color(1.45, 1.05, 0.45)
+const COLOR_BRASA := Color(1.0, 0.66, 0.22)
 
 ## En las salas de prueba el cuerpo viene entero; en los niveles, el doble
 ## salto y el dash esperan a sus reliquias.
@@ -87,6 +91,9 @@ var _fin_aterrizaje := -INF
 var _proxima_estela := -INF
 var _caida_antes := 0.0
 var _colgado_antes := false
+## Brasas que suben mientras carga el golpe con Fervor.
+var _brasas: CPUParticles2D
+var _cargado_avisado := false
 
 @onready var _figura: Node2D = $Figura
 @onready var _sprite: Sprite2D = $Figura/Sprite
@@ -98,6 +105,20 @@ func _ready() -> void:
 	movimiento.caida.connect(_al_caer)
 	combate = Combate.new()
 	_aplicar_reliquias()
+	_brasas = CPUParticles2D.new()
+	_brasas.emitting = false
+	_brasas.amount = 20
+	_brasas.lifetime = 0.6
+	_brasas.position = Vector2(0, -8)
+	_brasas.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_brasas.emission_rect_extents = Vector2(9, 4)
+	_brasas.direction = Vector2.UP
+	_brasas.spread = 15.0
+	_brasas.gravity = Vector2(0, -40)
+	_brasas.initial_velocity_min = 20.0
+	_brasas.initial_velocity_max = 45.0
+	_brasas.color = COLOR_BRASA
+	add_child(_brasas)
 	for nombre in Animaciones.RECUENTO:
 		var lista: Array[Texture2D] = []
 		for i in Animaciones.RECUENTO[nombre]:
@@ -505,6 +526,7 @@ func _volver() -> void:
 ## La figura: el fotograma de lo que esta haciendo, mirando hacia donde va.
 func _pintar(delta: float) -> void:
 	if muerto:
+		_brasas.emitting = false
 		return
 	var cuadro := _cuadro(delta)
 	var lista: Array = _cuadros[cuadro[0]]
@@ -514,6 +536,25 @@ func _pintar(delta: float) -> void:
 	var ejecutando := combate.accion == Combate.Accion.EJECUCION
 	var alfa := 0.5 if movimiento.invulnerable and not ejecutando else 1.0
 	_figura.modulate = Color(1, 1, 1, alfa)
+	_pintar_carga()
+
+
+## La carga con Fervor (feedback de Jean): mientras se mantiene J y hay Fervor
+## para el cargado, el cuerpo se calienta y suben brasas; completa, destella y
+## late. Sin Fervor no se enciende nada: asi se sabe que no saldra.
+func _pintar_carga() -> void:
+	var carga := combate.progreso_carga() if combate.carga_posible() else 0.0
+	_brasas.emitting = carga > 0.0
+	if carga <= 0.0:
+		_cargado_avisado = false
+		return
+	var calor := carga * 0.8
+	if carga >= 1.0:
+		if not _cargado_avisado:
+			_cargado_avisado = true
+			_rafaga(position + Vector2(0, -26), 18, COLOR_BRASA, Vector2.UP, 180.0, 40.0, 110.0, Vector2.ZERO, 0.35)
+		calor = 0.75 + 0.25 * sin(Time.get_ticks_msec() / 60.0)
+	_figura.modulate = Color(1, 1, 1, _figura.modulate.a).lerp(Color(AMBAR, _figura.modulate.a), calor)
 
 
 ## Que animacion y que fotograma: [nombre, indice]. Primero lo que hace con el
