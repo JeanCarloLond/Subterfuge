@@ -46,3 +46,16 @@ func test_sin_archivo_no_hay_partida() -> void:
 	progreso.cargar()
 	afirmar(not progreso.hay_partida(), "nada guardado")
 	progreso.free()
+
+
+func test_las_notas_leidas_se_guardan() -> void:
+	var antes := _progreso()
+	antes.leer("registro-pabellon-7")
+	var despues: Node = Progreso.new()
+	despues.ruta = RUTA_PRUEBA
+	despues.cargar()
+	afirmar(despues.leida("registro-pabellon-7"), "la nota sigue leida")
+	afirmar(not despues.leida("otra"), "la que no se leyo, no")
+	antes.nueva()
+	antes.free()
+	despues.free()

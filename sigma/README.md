@@ -46,6 +46,10 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   nicho del fondo, al que solo se llega con el doble salto. Con los dos se abre el
   camino alto de la derecha. Se toman con E y duran toda la partida. En las salas de
   prueba el cuerpo viene entero (`reliquias_libres`).
+- **Las notas**: lore que se encuentra. Con E se leen en un panel, con el juego parado, y
+  quedan guardadas como leídas. La primera, el _Registro del Pabellón N.º 7_, está en una
+  repisa junto al techo que late del Atrio: solo se llega subido al techo cuando baja, y si
+  uno se queda encima cuando vuelve a subir (avisa con un latido), lo aplasta.
 - **El guardado** (#202): como en el original, rezar es guardar. El autoload `Progreso`
   escribe en `user://partida.cfg` las reliquias y el último Altar al tomar una reliquia y
   al rezar; en la portada, «Continuar» vuelve a ese Altar y «Empezar» abre una partida

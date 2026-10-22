@@ -50,6 +50,10 @@ func _ready() -> void:
 		reliquia.recogida.connect(func(nombre: String, efecto: String) -> void:
 			_interfaz.avisar("%s. %s" % [nombre, efecto])
 		)
+	if has_node("Notas"):
+		for nota in $Notas.get_children():
+			nota.cirujano = _cirujano
+			nota.leida.connect(_interfaz.leer)
 	_interfaz.conectar(_cirujano)
 	_continuar()
 	var musica := get_node_or_null("/root/Musica")

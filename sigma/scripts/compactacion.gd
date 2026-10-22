@@ -35,6 +35,12 @@ func _init(recorrido_px: float, es_ciclico := true, desfase_ms := 0.0) -> void:
 		_fin_estado = C["reposo_ms"] + desfase_ms
 
 
+## Lo que le queda al estado de ahora, en ms (INF si espera a que lo disparen o
+## si se esta moviendo).
+func ms_restantes() -> float:
+	return _fin_estado - ahora
+
+
 ## Para un cierre: empieza a avisar. Si ya se ha disparado, no hace nada.
 func disparar() -> void:
 	if estado == Estado.REPOSO and not ciclico:

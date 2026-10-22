@@ -115,3 +115,19 @@ func test_solo_las_paredes_de_agarre_son_membrana() -> void:
 		afirmar(membranas.get_cell_source_id(celda) != -1, "%s es membrana" % celda)
 		afirmar_igual(silleria.get_cell_source_id(celda), -1, "%s ya no es piedra" % celda)
 	atrio.free()
+
+
+func test_la_nota_del_techo_solo_se_alcanza_con_el_techo() -> void:
+	var atrio := ESCENA.instantiate()
+	var capa: TileMapLayer = atrio.get_node("Silleria")
+	var nota: Node2D = atrio.get_node("Notas/Pabellon7")
+	afirmar(nota.texto.contains("Mano"), "cuenta la ley de la Mano que mira")
+	afirmar(_solido_bajo(capa, nota.position), "la nota esta sobre su repisa")
+	# La columna, de la repisa al suelo de abajo: desde abajo no se llega.
+	for fila in range(47, 54):
+		afirmar(capa.get_cell_source_id(Vector2i(10, fila)) != -1, "la columna cierra en la fila %d" % fila)
+	# Y el techo, en reposo, tapa el paso por arriba: su base queda a ras de la
+	# columna.
+	var techo: Node2D = atrio.get_node("Muros/Techo")
+	afirmar_igual(techo.position.y + techo.tiles.y * 16, 47 * 16.0, "el techo en reposo baja hasta la columna")
+	atrio.free()

@@ -1,7 +1,8 @@
-## Lo que el Cirujano lleva ganado en la partida: las reliquias y el ultimo
-## Altar en el que rezo. Es un autoload para que sobreviva a cambiar de sala, y
-## se guarda en disco cada vez que cambia: al tomar una reliquia y al rezar. Asi
-## funcionaba el original: rezar es guardar, y «Continuar» vuelve a ese Altar.
+## Lo que el Cirujano lleva ganado en la partida: las reliquias, las notas
+## leidas y el ultimo Altar en el que rezo. Es un autoload para que sobreviva a
+## cambiar de sala, y se guarda en disco cada vez que cambia: al tomar una
+## reliquia, al leer una nota y al rezar. Asi funcionaba el original: rezar es
+## guardar, y «Continuar» vuelve a ese Altar.
 extends Node
 
 signal reliquia_ganada(id: String)
@@ -16,6 +17,7 @@ var sala := ""
 var altar := ""
 
 var _reliquias := {}
+var _notas := {}
 
 
 func _ready() -> void:
@@ -34,6 +36,17 @@ func ganar(id: String) -> void:
 	reliquia_ganada.emit(id)
 
 
+func leida(id: String) -> bool:
+	return _notas.has(id)
+
+
+func leer(id: String) -> void:
+	if leida(id):
+		return
+	_notas[id] = true
+	guardar()
+
+
 ## Ha rezado en el Altar `nombre` de la sala `escena`: ahi vuelve al continuar.
 func rezar_en(escena: String, nombre: String) -> void:
 	sala = escena
@@ -48,6 +61,7 @@ func hay_partida() -> bool:
 ## Una partida nueva: sin reliquias y sin Altar. Borra la guardada.
 func nueva() -> void:
 	_reliquias.clear()
+	_notas.clear()
 	sala = ""
 	altar = ""
 	if FileAccess.file_exists(ruta):
@@ -57,6 +71,7 @@ func nueva() -> void:
 func guardar() -> void:
 	var partida := ConfigFile.new()
 	partida.set_value("partida", "reliquias", _reliquias.keys())
+	partida.set_value("partida", "notas", _notas.keys())
 	partida.set_value("partida", "sala", sala)
 	partida.set_value("partida", "altar", altar)
 	partida.save(ruta)
@@ -64,6 +79,7 @@ func guardar() -> void:
 
 func cargar() -> void:
 	_reliquias.clear()
+	_notas.clear()
 	sala = ""
 	altar = ""
 	var partida := ConfigFile.new()
@@ -71,5 +87,7 @@ func cargar() -> void:
 		return
 	for id in partida.get_value("partida", "reliquias", []):
 		_reliquias[id] = true
+	for id in partida.get_value("partida", "notas", []):
+		_notas[id] = true
 	sala = partida.get_value("partida", "sala", "")
 	altar = partida.get_value("partida", "altar", "")

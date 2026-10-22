@@ -24,6 +24,9 @@ const TINTE_LATIDO := Color(1.35, 0.62, 0.6)
 const LATIDO_MS := 140.0
 ## El segundo latido del aviso.
 const SEGUNDO_LATIDO_MS := 750.0
+## Antes de volver tambien late, una vez: quien va encima tiene que saber que
+## lo va a subir contra el techo.
+const AVISO_VUELTA_MS := 700.0
 const CADA_CRUJIDO_MS := 420.0
 
 ## Su tamano, en tiles de 16 px.
@@ -44,6 +47,7 @@ var _estado_antes := -1
 var _segundo_latido := INF
 var _proximo_crujido := INF
 var _ultimo_latido := -INF
+var _vuelta_avisada := false
 var _figura: TileMapLayer
 var _polvo: CPUParticles2D
 var _latido: AudioStreamPlayer2D
@@ -141,6 +145,13 @@ func _avisar() -> void:
 		elif estado == Compactacion.Estado.CERRADO and not ciclico:
 			cerrado.emit()
 
+	if estado == Compactacion.Estado.CERRADO and ciclo.ciclico:
+		if not _vuelta_avisada and ciclo.ms_restantes() <= AVISO_VUELTA_MS:
+			_vuelta_avisada = true
+			_latido.play()
+			_ultimo_latido = ciclo.ahora
+	else:
+		_vuelta_avisada = false
 	if estado == Compactacion.Estado.AVISO and ciclo.ahora >= _segundo_latido:
 		_latido.play()
 		_ultimo_latido = ciclo.ahora

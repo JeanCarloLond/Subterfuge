@@ -30,6 +30,9 @@ var _ayuda_abierta := false
 var _velo: ColorRect
 var _banda: ColorRect
 var _muerte: Label
+var _lectura: PanelContainer
+var _lectura_titulo: Label
+var _lectura_texto: Label
 
 @onready var _ayuda: Label = $Ayuda
 @onready var _vida: TextureProgressBar = $Vida
@@ -40,11 +43,20 @@ var _muerte: Label
 
 
 func _ready() -> void:
+	# La lectura para el juego, y la interfaz tiene que seguir oyendo la E.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_pintar_ayuda()
 	_preparar_muerte()
+	_preparar_lectura()
 
 
 func _unhandled_input(evento: InputEvent) -> void:
+	if _lectura.visible:
+		if evento.is_action_pressed("interactuar") or evento.is_action_pressed("pausa"):
+			_lectura.visible = false
+			get_tree().paused = false
+			get_viewport().set_input_as_handled()
+		return
 	if evento.is_action_pressed("ayuda"):
 		_ayuda_abierta = not _ayuda_abierta
 		_pintar_ayuda()
@@ -153,3 +165,45 @@ func _preparar_muerte() -> void:
 		add_child(nodo)
 	# Que crezca desde el centro de la pantalla, no desde la esquina.
 	_muerte.resized.connect(func() -> void: _muerte.pivot_offset = _muerte.size / 2.0)
+
+
+## Una nota abierta: su titulo y su texto en un panel, con el juego parado
+## hasta cerrarla con E.
+func leer(titulo: String, texto: String) -> void:
+	_lectura_titulo.text = titulo
+	_lectura_texto.text = texto
+	_lectura.visible = true
+	get_tree().paused = true
+
+
+func _preparar_lectura() -> void:
+	_lectura = PanelContainer.new()
+	_lectura.name = "Lectura"
+	var fondo := StyleBoxFlat.new()
+	fondo.bg_color = Color(0.06, 0.04, 0.045, 0.94)
+	fondo.border_color = Color(0.55, 0.4, 0.2)
+	fondo.set_border_width_all(1)
+	fondo.set_content_margin_all(14)
+	_lectura.add_theme_stylebox_override("panel", fondo)
+	_lectura.set_anchors_preset(Control.PRESET_CENTER)
+	_lectura.custom_minimum_size = Vector2(420, 0)
+	_lectura.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_lectura.grow_vertical = Control.GROW_DIRECTION_BOTH
+	var columna := VBoxContainer.new()
+	columna.add_theme_constant_override("separation", 8)
+	_lectura_titulo = Label.new()
+	_lectura_titulo.add_theme_color_override("font_color", Color(0.89, 0.663, 0.251))
+	_lectura_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_lectura_texto = Label.new()
+	_lectura_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_lectura_texto.custom_minimum_size = Vector2(392, 0)
+	var cerrar := Label.new()
+	cerrar.text = "E  cerrar"
+	cerrar.add_theme_color_override("font_color", Color(0.6, 0.55, 0.5))
+	cerrar.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	columna.add_child(_lectura_titulo)
+	columna.add_child(_lectura_texto)
+	columna.add_child(cerrar)
+	_lectura.add_child(columna)
+	_lectura.visible = false
+	add_child(_lectura)
