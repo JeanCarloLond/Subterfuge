@@ -50,6 +50,9 @@ func _ready() -> void:
 			_interfaz.avisar("%s. %s" % [nombre, efecto])
 		)
 	_interfaz.conectar(_cirujano)
+	var musica := get_node_or_null("/root/Musica")
+	if musica:
+		musica.poner("atrio-redoble")
 
 
 func _physics_process(_delta: float) -> void:

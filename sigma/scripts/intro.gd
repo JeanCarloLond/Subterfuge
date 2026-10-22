@@ -55,6 +55,9 @@ func _ready() -> void:
 	salto.add_theme_font_size_override("font_size", 8)
 	salto.add_theme_color_override("font_color", Color(0.45, 0.4, 0.38))
 	capa.add_child(salto)
+	var musica := get_node_or_null("/root/Musica")
+	if musica:
+		musica.poner("criptas-redoble-ominoso")
 	_secuencia()
 
 

@@ -148,6 +148,12 @@ Tibia** que echa vapor, candelabros que titilan y hongos de lámpara que respira
 pieza con su luz; se colocan en `piezas` del nodo `Atrezo`, y un test comprueba que
 se apoyan en piedra.
 
+**El audio**: la música y las voces de esfuerzo son las del juego original, copiadas a
+`sigma/audio/` (Godot solo carga lo que está en su proyecto; autoría en
+`sigma/audio/LICENCIAS.md`). Una pista por escena con fundido cruzado (el autoload
+`Musica`: la portada, la intro y el Atrio) y las voces del Cirujano y los Devotos al
+atacar, saltar, recibir y morir, como en el original (el autoload `Voces`).
+
 **Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
 (`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
 polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivos.

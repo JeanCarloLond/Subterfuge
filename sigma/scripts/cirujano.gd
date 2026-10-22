@@ -120,6 +120,8 @@ func _physics_process(delta: float) -> void:
 	combate.paso(delta, lucha, movimiento.libre(), is_on_floor())
 	if combate.bloqueo_ms > 0.0:
 		movimiento.bloquear(combate.bloqueo_ms)
+		if combate.accion == Combate.Accion.GOLPE:
+			_voz("ataque")
 		if combate.accion == Combate.Accion.GOLPE and combate.tipo == Combate.Tipo.CONTRAGOLPE:
 			_embestir()
 	if combate.curar > 0:
@@ -147,8 +149,12 @@ func _physics_process(delta: float) -> void:
 		pared = pared_al_lado
 
 	movimiento.velocidad = velocity
+	var subia := velocity.y
 	movimiento.paso(delta, entrada, is_on_floor(), pared, position.y)
 	velocity = movimiento.velocidad
+	# Un salto: la velocidad pasa de golpe a subir.
+	if entrada.saltar_pulsado and velocity.y < -250.0 and velocity.y < subia - 200.0:
+		_voz("salto")
 	_caida_antes = velocity.y
 	move_and_slide()
 	_efectos_de_movimiento()
@@ -169,6 +175,14 @@ func _pared_al_lado() -> int:
 		if test_move(global_transform, Vector2(lado * 3.0, 0.0)):
 			return lado
 	return 0
+
+
+func _voz(voz: String) -> void:
+	if not is_inside_tree():
+		return
+	var voces := get_node_or_null("/root/Voces")
+	if voces:
+		voces.cirujano(voz)
 
 
 ## La caja que choca, en coordenadas del mundo.
@@ -205,6 +219,7 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	if not movimiento.herir(position.x, origen_x, retroceso):
 		return Resultado.IGNORADO
 	combate.cancelar()
+	_voz("herida")
 	_perder(dano)
 	return Resultado.HERIDO
 
@@ -216,6 +231,7 @@ func recibir_contacto(origen_x: float) -> bool:
 	if not movimiento.herir(position.x, origen_x, retroceso):
 		return false
 	combate.cancelar()
+	_voz("herida")
 	_perder(Sacramento.CONTACTO["dano"])
 	return true
 
@@ -416,6 +432,7 @@ func _curar(puntos: int) -> void:
 
 
 func _al_caer(dano: int, _altura: float) -> void:
+	_voz("caida")
 	_perder(dano)
 
 
@@ -429,6 +446,7 @@ func _perder(dano: int) -> void:
 
 
 func _morir() -> void:
+	_voz("muerte")
 	vitalidad = Sacramento.VITALIDAD["maxima"]
 	vitalidad_cambio.emit(vitalidad, Sacramento.VITALIDAD["maxima"])
 	_volver()
