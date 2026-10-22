@@ -3,6 +3,8 @@
 > **Borrador para Jean y Alejo.** Se enseña al equipo y al profesor cuando haya una base
 > sólida. Lo marcado como **abierto** está por decidir.
 
+**El nombre.** Sigma, por la desviación estándar.
+
 ## La premisa
 
 La Diócesis vive dentro y encima de los Mil. Los dioses no están en el templo: **son el
