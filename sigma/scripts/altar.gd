@@ -35,6 +35,10 @@ func _process(_delta: float) -> void:
 	_luz.energy = 0.85 + 0.1 * sin(Time.get_ticks_msec() / 140.0)
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.rezar(position):
 		encendido = true
+		# Rezar es guardar: al continuar, se vuelve a este Altar.
+		var progreso := get_node_or_null("/root/Progreso")
+		if progreso and get_tree().current_scene:
+			progreso.rezar_en(get_tree().current_scene.scene_file_path, name)
 		rezado.emit()
 
 

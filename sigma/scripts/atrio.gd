@@ -52,9 +52,20 @@ func _ready() -> void:
 			_interfaz.avisar("%s. %s" % [nombre, efecto])
 		)
 	_interfaz.conectar(_cirujano)
+	_continuar()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
 		musica.poner("atrio-redoble")
+
+
+## Si la partida guardada rezo en un Altar de esta sala, se empieza en el.
+func _continuar() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso == null or progreso.sala != scene_file_path or not $Altares.has_node(progreso.altar):
+		return
+	var altar: Node2D = $Altares.get_node(progreso.altar)
+	altar.encendido = true
+	_cirujano.colocar(altar.position)
 
 
 func _physics_process(_delta: float) -> void:

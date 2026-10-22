@@ -4,7 +4,7 @@ extends "res://tests/caso.gd"
 
 func test_la_portada_empieza_por_la_intro() -> void:
 	var principal := preload("res://scripts/principal.gd")
-	afirmar_igual(principal.DESTINOS[0][1], "res://escenas/intro.tscn", "Empezar lleva a la intro")
+	afirmar_igual(principal.INTRO, "res://escenas/intro.tscn", "Empezar lleva a la intro")
 
 
 func test_la_intro_lleva_al_atrio() -> void:

@@ -452,6 +452,12 @@ func _morir() -> void:
 	_volver()
 
 
+## Lo pone en `sitio` como si volviera de rezar alli: al continuar una partida.
+func colocar(sitio: Vector2) -> void:
+	punto_reaparicion = sitio
+	_volver()
+
+
 func _volver() -> void:
 	position = punto_reaparicion
 	velocity = Vector2.ZERO

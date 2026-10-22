@@ -44,9 +44,12 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   Primigenios dejan al compactarse, órganos sueltos que aún funcionan: **el Pulmón
   Vacío** (doble salto), a media bajada del Atrio, y **el Tendón del Mil** (dash), en el
   nicho del fondo, al que solo se llega con el doble salto. Con los dos se abre el
-  camino alto de la derecha. Se toman con E y duran toda la partida (el autoload
-  `Progreso`; aún no se guarda en disco). En las salas de prueba el cuerpo viene entero
-  (`reliquias_libres`).
+  camino alto de la derecha. Se toman con E y duran toda la partida. En las salas de
+  prueba el cuerpo viene entero (`reliquias_libres`).
+- **El guardado** (#202): como en el original, rezar es guardar. El autoload `Progreso`
+  escribe en `user://partida.cfg` las reliquias y el último Altar al tomar una reliquia y
+  al rezar; en la portada, «Continuar» vuelve a ese Altar y «Empezar» abre una partida
+  nueva (borra la guardada).
 - **Trepar**: no es automático. En el aire, pegado a una pared, K clava el bisturí y el
   Cirujano queda colgado (en el suelo, K sigue siendo el parry). Empujar hacia fuera lo
   gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑

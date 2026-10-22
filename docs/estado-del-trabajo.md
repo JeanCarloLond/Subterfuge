@@ -166,7 +166,7 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
    anoten qué se siente mejor y qué peor (en la issue).
 2. **Decidir el mapa** (`sigma/docs/mapa.md`) antes de rehacer niveles, y rehacer el Atrio a
    640×360: el salto al nicho del Tendón aterriza 4 px pasado el borde; la caja de 10×22 se
-   queda corta con un sprite de 50 px; las reliquias aún no se guardan en disco.
+   queda corta con un sprite de 50 px.
 3. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
    cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
    repisa, y ningún muro lo sella sin que se rodee (#189).
