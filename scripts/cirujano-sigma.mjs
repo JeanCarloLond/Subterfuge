@@ -73,10 +73,13 @@ const PALETA = {
 // -- Geometria ----------------------------------------------------------------
 
 /** Gira un vector; positivo: lo de arriba va hacia delante (a la derecha). */
-const rot = ([x, y], a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
-const mas = (a, b) => [a[0] + b[0], a[1] + b[1]];
+export const rot = ([x, y], a) => [
+  x * Math.cos(a) - y * Math.sin(a),
+  x * Math.sin(a) + y * Math.cos(a),
+];
+export const mas = (a, b) => [a[0] + b[0], a[1] + b[1]];
 /** Un angulo medido desde la vertical hacia abajo; positivo, hacia delante. */
-const hacia = (theta, largo) => [Math.sin(theta) * largo, Math.cos(theta) * largo];
+export const hacia = (theta, largo) => [Math.sin(theta) * largo, Math.cos(theta) * largo];
 
 export function poligono(puntos) {
   return (x, y) => {
@@ -116,7 +119,7 @@ export function elipse(c, rx, ry) {
  * decide por donde pasa: un tajo de arriba abajo cruza la vertical de la
  * cabeza, uno hacia abajo la de los pies.
  */
-function arco(c, rIn, rOut, t0, t1, porArriba) {
+export function arco(c, rIn, rOut, t0, t1, porArriba) {
   const norm = (t) => (porArriba ? ((t % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) : t);
   const [lo, hi] = [norm(t0), norm(t1)].sort((a, b) => a - b);
   return (x, y) => {
@@ -290,8 +293,8 @@ export function dibujar(pose) {
   return rasterizar(piezas(pose), ANCHO, ALTO);
 }
 
-/** Piezas a pixeles, con sombreado por bandas y contorno. */
-function rasterizar(lista, ANCHO, ALTO) {
+/** Piezas a pixeles, con sombreado por bandas y contorno, en `paleta`. */
+export function rasterizar(lista, ANCHO, ALTO, paleta = PALETA) {
   const etiqueta = Array.from({ length: ALTO }, () => new Array(ANCHO).fill(-1));
   const materiales = [];
   lista.forEach(([forma, material], i) => {
@@ -312,10 +315,10 @@ function rasterizar(lista, ANCHO, ALTO) {
           [0, 1],
           [0, -1],
         ].some(([dx, dy]) => en(x + dx, y + dy) >= 0);
-        if (borde) img[y][x] = PALETA.contorno;
+        if (borde) img[y][x] = paleta.contorno;
         continue;
       }
-      const [base, luz, sombra] = PALETA[materiales[e]];
+      const [base, luz, sombra] = paleta[materiales[e]];
       // Luz arriba a la izquierda, por pieza y no por silueta: asi se leen los
       // pliegues y los brazos sobre el cuerpo.
       let color = base;
@@ -853,7 +856,7 @@ export function png(pixeles) {
 }
 
 /** Todas las animaciones en filas, ampliadas, sobre un fondo como el del Atrio. */
-function hoja(cuadros, k = 4) {
+export function hoja(cuadros, k = 4) {
   const fondo = [42, 32, 48, 255];
   const suelo = [90, 70, 80, 255];
   const filas = Object.values(cuadros);

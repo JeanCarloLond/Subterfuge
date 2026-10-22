@@ -119,6 +119,13 @@ Cuando haya animaciones de verdad (más cuadros por pose), el paso siguiente es 
 [Aseprite Wizard](https://github.com/viniciusgerevini/godot-aseprite-wizard) (libre, MIT),
 que importa los tags como animaciones.
 
+**El Devoto** también es de Sigma (`npm run sigma:devoto`, el mismo títere): en tres
+cuartos, más bajo y ancho que el Cirujano (~42 px), con sayo, mandil de cuero, la venda en
+los ojos y una cicatriz de oro (la biblia: casi enteros, marcas menores). Dos variantes,
+como en el original: con un aparato de metal (brazo con garra y pierna) o con un brazo de
+carne injertada. Anda, avisa alzando el brazo, golpea con su smear, se tambalea aturdido
+y se arrodilla para la ejecución.
+
 **Los fondos** son grandes y en capas, como en _Blasphemous_ y _Hollow Knight_
 (`scripts/nave.gd`): la vidriera-pantalla moribunda con sus haces de luz, una bóveda de
 costillas (los dioses son el templo), columnas colosales con venas y una jaula colgada,

@@ -21,24 +21,16 @@ const COLOR_AVISO := Color(0.898, 0.541, 0.502)
 const COLOR_DESTELLO := Color(1.6, 1.6, 1.6)
 ## Aturdido: amarillo palido, para ver de un vistazo que esta abierto.
 const COLOR_ATURDIDO := Color(0.91, 0.851, 0.627)
-## El arte provisional del original (#184): dos variantes, a cada una le falta
-## otra cosa, y las poses del aviso (el brazo en alto) y del golpe.
-const FIGURAS := {
-	"devoto": [
-		preload("res://arte/provisional/devoto.png"),
-		preload("res://arte/provisional/devoto-alza.png"),
-		preload("res://arte/provisional/devoto-golpe.png"),
-	],
-	"devoto-b": [
-		preload("res://arte/provisional/devoto-b.png"),
-		preload("res://arte/provisional/devoto-b-alza.png"),
-		preload("res://arte/provisional/devoto-b-golpe.png"),
-	],
-}
-## El tajo, del color de lo que golpea: el aparato de la A, la carne de la B.
-const COLOR_TAJO := {"devoto": Color(0.788, 0.82, 0.769, 0.85), "devoto-b": Color(0.831, 0.337, 0.29, 0.85)}
+## El Devoto de Sigma, en tres cuartos (scripts/devoto-sigma.mjs). Dos
+## variantes, como en el original: al de un sitio le pusieron un aparato de
+## metal y al del otro un brazo de carne injertada.
+const ARTE := "res://arte/devoto/%s-%s-%d.png"
+const ARTE_DE := {"devoto": "aparato", "devoto-b": "carne"}
+const CUADROS := {"andar": 4, "aviso": 2, "golpe": 2, "aturdido": 1, "ejecutado": 1}
 ## El brazo se queda abajo un poco despues del golpe: da tiempo a ver con que.
 const POSE_GOLPE_MS := 160.0
+## Un cuadro de andar cada tantos pixeles: con la distancia, no con el reloj.
+const PX_POR_CUADRO := 6.0
 
 ## La marca de que se le puede ejecutar: el bisturi, encima de la cabeza.
 const MARCA := preload("res://arte/provisional/bisturi.png")
@@ -71,17 +63,22 @@ var _fin_destello := -INF
 var _fin_pose_golpe := -INF
 var _figura_de := "devoto"
 var _cayendo := false
+var _cuadros := {}
+var _recorrido := 0.0
 var _marca: Sprite2D
 
 @onready var _figura: Node2D = $Figura
 @onready var _sprite: Sprite2D = $Figura/Sprite
-@onready var _tajo: Polygon2D = $Figura/Tajo
 
 
 func _ready() -> void:
 	add_to_group("enemigos")
 	_figura_de = variante(position)
-	_tajo.color = COLOR_TAJO[_figura_de]
+	for nombre in CUADROS:
+		var lista: Array[Texture2D] = []
+		for i in CUADROS[nombre]:
+			lista.append(load(ARTE % [ARTE_DE[_figura_de], nombre, i]))
+		_cuadros[nombre] = lista
 	_marca = Sprite2D.new()
 	_marca.texture = MARCA
 	_marca.position = Vector2(0, -44)
@@ -112,7 +109,7 @@ func _physics_process(delta: float) -> void:
 	velocity.y = minf(velocity.y + M["gravedad"] * delta, M["velocidad_caida_max"])
 	move_and_slide()
 	_herir_si_toca()
-	_pintar()
+	_pintar(delta)
 
 
 ## Decide que hacer este paso. Va aparte de la fisica para probarlo sin ella.
@@ -295,8 +292,7 @@ func _salpicar() -> void:
 ## Cae de lado y se va.
 func _caer() -> void:
 	_cayendo = true
-	_tajo.visible = false
-	_sprite.texture = FIGURAS[_figura_de][0]
+	_sprite.texture = _cuadros["aturdido"][0]
 	var caida := create_tween()
 	caida.tween_property(_figura, "rotation", -mirando * PI / 2.0, CAIDA_MS / 1000.0)
 	caida.parallel().tween_property(_figura, "modulate:a", 0.0, CAIDA_MS / 1000.0)
@@ -319,37 +315,17 @@ func _herir_si_toca() -> void:
 ## La figura, con el arte provisional (#184): el brazo en alto y el
 ## tinte rojo son el aviso; el tajo, el golpe; el amarillo y el vaiven, que
 ## esta aturdido.
-func _pintar() -> void:
-	var poses: Array = FIGURAS[_figura_de]
-	var pose := 0
-	if estado == Estado.ANTICIPANDO:
-		pose = 1
-	elif estado == Estado.ATACANDO or ahora < _fin_pose_golpe:
-		pose = 2
-	_sprite.texture = poses[pose]
-	_tajo.visible = estado == Estado.ATACANDO
+func _pintar(delta: float) -> void:
+	_sprite.texture = _cuadro(delta)
 	# La marca late: tiene que verse en mitad de una pelea.
 	_marca.visible = estado == Estado.ATURDIDO
 	if _marca.visible:
 		_marca.scale = Vector2.ONE * (1.0 + 0.15 * sin(ahora / 80.0))
+	_figura.scale = Vector2(mirando, 1.0)
+	# Aturdido se tambalea: abierto, para castigarlo.
+	_figura.rotation = sin(ahora / 50.0) * 0.06 if estado == Estado.ATURDIDO else 0.0
 
-	# El aviso: se echa hacia atras y se estira mientras levanta el brazo. Al
-	# golpear, la tension se suelta hacia delante.
-	var atras := 0.0
-	var estirado := 1.0
-	if estado == Estado.ANTICIPANDO:
-		var hecho := 1.0 - (_fin_accion - ahora) / D["anticipacion_ataque_ms"]
-		var curva := 1.0 - pow(1.0 - clampf(hecho / 0.75, 0.0, 1.0), 2.0)
-		atras = -3.0 * curva
-		estirado = 1.0 + 0.12 * curva
-	elif estado == Estado.ATACANDO:
-		atras = 5.0
-	if estado == Estado.EJECUTADO:
-		estirado = 0.86 # de rodillas, esperando el tajo
-	_figura.position.x = atras * mirando
-	_figura.scale = Vector2(mirando, estirado)
-	_figura.rotation = sin(ahora / 50.0) * 0.1 if estado == Estado.ATURDIDO else 0.0
-
+	# El tinte rojo del aviso y su destello final son el tell: se quedan.
 	if ahora < _fin_destello:
 		_figura.modulate = COLOR_DESTELLO
 	elif estado == Estado.ATURDIDO or estado == Estado.EJECUTADO:
@@ -360,3 +336,24 @@ func _pintar() -> void:
 		_figura.modulate = COLOR_DESTELLO
 	else:
 		_figura.modulate = COLOR_AVISO
+
+
+func _cuadro(delta: float) -> Texture2D:
+	match estado:
+		Estado.ANTICIPANDO:
+			var hecho := 1.0 - (_fin_accion - ahora) / D["anticipacion_ataque_ms"]
+			return _cuadros["aviso"][0 if hecho < 0.5 else 1]
+		Estado.ATACANDO:
+			# El smear, solo al principio del golpe; luego el impacto.
+			var hecho := 1.0 - (_fin_accion - ahora) / D["duracion_ataque_ms"]
+			return _cuadros["golpe"][0 if hecho < 0.4 else 1]
+		Estado.ATURDIDO:
+			return _cuadros["aturdido"][0]
+		Estado.EJECUTADO:
+			return _cuadros["ejecutado"][0]
+	if ahora < _fin_pose_golpe:
+		return _cuadros["golpe"][1]
+	if absf(velocity.x) > 1.0:
+		_recorrido += absf(velocity.x) * delta
+		return _cuadros["andar"][int(_recorrido / PX_POR_CUADRO) % CUADROS["andar"]]
+	return _cuadros["andar"][0]
