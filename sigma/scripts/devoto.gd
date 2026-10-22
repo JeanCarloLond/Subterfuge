@@ -12,6 +12,18 @@ extends CharacterBody2D
 
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Herida := preload("res://scripts/herida.gd")
+const Bocadillo := preload("res://scripts/bocadillo.gd")
+## Lo que grita al verlo: cumple la ley de la Mano que mira (canon). Mas
+## adentro, cuando haya mas niveles, hablaran del Ultimo Sacramento.
+const FRASES := [
+	"¡La Mano que mira!",
+	"Cierra los ojos, Mano.",
+	"Sin turno no se baja.",
+	"¡Ha mirado!",
+	"La Mano que mira, se corta.",
+]
+## Entre frase y frase: que no repita al perderlo y volver a verlo.
+const PAUSA_FRASES_MS := 9000.0
 const Cirujano := preload("res://scripts/cirujano.gd")
 const D := Sacramento.DEVOTO
 const M := Sacramento.MOVIMIENTO
@@ -64,6 +76,7 @@ var _ultimo_avistamiento := -INF
 var _ya_golpeo := false
 ## Cuando le entro el ultimo golpe: de ahi salen el blanco y la sangre.
 var _herido_en := -INF
+var _proxima_frase := 0.0
 var _fin_retroceso := -INF
 var _retroceso_x := 0.0
 var _fin_pose_golpe := -INF
@@ -226,6 +239,7 @@ func _detecta(hacia: Vector2) -> bool:
 
 func _patrullar(hacia: Vector2) -> void:
 	if _detecta(hacia):
+		_al_verlo()
 		_ultimo_avistamiento = ahora
 		estado = Estado.PERSECUCION
 		return
@@ -235,6 +249,13 @@ func _patrullar(hacia: Vector2) -> void:
 	if position.x >= ronda_derecha:
 		mirando = -1
 	velocity.x = mirando * D["velocidad_patrulla"]
+
+
+func _al_verlo() -> void:
+	if ahora < _proxima_frase:
+		return
+	_proxima_frase = ahora + PAUSA_FRASES_MS
+	Bocadillo.decir(self, FRASES.pick_random())
 
 
 func _perseguir(hacia: Vector2) -> void:

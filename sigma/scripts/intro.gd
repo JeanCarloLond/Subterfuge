@@ -123,6 +123,9 @@ func _sala_siete() -> void:
 	cirujano.texture = load("res://arte/cirujano/reposo-0.png")
 	_mover(cirujano, Vector2(-6, 0), 1.2)
 	await _decir("Hoy miró.")
+	# La ley de la Mano que mira (canon, «Por que lo atacan»): sin esto, que lo
+	# persigan los suyos no se entiende.
+	await _decir("La ley es antigua: la Mano que mira, se corta.")
 	await _cerrar()
 	camilla.queue_free()
 

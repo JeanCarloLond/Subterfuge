@@ -15,6 +15,16 @@ extends CharacterBody2D
 signal lanzo(sitio: Vector2, direccion: int)
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Bocadillo := preload("res://scripts/bocadillo.gd")
+## Lo que dice al verlo: administra el diezmo, y la ley de la Mano que mira
+## tambien es suya (canon).
+const FRASES := [
+	"Mirar no es tu oficio.",
+	"Vuelve a tu sala, Mano.",
+	"El diezmo no perdona.",
+	"Lo que mira, se sella.",
+]
+const PAUSA_FRASES_MS := 9000.0
 const Herida := preload("res://scripts/herida.gd")
 const Sello := preload("res://scripts/sello.gd")
 const V := Sacramento.VESTAL
@@ -48,6 +58,7 @@ var _fin_enfriamiento := -INF
 var _ultimo_avistamiento := -INF
 ## Cuando le entro el ultimo golpe: de ahi salen el blanco y la sangre.
 var _herido_en := -INF
+var _proxima_frase := 0.0
 var _fin_lanza := -INF
 var _cayendo := false
 ## Aturdida por su propio sello: la unica forma de que se la pueda ejecutar.
@@ -184,6 +195,9 @@ func _situarse(hacia: Vector2) -> void:
 			estado = Estado.ESPERA
 			return
 	else:
+		if ahora - _ultimo_avistamiento > V["memoria_ms"] and ahora >= _proxima_frase:
+			_proxima_frase = ahora + PAUSA_FRASES_MS
+			Bocadillo.decir(self, FRASES.pick_random())
 		_ultimo_avistamiento = ahora
 	var hacia_el := 1 if hacia.x >= position.x else -1
 	mirando = hacia_el

@@ -47,6 +47,25 @@ Cuando cae uno, algo se suelta. No ven a la niña, porque no hay nada que ver. L
 un hombre que baja donde nadie debe bajar y deja caer el templo a su paso. Para ellos es la
 pérdida de toda esperanza, y le dan nombre: **el Último Sacramento**.
 
+### Por qué lo atacan
+
+Decidido por Jean. Tres capas, de lo que se entiende desde el primer minuto a lo que solo se
+entiende al final:
+
+1. **Lo que dice la Diócesis.** Las Manos del Sacramento **operan sin mirar**: llevan una
+   máscara ciega, sin ojos, y nunca ven lo que cortan. **La ley de la Mano que mira** dice
+   que la Mano que mira se corta. El Cirujano miró («Hoy miró», en la intro) y además baja
+   sin turno. Los Devotos no son monstruos: cumplen la ley contra un hereje. Por eso le
+   gritan «¡La Mano que mira!» o «Cierra los ojos, Mano». La máscara del Cirujano tiene **un
+   ojo abierto a tajo**, a mano: es su marca y su culpa.
+2. **Lo que dice la niña.** En las visiones le da la razón: «Te temen porque ya ves lo que
+   ellos no». El jugador se siente justo, y ella lo empuja hacia dentro. Es mentira a medias.
+3. **Lo que es de verdad.** Son los eslabones, y sienten la compactación alrededor de él.
+   Cuanto más adentro, menos hablan de la ley y más del **Último Sacramento**. Al final se
+   entiende por qué existía la ley: **siempre fue una salvaguarda**. «Los dioses no miran,
+   son mirados»: a un cuerpo ciego que quiere ver, una Mano que mira es la puerta por la que
+   le llegan los ojos. La Diócesis lo sabía, o lo sabía quien escribió la ley.
+
 ## La estructura
 
 1. **La grieta.** Las paredes se mueven y la carne deja de llegar. El Cirujano, hombre de
