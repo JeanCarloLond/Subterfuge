@@ -154,6 +154,13 @@ se apoyan en piedra.
 `Musica`: la portada, la intro y el Atrio) y las voces del Cirujano y los Devotos al
 atacar, saltar, recibir y morir, como en el original (el autoload `Voces`).
 
+**La piedra** (`npm run sigma:silleria`) es de Sigma: una baldosa por cada combinación de
+lados al aire, en cuatro variantes, con la cara de arriba clara, los cantos con bisel y
+el interior en sombra (y vetas de carne en una de cada cuatro). `scripts/silleria.gd`
+la viste al cargar según las vecinas de cada piedra: el mapa se sigue pintando con
+cualquier baldosa en el editor. La usan el Atrio, los muros que se mueven, la sala de
+compactación y la intro.
+
 **La interfaz** (`npm run sigma:hud`, `escenas/interfaz.tscn`) es ornamentada, como la
 de _Blasphemous_: arriba a la izquierda, un medallón con el rostro vendado del Cirujano
 (destella en rojo al recibir), la vida en seis segmentos de sangre y el Fervor en ámbar
