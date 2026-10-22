@@ -24,13 +24,31 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 const COLOR_TAJO := Color(0.988, 0.816, 0.22)
 const COLOR_TAJO_CARGADO := Color(0.957, 0.929, 0.576)
 
+## El arte provisional del original (#184), hasta que llegue el de Mariana.
+const POSES := {
+	"quieto": preload("res://arte/provisional/cirujano.png"),
+	"paso_a": preload("res://arte/provisional/cirujano-paso-a.png"),
+	"paso_b": preload("res://arte/provisional/cirujano-paso-b.png"),
+	"guardia": preload("res://arte/provisional/cirujano-guardia.png"),
+	"bebe": preload("res://arte/provisional/cirujano-bebe.png"),
+}
+## Contacto, paso, contacto al reves, paso: la pose quieta hace de contacto.
+const CICLO_PASO := ["quieto", "paso_a", "paso_b", "paso_a"]
+## Un cuadro cada tantos pixeles andados. Menos, y tiembla; mas, y patina.
+const PX_POR_CUADRO := 9.0
+
 var movimiento: Movimiento
 var combate: Combate
 var vitalidad: int = Sacramento.VITALIDAD["maxima"]
 ## Donde vuelve al morir o al caer al vacio: el ultimo Altar, o donde empezo.
 var punto_reaparicion := Vector2.ZERO
 
+## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
+## Contra una pared no se avanza, y las piernas no deben moverse.
+var _recorrido := 0.0
+
 @onready var _figura: Node2D = $Figura
+@onready var _sprite: Sprite2D = $Figura/Sprite
 @onready var _tajo: Polygon2D = $Tajo
 
 
@@ -80,7 +98,7 @@ func _physics_process(delta: float) -> void:
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
 	if combate.cargas_pocion != cargas_antes:
 		pociones_cambio.emit(combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
-	_pintar()
+	_pintar(delta)
 
 
 ## La caja que choca, en coordenadas del mundo.
@@ -198,19 +216,44 @@ func _volver() -> void:
 	combate.cancelar()
 
 
-## Figura provisional hasta que llegue el arte (#184).
-func _pintar() -> void:
+## La figura: la pose, y como se estira y se aplasta. Es lo del original:
+## quita la rigidez de un dibujo quieto mientras no hay animaciones de verdad.
+func _pintar(delta: float) -> void:
 	var estado := movimiento.estado
-	_figura.scale.x = movimiento.mirando
-	_figura.modulate.a = 0.5 if movimiento.invulnerable else 1.0
-	_figura.position.y = 6.0 if estado == Movimiento.Estado.REZANDO else 0.0
-	# Parar: un destello frio. Beber: rojo de carne.
+	var en_suelo := is_on_floor()
+
+	var pose := "quieto"
 	if combate.accion == Combate.Accion.PARRY:
-		_figura.modulate = Color(0.75, 0.85, 1.0, _figura.modulate.a)
+		pose = "guardia"
 	elif combate.accion == Combate.Accion.POCION:
-		_figura.modulate = Color(1.0, 0.6, 0.6, _figura.modulate.a)
-	else:
-		_figura.modulate = Color(1, 1, 1, _figura.modulate.a)
+		pose = "bebe"
+	elif en_suelo and absf(velocity.x) > 20.0:
+		_recorrido += absf(velocity.x) * delta
+		pose = CICLO_PASO[int(_recorrido / PX_POR_CUADRO) % CICLO_PASO.size()]
+	_sprite.texture = POSES[pose]
+
+	var escala := Vector2.ONE
+	if estado == Movimiento.Estado.REZANDO:
+		escala = Vector2(1.1, 0.78) # arrodillado
+	elif combate.anticipando():
+		escala = Vector2(0.9, 1.08) # se recoge antes del golpe
+	elif combate.accion == Combate.Accion.GOLPE:
+		var cargado := combate.tipo == Combate.Tipo.CARGADO
+		escala = Vector2(1.22, 0.86) if cargado else Vector2(1.14, 0.92) # y se lanza
+	elif estado == Movimiento.Estado.DASH:
+		escala = Vector2(1.18, 0.86)
+	elif not en_suelo:
+		# Subiendo estira; cayendo, menos, para no parecer de goma.
+		var vertical := clampf(velocity.y / Sacramento.MOVIMIENTO["velocidad_caida_max"], -1.0, 1.0)
+		var intensidad := 0.14 if vertical < 0.0 else 0.09
+		escala = Vector2(1.0 - absf(vertical) * intensidad * 0.7, 1.0 + absf(vertical) * intensidad)
+	elif absf(velocity.x) > 20.0:
+		var paso := sin(Time.get_ticks_msec() / 90.0)
+		escala = Vector2(1.0 - paso * 0.025, 1.0 + paso * 0.035) # cabeceo al andar
+	_figura.scale = Vector2(escala.x * movimiento.mirando, escala.y)
+
+	var alfa := 0.5 if movimiento.invulnerable else 1.0
+	_figura.modulate = Color(1, 1, 1, alfa)
 
 	_tajo.visible = combate.zona_activa()
 	if _tajo.visible:

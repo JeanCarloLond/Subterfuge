@@ -9,18 +9,20 @@ const ALCANCE := Vector2(18.0, 24.0)
 
 ## Quien reza: el Cirujano. Lo pone el nivel.
 var cirujano: CharacterBody2D
+## Encendido: es donde se vuelve. Se ve a lo lejos por su luz.
 var encendido := false:
 	set(valor):
 		encendido = valor
 		if is_node_ready():
-			_llama.visible = valor
+			_pintar()
 
 @onready var _aviso: Label = $Aviso
-@onready var _llama: Node2D = $Llama
+@onready var _sprite: Sprite2D = $Sprite
+@onready var _luz: PointLight2D = $Luz
 
 
 func _ready() -> void:
-	_llama.visible = encendido
+	_pintar()
 
 
 func _process(_delta: float) -> void:
@@ -29,6 +31,13 @@ func _process(_delta: float) -> void:
 	var distancia := (cirujano.position - position).abs()
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
+	# La llama respira: un parpadeo lento, no un fallo de luz.
+	_luz.energy = 0.85 + 0.1 * sin(Time.get_ticks_msec() / 140.0)
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.rezar(position):
 		encendido = true
 		rezado.emit()
+
+
+func _pintar() -> void:
+	_luz.visible = encendido
+	_sprite.modulate = Color.WHITE if encendido else Color(0.6, 0.58, 0.6)

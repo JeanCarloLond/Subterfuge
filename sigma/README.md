@@ -50,15 +50,54 @@ godot --headless --path sigma -s res://tests/ejecutar.gd
 Cada `tests/test_*.gd` extiende `tests/caso.gd`, y cada función `test_*` es un test. El
 CI los pasa en cada push y cada PR.
 
+## El arte
+
+Todo el arte es pixel art hecho a mano. Mientras llega el de Mariana, Sigma usa el arte
+provisional del original: las figuras de `src/systems/ArteProvisional.ts`, escritas píxel a
+píxel, y la sillería del equipo (`public/assets/tilesets/`).
+
+```bash
+npm run sigma:arte    # vuelve a sacar los PNG a sigma/arte/ si cambia el original
+```
+
+- `arte/provisional/<clave>.png`: una figura por pose, con el mismo nombre que su clave de
+  textura en Phaser (`cirujano.png`, `cirujano-paso-a.png`, `devoto-alza.png`…).
+- `arte/silleria/`: la piedra (`vientre.png`, ocho variantes de 16×16), las grietas (16×16)
+  y el musgo (24×24), y el `TileSet` de Godot.
+
+**Cómo entra un `.aseprite` de Mariana.** Godot no abre `.aseprite` por sí solo, así que
+se exporta a PNG, una imagen por pose, con el nombre de la figura provisional a la que
+sustituye:
+
+```bash
+aseprite -b cirujano.aseprite --save-as "sigma/arte/provisional/cirujano-{tag}.png"
+```
+
+Con los tags de Aseprite llamados como las poses (`paso-a`, `paso-b`, `guardia`, `bebe`…), cada
+PNG pisa al provisional y el juego lo usa sin tocar código. El `.aseprite` se guarda en
+`sigma/arte/fuentes/` para poder retocarlo. Dos cosas a respetar:
+
+- **El lienzo**: el Cirujano mide 24×40 y el Devoto 22×34, con los pies en la fila de abajo.
+  Si cambia el tamaño, cambia el `offset` de su `Sprite2D` (`escenas/cirujano.tscn`).
+- **La paleta**: los colores del boceto del equipo, los mismos que la figura provisional.
+
+Cuando haya animaciones de verdad (más cuadros por pose), el paso siguiente es el plugin
+[Aseprite Wizard](https://github.com/viniciusgerevini/godot-aseprite-wizard) (libre, MIT),
+que importa los tags como animaciones.
+
+**Lo que no es arte sino ambiente**, y está en el motor: el telón de arcadas con parallax
+(`scripts/telon.gd`), la luz de velas y Altares (`PointLight2D`), la penumbra del nivel, el
+polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivos.
+
 ## Cómo está hecho
 
 | Carpeta         | Qué hay                                                              |
 | --------------- | -------------------------------------------------------------------- |
 | `escenas/`      | Las escenas (`.tscn`).                                               |
 | `scripts/`      | El código. `sacramento.gd` tiene los números del original, tal cual. |
-| `arte/`         | El arte del equipo que usa Sigma, y sus recursos de Godot.           |
+| `arte/`         | El arte: el provisional, la sillería, el `TileSet` y los shaders.    |
 | `tests/`        | Los tests y su ejecutor.                                             |
-| `herramientas/` | Scripts de un solo uso, como el que pasó el Atrio de Phaser.         |
+| `herramientas/` | Scripts de un solo uso: pasar el Atrio de Phaser y vestirlo.         |
 | `docs/`         | El canon de Sigma.                                                   |
 
 - **Resolución** lógica de 480×320, escalada a un múltiplo entero y con filtro nearest:

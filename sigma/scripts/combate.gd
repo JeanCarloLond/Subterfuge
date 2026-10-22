@@ -100,6 +100,11 @@ func carga_completa() -> bool:
 	return _inicio_carga > -INF and ahora - _inicio_carga >= C["cargado"]["tiempo_carga_ms"]
 
 
+## Si el golpe se esta preparando: aun no corta.
+func anticipando() -> bool:
+	return accion == Accion.GOLPE and ahora < _inicio_zona
+
+
 ## Si el golpe en curso hace dano ahora mismo.
 func zona_activa() -> bool:
 	return accion == Accion.GOLPE and ahora >= _inicio_zona and ahora < _fin_accion

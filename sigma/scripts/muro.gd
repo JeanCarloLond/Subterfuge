@@ -18,6 +18,9 @@ const SILLERIA := preload("res://arte/silleria/vientre.tres")
 
 ## La piedra viva tira a carne: se distingue de la quieta.
 const TINTE := Color(0.95, 0.76, 0.74)
+## Con cada latido del aviso la piedra se enciende de carne y se apaga.
+const TINTE_LATIDO := Color(1.35, 0.62, 0.6)
+const LATIDO_MS := 140.0
 ## El segundo latido del aviso.
 const SEGUNDO_LATIDO_MS := 750.0
 const CADA_CRUJIDO_MS := 420.0
@@ -39,6 +42,7 @@ var ciclo: Compactacion
 var _estado_antes := -1
 var _segundo_latido := INF
 var _proximo_crujido := INF
+var _ultimo_latido := -INF
 var _figura: TileMapLayer
 var _polvo: CPUParticles2D
 var _latido: AudioStreamPlayer2D
@@ -126,6 +130,7 @@ func _avisar() -> void:
 		_estado_antes = estado
 		if estado == Compactacion.Estado.AVISO:
 			_latido.play()
+			_ultimo_latido = ciclo.ahora
 			_segundo_latido = ciclo.ahora + SEGUNDO_LATIDO_MS
 		elif estado == Compactacion.Estado.AVANCE:
 			_proximo_crujido = ciclo.ahora
@@ -134,6 +139,7 @@ func _avisar() -> void:
 
 	if estado == Compactacion.Estado.AVISO and ciclo.ahora >= _segundo_latido:
 		_latido.play()
+		_ultimo_latido = ciclo.ahora
 		_segundo_latido = INF
 	if estado == Compactacion.Estado.AVANCE and ciclo.ahora >= _proximo_crujido:
 		_crujido.play()
@@ -143,6 +149,8 @@ func _avisar() -> void:
 	_polvo.emitting = vivo
 	# El temblor es solo de la figura: la caja que choca no se mueve.
 	_figura.position = Vector2(randi_range(-1, 1), randi_range(-1, 1)) if vivo else Vector2.ZERO
+	var pulso := exp(-(ciclo.ahora - _ultimo_latido) / LATIDO_MS)
+	_figura.modulate = TINTE.lerp(TINTE_LATIDO, pulso)
 
 
 ## Polvo que cae de la cara que avanza.

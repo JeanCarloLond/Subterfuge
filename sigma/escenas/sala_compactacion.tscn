@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://escenas/cirujano.tscn" id="3_cirujano"]
 [ext_resource type="PackedScene" path="res://escenas/altar.tscn" id="4_altar"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="5_interfaz"]
+[ext_resource type="Script" path="res://scripts/telon.gd" id="9_telon"]
 
 [node name="SalaCompactacion" type="Node2D"]
 script = ExtResource("1_sala")
@@ -37,3 +38,6 @@ position = Vector2(76, 288)
 [node name="Interfaz" parent="." instance=ExtResource("5_interfaz")]
 ayuda = "Escucha el Latido: los muros avisan antes de moverse
 E rezar · Esc salir"
+
+[node name="Telon" type="CanvasLayer" parent="."]
+script = ExtResource("9_telon")

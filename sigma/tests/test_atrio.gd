@@ -60,3 +60,16 @@ func test_el_techo_que_late_avisa_pero_no_aplasta() -> void:
 		afirmar(hueco > 22.0 + 4.0, "en x=%d deja %d px: el Cirujano cabe de sobra" % [x, hueco])
 	atrio.free()
 
+
+
+func test_el_decorado_se_apoya_en_la_piedra() -> void:
+	var atrio := ESCENA.instantiate()
+	var capa: TileMapLayer = atrio.get_node("Silleria")
+	for pieza in atrio.get_node("Decorado").get_children():
+		if not pieza is Sprite2D:
+			continue
+		# Lo que cuelga tiene el origen arriba; lo demas, abajo.
+		var cuelga: bool = pieza.offset.y >= 0.0
+		var apoyo: Vector2 = pieza.position + (Vector2(0, -8) if cuelga else Vector2(0, 8))
+		afirmar(capa.get_cell_source_id(capa.local_to_map(apoyo)) != -1, "%s en %s flota" % [pieza.name, pieza.position])
+	atrio.free()

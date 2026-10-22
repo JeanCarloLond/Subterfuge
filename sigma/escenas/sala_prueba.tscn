@@ -3,14 +3,10 @@
 [ext_resource type="Script" path="res://scripts/sala_prueba.gd" id="1_sala"]
 [ext_resource type="PackedScene" path="res://escenas/cirujano.tscn" id="2_cirujano"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="3_interfaz"]
+[ext_resource type="Script" path="res://scripts/telon.gd" id="9_telon"]
 
 [node name="SalaPrueba" type="Node2D"]
 script = ExtResource("1_sala")
-
-[node name="Fondo" type="ColorRect" parent="."]
-offset_right = 480.0
-offset_bottom = 320.0
-color = Color(0.0784, 0.0627, 0.0784, 1)
 
 [node name="Cirujano" parent="." instance=ExtResource("2_cirujano")]
 position = Vector2(104, 304)
@@ -18,3 +14,6 @@ position = Vector2(104, 304)
 [node name="Interfaz" parent="." instance=ExtResource("3_interfaz")]
 ayuda = "←→ moverse · Espacio saltar · Shift dash
 contra la pared te agarras, ↑ trepas · Esc salir"
+
+[node name="Telon" type="CanvasLayer" parent="."]
+script = ExtResource("9_telon")

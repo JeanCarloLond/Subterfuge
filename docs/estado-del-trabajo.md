@@ -129,6 +129,14 @@ vida) y el parry lo aturde 900 ms, pausa al conectar (hitstop) y una interfaz co
 (`escenas/interfaz.tscn`). El Atrio tiene ya los cinco Devotos del original. La Injertadora va
 aparte (#191): en el original se gana al vencer al primer jefe y aquí aún no hay jefe.
 
+#184 el **arte**: `npm run sigma:arte` saca las figuras de `ArteProvisional.ts` a PNG
+(`sigma/arte/provisional/`) y copia la sillería; el Cirujano (con ciclo de paso y estirar y
+aplastar), los Devotos (dos variantes y sus poses), el Altar y el umbral ya usan ese arte. El
+Atrio está **vestido** como en Phaser (`herramientas/vestir_atrio.gd`, corrido una vez):
+telón de arcadas con parallax, atrezo lejano, decorado con vida, grietas y musgo, penumbra,
+luz de velas, polvo y viñeta. Arreglado de paso un fallo viejo del lector de arte: la columna
+y la cadena salían mal (también en la web).
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -140,8 +148,8 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
    cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
    repisa, y ningún muro lo sella sin que se rodee (#189).
 3. #191 la Injertadora, cuando se decida cómo se gana en Sigma.
-4. #184 arte: exportar las figuras provisionales a PNG (`scripts/exportar-arte.mjs` ya las
-   saca a `web/generado`) e importarlas; flujo de Aseprite. Implica contarle a Mariana.
+4. Vestir las salas de prueba y los niveles que lleguen como el Atrio, y el arte de Mariana
+   cuando se le cuente (el flujo de `.aseprite` está en `sigma/README.md`).
 5. #187 los eslabones, #188 las visiones de la niña.
 
 ## Trampas ya pisadas
@@ -161,6 +169,9 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 - **Guardar una escena desde un script** con `PackedScene.pack` necesita instanciarla con
   `GEN_EDIT_STATE_INSTANCE`: si no, las instancias se guardan con todas sus propiedades
   copiadas y dejan de seguir a su escena original.
+- **Leer código con expresiones regulares pierde casos**: el lector de `ArteProvisional.ts` no
+  entendía `.fill('...').slice(...)` ni `.map(...)`, y la columna y la cadena salían mal en la
+  web durante meses. Ahora evalúa las filas como JS en `node:vm`.
 - **`ahora - (-INF)` es infinito**: un «desde cuándo» sin empezar (`-INF`) da por cumplida
   cualquier espera. Pasó con la carga del golpe: soltar sin haber cargado sacaba el cargado.
   Comprobar que el inicio existe antes de restar.
