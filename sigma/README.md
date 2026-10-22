@@ -1,7 +1,8 @@
 # Subterfuge Sigma
 
 El remake de Subterfuge en **Godot 4.7**, con el lore nuevo: el templo se está
-compactando. El canon está en [docs/canon.md](docs/canon.md).
+compactando. El canon está en [docs/canon.md](docs/canon.md) y la propuesta de mapa,
+en [docs/mapa.md](docs/mapa.md).
 
 > En construcción. Se enseña al equipo cuando haya una base sólida. Las tareas son las
 > issues con la etiqueta
