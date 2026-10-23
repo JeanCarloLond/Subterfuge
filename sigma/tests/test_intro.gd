@@ -11,3 +11,10 @@ func test_la_intro_lleva_al_atrio() -> void:
 	var intro := preload("res://scripts/intro.gd")
 	afirmar_igual(intro.SIGUIENTE, "res://escenas/atrio.tscn", "y de la intro, al Atrio")
 	afirmar(ResourceLoader.exists("res://escenas/intro.tscn"), "la escena existe")
+
+
+func test_las_laminas_de_la_intro_son_mayores_que_la_pantalla() -> void:
+	# Se panean: si fueran del tamano de la pantalla, se veria el borde.
+	for nombre in ["manos", "rostro"]:
+		var lamina: Texture2D = load("res://arte/cinematica/%s.png" % nombre)
+		afirmar(lamina.get_width() > 640 and lamina.get_height() > 360, "%s cubre la pantalla al desplazarse" % nombre)
