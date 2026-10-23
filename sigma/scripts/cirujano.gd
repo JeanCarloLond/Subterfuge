@@ -26,6 +26,7 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 ## (scripts/cirujano-sigma.mjs): una animacion por cosa que hace.
 const ARTE := "res://arte/cirujano/"
 const Animaciones := preload("res://arte/cirujano/animaciones.gd")
+const Texturas := preload("res://scripts/texturas.gd")
 ## Las fases de cada golpe, como en Blasphemous: los fotogramas de aviso, el del
 ## smear (el arco del bisturi), el del impacto, que se sostiene, y los de la
 ## recuperacion, que se ven ya con el cuerpo libre.
@@ -127,7 +128,7 @@ func _ready() -> void:
 	for nombre in Animaciones.RECUENTO:
 		var lista: Array[Texture2D] = []
 		for i in Animaciones.RECUENTO[nombre]:
-			lista.append(load("%s%s-%d.png" % [ARTE, nombre, i]))
+			lista.append(Texturas.con_normales("%s%s-%d.png" % [ARTE, nombre, i]))
 		_cuadros[nombre] = lista
 
 

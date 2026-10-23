@@ -55,6 +55,9 @@ func _ready() -> void:
 			nota.cirujano = _cirujano
 			nota.leida.connect(_interfaz.leer)
 	_interfaz.conectar(_cirujano)
+	# Las luces, a su altura: con los mapas de normales modelan la figura.
+	for luz in find_children("*", "PointLight2D", true, false):
+		luz.height = preload("res://scripts/sacramento.gd").ALTURA_LUZ
 	_continuar()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:

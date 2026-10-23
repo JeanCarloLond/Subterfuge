@@ -188,8 +188,8 @@ const ejecutado = [
 
 export const ANIMACIONES = { reposo, andar, alza, lanza, aturdido, ejecutado };
 
-export function dibujar(pose) {
-  return rasterizar(piezas(pose), ANCHO, ALTO, PALETA);
+export function dibujar(pose, opciones) {
+  return rasterizar(piezas(pose), ANCHO, ALTO, PALETA, opciones);
 }
 
 /** El sello del diezmo, el proyectil: oro con su lacre. */
@@ -213,8 +213,9 @@ if (esPrincipal) {
   const cuadros = [];
   for (const [nombre, poses] of Object.entries(ANIMACIONES)) {
     poses.forEach((pose, i) => {
-      const img = dibujar(pose);
+      const img = dibujar(pose, { normales: true });
       writeFileSync(join(destino, `${nombre}-${i}.png`), png(img));
+      writeFileSync(join(destino, `${nombre}-${i}_n.png`), png(img.normal));
       cuadros.push(img);
     });
   }

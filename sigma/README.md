@@ -91,6 +91,12 @@ caída, aterrizaje, dash, agarre, herido, rezar, guardia, golpe, cargado, arriba
 contragolpe, poción y ejecución). Cada golpe tiene aviso sostenido, un fotograma de
 _smear_ (el arco del bisturí), impacto y recuperación.
 
+Los títeres salen **limpios como pixel art dibujado a mano**: contorno selectivo (el borde
+de cada pieza en su color oscurecido, no en negro, salvo abajo, donde pisa) y sin píxeles
+sueltos. Y con **mapa de normales** (`<nombre>_n.png`): las velas, los Altares y los
+hongos modelan de verdad al Cirujano, a los enemigos y a la piedra
+(`scripts/texturas.gd`; la altura de las luces, en `ALTURA_LUZ`).
+
 No se dibuja cuadro a cuadro: `scripts/cirujano-sigma.mjs` describe cada fotograma como
 una pose (cadera, inclinación, ángulos de los brazos, zancada) y pinta las piezas del
 cuerpo píxel a píxel en esa pose, sin girar imágenes, así que no se emborronan. Luego

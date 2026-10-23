@@ -133,14 +133,54 @@ function baldosa(mascara, variante) {
   return px;
 }
 
+/**
+ * El mapa de normales de una baldosa, para que las velas modelen la piedra: la
+ * cara de arriba mira hacia arriba, los cantos hacia su lado, cada sillar tiene
+ * un bisel arriba y abajo, y las juntas quedan hundidas (planas, de frente).
+ */
+function normalDe(mascara) {
+  const plano = [128, 128, 255, 255];
+  const hacia = (nx, ny) => {
+    const nz = Math.sqrt(Math.max(0, 1 - nx * nx - ny * ny));
+    return [
+      Math.round((nx * 0.5 + 0.5) * 255),
+      Math.round((-ny * 0.5 + 0.5) * 255),
+      Math.round((nz * 0.5 + 0.5) * 255),
+      255,
+    ];
+  };
+  const px = Array.from({ length: T }, () => new Array(T).fill(plano));
+  for (let y = 0; y < T; y += 1) {
+    for (let x = 0; x < T; x += 1) {
+      if (y === 0 || y === 8) px[y][x] = hacia(0, -0.45);
+      if (y === 6 || y === 14) px[y][x] = hacia(0, 0.45);
+    }
+  }
+  if (mascara & 1)
+    for (let y = 0; y < 4; y += 1)
+      for (let x = 0; x < T; x += 1) px[y][x] = hacia(0, y < 2 ? -0.75 : -0.4);
+  if (mascara & 8) for (let y = 0; y < T; y += 1) for (const x of [0, 1]) px[y][x] = hacia(-0.7, 0);
+  if (mascara & 2)
+    for (let y = 0; y < T; y += 1) for (const x of [T - 2, T - 1]) px[y][x] = hacia(0.7, 0);
+  if (mascara & 4)
+    for (const y of [T - 2, T - 1]) for (let x = 0; x < T; x += 1) px[y][x] = hacia(0, 0.7);
+  return px;
+}
+
 function tileset(textura) {
   const lineas = [
     '[gd_resource type="TileSet" format=3]',
     '',
     `[ext_resource type="Texture2D" path="${textura}" id="1_silleria"]`,
+    `[ext_resource type="Texture2D" path="${textura.replace('.png', '_n.png')}" id="2_normales"]`,
+    '',
+    // La piedra con su mapa de normales: una CanvasTexture con las dos.
+    '[sub_resource type="CanvasTexture" id="CanvasTexture_silleria"]',
+    'diffuse_texture = ExtResource("1_silleria")',
+    'normal_texture = ExtResource("2_normales")',
     '',
     '[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_silleria"]',
-    'texture = ExtResource("1_silleria")',
+    'texture = SubResource("CanvasTexture_silleria")',
   ];
   for (let v = 0; v < VARIANTES; v += 1) {
     for (let m = 0; m < 16; m += 1) {
@@ -171,6 +211,17 @@ if (esPrincipal) {
     }
   }
   writeFileSync(join(destino, 'sigma.png'), png(img));
+  const normal = Array.from({ length: T * VARIANTES }, () =>
+    new Array(T * 16).fill([128, 128, 255, 255]),
+  );
+  for (let v = 0; v < VARIANTES; v += 1) {
+    for (let m = 0; m < 16; m += 1) {
+      const n = normalDe(m);
+      for (let y = 0; y < T; y += 1)
+        for (let x = 0; x < T; x += 1) normal[v * T + y][m * T + x] = n[y][x];
+    }
+  }
+  writeFileSync(join(destino, 'sigma_n.png'), png(normal));
   writeFileSync(join(destino, 'vientre.tres'), tileset('res://arte/silleria/sigma.png'));
   console.log(`${16 * VARIANTES} baldosas -> sigma/arte/silleria/sigma.png y vientre.tres`);
 }

@@ -198,6 +198,11 @@ const COMPACTACION := {
 	"reposo_ms": 4000.0,
 }
 
+## Lo alta que esta cada luz sobre el plano del juego (px): con los mapas de
+## normales, una luz a ras de suelo solo rozaria la figura; a esta altura la
+## modela, como una vela que esta un poco por delante.
+const ALTURA_LUZ := 28.0
+
 ## Los temblores: de vez en cuando el templo se encoge un poco, lejos. No hacen
 ## dano: son el aviso de fondo de que todo se esta compactando. El primero llega
 ## pronto, para que se vea; luego, cada medio minuto o asi, sin regla fija.

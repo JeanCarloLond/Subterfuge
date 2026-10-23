@@ -252,8 +252,8 @@ const ejecutado = [
 export const ANIMACIONES = { andar, aviso, golpe, aturdido, ejecutado };
 export const VARIANTES = ['aparato', 'carne'];
 
-export function dibujar(pose, variante) {
-  return rasterizar(piezas(pose, variante), ANCHO, ALTO, PALETA);
+export function dibujar(pose, variante, opciones) {
+  return rasterizar(piezas(pose, variante), ANCHO, ALTO, PALETA, opciones);
 }
 
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
@@ -266,8 +266,9 @@ if (esPrincipal) {
     const cuadros = [];
     for (const [nombre, poses] of Object.entries(ANIMACIONES)) {
       poses.forEach((pose, i) => {
-        const img = dibujar(pose, variante);
+        const img = dibujar(pose, variante, { normales: true });
         writeFileSync(join(destino, `${variante}-${nombre}-${i}.png`), png(img));
+        writeFileSync(join(destino, `${variante}-${nombre}-${i}_n.png`), png(img.normal));
         cuadros.push(img);
         total += 1;
       });

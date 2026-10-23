@@ -11,6 +11,7 @@
 extends CharacterBody2D
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Texturas := preload("res://scripts/texturas.gd")
 const Herida := preload("res://scripts/herida.gd")
 const Bocadillo := preload("res://scripts/bocadillo.gd")
 ## Lo que grita al verlo: cumple la ley de la Mano que mira (canon). Mas
@@ -97,7 +98,7 @@ func _ready() -> void:
 	for nombre in CUADROS:
 		var lista: Array[Texture2D] = []
 		for i in CUADROS[nombre]:
-			lista.append(load(ARTE % [ARTE_DE[_figura_de], nombre, i]))
+			lista.append(Texturas.con_normales(ARTE % [ARTE_DE[_figura_de], nombre, i]))
 		_cuadros[nombre] = lista
 	_marca = Sprite2D.new()
 	_marca.texture = MARCA
