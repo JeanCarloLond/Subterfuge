@@ -61,6 +61,10 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   `arte/silleria/membrana.tres`. Empujar hacia fuera lo
   gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑
   trepan al borde.
+- **El ambiente vivo** (`scripts/ambiente.gd`): la Lluvia Tibia de la biblia gotea de los
+  techos y salpica en el suelo (los puntos de goteo se buscan solos en la piedra), el
+  polvo flota a la luz, las cadenas se mecen, la niebla baja se desliza sobre los suelos
+  y donde muere un enemigo queda un charco de sangre.
 - **Los temblores**: cada medio minuto, más o menos, el templo se encoge un poco, lejos:
   la cámara tiembla, cae polvo y alguna piedra y suena un retumbo grave
   (`scripts/temblor.gd`). No hacen daño; son el aviso de fondo de que todo se mueve.

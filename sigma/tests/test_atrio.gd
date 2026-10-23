@@ -131,3 +131,15 @@ func test_la_nota_del_techo_solo_se_alcanza_con_el_techo() -> void:
 	var techo: Node2D = atrio.get_node("Muros/Techo")
 	afirmar_igual(techo.position.y + techo.tiles.y * 16, 47 * 16.0, "el techo en reposo baja hasta la columna")
 	atrio.free()
+
+
+func test_la_lluvia_tibia_gotea_de_techos_sobre_suelo() -> void:
+	const Ambiente := preload("res://scripts/ambiente.gd")
+	var atrio := ESCENA.instantiate()
+	var capa: TileMapLayer = atrio.get_node("Silleria")
+	var puntos := Ambiente.puntos_de_goteo(capa)
+	afirmar(puntos.size() >= 4, "gotea en varios sitios (%d)" % puntos.size())
+	for p in puntos:
+		# Donde se apaga la gota tiene que estar justo la cara del suelo.
+		afirmar(_solido_bajo(capa, p[0] + Vector2(0, p[1])), "la gota de %s cae sobre piedra" % p[0])
+	atrio.free()

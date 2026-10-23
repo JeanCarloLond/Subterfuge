@@ -311,6 +311,7 @@ func _morir() -> void:
 	estado = Estado.MUERTO
 	velocity = Vector2.ZERO
 	$Caja.set_deferred("disabled", true)
+	Herida.charco(get_parent(), position)
 
 
 ## La sangre del tajo: un golpe de gotas que salta hacia donde va el bisturi.

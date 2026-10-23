@@ -333,10 +333,28 @@ function primerPlano() {
   return l;
 }
 
+// -- La niebla baja -------------------------------------------------------------
+
+/**
+ * Una franja de niebla que se repite en horizontal: tramada, mas densa abajo y
+ * con jirones. Se desliza sobre los suelos (sigma/scripts/ambiente.gd).
+ */
+function niebla() {
+  const l = lienzo(256, 32);
+  for (let y = 0; y < 32; y += 1) {
+    for (let x = 0; x < 256; x += 1) {
+      const jiron = 0.5 + 0.5 * Math.sin((x / 256) * Math.PI * 6 + Math.sin(x / 19) * 1.5);
+      const densidad = (y / 32) ** 1.6 * (0.45 + 0.4 * jiron);
+      if ((BAYER[y % 4][x % 4] + 0.5) / 16 < densidad) l.px[y][x] = [160, 146, 138, 110];
+    }
+  }
+  return l;
+}
+
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
-  const capas = { vidriera, boveda, columnas, 'primer-plano': primerPlano };
+  const capas = { vidriera, boveda, columnas, 'primer-plano': primerPlano, niebla };
   for (const [nombre, hacer] of Object.entries(capas)) {
     writeFileSync(join(destino, `${nombre}.png`), png(hacer().px));
   }
