@@ -826,6 +826,49 @@ const tajo = [
   },
 ];
 
+// Morir: el golpe lo echa atras, se le doblan las rodillas y cae postrado,
+// de rodillas y con la frente hacia el suelo, como quien reza.
+const muerte = [
+  {
+    cadera: baja(1, -1),
+    lean: -0.38,
+    cabeceo: -0.25,
+    zancadaCerca: -3,
+    zancadaLejos: 2,
+    cerca: [-1.3, 0.3],
+    lejos: [-1, 0.2],
+    sway: 2,
+  },
+  {
+    cadera: baja(5),
+    lean: 0.1,
+    cabeceo: 0.25,
+    zancadaCerca: 1,
+    zancadaLejos: -1,
+    cerca: [0.3, 0.2],
+    lejos: [0.2, 0.2],
+    vuelo: 1.5,
+  },
+  {
+    cadera: baja(8),
+    lean: 0.45,
+    cabeceo: 0.45,
+    cerca: [0.5, 0.1],
+    lejos: [0.4, 0.1],
+    hoja: 1.2,
+    vuelo: 2.5,
+  },
+  {
+    cadera: baja(10),
+    lean: 0.75,
+    cabeceo: 0.55,
+    cerca: [0.9, 0.1],
+    lejos: [0.8, 0.1],
+    hoja: 1.5,
+    vuelo: 3,
+  },
+];
+
 export const ANIMACIONES = {
   reposo,
   correr,
@@ -846,6 +889,7 @@ export const ANIMACIONES = {
   bebe,
   alza,
   tajo,
+  muerte,
 };
 
 // -- Las reliquias ------------------------------------------------------------

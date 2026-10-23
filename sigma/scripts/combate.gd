@@ -33,6 +33,8 @@ var accion := Accion.NINGUNA
 var tipo := Tipo.BASICO
 var direccion := Direccion.LATERAL
 var fervor: int = F["inicial"]
+## Hasta donde puede subir el Fervor: menos con la deuda de carne pendiente.
+var fervor_tope: int = F["maximo"]
 var cargas_pocion: int = P["cargas_maximas"]
 var ahora := 0.0
 
@@ -137,6 +139,13 @@ func ms_de_accion() -> float:
 ## Lo que dura el aviso del golpe en curso, en ms.
 func anticipacion_ms() -> float:
 	return _perfil()["anticipacion_ms"]
+
+
+## Pone el tope del Fervor (la deuda de carne lo baja; recuperarla lo devuelve).
+## Lo que sobre se pierde.
+func fijar_tope(tope: int) -> void:
+	fervor_tope = tope
+	fervor = mini(fervor, tope)
 
 
 ## Si el golpe se esta preparando: aun no corta.
@@ -266,7 +275,7 @@ func _perfil() -> Dictionary:
 
 
 func _ganar_fervor(cantidad: int) -> void:
-	fervor = mini(F["maximo"], fervor + cantidad)
+	fervor = mini(fervor_tope, fervor + cantidad)
 
 
 static func _centrada(centro: Vector2, tamano: Vector2) -> Rect2:

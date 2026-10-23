@@ -19,6 +19,7 @@
 extends Node2D
 
 const PORTADA := "res://escenas/principal.tscn"
+const Sacramento := preload("res://scripts/sacramento.gd")
 ## Lo cerca del umbral que hay que estar para descender.
 const ALCANCE_UMBRAL := 20.0
 
@@ -55,10 +56,12 @@ func _ready() -> void:
 			nota.cirujano = _cirujano
 			nota.leida.connect(_interfaz.leer)
 	_interfaz.conectar(_cirujano)
+	_cirujano.murio.connect(_endeudar)
 	# Las luces, a su altura: con los mapas de normales modelan la figura.
 	for luz in find_children("*", "PointLight2D", true, false):
-		luz.height = preload("res://scripts/sacramento.gd").ALTURA_LUZ
+		luz.height = Sacramento.ALTURA_LUZ
 	_continuar()
+	_deuda_guardada()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
 		# Desde la portada y la intro (el tema epico): fundido largo, que la
@@ -74,6 +77,44 @@ func _continuar() -> void:
 	var altar: Node2D = $Altares.get_node(progreso.altar)
 	altar.encendido = true
 	_cirujano.colocar(altar.position)
+
+
+## La deuda de carne: al morir, la carne queda donde pisaba por ultima vez.
+func _endeudar() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso:
+		progreso.endeudar(scene_file_path, _cirujano.ultimo_suelo)
+	_poner_deuda(_cirujano.ultimo_suelo)
+
+
+## Si la partida guardada dejo su carne en esta sala, ahi sigue.
+func _deuda_guardada() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso and progreso.deuda.get("sala", "") == scene_file_path:
+		_poner_deuda(progreso.deuda["sitio"])
+
+
+func _poner_deuda(sitio: Vector2) -> void:
+	# Solo una a la vez: morir otra vez la cambia de sitio.
+	for vieja in get_tree().get_nodes_in_group("deuda"):
+		vieja.queue_free()
+	var deuda := preload("res://scripts/deuda.gd").new()
+	deuda.position = sitio
+	deuda.cirujano = _cirujano
+	deuda.add_to_group("deuda")
+	add_child(deuda)
+	_cirujano.combate.fijar_tope(Sacramento.DEUDA["fervor_tope"])
+	_interfaz.marcar_tope(Sacramento.DEUDA["fervor_tope"])
+	deuda.saldada.connect(_saldar)
+
+
+func _saldar() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso:
+		progreso.saldar()
+	_cirujano.combate.fijar_tope(Sacramento.FERVOR["maximo"])
+	_interfaz.marcar_tope(Sacramento.FERVOR["maximo"])
+	_interfaz.avisar("Recuperas tu carne")
 
 
 func _physics_process(_delta: float) -> void:

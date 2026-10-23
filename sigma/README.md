@@ -65,6 +65,11 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   techos y salpica en el suelo (los puntos de goteo se buscan solos en la piedra), el
   polvo flota a la luz, las cadenas se mecen, la niebla baja se desliza sobre los suelos
   y donde muere un enemigo queda un charco de sangre.
+- **Morir**: el Cirujano cae con su animación (el golpe, las rodillas, postrado) y deja
+  su **deuda de carne** donde pisaba por última vez, como la culpa de _Blasphemous_.
+  Mientras no vuelve a por ella (E), el Fervor no pasa de 70 (la parte perdida se ve
+  tachada en sangre en la interfaz). Morir otra vez la cambia de sitio. Se guarda con la
+  partida.
 - **Los temblores**: cada medio minuto, más o menos, el templo se encoge un poco, lejos:
   la cámara tiembla, cae polvo y alguna piedra y suena un retumbo grave
   (`scripts/temblor.gd`). No hacen daño; son el aviso de fondo de que todo se mueve.

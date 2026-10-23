@@ -218,6 +218,12 @@ const TEMBLOR := {
 ## van encadenados, como en el original: primero el cuerpo se desploma a la
 ## vista, luego entra el aviso despacio, el Vientre se apaga y se vuelve al
 ## Altar. El aviso tiene que quedarse un momento sobre el negro.
+## La deuda de carne (como la culpa de Blasphemous): mientras no se recupera,
+## el Fervor no pasa de aqui.
+const DEUDA := {
+	"fervor_tope": 70,
+}
+
 const MUERTE := {
 	## Lo que tarda el cuerpo en doblarse hasta quedar hecho un monton.
 	"desplome_ms": 900.0,

@@ -76,6 +76,22 @@ func conectar(cirujano: CharacterBody2D) -> void:
 	_pintar_frascos(cirujano.combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
 
 
+## La parte del Fervor que la deuda de carne no deja llenar, tachada en
+## sangre. Con el tope entero, desaparece.
+func marcar_tope(tope: int) -> void:
+	if not has_node("Deuda"):
+		var tachado := ColorRect.new()
+		tachado.name = "Deuda"
+		tachado.color = Color(0.4, 0.06, 0.05, 0.85)
+		tachado.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(tachado)
+	var tachado: ColorRect = get_node("Deuda")
+	var maximo: int = Sacramento.FERVOR["maximo"]
+	tachado.visible = tope < maximo
+	tachado.position = _fervor.position + Vector2(_fervor.size.x * tope / maximo, 0)
+	tachado.size = Vector2(_fervor.size.x * (maximo - tope) / maximo, _fervor.size.y)
+
+
 func avisar(texto: String) -> void:
 	_aviso.text = texto
 	_aviso.visible = true
