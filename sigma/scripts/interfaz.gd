@@ -68,6 +68,7 @@ func _pintar_ayuda() -> void:
 
 func conectar(cirujano: CharacterBody2D) -> void:
 	cirujano.murio.connect(morir)
+	cirujano.aviso.connect(avisar)
 	cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)
 	cirujano.fervor_cambio.connect(_al_cambiar_fervor)
 	cirujano.pociones_cambio.connect(_pintar_frascos)

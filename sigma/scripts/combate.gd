@@ -274,6 +274,11 @@ func _perfil() -> Dictionary:
 	return C["ataque"]
 
 
+## Fervor que llega de fuera (un sello del diezmo): respeta el tope de la deuda.
+func sumar_fervor(cantidad: int) -> void:
+	_ganar_fervor(cantidad)
+
+
 func _ganar_fervor(cantidad: int) -> void:
 	fervor = mini(fervor_tope, fervor + cantidad)
 

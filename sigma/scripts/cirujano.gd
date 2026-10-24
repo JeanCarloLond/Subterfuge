@@ -13,6 +13,8 @@ extends CharacterBody2D
 signal vitalidad_cambio(actual: int, maxima: int)
 ## Se ha quedado sin vitalidad: la interfaz pone el aviso de la muerte.
 signal murio
+## Algo que contar en la interfaz (una ofrenda recogida).
+signal aviso(texto: String)
 signal fervor_cambio(actual: int, maximo: int)
 signal pociones_cambio(cargas: int, maximas: int)
 
@@ -240,6 +242,8 @@ func _clavable(lado: int) -> bool:
 
 ## Un efecto del cuerpo o del combate (autoload Efectos).
 func _sonar(efecto: String, volumen_db := 0.0) -> void:
+	if not is_inside_tree():
+		return
 	var efectos := get_node_or_null("/root/Efectos")
 	if efectos:
 		efectos.sonar(efecto, volumen_db)
@@ -531,6 +535,27 @@ func _pausa_de_impacto(ms: float) -> void:
 	Engine.time_scale = 0.0
 	await get_tree().create_timer(ms / 1000.0, true, false, true).timeout
 	Engine.time_scale = 1.0
+
+
+## Recoge una ofrenda (ofrenda.gd). La carne cura; con el cuerpo entero va al
+## frasco como una carga de Pocion, y con todo lleno se pierde (#174 en el
+## original). El sello da Fervor.
+func recoger_ofrenda(tipo: String) -> void:
+	match tipo:
+		"carne":
+			_sonar("salto", 4.0)
+			if vitalidad < Sacramento.VITALIDAD["maxima"]:
+				_curar(Sacramento.OFRENDA["curacion_carne"])
+				aviso.emit("Carne del diezmo")
+			elif combate.cargas_pocion < Sacramento.POCION["cargas_maximas"]:
+				combate.cargas_pocion += 1
+				pociones_cambio.emit(combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
+				aviso.emit("Carne del diezmo: al frasco")
+		"sello":
+			_sonar("guardia")
+			combate.sumar_fervor(Sacramento.OFRENDA["fervor_sello"])
+			fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
+			aviso.emit("Sello del diezmo")
 
 
 func _curar(puntos: int) -> void:

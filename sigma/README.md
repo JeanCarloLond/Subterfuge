@@ -46,6 +46,11 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   nicho del fondo, al que solo se llega con el doble salto. Con los dos se abre el
   camino alto de la derecha. Se toman con E y duran toda la partida. En las salas de
   prueba el cuerpo viene entero (`reliquias_libres`).
+- **Las ofrendas**: lo que deja un eslabón al caer, con las probabilidades del original
+  (`OFRENDA` en `sacramento.gd`). La carne del diezmo cura un punto (con el cuerpo entero,
+  va al frasco); el sello del diezmo da 20 de Fervor; el injerto de metal, que carga la
+  Injertadora, no cae hasta que exista (#191). Se recogen pasando por encima y se van a
+  los 11 s.
 - **Las notas**: lore que se encuentra. Con E se leen en un panel, con el juego parado, y
   quedan guardadas como leídas. La primera, el _Registro del Pabellón N.º 7_, está en una
   repisa junto al techo que late del Atrio: solo se llega subido al techo cuando baja, y si

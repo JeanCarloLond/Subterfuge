@@ -27,6 +27,7 @@ const FRASES := [
 ]
 const PAUSA_FRASES_MS := 9000.0
 const Herida := preload("res://scripts/herida.gd")
+const Ofrenda := preload("res://scripts/ofrenda.gd")
 const Sello := preload("res://scripts/sello.gd")
 const V := Sacramento.VESTAL
 const M := Sacramento.MOVIMIENTO
@@ -240,6 +241,8 @@ func _morir() -> void:
 	velocity = Vector2.ZERO
 	$Caja.set_deferred("disabled", true)
 	Herida.charco(get_parent(), position)
+	# Lo que deja al caer: la ofrenda, si le toca.
+	Ofrenda.soltar(get_parent(), position + Vector2(0, -16), "vestal", objetivo)
 
 
 func _caer() -> void:

@@ -13,6 +13,7 @@ extends CharacterBody2D
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Texturas := preload("res://scripts/texturas.gd")
 const Herida := preload("res://scripts/herida.gd")
+const Ofrenda := preload("res://scripts/ofrenda.gd")
 const Bocadillo := preload("res://scripts/bocadillo.gd")
 ## Lo que grita al verlo: cumple la ley de la Mano que mira (canon). Mas
 ## adentro, cuando haya mas niveles, hablaran del Ultimo Sacramento.
@@ -312,6 +313,8 @@ func _morir() -> void:
 	velocity = Vector2.ZERO
 	$Caja.set_deferred("disabled", true)
 	Herida.charco(get_parent(), position)
+	# Lo que deja al caer: la ofrenda, si le toca.
+	Ofrenda.soltar(get_parent(), position + Vector2(0, -16), "devoto", objetivo)
 
 
 ## La sangre del tajo: un golpe de gotas que salta hacia donde va el bisturi.

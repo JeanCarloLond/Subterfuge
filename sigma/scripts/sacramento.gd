@@ -214,6 +214,23 @@ const TEMBLOR := {
 	"amplitud_px": 2.0,
 }
 
+## Las ofrendas: lo que deja un enemigo al caer, con los numeros del original
+## (src/config/Sacramento.ts, OFRENDA). Sin ellas, pelear no daba nada que no
+## diera rodearlos. Las probabilidades son por clase; lo que no suma 1 es «no
+## suelta nada». El injerto solo cae con la Injertadora (#191).
+const OFRENDA := {
+	"curacion_carne": 1,
+	"fervor_sello": 20,
+	"devoto_carne": 0.4,
+	"devoto_sello": 0.28,
+	"devoto_injerto": 0.26,
+	"vestal_carne": 0.2,
+	"vestal_injerto": 0.32,
+	## Cuanto dura en el suelo, y cuanto parpadea antes de irse (ms).
+	"vida_ms": 11000.0,
+	"parpadeo_ms": 2400.0,
+}
+
 ## La deuda de carne (como la culpa de Blasphemous): mientras no se recupera,
 ## el Fervor no pasa de aqui.
 const DEUDA := {
