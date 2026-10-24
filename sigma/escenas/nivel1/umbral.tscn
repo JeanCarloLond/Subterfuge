@@ -275,13 +275,20 @@ aviso = "E  subir"
 position = Vector2(496, 256)
 script = ExtResource("11_ccbrt")
 zona = Vector2(32, 48)
+destino = "res://escenas/nivel2/registro.tscn"
+entrada = "oeste"
 con_e = true
+aviso = "E  entrar"
 
 [node name="Entradas" type="Node2D" parent="." unique_id=1779935000]
 
 [node name="oeste" type="Marker2D" parent="Entradas" unique_id=1159687489]
 position = Vector2(104, 304)
 metadata/mirando = 1
+
+[node name="pasillos" type="Marker2D" parent="Entradas"]
+position = Vector2(520, 304)
+metadata/mirando = -1
 
 [node name="Puerta" type="Sprite2D" parent="." unique_id=1891698933]
 z_index = -1

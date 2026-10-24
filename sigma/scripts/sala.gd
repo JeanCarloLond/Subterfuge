@@ -22,6 +22,11 @@ Esc para volver a la portada"
 
 ## Por debajo de esta y se ha caido de la sala: vuelve atras, y cuesta.
 @export var limite_caida := 1060.0
+## Lo que dice el final de lo hecho hasta ahora (un paso sin destino).
+@export_multiline var fin := FIN
+## La marca que deja entrar en esta sala (vacio: ninguna): asi un cierre se
+## sella para siempre solo cuando ya se esta del lado bueno.
+@export var marca_al_entrar := ""
 ## La pista de la sala (musica.gd) y lo que tarda en entrar.
 @export var musica := "atrio-santuario"
 @export var fundido_musica := 4.0
@@ -49,6 +54,9 @@ func _ready() -> void:
 		_continuar()
 	_deuda_guardada()
 	_primer_objetivo()
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso and marca_al_entrar != "":
+		progreso.aprender(marca_al_entrar)
 	var pista := get_node_or_null("/root/Musica")
 	if pista and musica != "":
 		pista.poner(musica, fundido_musica)
@@ -74,6 +82,7 @@ func _conectar(grupo: String, pieza: Node) -> void:
 		"Pasos":
 			pieza.cirujano = _cirujano
 			pieza.cruzado.connect(_salir)
+			pieza.negado.connect(_interfaz.avisar)
 
 
 ## Si se viene de otra sala por un paso, se aparece en su entrada. Devuelve si
@@ -126,19 +135,19 @@ func _salir(destino: String, entrada: String) -> void:
 
 ## El final de lo hecho hasta ahora: un velo y lo que viene.
 func _terminar() -> void:
-	var fin := CanvasLayer.new()
-	fin.layer = 10
+	var capa := CanvasLayer.new()
+	capa.layer = 10
 	var velo := ColorRect.new()
 	velo.color = Color(0.078, 0.063, 0.078, 0.92)
 	velo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var texto := Label.new()
-	texto.text = FIN
+	texto.text = fin
 	texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	texto.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	texto.set_anchors_preset(Control.PRESET_FULL_RECT)
-	fin.add_child(velo)
-	fin.add_child(texto)
-	add_child(fin)
+	capa.add_child(velo)
+	capa.add_child(texto)
+	add_child(capa)
 
 
 ## Muerto: la carne queda donde pisaba por ultima vez, y si el Altar esta en

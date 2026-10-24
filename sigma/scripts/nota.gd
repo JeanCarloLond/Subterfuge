@@ -11,6 +11,10 @@ const ALCANCE := Vector2(16.0, 26.0)
 @export var id := ""
 @export var titulo := ""
 @export_multiline var texto := ""
+## Al leerla, el objetivo que toca (vacio: ninguno).
+@export var objetivo := ""
+## Al leerla, cuenta para este objetivo (los registros de Genesis).
+@export var cuenta := ""
 
 ## Quien la lee: el Cirujano. Lo pone el nivel.
 var cirujano: CharacterBody2D
@@ -41,5 +45,9 @@ func _process(_delta: float) -> void:
 		var progreso := get_node_or_null("/root/Progreso")
 		if progreso:
 			progreso.leer(id)
+			if cuenta != "":
+				progreso.contar(cuenta, id)
+			if objetivo != "":
+				progreso.fijar_objetivo(objetivo)
 		_sprite.modulate = Color(0.7, 0.66, 0.62)
 		leida.emit(titulo, texto)

@@ -89,20 +89,28 @@ const SALAS := {
 	},
 }
 
+## Donde estan las salas. vestir_nivel_2.gd extiende este y la cambia.
+var dir := DIR
 var _escena: Node
 var _avisos := 0
 
 
 func _initialize() -> void:
 	var errores := 0
-	for nombre in SALAS:
-		errores += _vestir(nombre, SALAS[nombre])
+	var salas := _salas()
+	for nombre in salas:
+		errores += _vestir(nombre, salas[nombre])
 	print("avisos: %d" % _avisos)
 	quit(errores)
 
 
+## Las salas y su vestido. vestir_nivel_2.gd da las suyas.
+func _salas() -> Dictionary:
+	return SALAS
+
+
 func _vestir(nombre: String, sala: Dictionary) -> int:
-	var ruta := DIR + nombre + ".tscn"
+	var ruta := dir + nombre + ".tscn"
 	_escena = (load(ruta) as PackedScene).instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
 	for viejo in ["Lejos", "Decorado", "Ruina"]:
 		if _escena.has_node(viejo):

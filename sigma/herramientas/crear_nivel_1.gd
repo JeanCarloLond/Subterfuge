@@ -24,25 +24,36 @@ J golpear (mantén: cargado) · ↑ ↓ + J: arriba, abajo
 K parry, luego J: contragolpe · K en la membrana: clavarse
 E rezar, hablar, leer o ejecutar · Q poción · Esc salir"
 
+## Donde van las salas. crear_nivel_2.gd extiende este y la cambia.
+var dir := DIR
 var _raiz: Node2D
 var _silleria: TileMapLayer
 var _membranas: TileMapLayer
 
 
 func _initialize() -> void:
-	# Si un script no carga (un error de sintaxis), set_script deja el nodo sin
-	# el y la sala se guarda rota sin avisar: mejor no generar nada.
-	for script in ["sala", "paso", "sierra", "cartel", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
-		if load("res://scripts/%s.gd" % script) == null:
-			push_error("%s.gd no carga: no se genera nada" % script)
-			quit(1)
-			return
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(DIR))
+	if not _scripts_cargan():
+		quit(1)
+		return
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
 	var errores := 0
 	# Una a una: cada sala se arma y se guarda antes de empezar la siguiente.
 	for crear in [_pabellon, _claustro, _pozo, _capilla, _muro, _escalera, _umbral]:
 		errores += _guardar(crear.call())
 	quit(errores)
+
+
+## Si un script no carga (un error de sintaxis), set_script deja el nodo sin
+## el y la sala se guarda rota sin avisar: mejor no generar nada.
+func _scripts_cargan() -> bool:
+	for script in ["sala", "paso", "sierra", "rayo", "cierre", "cartel", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
+		# Con un error de sintaxis, load no da null: da un script que no se
+		# puede instanciar.
+		var cargado: GDScript = load("res://scripts/%s.gd" % script)
+		if cargado == null or not cargado.can_instantiate():
+			push_error("%s.gd no carga: no se genera nada" % script)
+			return false
+	return true
 
 
 # --- Las salas ----------------------------------------------------------------
@@ -238,8 +249,9 @@ func _umbral() -> Dictionary:
 	_puerta(4, 19)
 	_paso("Vuelta", 3, 16, 2, 3, "escalera", "puerta", true, "E  subir")
 	_puerta(32, 19)
-	_paso("Pasillos", 31, 16, 2, 3, "", "", true)
+	_paso("Pasillos", 31, 16, 2, 3, "res://escenas/nivel2/registro.tscn", "oeste", true, "E  entrar")
 	_entrada("oeste", 6, 19, 1)
+	_entrada("pasillos", 32, 19, -1)
 	_cirujano(6, 19)
 	_atrezo([["candelabro", 472, 304], ["candelabro", 568, 304]])
 	_ambiente([[320, 32, 100]], [[32, 304, 576]])
@@ -442,16 +454,22 @@ func _cartel(id: String, columna: int, fila: int, texto: String, aprende: String
 
 
 ## Un paso a otra sala: la zona en tiles. Destino vacio: el final del nivel.
-func _paso(nombre: String, columna: int, fila: int, ancho: int, alto: int, destino: String, entrada: String, con_e := false, aviso := "E  descender") -> void:
+## El destino es el nombre de una sala de este nivel o una ruta entera (res://)
+## de otro. Devuelve el paso, para pedirle algo (pide_objetivo, abre...).
+func _paso(nombre: String, columna: int, fila: int, ancho: int, alto: int, destino: String, entrada: String, con_e := false, aviso := "E  descender") -> Node2D:
 	var paso := Node2D.new()
 	paso.set_script(load("res://scripts/paso.gd"))
 	paso.position = Vector2(columna * 16, fila * 16)
 	paso.set("zona", Vector2(ancho * 16, alto * 16))
-	paso.set("destino", "" if destino == "" else DIR + destino + ".tscn")
+	if destino == "" or destino.begins_with("res://"):
+		paso.set("destino", destino)
+	else:
+		paso.set("destino", dir + destino + ".tscn")
 	paso.set("entrada", entrada)
 	paso.set("con_e", con_e)
 	paso.set("aviso", aviso)
 	_poner(paso, "Pasos", nombre)
+	return paso
 
 
 ## Por donde se aparece al venir de otra sala, y hacia donde mira.
@@ -488,7 +506,7 @@ func _guardar(sala: Dictionary) -> int:
 	var escena := PackedScene.new()
 	var error := escena.pack(_raiz)
 	if error == OK:
-		error = ResourceSaver.save(escena, DIR + sala["nombre"] + ".tscn")
+		error = ResourceSaver.save(escena, dir + sala["nombre"] + ".tscn")
 	print("%s: %d tiles, %s" % [sala["nombre"], _silleria.get_used_cells().size(), error_string(error)])
 	_raiz.free()
 	_raiz = null

@@ -36,6 +36,13 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   vuelve al Altar aunque esté en otra sala. Sin reliquias: se baja con el bisturí y la
   membrana. El Pozo es una escalera gigante con cantos de membrana, y se vuelve a
   subir clavándose en ellos.
+- **El Nivel II, los Pasillos de Preparación** (#190), hasta la puerta del laboratorio:
+  el Registro de Diezmos con el Libro colosal, que pide los tres registros de Génesis;
+  la Escribanía, la Sala de Sorteos, el Archivo y el **Pasillo que se cierra**: el techo
+  cae a tu espalda y se viene abajo en ola detrás de ti (corriendo se gana). Al otro
+  lado, el Ala de Génesis con sus rayos, un Altar, el tercer registro, un atajo de vuelta
+  al Registro y la puerta que pide los tres. El cierre se sella al llegar al Ala, del
+  lado bueno: nunca deja encerrado.
 - **El Atrio (demostración)** (#185): la sala sola de siempre, con sus dos reliquias,
   desde la portada. En el juego es la Nave del Nivel I, sin ellas.
 - **Los objetivos** (#215): el objetivo nuevo entra arriba a la derecha con una campana;

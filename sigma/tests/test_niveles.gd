@@ -1,10 +1,16 @@
-## El Nivel I (#218): que cada sala se pueda pisar y que los pasos casen. Cada
-## paso lleva a una sala que existe y a una entrada que existe; cada entrada
-## esta sobre piedra (o cae a ella) y fuera de su propio paso, para no rebotar.
+## Los niveles (#218, #190): que cada sala se pueda pisar y que los pasos
+## casen. Cada paso lleva a una sala que existe y a una entrada que existe; cada
+## entrada esta sobre piedra (o cae a ella) y fuera de su propio paso, para no
+## rebotar.
 extends "res://tests/caso.gd"
 
-const DIR := "res://escenas/nivel1/"
-const SALAS := ["pabellon", "claustro", "nave", "pozo", "capilla", "muro", "escalera", "umbral"]
+const DIR := "res://escenas/"
+const SALAS := [
+	"nivel1/pabellon", "nivel1/claustro", "nivel1/nave", "nivel1/pozo", "nivel1/capilla",
+	"nivel1/muro", "nivel1/escalera", "nivel1/umbral",
+	"nivel2/registro", "nivel2/escribania", "nivel2/sorteos", "nivel2/archivo",
+	"nivel2/pasillo", "nivel2/ala",
+]
 
 
 func _solido_bajo(capa: TileMapLayer, pies: Vector2) -> bool:
@@ -68,17 +74,60 @@ func test_cada_entrada_cae_a_piedra_y_no_esta_en_su_paso() -> void:
 		sala.free()
 
 
-func test_el_nivel_empieza_en_el_pabellon_y_termina_en_el_umbral() -> void:
+func test_empieza_en_el_pabellon_y_lo_hecho_acaba_en_la_puerta_del_laboratorio() -> void:
 	var intro: GDScript = load("res://scripts/intro.gd")
-	afirmar_igual(intro.SIGUIENTE, DIR + "pabellon.tscn", "la intro lleva al Pabellón")
-	var umbral: Node = load(DIR + "umbral.tscn").instantiate()
-	var finales := umbral.get_node("Pasos").get_children().filter(func(p: Node) -> bool: return p.destino == "")
-	afirmar_igual(finales.size(), 1, "el Umbral tiene el final")
-	umbral.free()
+	afirmar_igual(intro.SIGUIENTE, DIR + "nivel1/pabellon.tscn", "la intro lleva al Pabellón")
+	var finales := 0
+	for nombre in SALAS:
+		var sala: Node = load(DIR + nombre + ".tscn").instantiate()
+		for paso in sala.get_node("Pasos").get_children():
+			if paso.destino == "":
+				finales += 1
+				afirmar_igual(nombre, "nivel2/ala", "el final está en el Ala")
+				afirmar_igual(paso.pide_objetivo, "registros", "y pide los tres registros")
+		sala.free()
+	afirmar_igual(finales, 1, "un solo final")
+
+
+## El cierre del Pasillo (#190): sella de verdad (sus techos cubren el pasillo
+## de lado a lado, sin hueco por arriba) y no deja encerrado (del lado bueno
+## hay un Altar y un atajo de vuelta, y el Registro solo lo abre desde alli).
+func test_el_cierre_sella_y_no_deja_encerrado() -> void:
+	var pasillo: Node = load(DIR + "nivel2/pasillo.tscn").instantiate()
+	var capa: TileMapLayer = pasillo.get_node("Silleria")
+	var primero: Node = pasillo.get_node("Muros/Techo0")
+	var cerrado := Rect2(primero.position + primero.direccion * primero.recorrido, Vector2(primero.tiles * 16))
+	# Encima y debajo del muro cerrado, piedra: no se pasa por arriba ni por abajo.
+	afirmar(capa.get_cell_source_id(Vector2i(int(cerrado.position.x / 16), int(cerrado.end.y / 16))) != -1, "suelo bajo el cierre")
+	afirmar_igual(cerrado.position.y, 8.0 * 16, "baja hasta el techo del pasillo")
+	afirmar_igual(cerrado.end.y, 14.0 * 16, "y llega al suelo")
+	afirmar(pasillo.get_node("Cierre").marca != "", "el cierre se recuerda")
+	pasillo.free()
+	var ala: Node = load(DIR + "nivel2/ala.tscn").instantiate()
+	afirmar(ala.get_node("Altares").get_child_count() > 0, "el Ala tiene Altar")
+	afirmar_igual(ala.marca_al_entrar, "pasillo-sellado", "y se sella al llegar a ella")
+	var atajo: Node = ala.get_node("Pasos/Atajo")
+	afirmar_igual(atajo.abre, "atajo-ala", "el atajo se abre desde el Ala")
+	ala.free()
+	var registro: Node = load(DIR + "nivel2/registro.tscn").instantiate()
+	afirmar_igual(registro.get_node("Pasos/Atajo").pide_marca, "atajo-ala", "y en el Registro lo pide")
+	afirmar_igual(registro.get_node("Pasos/Pasillo").sellado_por, "pasillo-sellado", "el pasillo, sellado, ya no se abre")
+	registro.free()
+
+
+func test_los_tres_registros_cuentan() -> void:
+	var cuentan := 0
+	for nombre in SALAS:
+		var sala: Node = load(DIR + nombre + ".tscn").instantiate()
+		for nota in sala.get_node("Notas").get_children():
+			if nota.cuenta == "registros":
+				cuentan += 1
+		sala.free()
+	afirmar_igual(cuentan, 3, "tres registros de Génesis")
 
 
 func test_sin_reliquias_en_el_nivel_1() -> void:
-	for nombre in SALAS:
+	for nombre in SALAS.filter(func(s: String) -> bool: return s.begins_with("nivel1")):
 		var sala: Node = load(DIR + nombre + ".tscn").instantiate()
 		afirmar(not sala.has_node("Reliquias") or sala.get_node("Reliquias").get_child_count() == 0, "%s tiene reliquias" % nombre)
 		sala.free()
