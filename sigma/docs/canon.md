@@ -66,6 +66,22 @@ entiende al final:
    son mirados»: a un cuerpo ciego que quiere ver, una Mano que mira es la puerta por la que
    le llegan los ojos. La Diócesis lo sabía, o lo sabía quien escribió la ley.
 
+### El Cegado
+
+Decidido por Jean. **Una Mano del Sacramento que miró antes que el Cirujano** y, para volver
+a la ley, **se arrancó los ojos**. Vive en la Escalera de los Ciegos, al final del Nivel I.
+Es quien escribió «No vengas.» en el margen del Códice. Le cuenta al Cirujano qué fue
+Génesis Vestal: los protocolos antes de ser liturgia, la corporación, los laboratorios
+sellados. Es lo opuesto al Cirujano: él eligió no ver; el Cirujano elige seguir mirando.
+Al final se relee como el único que tenía razón.
+
+### Los objetivos son de la niña
+
+Decidido por Jean. El juego dice qué se busca («Averigua por qué se mueven los muros»).
+Hasta el laboratorio, los objetivos son del Cirujano; **desde la primera visión los pone
+la niña**, y cambian de color. El jugador obedece el texto de la pantalla como si fuera
+neutral, y al final entiende a quién obedecía.
+
 ## La estructura
 
 1. **La grieta.** Las paredes se mueven y la carne deja de llegar. El Cirujano, hombre de
@@ -104,6 +120,7 @@ otra.
 ## Abierto
 
 - **Qué es el artefacto** y quién lo dejó en el laboratorio.
+- **El nombre del Cegado.** Propuestas: Casiano, Ulpiano.
 - **Cómo nota el jugador** que solo él la ve, sin que se adivine el giro antes de tiempo.
 - **Qué pide el final B.** Una idea: como en _Blasphemous_, que solo se abra si el jugador
   desconfió de las visiones alguna vez.
