@@ -1,6 +1,7 @@
 ## La letra legible (feedback de Jean: «la letra es ilegible en la mayoria de
-## situaciones»). Lo que se lee jugando va en VT323 a 16 px por el tema del
-## proyecto; si alguien lo quita, todo vuelve a la fuente de Godot a 8 px.
+## situaciones»). Lo que se lee jugando va en VT323 a 18 px por el tema del
+## proyecto; si alguien lo quita, todo vuelve a la fuente de Godot a 8 px. A
+## 16, la M de VT323 pierde el pico del centro y «Mano» se lee «Nano» (#220).
 extends "res://tests/caso.gd"
 
 
@@ -8,7 +9,7 @@ func test_el_proyecto_usa_el_tema_legible() -> void:
 	afirmar_igual(ProjectSettings.get_setting("gui/theme/custom"), "res://arte/tema.tres", "tema del proyecto")
 	var tema: Theme = load("res://arte/tema.tres")
 	afirmar_igual(tema.default_font.resource_path, "res://arte/fuentes/VT323-Regular.ttf", "fuente por defecto")
-	afirmar(tema.default_font_size >= 16, "a 16 px o mas")
+	afirmar(tema.default_font_size >= 18, "a 18 px o mas: a 16, la M parece una N")
 
 
 func test_ningun_texto_vuelve_a_8_px() -> void:
