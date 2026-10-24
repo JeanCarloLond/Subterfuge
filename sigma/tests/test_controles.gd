@@ -43,3 +43,22 @@ func test_cada_accion_se_puede_hacer_con_mando() -> void:
 			if evento is InputEventJoypadButton or evento is InputEventJoypadMotion:
 				con_mando = true
 		afirmar(con_mando, "%s no se puede hacer con mando" % accion)
+
+
+## Los carteles (#221) nombran las teclas en castellano, y las flechas para
+## moverse; con mando, sus botones.
+func test_los_nombres_de_las_teclas() -> void:
+	var Controles: GDScript = load("res://scripts/controles.gd")
+	afirmar_igual(Controles.nombre("saltar"), "Espacio", "saltar")
+	afirmar_igual(Controles.nombre("izquierda"), "←", "moverse, con flechas")
+	afirmar_igual(Controles.nombre("golpear"), "J", "golpear")
+	afirmar_igual(Controles.nombre("saltar", true), "A", "saltar con mando")
+	afirmar_igual(Controles.nombre("pocion", true), "LT", "la poción va en el gatillo")
+	afirmar_igual(Controles.nombre("nada"), "?", "una que no existe")
+
+
+func test_rellenar_cambia_las_acciones_por_sus_teclas() -> void:
+	var Controles: GDScript = load("res://scripts/controles.gd")
+	if not Input.get_connected_joypads().is_empty():
+		return
+	afirmar_igual(Controles.rellenar("{parry}  clávate · {arriba}  trepa"), "K  clávate · ↑  trepa", "las dos")

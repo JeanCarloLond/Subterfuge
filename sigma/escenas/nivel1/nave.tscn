@@ -1,6 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://scripts/paso.gd" id="40_paso"]
+[ext_resource type="Script" path="res://scripts/cartel.gd" id="41_cartel"]
 [ext_resource type="Script" path="res://scripts/sala.gd" id="1_atrio"]
 [ext_resource type="Script" path="res://scripts/telon.gd" id="2_l5xs4"]
 [ext_resource type="TileSet" path="res://arte/silleria/vientre.tres" id="2_silleria"]
@@ -855,3 +856,21 @@ metadata/mirando = 1
 [node name="abajo" type="Marker2D" parent="Entradas"]
 position = Vector2(352, 1008)
 metadata/mirando = -1
+
+[node name="Carteles" type="Node2D" parent="."]
+
+[node name="Golpear" type="Node2D" parent="Carteles"]
+position = Vector2(120, 288)
+script = ExtResource("41_cartel")
+id = "golpear"
+texto = "{golpear}  golpear
+{arriba} o {abajo} + {golpear}: hacia arriba o abajo"
+aprende = "golpear"
+
+[node name="Parry" type="Node2D" parent="Carteles"]
+position = Vector2(300, 448)
+script = ExtResource("41_cartel")
+id = "parry"
+texto = "{parry}  justo antes de su golpe: lo aturdes
+{interactuar}  junto al aturdido: lo ejecutas"
+aprende = "parry"

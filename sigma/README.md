@@ -42,6 +42,13 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   con H se ve siempre. Los que cuentan llevan contador. Los de la niña, en otro color.
 - **Los diálogos** (#216), a lo _Stardew Valley_: caja con retrato y nombre, el texto
   letra a letra, E para seguir. El Cegado, en la Escalera de los Ciegos.
+- **Los carteles de controles** (#221): cada mecánica se enseña donde se necesita por
+  primera vez, con su tecla (o el botón, con mando): moverse y saltar en el Pabellón,
+  golpear y el parry en la Nave, clavarse en el Pozo, el sello en la Capilla, el Latido
+  en el Muro. Al hacerlo se van y no vuelven. La poción y el golpe cargado se enseñan
+  cuando tocan: al estar herido, al tener Fervor.
+- **Caer al vacío** cuesta 2 y devuelve a la última piedra quieta que se pisó, como en
+  _Hollow Knight_: fallar un salto duele, pero no obliga a repetir la sala.
 - **Las sierras y los rayos** (#217): las salas sin enemigos los llevan. Las sierras de
   hueso se saltan o se esperan; los rayos de Génesis avisan antes de quemar. Se
   prueban en la «Sala de los peligros».

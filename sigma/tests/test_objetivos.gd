@@ -75,3 +75,17 @@ func test_el_objetivo_se_guarda_y_empezar_lo_borra() -> void:
 	afirmar_igual(despues.cuenta("registros"), 0, "y la cuenta")
 	antes.free()
 	despues.free()
+
+
+func test_lo_aprendido_se_guarda_y_empezar_lo_borra() -> void:
+	var antes := _progreso()
+	antes.aprender("saltar")
+	var despues: Node = Progreso.new()
+	despues.ruta = RUTA_PRUEBA
+	despues.cargar()
+	afirmar(despues.aprendido("saltar"), "el cartel aprendido no vuelve")
+	afirmar(not despues.aprendido("parry"), "el que no, si")
+	despues.nueva()
+	afirmar(not despues.aprendido("saltar"), "empezar lo borra")
+	antes.free()
+	despues.free()

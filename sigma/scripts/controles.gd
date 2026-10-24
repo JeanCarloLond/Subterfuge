@@ -26,6 +26,46 @@ const ACCIONES := {
 }
 
 
+## Como se llama cada tecla en pantalla (#221). Las que no estan, por su
+## nombre de Godot (las letras salen tal cual).
+const NOMBRES_TECLA := {
+	KEY_SPACE: "Espacio", KEY_SHIFT: "Mayús", KEY_ESCAPE: "Esc", KEY_TAB: "Tab",
+	KEY_LEFT: "←", KEY_RIGHT: "→", KEY_UP: "↑", KEY_DOWN: "↓",
+}
+const NOMBRES_MANDO := {
+	JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
+	JOY_BUTTON_LEFT_SHOULDER: "LB", JOY_BUTTON_RIGHT_SHOULDER: "RB",
+	JOY_BUTTON_DPAD_LEFT: "←", JOY_BUTTON_DPAD_RIGHT: "→", JOY_BUTTON_DPAD_UP: "↑", JOY_BUTTON_DPAD_DOWN: "↓",
+	JOY_BUTTON_START: "Start", JOY_BUTTON_BACK: "Back",
+}
+
+
+## El nombre de la tecla (o del boton, con mando) de `accion`, para
+## ensenarlo. Para moverse, las flechas: se leen mejor que WASD.
+static func nombre(accion: String, con_mando := false) -> String:
+	var def: Dictionary = ACCIONES.get(accion, {})
+	if con_mando:
+		if def.has("mando"):
+			return NOMBRES_MANDO.get(def["mando"][0], "?")
+		if def.has("eje") and def["eje"][0] == JOY_AXIS_TRIGGER_LEFT:
+			return "LT"
+	var teclas: Array = def.get("teclas", [])
+	if teclas.is_empty():
+		return "?"
+	for tecla in teclas:
+		if tecla in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN]:
+			return NOMBRES_TECLA[tecla]
+	return NOMBRES_TECLA.get(teclas[0], OS.get_keycode_string(teclas[0]))
+
+
+## Cambia cada {accion} de `texto` por su tecla (o su boton si hay mando).
+static func rellenar(texto: String) -> String:
+	var con_mando := not Input.get_connected_joypads().is_empty()
+	for accion in ACCIONES:
+		texto = texto.replace("{%s}" % accion, nombre(accion, con_mando))
+	return texto
+
+
 func _enter_tree() -> void:
 	registrar()
 

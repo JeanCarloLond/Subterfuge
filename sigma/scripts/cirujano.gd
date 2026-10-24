@@ -84,6 +84,9 @@ var _e_ejecuto_en := -1
 ## Lo ultimo que piso: ahi queda la deuda de carne si muere (en un pozo, en el
 ## borde del que cayo, y no en el fondo, donde no se podria recuperar).
 var ultimo_suelo := Vector2.ZERO
+## La ultima piedra quieta que piso (no un muro que se mueve): ahi vuelve al
+## caer al vacio, como en Hollow Knight. Cero: aun ninguna.
+var suelo_seguro := Vector2.ZERO
 
 ## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
 ## Contra una pared no se avanza, y las piernas no deben moverse.
@@ -140,6 +143,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if is_on_floor() and not muerto:
 		ultimo_suelo = position
+		if _pisa_piedra_quieta():
+			suelo_seguro = position
 	if muerto:
 		# El cuerpo cae donde estaba, sin control, hasta volver al Altar.
 		velocity.x = 0.0
@@ -314,12 +319,30 @@ func recibir_contacto(origen_x: float) -> bool:
 
 
 ## Caer al vacio: cuesta un punto y devuelve al Altar, pero no es morir.
+## Caer al vacio cuesta (Sacramento.DANO_VACIO) y devuelve a la ultima piedra
+## quieta que piso: fallar un salto duele, pero no obliga a repetir la sala.
 func caer_al_vacio() -> void:
 	if muerto:
 		return
 	_perder(Sacramento.DANO_VACIO)
-	if vitalidad > 0:
+	if vitalidad <= 0:
+		return
+	if suelo_seguro == Vector2.ZERO:
 		_volver()
+		return
+	position = suelo_seguro
+	velocity = Vector2.ZERO
+	movimiento.reaparecer(position.y)
+	combate.cancelar()
+
+
+## Si lo que pisa es silleria (un TileMapLayer), no un muro que se mueve.
+func _pisa_piedra_quieta() -> bool:
+	for i in get_slide_collision_count():
+		var choque := get_slide_collision(i)
+		if choque.get_normal().y < -0.5 and choque.get_collider() is TileMapLayer:
+			return true
+	return false
 
 
 ## Aplastado entre un muro y la piedra (#186): muere. El muro ya ha avisado
@@ -622,6 +645,7 @@ func mirar(lado: int) -> void:
 
 
 func _volver() -> void:
+	suelo_seguro = Vector2.ZERO
 	position = punto_reaparicion
 	velocity = Vector2.ZERO
 	movimiento.reaparecer(position.y)

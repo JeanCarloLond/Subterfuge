@@ -34,6 +34,8 @@ var objetivo := ""
 ## aunque el objetivo aun no toque: un registro hallado antes de saber que se
 ## buscaba sigue valiendo.
 var _cuentas := {}
+## Los carteles de controles ya aprendidos (#221): no vuelven a salir.
+var _aprendido := {}
 
 
 func _ready() -> void:
@@ -119,6 +121,17 @@ func texto_objetivo() -> String:
 	return Objetivos.texto(objetivo, cuenta(objetivo))
 
 
+func aprendido(id: String) -> bool:
+	return _aprendido.has(id)
+
+
+func aprender(id: String) -> void:
+	if aprendido(id):
+		return
+	_aprendido[id] = true
+	guardar()
+
+
 func hay_partida() -> bool:
 	return sala != ""
 
@@ -132,6 +145,7 @@ func nueva() -> void:
 	deuda = {}
 	objetivo = ""
 	_cuentas.clear()
+	_aprendido.clear()
 	if FileAccess.file_exists(ruta):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(ruta))
 
@@ -145,6 +159,7 @@ func guardar() -> void:
 	partida.set_value("partida", "deuda", deuda)
 	partida.set_value("partida", "objetivo", objetivo)
 	partida.set_value("partida", "cuentas", _cuentas)
+	partida.set_value("partida", "aprendido", _aprendido.keys())
 	partida.save(ruta)
 
 
@@ -156,6 +171,7 @@ func cargar() -> void:
 	deuda = {}
 	objetivo = ""
 	_cuentas.clear()
+	_aprendido.clear()
 	var partida := ConfigFile.new()
 	if partida.load(ruta) != OK:
 		return
@@ -168,3 +184,5 @@ func cargar() -> void:
 	deuda = partida.get_value("partida", "deuda", {})
 	objetivo = partida.get_value("partida", "objetivo", "")
 	_cuentas = partida.get_value("partida", "cuentas", {})
+	for id in partida.get_value("partida", "aprendido", []):
+		_aprendido[id] = true

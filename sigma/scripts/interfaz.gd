@@ -14,6 +14,9 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 const Objetivos := preload("res://scripts/objetivos.gd")
 const Dialogo := preload("res://scripts/dialogo.gd")
 const Sonidos := preload("res://scripts/sonidos.gd")
+const Controles := preload("res://scripts/controles.gd")
+## Lo que se queda una ensenanza en pantalla si no se hace antes.
+const ENSENANZA_S := 7.0
 const ORO := Color(0.89, 0.663, 0.251)
 ## Cada cuantas letras suena la voz: en todas, ametralla.
 const VOZ_CADA := 2
@@ -60,6 +63,12 @@ var _voces: Array[AudioStream] = []
 var _letras := 0
 ## El fotograma en que se cerro una lectura o un dialogo (ver _soltar_e).
 var _cerrado_en := -1
+var _ensenanza: PanelContainer
+var _ensenanza_texto: Label
+## La accion que, pulsada, da por aprendida la ensenanza de ahora.
+var _ensenanza_accion := ""
+## Cuantas ensenanzas han salido: el reloj de una no cierra la siguiente.
+var _ensenanzas := 0
 
 @onready var _ayuda: Label = $Ayuda
 @onready var _vida: TextureProgressBar = $Vida
@@ -77,6 +86,7 @@ func _ready() -> void:
 	_preparar_lectura()
 	_preparar_objetivo()
 	_preparar_caja()
+	_preparar_ensenanza()
 	var progreso := _progreso()
 	if progreso:
 		progreso.objetivo_cambio.connect(mostrar_objetivo)
@@ -104,6 +114,9 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	if _ensenanza.visible and _ensenanza_accion != "" and Input.is_action_just_pressed(_ensenanza_accion):
+		_ensenanza_accion = ""
+		_ocultar_ensenanza(0.6)
 	if _dialogo == null:
 		return
 	var nuevas := _dialogo.paso(delta)
@@ -166,6 +179,54 @@ func _pintar_dialogo() -> void:
 	_caja_nombre.text = quien
 	_caja_retrato.texture = _retratos.get(quien)
 	_caja_flecha.visible = _dialogo.linea_completa()
+
+
+## Ensena una mecanica en su momento, arriba en el centro, una sola vez por
+## partida. Se va al pulsar `accion` o al rato.
+func ensenar(id: String, texto: String, accion := "") -> void:
+	var progreso := _progreso()
+	if progreso == null or progreso.aprendido(id) or _ensenanza.visible:
+		return
+	progreso.aprender(id)
+	_ensenanza_texto.text = Controles.rellenar(texto)
+	_ensenanza_accion = accion
+	_ensenanzas += 1
+	_ensenanza.visible = true
+	_ensenanza.modulate.a = 0.0
+	_ensenanza.reset_size()
+	# Arriba en el centro: abajo tapaba al Cirujano y el suelo que pisa.
+	_ensenanza.position = Vector2((get_viewport().get_visible_rect().size.x - _ensenanza.size.x) / 2.0, 56.0)
+	create_tween().tween_property(_ensenanza, "modulate:a", 1.0, 0.4)
+	var esta := _ensenanzas
+	get_tree().create_timer(ENSENANZA_S).timeout.connect(func() -> void:
+		if esta == _ensenanzas:
+			_ocultar_ensenanza(0.0)
+	)
+
+
+func _ocultar_ensenanza(espera: float) -> void:
+	if not _ensenanza.visible:
+		return
+	var vete := create_tween()
+	vete.tween_interval(espera)
+	vete.tween_property(_ensenanza, "modulate:a", 0.0, 0.5)
+	vete.tween_callback(func() -> void: _ensenanza.visible = false)
+
+
+func _preparar_ensenanza() -> void:
+	_ensenanza = PanelContainer.new()
+	_ensenanza.name = "Ensenanza"
+	var estilo := StyleBoxFlat.new()
+	estilo.bg_color = Color(0.06, 0.04, 0.045, 0.9)
+	estilo.border_color = ORO.darkened(0.3)
+	estilo.set_border_width_all(1)
+	estilo.set_content_margin_all(6)
+	_ensenanza.add_theme_stylebox_override("panel", estilo)
+	_ensenanza_texto = Label.new()
+	_ensenanza_texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ensenanza.add_child(_ensenanza_texto)
+	_ensenanza.visible = false
+	add_child(_ensenanza)
 
 
 ## La caja: el texto a la izquierda y, a la derecha, el retrato en su marco con
@@ -321,6 +382,16 @@ func conectar(cirujano: CharacterBody2D) -> void:
 	_vida.value = 100.0 * cirujano.vitalidad / Sacramento.VITALIDAD["maxima"]
 	_al_cambiar_fervor(cirujano.combate.fervor, Sacramento.FERVOR["maximo"])
 	_pintar_frascos(cirujano.combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
+	# Lo que se ensena en su momento, no en un sitio (#221): la Pocion, al
+	# estar herido con frascos; el cargado, al tener Fervor para pagarlo.
+	cirujano.vitalidad_cambio.connect(func(actual: int, maxima: int) -> void:
+		if actual < maxima and actual > 0 and cirujano.combate.cargas_pocion > 0:
+			ensenar("pocion", "{pocion}  beber la Poción de Carne: cura, pero te deja quieto", "pocion")
+	)
+	cirujano.fervor_cambio.connect(func(actual: int, _maximo: int) -> void:
+		if actual >= Sacramento.COMBATE["cargado"]["coste_fervor"]:
+			ensenar("cargado", "Mantén {golpear} y suelta: golpe cargado (gasta Fervor)", "golpear")
+	)
 
 
 ## La parte del Fervor que la deuda de carne no deja llenar, tachada en

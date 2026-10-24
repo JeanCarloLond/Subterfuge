@@ -30,6 +30,13 @@ var _membranas: TileMapLayer
 
 
 func _initialize() -> void:
+	# Si un script no carga (un error de sintaxis), set_script deja el nodo sin
+	# el y la sala se guarda rota sin avisar: mejor no generar nada.
+	for script in ["sala", "paso", "sierra", "cartel", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
+		if load("res://scripts/%s.gd" % script) == null:
+			push_error("%s.gd no carga: no se genera nada" % script)
+			quit(1)
+			return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(DIR))
 	var errores := 0
 	# Una a una: cada sala se arma y se guarda antes de empezar la siguiente.
@@ -50,6 +57,8 @@ func _pabellon() -> Dictionary:
 	_piedra([[14, 17, 4, 2], [22, 15, 5, 1]])
 	_altar("Pabellon", 5, 19)
 	_cirujano(7, 19)
+	_cartel("moverse", 8, 19, "{izquierda} {derecha}  moverse", "izquierda,derecha")
+	_cartel("saltar", 12, 19, "{saltar}  saltar", "saltar", "moverse")
 	_nota("parte-pabellon-7", 24, 15, "Parte del Pabellón N.º 7", "«Tercer día sin carne. Las bandejas vuelven vacías del ducto. Los Elegidos preguntan, y las Manos no contestan: no es nuestro oficio contestar.
 
 Anoche la pared del fondo se movió un palmo. Nadie la ha tocado en mil años.»")
@@ -61,30 +70,40 @@ Anoche la pared del fondo se movió un palmo. Nadie la ha tocado en mil años.»
 
 
 ## 2 · El Claustro: la primera bajada, en tres tramos, con las sierras de
-## hueso. Cada tramo enseña una: la quieta se salta, la del rail se esquiva
-## por arriba, la que sube y baja se espera.
+## hueso, y cada uno pide mas que el anterior. Arriba, un foso de sierras que
+## se salta con carrerilla y una sierra en el suelo y otra en la repisa: hay
+## que elegir por donde y cuando. En medio, tres sierras que suben y bajan
+## desfasadas: se pasa leyendo el ritmo. Abajo, pilares sobre el vacio con
+## sierras que cruzan los saltos.
 func _claustro() -> Dictionary:
 	_empezar("Claustro", 80, 34)
-	_piedra([[0, 0, 80, 2], [0, 0, 2, 10], [78, 0, 2, 24]])
-	# Tramo alto (suelo en la fila 14), medio (21) y bajo (28).
-	_piedra([[0, 14, 40, 20], [40, 21, 20, 13], [60, 28, 20, 6]])
-	# La repisa para pasar por encima de la sierra del rail.
-	_piedra([[20, 10, 14, 1]])
-	# Los escalones de vuelta: 112 px no se suben de un salto.
-	_piedra([[40, 18, 3, 1], [60, 24, 3, 1]])
+	_piedra([[0, 0, 80, 2], [0, 0, 2, 10]])
+	# Tramo alto (suelo en la fila 14) con el foso, 3 filas mas hondo.
+	_piedra([[0, 14, 10, 20], [10, 17, 6, 17], [16, 14, 24, 20]])
+	_sierra(11, 17, Vector2.ZERO)
+	_sierra(14, 17, Vector2.ZERO)
+	_piedra([[21, 10, 11, 1]])
+	_sierra(20, 14, Vector2(208, 0), 0.0, -2.0)
+	_sierra(21, 10, Vector2(160, 0), 1.7, -2.0)
+	# Tramo medio (fila 21), con su escalon de vuelta.
+	_piedra([[40, 21, 20, 13], [40, 18, 3, 1]])
+	for i in 3:
+		_sierra(45 + i * 5, 21, Vector2(0, -80), i * 0.6, -8.0)
+	# Tramo bajo (fila 28): pilares sobre el vacio hasta la salida.
+	# Un salto a toda carrera llega a 112 px: hueco y pilar suman eso, para
+	# que caer en el pilar no pida frenar en el aire, solo saltar a tiempo.
+	_piedra([[60, 28, 3, 6], [60, 24, 3, 1], [66, 28, 4, 6], [72, 26, 3, 8], [77, 28, 3, 6], [78, 0, 2, 24]])
+	_sierra(63, 24, Vector2(96, 0), 0.0)
+	_sierra(75, 25, Vector2(0, 48), 0.8)
 	_cirujano(4, 14)
-	_sierra(12, 14, Vector2.ZERO)
-	_sierra(22, 14, Vector2(192, 0), 0.0, -2.0)
-	# La que sube y baja corta el paso a la altura del cuerpo.
-	_sierra(50, 21, Vector2(0, -80), 0.0, -8.0)
-	_sierra(65, 28, Vector2.ZERO)
-	_sierra(71, 28, Vector2.ZERO)
+	_cartel("salto-alto", 6, 14, "Mantén {saltar}: saltas más alto
+Suéltalo antes: más corto", "")
 	_paso("Oeste", 0, 10, 2, 4, "pabellon", "este")
 	_paso("Este", 78, 24, 2, 4, "nave", "oeste")
 	_entrada("oeste", 4, 14, 1)
-	_entrada("este", 75, 28, -1)
-	_atrezo([["candelabro", 104, 224], ["hongos", 600, 160], ["candelabro", 760, 336], ["hongos", 1000, 448]])
-	_ambiente([[300, 32, 70], [700, 32, 90], [1100, 32, 120]], [[640, 336, 320], [960, 448, 320]])
+	_entrada("este", 77, 28, -1)
+	_atrezo([["candelabro", 104, 224], ["hongos", 470, 160], ["candelabro", 760, 336], ["hongos", 1000, 448]])
+	_ambiente([[300, 32, 70], [700, 32, 90], [1100, 32, 120]], [[640, 336, 320]])
 	return {"nombre": "claustro", "ancho": 80, "alto": 34}
 
 
@@ -97,7 +116,11 @@ func _claustro() -> Dictionary:
 ## trepar. Las sierras corren por el rellano y por el suelo.
 func _pozo() -> Dictionary:
 	_empezar("Pozo", 40, 60)
-	_piedra([[0, 0, 40, 2], [0, 0, 6, 44], [0, 48, 6, 12], [34, 0, 6, 51], [34, 55, 6, 5], [6, 55, 28, 5]])
+	_piedra([[0, 0, 40, 2], [0, 0, 6, 44], [0, 48, 6, 12], [34, 0, 6, 44], [34, 48, 6, 12], [6, 55, 28, 5]])
+	# Antes de la salida al Muro, un bloque que solo se sube clavandose: aqui
+	# se aprende, no a la vuelta.
+	_piedra([[28, 48, 6, 7]])
+	_membrana([[28, 48, 1, 7]])
 	# [columna, fila de arriba, ancho, alto, columna del canto]. Bajando a la
 	# derecha, el rellano y bajando a la izquierda. Los que tienen debajo el
 	# canto del otro tramo miden 5 filas, no 7: dejan dos libres por donde
@@ -106,17 +129,23 @@ func _pozo() -> Dictionary:
 		_piedra([[peldano[0], peldano[1], peldano[2], peldano[3]]])
 		_membrana([[peldano[4], peldano[1], 1, peldano[3]]])
 	_sierra(25, 27, Vector2(128, 0), 0.0, -2.0)
-	_sierra(13, 55, Vector2(288, 0), 1.0, -2.0)
+	_sierra(13, 13, Vector2(64, 0), 0.5, -2.0)
+	_sierra(21, 31, Vector2(0, 50), 1.2)
+	_sierra(13, 55, Vector2(208, 0), 1.0, -2.0)
+	_cartel("membrana", 9, 6, "La piedra roja es membrana:
+en ella se clava el bisturí", "")
+	_cartel("clavarse", 25, 55, "Salta pegado a la membrana
+{parry}  clávate · {arriba}  trepa", "parry")
 	_paso("Arriba", 7, 4, 2, 2, "nave", "abajo", true, "E  subir")
 	_puerta(8, 6)
 	_paso("Oeste", 0, 44, 2, 4, "capilla", "este")
-	_paso("Este", 38, 51, 2, 4, "muro", "oeste")
+	_paso("Este", 38, 44, 2, 4, "muro", "oeste")
 	_entrada("arriba", 10, 6, 1)
 	_entrada("oeste", 7, 48, 1)
-	_entrada("este", 32, 55, -1)
+	_entrada("este", 32, 48, -1)
 	_cirujano(10, 6)
 	_atrezo([["candelabro", 120, 96], ["hongos", 230, 208], ["hongos", 330, 320], ["candelabro", 500, 432], ["hongos", 230, 656], ["piedra-tibia", 440, 880]])
-	_ambiente([[200, 32, 120], [460, 32, 160]], [[192, 880, 352]])
+	_ambiente([[200, 32, 120], [460, 32, 160]], [[192, 880, 256]])
 	return {"nombre": "pozo", "ancho": 40, "alto": 60}
 
 
@@ -129,6 +158,8 @@ func _capilla() -> Dictionary:
 	_piedra([[12, 16, 6, 1], [24, 16, 6, 1], [36, 16, 6, 1]])
 	_cirujano(55, 19)
 	_vestal(20, 19, 200.0, 420.0)
+	_cartel("sello", 52, 19, "{parry}  para el sello:
+vuelve contra quien lo lanzó", "parry")
 	_devoto(46, 19, 600.0, 820.0)
 	_paso("Este", 58, 15, 2, 4, "pozo", "oeste")
 	_paso("Hueco", 2, 21, 4, 2, "escalera", "noroeste")
@@ -139,17 +170,23 @@ func _capilla() -> Dictionary:
 	return {"nombre": "capilla", "ancho": 60, "alto": 23}
 
 
-## 6 · El Muro de los Dientes: la compactacion. Un pasillo bajo con tres
-## techos que laten y bajan hasta el suelo, desfasados: se pasa en su reposo.
-## Aplastan: avisan antes, con dos latidos. Y una sierra al salir.
+## 6 · El Muro de los Dientes: la compactacion. Un pasillo bajo con cinco
+## techos que laten y bajan hasta el suelo, desfasados: se pasa de hueco en
+## hueco en su reposo. Aplastan: avisan antes, con dos latidos. Y una sierra
+## al salir.
 func _muro() -> Dictionary:
 	_empezar("Muro", 70, 23)
 	_piedra([[0, 0, 70, 2], [0, 0, 2, 15], [68, 0, 2, 23], [0, 19, 64, 4]])
 	# El techo bajo del pasillo: deja 6 tiles.
 	_piedra([[20, 2, 30, 11]])
-	for i in 3:
-		_techo_que_baja(24 + i * 8, 13, i * 1800.0)
-	_sierra(56, 19, Vector2.ZERO)
+	# Ya en marcha al entrar, y alternos: los impares bajan mientras los pares
+	# suben. Simulado: se cruza siempre, pero casi nunca sin esperar en un
+	# hueco (con todos en reposo al llegar, se pasaba corriendo).
+	for i in 5:
+		_techo_que_baja(21 + i * 6, 13, -3800.0 if i % 2 == 0 else -1000.0)
+	_sierra(51, 19, Vector2(128, 0), 0.0, -2.0)
+	_cartel("latido", 6, 19, "Escucha el Latido: el techo
+avisa dos veces antes de bajar", "")
 	_cirujano(4, 19)
 	_paso("Oeste", 0, 15, 2, 4, "pozo", "este")
 	_paso("Hueco", 64, 21, 4, 2, "escalera", "noreste")
@@ -189,12 +226,15 @@ func _escalera() -> Dictionary:
 	return {"nombre": "escalera", "ancho": 60, "alto": 34}
 
 
-## 8 · El Umbral de los Pasillos: el final del Nivel I. Una sierra en el suelo
-## y la puerta grande; detras empiezan los Pasillos (#190).
+## 8 · El Umbral de los Pasillos: el final del Nivel I. Una sierra en el
+## suelo, un hueco al vacio con otra que sube y baja, y la puerta grande;
+## detras empiezan los Pasillos (#190).
 func _umbral() -> Dictionary:
 	_empezar("Umbral", 40, 23)
-	_piedra([[0, 0, 40, 2], [0, 0, 2, 23], [38, 0, 2, 23], [0, 19, 40, 4]])
-	_sierra(12, 19, Vector2(160, 0), 0.0, -2.0)
+	_piedra([[0, 0, 40, 2], [0, 0, 2, 23], [38, 0, 2, 23], [0, 19, 18, 4], [23, 19, 17, 4]])
+	_sierra(8, 19, Vector2(128, 0), 0.0, -2.0)
+	# El hueco al vacio, con una sierra que sube y baja por el.
+	_sierra(20, 18, Vector2(0, -96), 0.5)
 	_puerta(4, 19)
 	_paso("Vuelta", 3, 16, 2, 3, "escalera", "puerta", true, "E  subir")
 	_puerta(32, 19)
@@ -228,7 +268,7 @@ func _empezar(nombre: String, ancho: int, alto: int) -> void:
 	_membranas.tile_set = MEMBRANA
 	_membranas.add_to_group("clavable", true)
 	_poner(_membranas, "", "Membranas")
-	for grupo in ["Atrezo", "Ambiente", "Temblor", "Devotos", "Vestales", "Altares", "Muros", "Peligros", "Notas", "Charlas", "Pasos", "Entradas"]:
+	for grupo in ["Atrezo", "Ambiente", "Temblor", "Devotos", "Vestales", "Altares", "Muros", "Peligros", "Notas", "Charlas", "Carteles", "Pasos", "Entradas"]:
 		var nodo := Node2D.new()
 		match grupo:
 			"Atrezo":
@@ -387,6 +427,18 @@ func _techo_que_baja(columna: int, fila: int, desfase_ms: float) -> void:
 	muro.set("recorrido", 64.0)
 	muro.set("desfase_ms", desfase_ms)
 	_poner(muro, "Muros", "Techo")
+
+
+## Un cartel de controles (#221) de pie en el suelo de la fila.
+func _cartel(id: String, columna: int, fila: int, texto: String, aprende: String, despues_de := "") -> void:
+	var cartel := Node2D.new()
+	cartel.set_script(load("res://scripts/cartel.gd"))
+	cartel.position = _pie(columna, fila)
+	cartel.set("id", id)
+	cartel.set("texto", texto)
+	cartel.set("aprende", aprende)
+	cartel.set("despues_de", despues_de)
+	_poner(cartel, "Carteles", id.to_pascal_case())
 
 
 ## Un paso a otra sala: la zona en tiles. Destino vacio: el final del nivel.

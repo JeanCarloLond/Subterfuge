@@ -108,3 +108,25 @@ func test_cada_canto_de_membrana_se_puede_trepar() -> void:
 						var encima: Vector2i = celda + Vector2i(dx, -alto)
 						afirmar(not lleno.call(encima), "%s: el canto de %s no se trepa, %s esta lleno" % [nombre, celda, encima])
 		sala.free()
+
+
+## Los carteles de controles (#221): sobre piedra, con todas las acciones que
+## nombran escritas bien (si no, saldria «{saltr}» en pantalla) y con id unico.
+func test_los_carteles_nombran_acciones_que_existen() -> void:
+	var Controles: GDScript = load("res://scripts/controles.gd")
+	var ids := {}
+	for nombre in SALAS:
+		var sala: Node = load(DIR + nombre + ".tscn").instantiate()
+		if not sala.has_node("Carteles"):
+			sala.free()
+			continue
+		var capa: TileMapLayer = sala.get_node("Silleria")
+		for cartel in sala.get_node("Carteles").get_children():
+			afirmar(_solido_bajo(capa, cartel.position), "%s: el cartel %s" % [nombre, cartel.name])
+			var leido: String = Controles.rellenar(cartel.texto)
+			afirmar(not "{" in leido and not "?" in leido, "%s: el cartel %s dice «%s»" % [nombre, cartel.name, leido])
+			for accion in cartel.aprende.split(",", false):
+				afirmar(InputMap.has_action(accion.strip_edges()), "%s: %s aprende con %s, que no existe" % [nombre, cartel.name, accion])
+			afirmar(not ids.has(cartel.id), "el cartel %s esta repetido" % cartel.id)
+			ids[cartel.id] = true
+		sala.free()
