@@ -370,6 +370,22 @@ func _pintar_frascos(cargas: int, maximas: int) -> void:
 		_frascos.add_child(frasco)
 
 
+## Al entrar en una sala por un paso: la pantalla empieza a negro y se abre.
+func abrir(segundos: float) -> void:
+	_velo.visible = true
+	_velo.modulate.a = 1.0
+	var abre := create_tween()
+	abre.tween_property(_velo, "modulate:a", 0.0, segundos)
+	abre.tween_callback(func() -> void: _velo.visible = false)
+
+
+## Al salir por un paso: la pantalla se cierra a negro.
+func cerrar(segundos: float) -> void:
+	_velo.visible = true
+	_velo.modulate.a = 0.0
+	create_tween().tween_property(_velo, "modulate:a", 1.0, segundos)
+
+
 ## El aviso de la muerte: entra despacio una banda oscura con el texto, el
 ## Vientre se apaga a negro con el aviso aun encima, y la luz vuelve ya en el
 ## Altar. Los tiempos van con los del Cirujano (Sacramento.MUERTE).

@@ -7,7 +7,7 @@
 ## el atrezo del original): no hay ilustraciones aparte que mantener.
 extends Node2D
 
-const SIGUIENTE := "res://escenas/atrio.tscn"
+const SIGUIENTE := "res://escenas/nivel1/pabellon.tscn"
 const Sonidos := preload("res://scripts/sonidos.gd")
 const FONDO := Color(0.04, 0.03, 0.04)
 const TEXTO := Color(0.85, 0.8, 0.72)

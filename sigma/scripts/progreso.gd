@@ -25,6 +25,9 @@ var _reliquias := {}
 var _notas := {}
 ## La deuda de carne pendiente: {"sala": ruta, "sitio": Vector2}, o vacia.
 var deuda := {}
+## Por que entrada se aparece en la sala que se carga (paso.gd). No se
+## guarda: «Continuar» vuelve al Altar.
+var entrada := ""
 ## El objetivo de ahora (su id en Objetivos), o vacio.
 var objetivo := ""
 ## Lo contado para cada objetivo que cuenta: id -> [lo hallado]. Se cuenta

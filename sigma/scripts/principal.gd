@@ -6,7 +6,7 @@ extends Node2D
 const INTRO := "res://escenas/intro.tscn"
 ## [nombre, escena]. Las salas de prueba, para quien desarrolla.
 const SALAS := [
-	["El Atrio", "res://escenas/atrio.tscn"],
+	["El Atrio (demostración)", "res://escenas/atrio.tscn"],
 	["Sala del movimiento", "res://escenas/sala_prueba.tscn"],
 	["Sala de la compactación", "res://escenas/sala_compactacion.tscn"],
 	["Sala de los peligros", "res://escenas/sala_peligros.tscn"],

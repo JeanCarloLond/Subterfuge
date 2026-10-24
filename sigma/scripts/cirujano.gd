@@ -616,6 +616,11 @@ func colocar(sitio: Vector2) -> void:
 	_volver()
 
 
+## Hacia donde mira al aparecer: 1 derecha, -1 izquierda.
+func mirar(lado: int) -> void:
+	movimiento.mirando = lado
+
+
 func _volver() -> void:
 	position = punto_reaparicion
 	velocity = Vector2.ZERO

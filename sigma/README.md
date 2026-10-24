@@ -30,8 +30,21 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
 - **La escena inicial**: «Empezar» en la portada abre el contexto en cinco planos,
   como las de _Blasphemous_: un dios nuevo que no llega, la duda en la Sala N.º 7, la
   carne que no llega y las paredes que se mueven, y el título. Se salta con Espacio.
-- **El Atrio** (#185): el mismo trazado que en Phaser, con la sillería del equipo, los
-  cinco Devotos, los dos Altares, un techo que late y el umbral del final.
+- **El Nivel I, de bajada** (#218): ocho salas, del Pabellón N.º 7 a la puerta de los
+  Pasillos, con el plano de `docs/mapa.md`. Cada sala es su escena (`escenas/nivel1/`)
+  y se pasa de una a otra por sus pasos (`scripts/paso.gd`), algunos con E. Morir
+  vuelve al Altar aunque esté en otra sala. Sin reliquias: se baja con el bisturí y la
+  membrana. El Pozo es una escalera gigante con cantos de membrana, y se vuelve a
+  subir clavándose en ellos.
+- **El Atrio (demostración)** (#185): la sala sola de siempre, con sus dos reliquias,
+  desde la portada. En el juego es la Nave del Nivel I, sin ellas.
+- **Los objetivos** (#215): el objetivo nuevo entra arriba a la derecha con una campana;
+  con H se ve siempre. Los que cuentan llevan contador. Los de la niña, en otro color.
+- **Los diálogos** (#216), a lo _Stardew Valley_: caja con retrato y nombre, el texto
+  letra a letra, E para seguir. El Cegado, en la Escalera de los Ciegos.
+- **Las sierras y los rayos** (#217): las salas sin enemigos los llevan. Las sierras de
+  hueso se saltan o se esperan; los rayos de Génesis avisan antes de quemar. Se
+  prueban en la «Sala de los peligros».
 - **El combate** (#183): J golpea (mantenido carga un golpe más fuerte que gasta 30 de
   Fervor), con ↑ o ↓ golpea hacia arriba o hacia abajo (en el aire, y al conectar rebota),
   K para el golpe enemigo si se pulsa a tiempo (140 ms) y Q bebe la Poción de Carne. El
@@ -250,7 +263,10 @@ polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivo
   `scripts/cirujano.gd` solo lee los controles y llama a `move_and_slide`.
 - **Los niveles van en rejilla de 16 px** con un `TileMapLayer` y se editan en el editor.
   El Atrio lo pasó `herramientas/importar_atrio.gd` una vez, redondeando el trazado de
-  Phaser a la rejilla; no se vuelve a correr, porque pisaría lo pintado a mano.
+  Phaser a la rejilla, y las salas del Nivel I las creó `herramientas/crear_nivel_1.gd`;
+  ninguno se vuelve a correr, porque pisaría lo pintado a mano. `tests/test_nivel_1.gd`
+  comprueba que los pasos casen, que todo esté sobre piedra y que cada canto de
+  membrana se pueda trepar.
 - **Capas de colisión**: 1 el mundo, 2 el Cirujano, 3 los enemigos. Los cuerpos solo
   chocan con el mundo; el daño se resuelve con las cajas.
 - **El combate** va como el movimiento: `scripts/combate.gd` es la lógica (ventanas,

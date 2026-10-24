@@ -9,7 +9,7 @@ func test_la_portada_empieza_por_la_intro() -> void:
 
 func test_la_intro_lleva_al_atrio() -> void:
 	var intro := preload("res://scripts/intro.gd")
-	afirmar_igual(intro.SIGUIENTE, "res://escenas/atrio.tscn", "y de la intro, al Atrio")
+	afirmar_igual(intro.SIGUIENTE, "res://escenas/nivel1/pabellon.tscn", "y de la intro, al Pabellón N.º 7")
 	afirmar(ResourceLoader.exists("res://escenas/intro.tscn"), "la escena existe")
 
 
