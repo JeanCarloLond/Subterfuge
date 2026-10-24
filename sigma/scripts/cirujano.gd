@@ -76,6 +76,8 @@ var vitalidad: int = Sacramento.VITALIDAD["maxima"]
 var punto_reaparicion := Vector2.ZERO
 ## Sin vitalidad, hasta volver al Altar.
 var muerto := false
+## El fotograma en que la E empezo una ejecucion (ver puede_ejecutar).
+var _e_ejecuto_en := -1
 
 ## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
 ## Contra una pared no se avanza, y las piernas no deben moverse.
@@ -371,6 +373,7 @@ func _intentar_ejecutar() -> void:
 	var mejor := _a_quien_ejecutar()
 	if mejor == null or not combate.ejecutar(movimiento.libre()):
 		return
+	_e_ejecuto_en = Engine.get_process_frames()
 
 	_victima = mejor
 	_rematada = false
@@ -386,9 +389,14 @@ func _intentar_ejecutar() -> void:
 
 
 ## Si la E de ahora es para ejecutar: hay un aturdido al alcance y el cuerpo
-## esta libre. Entonces la E no reza, ni toma, ni lee: con un Altar al lado,
-## una pulsacion hacia dos cosas.
+## esta libre, o la E de este mismo fotograma ya empezo una ejecucion. Entonces
+## la E no reza, ni toma, ni lee: con un Altar al lado, una pulsacion hacia dos
+## cosas. Lo segundo hace falta porque el Altar, la reliquia y la nota miran la
+## E en _process, despues de la fisica: para entonces el Cirujano ya no esta
+## libre y el aturdido ya no es ejecutable.
 func puede_ejecutar() -> bool:
+	if _e_ejecuto_en == Engine.get_process_frames():
+		return true
 	return movimiento.libre() and _a_quien_ejecutar() != null
 
 
