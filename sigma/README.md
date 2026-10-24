@@ -270,7 +270,8 @@ polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivo
   `scripts/cirujano.gd` solo lee los controles y llama a `move_and_slide`.
 - **Los niveles van en rejilla de 16 px** con un `TileMapLayer` y se editan en el editor.
   El Atrio lo pasó `herramientas/importar_atrio.gd` una vez, redondeando el trazado de
-  Phaser a la rejilla, y las salas del Nivel I las creó `herramientas/crear_nivel_1.gd`;
+  Phaser a la rejilla, y las salas del Nivel I las creó `herramientas/crear_nivel_1.gd`
+  (y las vistió `herramientas/vestir_nivel_1.gd`, que va detrás si se rehace una sala);
   ninguno se vuelve a correr, porque pisaría lo pintado a mano. `tests/test_nivel_1.gd`
   comprueba que los pasos casen, que todo esté sobre piedra y que cada canto de
   membrana se pueda trepar.
