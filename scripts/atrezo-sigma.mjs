@@ -41,6 +41,8 @@ const PALETA = {
   brasa: trio('#c8541e', '#f08a3a', '#7a2a10'),
   hongo: trio('#3e8a7e', '#7ad0c0', '#24524a'),
   pie: trio('#6a5a4e', '#8a7868', '#4a3e34'),
+  carne: trio('#8e2a24', '#b8443a', '#5e1a16'),
+  hueso: trio('#d9cbb0', '#f0e6d2', '#a8987c'),
 };
 
 /** El Muro de los Dientes: un panel de piedra en arco con filas de dientes. */
@@ -157,10 +159,33 @@ function hongos() {
   return rasterizar(piezas, 24, 16, PALETA);
 }
 
+/**
+ * La deuda de carne: lo que el Cirujano deja donde muere y tiene que volver a
+ * buscar (como la culpa de Blasphemous). En la Diocesis la deuda se mide en
+ * cuerpo: "mi casa debe carne".
+ */
+function deuda() {
+  const piezas = [
+    [elipse([12, 14], 9, 4.5), 'carne'],
+    [elipse([8, 11], 5, 4), 'carne'],
+    [elipse([15, 10], 5.5, 4.5), 'carne'],
+    [capsula([5, 13], [18, 7], 1.1), 'hueso'],
+    [elipse([18, 7], 1.6, 1.6), 'hueso'],
+    [elipse([11, 8.5], 2, 1.4), 'carne'],
+  ];
+  return rasterizar(piezas, 24, 18, PALETA);
+}
+
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
-  const piezas = { 'muro-dientes': muroDientes, 'piedra-tibia': piedraTibia, candelabro, hongos };
+  const piezas = {
+    'muro-dientes': muroDientes,
+    'piedra-tibia': piedraTibia,
+    candelabro,
+    hongos,
+    deuda,
+  };
   for (const [nombre, hacer] of Object.entries(piezas)) {
     writeFileSync(join(destino, `${nombre}.png`), png(hacer()));
   }

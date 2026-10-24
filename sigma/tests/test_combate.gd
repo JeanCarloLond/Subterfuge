@@ -273,3 +273,16 @@ func test_el_contragolpe_no_sale_en_un_dash() -> void:
 	afirmar(combate.contragolpe_listo(), "la ventana sigue para cuando acabe el dash")
 	combate.paso(DT, _entrada(true), true, false)
 	afirmar_igual(combate.tipo, Combate.Tipo.CONTRAGOLPE, "con el cuerpo libre, si")
+
+
+func test_con_la_deuda_de_carne_el_fervor_no_pasa_de_70() -> void:
+	var combate := Combate.new()
+	combate.fervor = 90
+	combate.fijar_tope(70)
+	afirmar_igual(combate.fervor, 70, "lo que sobra se pierde")
+	for i in 5:
+		combate.registrar_golpe(i)
+	afirmar_igual(combate.fervor, 70, "no sube del tope")
+	combate.fijar_tope(100)
+	combate.registrar_golpe(9)
+	afirmar_igual(combate.fervor, 76, "saldada, vuelve a subir")

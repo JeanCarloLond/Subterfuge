@@ -26,6 +26,7 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 ## (scripts/cirujano-sigma.mjs): una animacion por cosa que hace.
 const ARTE := "res://arte/cirujano/"
 const Animaciones := preload("res://arte/cirujano/animaciones.gd")
+const Texturas := preload("res://scripts/texturas.gd")
 ## Las fases de cada golpe, como en Blasphemous: los fotogramas de aviso, el del
 ## smear (el arco del bisturi), el del impacto, que se sostiene, y los de la
 ## recuperacion, que se ven ya con el cuerpo libre.
@@ -78,6 +79,9 @@ var punto_reaparicion := Vector2.ZERO
 var muerto := false
 ## El fotograma en que la E empezo una ejecucion (ver puede_ejecutar).
 var _e_ejecuto_en := -1
+## Lo ultimo que piso: ahi queda la deuda de carne si muere (en un pozo, en el
+## borde del que cayo, y no en el fondo, donde no se podria recuperar).
+var ultimo_suelo := Vector2.ZERO
 
 ## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
 ## Contra una pared no se avanza, y las piernas no deben moverse.
@@ -127,11 +131,13 @@ func _ready() -> void:
 	for nombre in Animaciones.RECUENTO:
 		var lista: Array[Texture2D] = []
 		for i in Animaciones.RECUENTO[nombre]:
-			lista.append(load("%s%s-%d.png" % [ARTE, nombre, i]))
+			lista.append(Texturas.con_normales("%s%s-%d.png" % [ARTE, nombre, i]))
 		_cuadros[nombre] = lista
 
 
 func _physics_process(delta: float) -> void:
+	if is_on_floor() and not muerto:
+		ultimo_suelo = position
 	if muerto:
 		# El cuerpo cae donde estaba, sin control, hasta volver al Altar.
 		velocity.x = 0.0
@@ -557,10 +563,15 @@ func _morir() -> void:
 	_voz("muerte")
 	combate.cancelar()
 	movimiento.blindar(Sacramento.MUERTE["reaparecer_ms"])
-	var desplome := create_tween()
+	# Se desploma con su animacion: el golpe lo echa atras, se le doblan las
+	# rodillas y cae postrado. Despues se tine de carne y se apaga.
 	var duracion: float = Sacramento.MUERTE["desplome_ms"] / 1000.0
-	desplome.tween_property(_figura, "scale", Vector2(1.3 * movimiento.mirando, 0.3), duracion).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-	desplome.parallel().tween_property(_figura, "modulate", Color(0.55, 0.18, 0.18, 0.35), duracion)
+	var cuadros: Array = _cuadros["muerte"]
+	var desplome := create_tween()
+	for cuadro in cuadros:
+		desplome.tween_callback(func() -> void: _sprite.texture = cuadro)
+		desplome.tween_interval(duracion / cuadros.size())
+	desplome.tween_property(_figura, "modulate", Color(0.55, 0.18, 0.18, 0.35), 0.5)
 	murio.emit()
 	get_tree().create_timer(Sacramento.MUERTE["reaparecer_ms"] / 1000.0).timeout.connect(_revivir)
 

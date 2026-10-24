@@ -1,9 +1,14 @@
 [gd_resource type="TileSet" format=3]
 
 [ext_resource type="Texture2D" path="res://arte/silleria/sigma.png" id="1_silleria"]
+[ext_resource type="Texture2D" path="res://arte/silleria/sigma_n.png" id="2_normales"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_silleria"]
+diffuse_texture = ExtResource("1_silleria")
+normal_texture = ExtResource("2_normales")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_silleria"]
-texture = ExtResource("1_silleria")
+texture = SubResource("CanvasTexture_silleria")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0

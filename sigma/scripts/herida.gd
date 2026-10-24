@@ -46,3 +46,26 @@ static func salpicar(nivel: Node, sitio: Vector2, hacia: float, gotas: int) -> v
 	nivel.add_child(chorro)
 	chorro.emitting = true
 	nivel.get_tree().create_timer(1.0).timeout.connect(chorro.queue_free)
+
+
+## El charco que se queda en el suelo donde muere: la pelea deja rastro. Una
+## mancha irregular, pegada al suelo en `pies`, siempre la misma para el mismo
+## sitio.
+static func charco(nivel: Node, pies: Vector2) -> void:
+	if nivel == null or not nivel.is_inside_tree():
+		return
+	var azar := RandomNumberGenerator.new()
+	azar.seed = hash(Vector2i(pies))
+	var mancha := Polygon2D.new()
+	var puntos := PackedVector2Array()
+	var lados := 10
+	for i in lados:
+		var a := TAU * i / lados
+		var r := azar.randf_range(5.0, 11.0)
+		# Aplastada contra el suelo: mucho mas ancha que alta.
+		puntos.append(Vector2(cos(a) * r, minf(0.0, sin(a) * r * 0.22)))
+	mancha.polygon = puntos
+	mancha.color = Color(0.36, 0.05, 0.05, 0.9)
+	mancha.position = pies + Vector2(0, -0.5)
+	mancha.z_index = -1
+	nivel.add_child(mancha)

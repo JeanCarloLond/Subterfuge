@@ -15,6 +15,7 @@ extends CharacterBody2D
 signal lanzo(sitio: Vector2, direccion: int)
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Texturas := preload("res://scripts/texturas.gd")
 const Bocadillo := preload("res://scripts/bocadillo.gd")
 ## Lo que dice al verlo: administra el diezmo, y la ley de la Mano que mira
 ## tambien es suya (canon).
@@ -77,7 +78,7 @@ func _ready() -> void:
 	for nombre in CUADROS:
 		var lista: Array[Texture2D] = []
 		for i in CUADROS[nombre]:
-			lista.append(load(ARTE % [nombre, i]))
+			lista.append(Texturas.con_normales(ARTE % [nombre, i]))
 		_cuadros[nombre] = lista
 	_marca = Sprite2D.new()
 	_marca.texture = MARCA
@@ -238,6 +239,7 @@ func _morir() -> void:
 	estado = Estado.MUERTO
 	velocity = Vector2.ZERO
 	$Caja.set_deferred("disabled", true)
+	Herida.charco(get_parent(), position)
 
 
 func _caer() -> void:

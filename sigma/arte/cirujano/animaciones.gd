@@ -22,4 +22,5 @@ const RECUENTO := {
 	"bebe": 3,
 	"alza": 2,
 	"tajo": 3,
+	"muerte": 4,
 }

@@ -289,12 +289,28 @@ function piezas(p) {
 }
 
 /** Una pose a pixeles: matriz de [r, g, b, a]. */
-export function dibujar(pose) {
-  return rasterizar(piezas(pose), ANCHO, ALTO);
+export function dibujar(pose, opciones) {
+  return rasterizar(piezas(pose), ANCHO, ALTO, PALETA, opciones);
 }
 
-/** Piezas a pixeles, con sombreado por bandas y contorno, en `paleta`. */
-export function rasterizar(lista, ANCHO, ALTO, paleta = PALETA) {
+/** Un color mas oscuro: el contorno selectivo de cada material. */
+const oscurecer = ([r, g, b, a], f) => [Math.round(r * f), Math.round(g * f), Math.round(b * f), a];
+
+/**
+ * Piezas a pixeles, con sombreado por bandas y contorno, en `paleta`.
+ *
+ * Limpio como pixel art dibujado a mano:
+ * - contorno SELECTIVO: el borde de cada pieza en su propio color oscurecido,
+ *   no en negro (como en Blasphemous); solo el de abajo, el que pisa, casi
+ *   negro, para que la figura pese;
+ * - sin pixeles sueltos: uno distinto de sus cuatro vecinos, iguales entre si
+ *   y de la misma pieza, toma su color.
+ *
+ * Con `normales`, devuelve tambien el mapa de normales (`img.normal`) para que
+ * las luces de Godot modelen la figura: de cada pixel se mide cuanto hay hasta
+ * el borde de su pieza en las cuatro direcciones, y eso dice hacia donde mira.
+ */
+export function rasterizar(lista, ANCHO, ALTO, paleta = PALETA, { normales = false } = {}) {
   const etiqueta = Array.from({ length: ALTO }, () => new Array(ANCHO).fill(-1));
   const materiales = [];
   lista.forEach(([forma, material], i) => {
@@ -304,18 +320,22 @@ export function rasterizar(lista, ANCHO, ALTO, paleta = PALETA) {
   });
   const en = (x, y) => (x >= 0 && x < ANCHO && y >= 0 && y < ALTO ? etiqueta[y][x] : -1);
   const img = Array.from({ length: ALTO }, () => new Array(ANCHO).fill([0, 0, 0, 0]));
+  const LADOS = [
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+  ];
   for (let y = 0; y < ALTO; y += 1) {
     for (let x = 0; x < ANCHO; x += 1) {
       const e = etiqueta[y][x];
       if (e < 0) {
-        // El contorno de la silueta, de un pixel.
-        const borde = [
-          [1, 0],
-          [-1, 0],
-          [0, 1],
-          [0, -1],
-        ].some(([dx, dy]) => en(x + dx, y + dy) >= 0);
-        if (borde) img[y][x] = paleta.contorno;
+        // El contorno: del color de la pieza que toca, oscurecido. Si la pieza
+        // esta encima (este pixel es su borde de abajo), casi negro.
+        const encima = en(x, y - 1);
+        const toca = LADOS.map(([dx, dy]) => en(x + dx, y + dy)).find((v) => v >= 0);
+        if (toca === undefined) continue;
+        img[y][x] = encima >= 0 ? paleta.contorno : oscurecer(paleta[materiales[toca]][2], 0.5);
         continue;
       }
       const [base, luz, sombra] = paleta[materiales[e]];
@@ -328,6 +348,46 @@ export function rasterizar(lista, ANCHO, ALTO, paleta = PALETA) {
       if (fino && en(x, y - 1) === e && en(x + 1, y) === e) color = base;
       img[y][x] = color;
     }
+  }
+  // Sin pixeles sueltos.
+  const igual = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+  for (let y = 1; y < ALTO - 1; y += 1) {
+    for (let x = 1; x < ANCHO - 1; x += 1) {
+      const e = etiqueta[y][x];
+      if (e < 0) continue;
+      const vecinos = LADOS.map(([dx, dy]) => [img[y + dy][x + dx], etiqueta[y + dy][x + dx]]);
+      const [c0] = vecinos[0];
+      if (vecinos.every(([c, v]) => v === e && igual(c, c0)) && !igual(img[y][x], c0))
+        img[y][x] = c0;
+    }
+  }
+  if (normales) {
+    const MAX = 6;
+    const hasta = (x, y, dx, dy, e) => {
+      for (let k = 1; k <= MAX; k += 1) if (en(x + dx * k, y + dy * k) !== e) return k;
+      return MAX + 1;
+    };
+    img.normal = Array.from({ length: ALTO }, (_, y) =>
+      Array.from({ length: ANCHO }, (_, x) => {
+        const e = etiqueta[y][x];
+        if (e < 0) return [128, 128, 255, 0];
+        const izq = hasta(x, y, -1, 0, e);
+        const der = hasta(x, y, 1, 0, e);
+        const arr = hasta(x, y, 0, -1, e);
+        const aba = hasta(x, y, 0, 1, e);
+        // Cerca del borde de la derecha, la superficie mira a la derecha.
+        const nx = ((izq - der) / (izq + der)) * 0.8;
+        const ny = ((arr - aba) / (arr + aba)) * 0.8;
+        const nz = Math.sqrt(Math.max(0, 1 - nx * nx - ny * ny));
+        // En Godot el verde de la normal apunta hacia arriba.
+        return [
+          Math.round((nx * 0.5 + 0.5) * 255),
+          Math.round((-ny * 0.5 + 0.5) * 255),
+          Math.round((nz * 0.5 + 0.5) * 255),
+          255,
+        ];
+      }),
+    );
   }
   return img;
 }
@@ -766,6 +826,49 @@ const tajo = [
   },
 ];
 
+// Morir: el golpe lo echa atras, se le doblan las rodillas y cae postrado,
+// de rodillas y con la frente hacia el suelo, como quien reza.
+const muerte = [
+  {
+    cadera: baja(1, -1),
+    lean: -0.38,
+    cabeceo: -0.25,
+    zancadaCerca: -3,
+    zancadaLejos: 2,
+    cerca: [-1.3, 0.3],
+    lejos: [-1, 0.2],
+    sway: 2,
+  },
+  {
+    cadera: baja(5),
+    lean: 0.1,
+    cabeceo: 0.25,
+    zancadaCerca: 1,
+    zancadaLejos: -1,
+    cerca: [0.3, 0.2],
+    lejos: [0.2, 0.2],
+    vuelo: 1.5,
+  },
+  {
+    cadera: baja(8),
+    lean: 0.45,
+    cabeceo: 0.45,
+    cerca: [0.5, 0.1],
+    lejos: [0.4, 0.1],
+    hoja: 1.2,
+    vuelo: 2.5,
+  },
+  {
+    cadera: baja(10),
+    lean: 0.75,
+    cabeceo: 0.55,
+    cerca: [0.9, 0.1],
+    lejos: [0.8, 0.1],
+    hoja: 1.5,
+    vuelo: 3,
+  },
+];
+
 export const ANIMACIONES = {
   reposo,
   correr,
@@ -786,6 +889,7 @@ export const ANIMACIONES = {
   bebe,
   alza,
   tajo,
+  muerte,
 };
 
 // -- Las reliquias ------------------------------------------------------------
@@ -885,11 +989,12 @@ if (esPrincipal) {
   const cuadros = {};
   const recuento = {};
   for (const [nombre, poses] of Object.entries(ANIMACIONES)) {
-    cuadros[nombre] = poses.map(dibujar);
+    cuadros[nombre] = poses.map((pose) => dibujar(pose, { normales: true }));
     recuento[nombre] = poses.length;
-    cuadros[nombre].forEach((img, i) =>
-      writeFileSync(join(destino, `${nombre}-${i}.png`), png(img)),
-    );
+    cuadros[nombre].forEach((img, i) => {
+      writeFileSync(join(destino, `${nombre}-${i}.png`), png(img));
+      writeFileSync(join(destino, `${nombre}-${i}_n.png`), png(img.normal));
+    });
   }
   const lineas = Object.entries(recuento).map(([n, c]) => `\t"${n}": ${c},`);
   writeFileSync(

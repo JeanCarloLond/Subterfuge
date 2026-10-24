@@ -61,6 +61,15 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   `arte/silleria/membrana.tres`. Empujar hacia fuera lo
   gira de espaldas a la pared, y saltar así lo despega hacia fuera; de cara, saltar o ↑
   trepan al borde.
+- **El ambiente vivo** (`scripts/ambiente.gd`): la Lluvia Tibia de la biblia gotea de los
+  techos y salpica en el suelo (los puntos de goteo se buscan solos en la piedra), el
+  polvo flota a la luz, las cadenas se mecen, la niebla baja se desliza sobre los suelos
+  y donde muere un enemigo queda un charco de sangre.
+- **Morir**: el Cirujano cae con su animación (el golpe, las rodillas, postrado) y deja
+  su **deuda de carne** donde pisaba por última vez, como la culpa de _Blasphemous_.
+  Mientras no vuelve a por ella (E), el Fervor no pasa de 70 (la parte perdida se ve
+  tachada en sangre en la interfaz). Morir otra vez la cambia de sitio. Se guarda con la
+  partida.
 - **Los temblores**: cada medio minuto, más o menos, el templo se encoge un poco, lejos:
   la cámara tiembla, cae polvo y alguna piedra y suena un retumbo grave
   (`scripts/temblor.gd`). No hacen daño; son el aviso de fondo de que todo se mueve.
@@ -90,6 +99,12 @@ paleta de carne y óxido y 53 fotogramas en 18 animaciones (reposo, carrera, sal
 caída, aterrizaje, dash, agarre, herido, rezar, guardia, golpe, cargado, arriba, abajo,
 contragolpe, poción y ejecución). Cada golpe tiene aviso sostenido, un fotograma de
 _smear_ (el arco del bisturí), impacto y recuperación.
+
+Los títeres salen **limpios como pixel art dibujado a mano**: contorno selectivo (el borde
+de cada pieza en su color oscurecido, no en negro, salvo abajo, donde pisa) y sin píxeles
+sueltos. Y con **mapa de normales** (`<nombre>_n.png`): las velas, los Altares y los
+hongos modelan de verdad al Cirujano, a los enemigos y a la piedra
+(`scripts/texturas.gd`; la altura de las luces, en `ALTURA_LUZ`).
 
 No se dibuja cuadro a cuadro: `scripts/cirujano-sigma.mjs` describe cada fotograma como
 una pose (cadera, inclinación, ángulos de los brazos, zancada) y pinta las piezas del

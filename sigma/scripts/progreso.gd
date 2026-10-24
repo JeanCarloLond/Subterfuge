@@ -18,6 +18,8 @@ var altar := ""
 
 var _reliquias := {}
 var _notas := {}
+## La deuda de carne pendiente: {"sala": ruta, "sitio": Vector2}, o vacia.
+var deuda := {}
 
 
 func _ready() -> void:
@@ -54,6 +56,17 @@ func rezar_en(escena: String, nombre: String) -> void:
 	guardar()
 
 
+## Muere en `sitio` de la sala `escena`: ahi queda su carne. Solo una a la vez.
+func endeudar(escena: String, sitio: Vector2) -> void:
+	deuda = {"sala": escena, "sitio": sitio}
+	guardar()
+
+
+func saldar() -> void:
+	deuda = {}
+	guardar()
+
+
 func hay_partida() -> bool:
 	return sala != ""
 
@@ -64,6 +77,7 @@ func nueva() -> void:
 	_notas.clear()
 	sala = ""
 	altar = ""
+	deuda = {}
 	if FileAccess.file_exists(ruta):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(ruta))
 
@@ -74,6 +88,7 @@ func guardar() -> void:
 	partida.set_value("partida", "notas", _notas.keys())
 	partida.set_value("partida", "sala", sala)
 	partida.set_value("partida", "altar", altar)
+	partida.set_value("partida", "deuda", deuda)
 	partida.save(ruta)
 
 
@@ -82,6 +97,7 @@ func cargar() -> void:
 	_notas.clear()
 	sala = ""
 	altar = ""
+	deuda = {}
 	var partida := ConfigFile.new()
 	if partida.load(ruta) != OK:
 		return
@@ -91,3 +107,4 @@ func cargar() -> void:
 		_notas[id] = true
 	sala = partida.get_value("partida", "sala", "")
 	altar = partida.get_value("partida", "altar", "")
+	deuda = partida.get_value("partida", "deuda", {})
