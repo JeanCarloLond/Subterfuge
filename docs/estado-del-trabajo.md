@@ -3,7 +3,7 @@
 > **Léelo antes de seguir.** Es el traspaso entre sesiones (de Claude o de quien sea): qué
 > reglas mandan, qué está hecho, qué sigue y qué trampas ya se han pisado. Lo que no esté
 > aquí ni en el repo, **no se da por hecho**: se comprueba (`git log`, `gh issue list`) o se
-> pregunta. Última actualización: 22 de octubre de 2026.
+> pregunta. Última actualización: 23 de octubre de 2026.
 
 ## Reglas que no se discuten
 
@@ -157,6 +157,36 @@ del original; fuentes góticas (OFL); interfaz con medallón; la piedra por veci
 contragolpe en un dash dejaba al Cirujano flotando. Una **propuesta de mapa** en
 `sigma/docs/mapa.md`, por decidir.
 
+**Las rondas de feedback de Jean** (22 y 23 de octubre), cada punto en su issue y cerrado:
+
+- **Legibilidad:** un tema común (`arte/tema.tres`, VT323 16 con contorno) para toda la
+  interfaz, con test que lo vigila (`test_letra.gd`); la narración de la intro en VT323 32.
+- **Daño visible:** destello blanco, sangre y retroceso del Devoto al recibir (`herida.gd`).
+- **Partida guardada** (`progreso.gd`): rezar guarda; la portada ofrece «Continuar».
+- **Muerte a lo Dark Souls:** el cuerpo se desploma y sale «Diezmado» (`MUERTE` en
+  `sacramento.gd`). La **deuda de carne** de Alejo (#211): la carne queda donde murió y,
+  mientras no se recupera, el Fervor no pasa de 70.
+- **Portada:** logo tipográfico provisional con una σ en medallón (`logo.gd`, #201 abierta
+  hasta que Jean lo vea), **sin lema**, por decisión de Jean.
+- **Música:** «Dark souls type boss theme» de ProjectHelmet (**CC-BY 4.0, el crédito es
+  obligatorio**) en la portada y la intro; «Dark Shrine Loop» en el Atrio con fundido de 4 s;
+  «Cathedral in the forest» guardada para el siguiente nivel. Créditos en
+  `sigma/audio/LICENCIAS.md`.
+- **Sonidos** (`efectos.gd`, Kenney CC0): pasos, salto, caída, tajo, golpe, parry y trago.
+- **Por qué lo atacan** (en el canon): la ley de la Mano que mira, la mentira de la niña y la
+  verdad de que la ley era una salvaguarda. Frases sobre la cabeza (`bocadillo.gd`).
+- **Solo se clava en la membrana** (capa `Membranas`, grupo `clavable`), no en cualquier pared.
+- **Aplastado se muere**, y caer al vacío cuesta 2. El techo que late **lleva a una nota**
+  escondida (las notas: `nota.gd`, se leen con E y pausan).
+- **La carga del golpe se ve** cuando hay Fervor para soltarla.
+- **Las ofrendas** (#212): el Devoto y la Vestal sueltan carne (cura) o sello (Fervor) con
+  las probabilidades del original; el injerto espera a la Injertadora.
+- **#210 y #211, de Alejo:** primeros planos en la intro, luz que modela con normales y el
+  Atrio vivo. Arreglado al revisar: la E ejecutaba y tomaba la reliquia a la vez
+  (`_e_ejecuto_en` en el Cirujano).
+- **El rostro del Cirujano** (#199): la máscara ciega con un solo ojo abierto, la Mano que
+  mira. Lo hacen Jean y Alejo.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -170,7 +200,8 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 3. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
    cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
    repisa, y ningún muro lo sella sin que se rodee (#189).
-4. #191 la Injertadora, cuando se decida cómo se gana en Sigma.
+4. #191 la Injertadora, cuando se decida cómo se gana en Sigma. Las ofrendas ya sortean el
+   injerto (`con_injertadora` en `ofrenda.gd`): solo falta encenderlo.
 5. Vestir las salas de prueba y los niveles que lleguen como el Atrio, y el arte de Mariana
    cuando se le cuente (el flujo de `.aseprite` está en `sigma/README.md`).
 6. #187 los eslabones, #188 las visiones de la niña.
@@ -219,3 +250,11 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
   para cerrar diálogos o pausa, parar esas escenas desde el código, no con Escape.
 - **Godot:** los `.uid` se suben; `sigma/.godot/` no. Los tests no usan `class_name`
   (heredan por ruta) para no depender de la caché de clases.
+- **Un test que revienta no fallaba:** el ejecutor de Sigma no veía los errores de script. Ahora
+  `tests/ejecutar.gd` registra un `Logger` (`OS.add_logger`) y cualquier error hace fallar.
+- **La física va antes que `_process`:** la E que empieza una ejecución en `_physics_process`
+  la leía después un Altar o una reliquia en `_process`, y hacía las dos cosas. El Cirujano
+  apunta el fotograma (`_e_ejecuto_en`) y los demás lo miran con `puede_ejecutar()`.
+- **Worktrees en el scratchpad:** `git -c core.longpaths=true` o «could not write index».
+  Y nada de `git stash push -- rutas` en mitad de un rebase: se llevó lo ya preparado de esas
+  rutas.
