@@ -187,6 +187,17 @@ contragolpe en un dash dejaba al Cirujano flotando. Una **propuesta de mapa** en
 - **El rostro del Cirujano** (#199): la máscara ciega con un solo ojo abierto, la Mano que
   mira. Lo hacen Jean y Alejo.
 
+**El arranque, decidido por Jean el 23 de octubre** (en `sigma/docs/mapa.md` y el canon):
+el Nivel I de bajada hasta el **Cegado**, Génesis Vestal y sus tres registros, el
+laboratorio **antes** del primer guardián (el **Prior del Diezmo**, que suelta la
+Injertadora), las reliquias repartidas (Pulmón en el III, Tendón en el IV), los
+**objetivos** (de la niña desde la primera visión), los **diálogos a lo Stardew Valley** y
+**sierras o rayos** en las salas sin enemigos. Hecho: #215 objetivos, #216 diálogos y el
+Cegado, #217 sierras y rayos (y la «Sala de los peligros»), #218 el **Nivel I** en ocho
+salas (`escenas/nivel1/`, creadas una vez con `herramientas/crear_nivel_1.gd`; ahora se
+editan en el editor). «Empezar» va ya al Pabellón N.º 7; el Atrio con reliquias queda como
+demostración.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -197,11 +208,11 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 2. **Decidir el mapa** (`sigma/docs/mapa.md`) antes de rehacer niveles, y rehacer el Atrio a
    640×360: el salto al nicho del Tendón aterriza 4 px pasado el borde; la caja de 10×22 se
    queda corta con un sprite de 50 px.
-3. #190 los Pasillos en Sigma, con el primer **cierre** (pasillo que se cierra detrás). El
-   cierre no cabe en el Atrio: es abierto y en zigzag, se sube saltando desde el lado de cada
-   repisa, y ningún muro lo sella sin que se rodee (#189).
-4. #191 la Injertadora, cuando se decida cómo se gana en Sigma. Las ofrendas ya sortean el
-   injerto (`con_injertadora` en `ofrenda.gd`): solo falta encenderlo.
+3. Que Jean juegue el Nivel I y diga qué cambia. Después, el **Nivel II** del plano: #190
+   los Pasillos (con el primer cierre), los tres registros de Génesis, el laboratorio y la
+   primera visión (#188) y el Prior del Diezmo (#219), que suelta la Injertadora (#191; las
+   ofrendas ya sortean el injerto con `con_injertadora`).
+4. El nombre del Cegado (abierto en el canon: Casiano, Ulpiano).
 5. Vestir las salas de prueba y los niveles que lleguen como el Atrio, y el arte de Mariana
    cuando se le cuente (el flujo de `.aseprite` está en `sigma/README.md`).
 6. #187 los eslabones, #188 las visiones de la niña.
@@ -258,3 +269,13 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 - **Worktrees en el scratchpad:** `git -c core.longpaths=true` o «could not write index».
   Y nada de `git stash push -- rutas` en mitad de un rebase: se llevó lo ya preparado de esas
   rutas.
+- **Clavarse es una vez por salto**: el Cirujano se clava una sola vez hasta volver a pisar
+  suelo, y desde ahí trepa unos 45 px. Una pared de membrana larga **no se sube**; lo que se
+  sube es un canto de hasta ~137 px (salto, clavarse, trepar), y solo si encima de su arista
+  hay dos tiles libres también en la columna de al lado. El primer Pozo los tenía tapados
+  por el tramo de arriba; `test_nivel_1.gd` lo vigila ahora.
+- **`Input.is_action_just_pressed` sigue siendo cierto** en el fotograma de la pulsación aunque
+  se suelte la acción (Godot 4.3+): la E que cierra un panel lo volvía a abrir. La interfaz
+  apunta el fotograma en que cierra y en él no abre nada.
+- **Un script de prueba con `change_scene_to_file`**: `current_scene` es null unos fotogramas;
+  esperar a que exista antes de tocar la sala.
