@@ -35,6 +35,9 @@ func _ready() -> void:
 	_luz.texture = textura
 	_luz.color = Color(0.9, 0.2, 0.15)
 	_luz.position = Vector2(0, -10)
+	# A la altura de las demas luces del Atrio: la deuda se crea despues de que
+	# el nivel las suba, y a ras de suelo no modelaria la figura.
+	_luz.height = preload("res://scripts/sacramento.gd").ALTURA_LUZ
 	add_child(_luz)
 	_aviso = Label.new()
 	# Con la letra del tema del proyecto (legible), como los demas avisos.
