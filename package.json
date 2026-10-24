@@ -34,6 +34,7 @@
     "sigma:silleria": "node scripts/silleria-sigma.mjs",
     "sigma:vestal": "node scripts/vestal-sigma.mjs",
     "sigma:fondos": "node scripts/fondos-sigma.mjs",
+    "sigma:cegado": "node scripts/cegado-sigma.mjs",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {

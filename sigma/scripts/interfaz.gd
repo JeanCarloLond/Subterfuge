@@ -4,12 +4,19 @@
 ## frascos de Pocion. Los avisos, en el centro; la ayuda de los controles,
 ## abajo, plegada: con H se abre y se cierra (el texto fijo en pantalla
 ## estorbaba y no se leia), y con ella el objetivo. El objetivo nuevo entra
-## arriba a la derecha, se queda un momento y se va (#215). Todo en la letra legible del tema (arte/tema.tres).
+## arriba a la derecha, se queda un momento y se va (#215). Los dialogos, a lo
+## Stardew Valley (#216): una caja abajo con el retrato y el nombre de quien
+## habla, y el texto que se escribe letra a letra. Todo en la letra legible del tema (arte/tema.tres).
 ## Cada sala la conecta a su Cirujano y pone su propia ayuda.
 extends CanvasLayer
 
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Objetivos := preload("res://scripts/objetivos.gd")
+const Dialogo := preload("res://scripts/dialogo.gd")
+const Sonidos := preload("res://scripts/sonidos.gd")
+const ORO := Color(0.89, 0.663, 0.251)
+## Cada cuantas letras suena la voz: en todas, ametralla.
+const VOZ_CADA := 2
 const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
 const FRASCO_VACIO := preload("res://arte/hud/frasco-vacio.png")
 ## Lo que dura un aviso en pantalla.
@@ -40,6 +47,19 @@ var _lectura_texto: Label
 var _objetivo: VBoxContainer
 var _objetivo_texto: Label
 var _objetivo_tween: Tween
+var _dialogo: Dialogo
+var _al_terminar := Callable()
+var _retratos := {}
+var _caja: Control
+var _caja_texto: Label
+var _caja_retrato: TextureRect
+var _caja_nombre: Label
+var _caja_flecha: Polygon2D
+var _voz: AudioStreamPlayer
+var _voces: Array[AudioStream] = []
+var _letras := 0
+## El fotograma en que se cerro una lectura o un dialogo (ver _soltar_e).
+var _cerrado_en := -1
 
 @onready var _ayuda: Label = $Ayuda
 @onready var _vida: TextureProgressBar = $Vida
@@ -56,21 +76,170 @@ func _ready() -> void:
 	_preparar_muerte()
 	_preparar_lectura()
 	_preparar_objetivo()
+	_preparar_caja()
 	var progreso := _progreso()
 	if progreso:
 		progreso.objetivo_cambio.connect(mostrar_objetivo)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
+	if _dialogo:
+		if evento.is_action_pressed("interactuar"):
+			if _dialogo.pulsar():
+				_cerrar_dialogo()
+			else:
+				_pintar_dialogo()
+		get_viewport().set_input_as_handled()
+		return
 	if _lectura.visible:
 		if evento.is_action_pressed("interactuar") or evento.is_action_pressed("pausa"):
 			_lectura.visible = false
 			get_tree().paused = false
+			_soltar_e()
 			get_viewport().set_input_as_handled()
 		return
 	if evento.is_action_pressed("ayuda"):
 		_ayuda_abierta = not _ayuda_abierta
 		_pintar_ayuda()
+
+
+func _process(delta: float) -> void:
+	if _dialogo == null:
+		return
+	var nuevas := _dialogo.paso(delta)
+	if nuevas > 0:
+		var antes := _letras
+		_letras += nuevas
+		var letra := _dialogo.texto_visible().right(1)
+		if _letras / VOZ_CADA != antes / VOZ_CADA and letra.strip_edges() != "":
+			_voz.stream = _voces[randi() % _voces.size()]
+			_voz.pitch_scale = randf_range(0.94, 1.06)
+			_voz.play()
+		_pintar_dialogo()
+	# La flecha de «hay mas» respira cuando la linea esta entera.
+	_caja_flecha.position.y = _caja_flecha.get_meta("y") + roundf(sin(Time.get_ticks_msec() / 160.0) * 1.5)
+
+
+## Habla alguien: `lineas` son [{quien, texto}], `retratos` da el retrato de
+## cada quien (si no hay, solo el nombre). El juego se para hasta el final, y
+## entonces se llama a `al_terminar`.
+func hablar(lineas: Array, retratos: Dictionary, al_terminar := Callable()) -> void:
+	if _recien_cerrado():
+		return
+	_dialogo = Dialogo.new(lineas)
+	_retratos = retratos
+	_al_terminar = al_terminar
+	_letras = 0
+	_caja.visible = true
+	get_tree().paused = true
+	_pintar_dialogo()
+
+
+func hablando() -> bool:
+	return _dialogo != null
+
+
+func _cerrar_dialogo() -> void:
+	_dialogo = null
+	_caja.visible = false
+	get_tree().paused = false
+	_soltar_e()
+	if _al_terminar.is_valid():
+		_al_terminar.call()
+
+
+## La E que cierra no puede abrir otra vez: lo que se lee o con quien se habla
+## mira la E en su _process, en este mismo fotograma y con el juego ya en
+## marcha, y la ve recien pulsada (soltarla no basta: Godot la sigue dando por
+## pulsada en ese fotograma). Se apunta el fotograma y en el no se abre nada.
+func _soltar_e() -> void:
+	_cerrado_en = Engine.get_process_frames()
+
+
+func _recien_cerrado() -> bool:
+	return _cerrado_en == Engine.get_process_frames()
+
+
+func _pintar_dialogo() -> void:
+	var quien := _dialogo.quien()
+	_caja_texto.text = _dialogo.texto_visible()
+	_caja_nombre.text = quien
+	_caja_retrato.texture = _retratos.get(quien)
+	_caja_flecha.visible = _dialogo.linea_completa()
+
+
+## La caja: el texto a la izquierda y, a la derecha, el retrato en su marco con
+## el nombre en una placa debajo, como en Stardew Valley. Oro viejo sobre
+## negro, como el resto de la interfaz.
+func _preparar_caja() -> void:
+	_caja = Control.new()
+	_caja.name = "Dialogo"
+	_caja.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_caja.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var texto := _panel(Rect2(16, 222, 472, 128))
+	var retrato := _panel(Rect2(496, 222, 128, 128))
+	_caja_texto = Label.new()
+	_caja_texto.position = Vector2(14, 10)
+	_caja_texto.size = Vector2(444, 108)
+	_caja_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_caja_texto.add_theme_font_size_override("font_size", 20)
+	texto.add_child(_caja_texto)
+	_caja_flecha = Polygon2D.new()
+	_caja_flecha.polygon = PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(0, 6)])
+	_caja_flecha.color = ORO
+	_caja_flecha.position = Vector2(456, 112)
+	_caja_flecha.set_meta("y", 112.0)
+	texto.add_child(_caja_flecha)
+	_caja_retrato = TextureRect.new()
+	_caja_retrato.position = Vector2(16, 6)
+	_caja_retrato.size = Vector2(96, 96)
+	_caja_retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_caja_retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_caja_retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	retrato.add_child(_caja_retrato)
+	var placa := ColorRect.new()
+	placa.color = Color(0.16, 0.1, 0.07)
+	placa.position = Vector2(6, 104)
+	placa.size = Vector2(116, 18)
+	retrato.add_child(placa)
+	_caja_nombre = Label.new()
+	_caja_nombre.position = Vector2(0, -2)
+	_caja_nombre.size = Vector2(116, 20)
+	_caja_nombre.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_caja_nombre.add_theme_color_override("font_color", ORO)
+	placa.add_child(_caja_nombre)
+	_caja.add_child(texto)
+	_caja.add_child(retrato)
+	_caja.visible = false
+	add_child(_caja)
+	_voz = AudioStreamPlayer.new()
+	_voz.volume_db = -14.0
+	add_child(_voz)
+	# Dos tonos, para que no suene a maquina.
+	_voces = [Sonidos.voz(330.0), Sonidos.voz(370.0)]
+
+
+## Un panel de la caja: fondo casi negro, doble filete de oro.
+func _panel(rect: Rect2) -> Panel:
+	var panel := Panel.new()
+	panel.position = rect.position
+	panel.size = rect.size
+	var estilo := StyleBoxFlat.new()
+	estilo.bg_color = Color(0.06, 0.04, 0.045, 0.96)
+	estilo.border_color = ORO.darkened(0.25)
+	estilo.set_border_width_all(2)
+	estilo.shadow_color = Color(0, 0, 0, 0.5)
+	estilo.shadow_size = 4
+	panel.add_theme_stylebox_override("panel", estilo)
+	# El filete de dentro: oxido, a dos pixeles del de fuera.
+	var filete := ReferenceRect.new()
+	filete.border_color = Color(0.48, 0.23, 0.12)
+	filete.editor_only = false
+	filete.position = Vector2(4, 4)
+	filete.size = rect.size - Vector2(8, 8)
+	filete.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(filete)
+	return panel
 
 
 func _pintar_ayuda() -> void:
@@ -264,6 +433,8 @@ func _preparar_muerte() -> void:
 ## Una nota abierta: su titulo y su texto en un panel, con el juego parado
 ## hasta cerrarla con E.
 func leer(titulo: String, texto: String) -> void:
+	if _recien_cerrado():
+		return
 	_lectura_titulo.text = titulo
 	_lectura_texto.text = texto
 	_lectura.visible = true

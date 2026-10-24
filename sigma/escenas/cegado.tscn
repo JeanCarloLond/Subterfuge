@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/interlocutor.gd" id="1_habla"]
+[ext_resource type="Texture2D" path="res://arte/cegado/retrato.png" id="2_retrato"]
+[ext_resource type="Texture2D" path="res://arte/cegado/figura.png" id="3_figura"]
+
+[sub_resource type="Gradient" id="Gradient_luz"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_luz"]
+gradient = SubResource("Gradient_luz")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Cegado" type="Node2D"]
+script = ExtResource("1_habla")
+id = "cegado"
+nombre = "El Cegado"
+retrato = ExtResource("2_retrato")
+lineas = PackedStringArray("¿Pasos de Mano? Hace años que nadie de los vuestros baja esta escalera.", "No te acerques tanto. Te oigo respirar, y respiras como quien ha mirado.", "Yo también miré, una vez. Me devolví a la ley con mis propias manos. Fue lo único que hice bien.", "¿Los muros? No se mueven porque sí. Algo los llama. Algo que se está juntando.", "Antes de la Diócesis hubo otra casa: Génesis Vestal. Ellos escribían manuales; nosotros los volvimos oraciones.", "Sus laboratorios siguen ahí abajo, sellados. Lo que sabían de los Mil, la Diócesis lo rezó para no tener que entenderlo.", "Si quieres saber por qué se mueve el templo, busca sus registros.", "Lo escribí una vez en el margen de un Códice, y te lo digo a la cara, Mano: no vengas.")
+otra_vez = PackedStringArray("Génesis Vestal. Sus registros. Y luego, si te queda juicio, vuelve arriba.", "Sigues aquí. Sigues mirando.", "Los muros no esperan, Mano. Y yo tampoco te voy a esperar.")
+objetivo = "genesis"
+
+[node name="Figura" type="Sprite2D" parent="."]
+position = Vector2(0, -24)
+texture = ExtResource("3_figura")
+
+[node name="Luz" type="PointLight2D" parent="."]
+position = Vector2(0, -30)
+color = Color(0.95, 0.8, 0.55, 1)
+energy = 0.3
+texture = SubResource("GradientTexture2D_luz")
+
+[node name="Aviso" type="Label" parent="."]
+visible = false
+z_index = 20
+offset_left = -48.0
+offset_top = -70.0
+offset_right = 48.0
+offset_bottom = -54.0
+theme_override_colors/font_color = Color(0.929, 0.894, 0.847, 1)
+text = "E  hablar"
+horizontal_alignment = 1

@@ -57,6 +57,10 @@ func _ready() -> void:
 		for nota in $Notas.get_children():
 			nota.cirujano = _cirujano
 			nota.leida.connect(_interfaz.leer)
+	if has_node("Charlas"):
+		for alguien in $Charlas.get_children():
+			alguien.cirujano = _cirujano
+			alguien.habla.connect(_interfaz.hablar)
 	_interfaz.conectar(_cirujano)
 	_cirujano.murio.connect(_endeudar)
 	# Las luces, a su altura: con los mapas de normales modelan la figura.

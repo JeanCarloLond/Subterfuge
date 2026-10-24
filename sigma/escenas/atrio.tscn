@@ -30,6 +30,7 @@
 [ext_resource type="PackedScene" path="res://escenas/vestal.tscn" id="26_vestal"]
 [ext_resource type="Script" path="res://scripts/ambiente.gd" id="27_ambiente"]
 [ext_resource type="PackedScene" path="res://escenas/nota.tscn" id="29_47ehg"]
+[ext_resource type="PackedScene" path="res://escenas/cegado.tscn" id="30_cegado"]
 
 [sub_resource type="Gradient" id="Gradient_l5xs4"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -871,3 +872,8 @@ Lo que mira, abre. Lo que se abre no se vuelve a cerrar.
 Si una Mano mira, córtese la Mano.»
 
 Al margen, con otra letra: «¿Abre a qué?»"
+
+[node name="Charlas" type="Node2D" parent="." unique_id=1216216216]
+
+[node name="Cegado" parent="Charlas" unique_id=1216216217 instance=ExtResource("30_cegado")]
+position = Vector2(208, 1008)
