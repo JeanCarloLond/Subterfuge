@@ -35,13 +35,18 @@ const COLOR_CARTEL := Color(0.541, 0.49, 0.439)
 
 
 func _ready() -> void:
-	for bloque in BLOQUES:
+	for bloque in _bloques():
 		_poner_bloque(Rect2(bloque[0], bloque[1], bloque[2], bloque[3]), bloque[4])
 	$Interfaz.conectar(_cirujano)
 	# La pista del siguiente nivel suena aqui mientras no hay siguiente nivel.
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
 		musica.poner("catedral-bosque")
+
+
+## Los bloques de la sala. Otra sala de prueba puede poner los suyos.
+func _bloques() -> Array:
+	return BLOQUES
 
 
 func _poner_bloque(rect: Rect2, cartel: String) -> void:

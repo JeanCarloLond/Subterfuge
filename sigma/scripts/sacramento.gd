@@ -198,6 +198,25 @@ const COMPACTACION := {
 	"reposo_ms": 4000.0,
 }
 
+## Los peligros de las salas sin enemigos (#217, decidido por Jean). Tocarlos
+## es como rozar a un enemigo (CONTACTO): un punto y un empujon.
+## La sierra de hueso: instrumental de la Diocesis, en un rail o quieta.
+const SIERRA := {
+	"radio": 11.0,
+	"velocidad": 60.0,
+	## Vueltas por segundo del disco: se tiene que ver que corta.
+	"giro": 2.5,
+}
+
+## El rayo de Genesis Vestal: avisa con un hilo que tiembla, quema y se apaga.
+## El aviso es largo a proposito: se cruza leyendo el ritmo, no con reflejos.
+const RAYO := {
+	"apagado_ms": 1400.0,
+	"aviso_ms": 900.0,
+	"activo_ms": 1100.0,
+	"ancho": 6.0,
+}
+
 ## Lo alta que esta cada luz sobre el plano del juego (px): con los mapas de
 ## normales, una luz a ras de suelo solo rozaria la figura; a esta altura la
 ## modela, como una vela que esta un poco por delante.
