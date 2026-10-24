@@ -40,6 +40,14 @@ func _ready() -> void:
 		_volumen[nombre] = EFECTOS[nombre][1]
 	_tomas["trago"] = [Sonidos.trago()]
 	_volumen["trago"] = VOLUMEN_TRAGO_DB
+	# Calculados tambien: la campana del objetivo, la voz de los dialogos (dos
+	# tonos, para que no suene a maquina) y la carga del rayo.
+	_tomas["campana"] = [Sonidos.campana()]
+	_volumen["campana"] = -10.0
+	_tomas["voz"] = [Sonidos.voz(330.0), Sonidos.voz(370.0)]
+	_volumen["voz"] = -14.0
+	_tomas["carga"] = [Sonidos.carga()]
+	_volumen["carga"] = -14.0
 	for i in VOCES:
 		var reproductor := AudioStreamPlayer.new()
 		add_child(reproductor)

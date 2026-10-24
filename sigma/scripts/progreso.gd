@@ -2,10 +2,15 @@
 ## leidas y el ultimo Altar en el que rezo. Es un autoload para que sobreviva a
 ## cambiar de sala, y se guarda en disco cada vez que cambia: al tomar una
 ## reliquia, al leer una nota y al rezar. Asi funcionaba el original: rezar es
-## guardar, y «Continuar» vuelve a ese Altar.
+## guardar, y «Continuar» vuelve a ese Altar. Tambien el objetivo (#215) y lo
+## que lleva contado.
 extends Node
 
 signal reliquia_ganada(id: String)
+## Hay objetivo nuevo, o su cuenta ha avanzado: la interfaz lo muestra.
+signal objetivo_cambio(id: String)
+
+const Objetivos := preload("res://scripts/objetivos.gd")
 
 const RUTA := "user://partida.cfg"
 
@@ -20,6 +25,12 @@ var _reliquias := {}
 var _notas := {}
 ## La deuda de carne pendiente: {"sala": ruta, "sitio": Vector2}, o vacia.
 var deuda := {}
+## El objetivo de ahora (su id en Objetivos), o vacio.
+var objetivo := ""
+## Lo contado para cada objetivo que cuenta: id -> [lo hallado]. Se cuenta
+## aunque el objetivo aun no toque: un registro hallado antes de saber que se
+## buscaba sigue valiendo.
+var _cuentas := {}
 
 
 func _ready() -> void:
@@ -67,6 +78,44 @@ func saldar() -> void:
 	guardar()
 
 
+## Toca el objetivo `id`. Si ya tenia su cuenta completa, pasa al siguiente.
+func fijar_objetivo(id: String) -> void:
+	if id == objetivo or not Objetivos.existe(id):
+		return
+	objetivo = id
+	if Objetivos.total(id) > 0 and cuenta(id) >= Objetivos.total(id) and Objetivos.siguiente(id) != "":
+		fijar_objetivo(Objetivos.siguiente(id))
+		return
+	guardar()
+	objetivo_cambio.emit(id)
+
+
+## Se ha hallado `que` (un registro, por su id) para el objetivo `id`. Cada cosa
+## cuenta una vez. Al completar la cuenta del objetivo de ahora, pasa al siguiente.
+func contar(id: String, que: String) -> void:
+	var hallado: Array = _cuentas.get(id, [])
+	if hallado.has(que):
+		return
+	hallado.append(que)
+	_cuentas[id] = hallado
+	guardar()
+	if id != objetivo:
+		return
+	if cuenta(id) >= Objetivos.total(id) and Objetivos.siguiente(id) != "":
+		fijar_objetivo(Objetivos.siguiente(id))
+	else:
+		objetivo_cambio.emit(id)
+
+
+func cuenta(id: String) -> int:
+	return _cuentas.get(id, []).size()
+
+
+## El objetivo de ahora tal como se lee, con su contador; vacio si no hay.
+func texto_objetivo() -> String:
+	return Objetivos.texto(objetivo, cuenta(objetivo))
+
+
 func hay_partida() -> bool:
 	return sala != ""
 
@@ -78,6 +127,8 @@ func nueva() -> void:
 	sala = ""
 	altar = ""
 	deuda = {}
+	objetivo = ""
+	_cuentas.clear()
 	if FileAccess.file_exists(ruta):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(ruta))
 
@@ -89,6 +140,8 @@ func guardar() -> void:
 	partida.set_value("partida", "sala", sala)
 	partida.set_value("partida", "altar", altar)
 	partida.set_value("partida", "deuda", deuda)
+	partida.set_value("partida", "objetivo", objetivo)
+	partida.set_value("partida", "cuentas", _cuentas)
 	partida.save(ruta)
 
 
@@ -98,6 +151,8 @@ func cargar() -> void:
 	sala = ""
 	altar = ""
 	deuda = {}
+	objetivo = ""
+	_cuentas.clear()
 	var partida := ConfigFile.new()
 	if partida.load(ruta) != OK:
 		return
@@ -108,3 +163,5 @@ func cargar() -> void:
 	sala = partida.get_value("partida", "sala", "")
 	altar = partida.get_value("partida", "altar", "")
 	deuda = partida.get_value("partida", "deuda", {})
+	objetivo = partida.get_value("partida", "objetivo", "")
+	_cuentas = partida.get_value("partida", "cuentas", {})

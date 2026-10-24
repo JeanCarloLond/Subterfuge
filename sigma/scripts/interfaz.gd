@@ -3,17 +3,21 @@
 ## del Cirujano, la vida en seis segmentos de sangre, el Fervor en ambar y los
 ## frascos de Pocion. Los avisos, en el centro; la ayuda de los controles,
 ## abajo, plegada: con H se abre y se cierra (el texto fijo en pantalla
-## estorbaba y no se leia). Todo en la letra legible del tema (arte/tema.tres).
+## estorbaba y no se leia), y con ella el objetivo. El objetivo nuevo entra
+## arriba a la derecha, se queda un momento y se va (#215). Todo en la letra legible del tema (arte/tema.tres).
 ## Cada sala la conecta a su Cirujano y pone su propia ayuda.
 extends CanvasLayer
 
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Objetivos := preload("res://scripts/objetivos.gd")
 const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
 const FRASCO_VACIO := preload("res://arte/hud/frasco-vacio.png")
 ## Lo que dura un aviso en pantalla.
 const AVISO_S := 2.5
 ## Lo que se ve con la ayuda plegada.
-const AYUDA_PLEGADA := "H  controles"
+const AYUDA_PLEGADA := "H  controles y objetivo"
+## Lo que se queda en pantalla un objetivo nuevo, entre entrar y salir.
+const OBJETIVO_S := 4.5
 ## El aviso de la muerte, a lo Dark Souls pero con el mundo: en la Diocesis el
 ## diezmo es la carne que se cobra a cada casa, y morir es pagar el tuyo.
 const TEXTO_MUERTE := "Diezmado"
@@ -33,6 +37,9 @@ var _muerte: Label
 var _lectura: PanelContainer
 var _lectura_titulo: Label
 var _lectura_texto: Label
+var _objetivo: VBoxContainer
+var _objetivo_texto: Label
+var _objetivo_tween: Tween
 
 @onready var _ayuda: Label = $Ayuda
 @onready var _vida: TextureProgressBar = $Vida
@@ -48,6 +55,10 @@ func _ready() -> void:
 	_pintar_ayuda()
 	_preparar_muerte()
 	_preparar_lectura()
+	_preparar_objetivo()
+	var progreso := _progreso()
+	if progreso:
+		progreso.objetivo_cambio.connect(mostrar_objetivo)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
@@ -63,7 +74,73 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _pintar_ayuda() -> void:
-	_ayuda.text = ayuda if _ayuda_abierta else AYUDA_PLEGADA
+	if not _ayuda_abierta:
+		_ayuda.text = AYUDA_PLEGADA
+		return
+	var progreso := _progreso()
+	var objetivo: String = progreso.texto_objetivo() if progreso else ""
+	_ayuda.text = ayuda if objetivo == "" else "Objetivo: %s
+%s" % [objetivo, ayuda]
+
+
+func _progreso() -> Node:
+	return get_node_or_null("/root/Progreso")
+
+
+## El objetivo `id` (nuevo, o su cuenta que avanza): entra arriba a la
+## derecha con una campana, se queda y se va. En su color: el de la nina es
+## otro.
+func mostrar_objetivo(id: String) -> void:
+	var progreso := _progreso()
+	if progreso == null or progreso.objetivo != id:
+		return
+	_objetivo_texto.text = progreso.texto_objetivo()
+	_objetivo_texto.add_theme_color_override("font_color", Objetivos.color(id))
+	if _ayuda_abierta:
+		_pintar_ayuda()
+	var efectos := get_node_or_null("/root/Efectos")
+	if efectos:
+		efectos.sonar("campana")
+	if _objetivo_tween:
+		_objetivo_tween.kill()
+	# El ancho del texto nuevo, ya: si no, llega al fotograma siguiente.
+	_objetivo.reset_size()
+	_objetivo.visible = true
+	_objetivo.modulate.a = 0.0
+	_objetivo.position.x = _objetivo_x() + 24.0
+	_objetivo_tween = create_tween()
+	_objetivo_tween.tween_property(_objetivo, "modulate:a", 1.0, 0.5)
+	_objetivo_tween.parallel().tween_property(_objetivo, "position:x", _objetivo_x(), 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_objetivo_tween.tween_interval(OBJETIVO_S)
+	_objetivo_tween.tween_property(_objetivo, "modulate:a", 0.0, 0.9)
+	_objetivo_tween.tween_callback(func() -> void: _objetivo.visible = false)
+
+
+## Donde se queda el aviso del objetivo: pegado al borde derecho.
+func _objetivo_x() -> float:
+	return get_viewport().get_visible_rect().size.x - _objetivo.size.x - 14.0
+
+
+func _preparar_objetivo() -> void:
+	_objetivo = VBoxContainer.new()
+	_objetivo.name = "Objetivo"
+	_objetivo.add_theme_constant_override("separation", 0)
+	_objetivo.position = Vector2(0, 12)
+	var cabecera := Label.new()
+	cabecera.text = "Objetivo"
+	cabecera.add_theme_color_override("font_color", Color(0.6, 0.55, 0.5))
+	cabecera.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_objetivo_texto = Label.new()
+	_objetivo_texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_objetivo.add_child(cabecera)
+	_objetivo.add_child(_objetivo_texto)
+	_objetivo.visible = false
+	add_child(_objetivo)
+	# Al cambiar de texto cambia de ancho: que siga pegado a la derecha.
+	_objetivo.resized.connect(func() -> void:
+		if _objetivo_tween == null or not _objetivo_tween.is_running():
+			_objetivo.position.x = _objetivo_x()
+	)
 
 
 func conectar(cirujano: CharacterBody2D) -> void:

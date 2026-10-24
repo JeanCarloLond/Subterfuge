@@ -1,5 +1,5 @@
 ## Sonidos hechos con numeros (#186) mientras no hay foley del equipo: el
-## Latido y el crujido de la piedra. Ni muestras grabadas ni generadas: ondas
+## Latido, el crujido de la piedra, la campana, la voz, la sierra y el rayo. Ni muestras grabadas ni generadas: ondas
 ## y ruido calculados aqui.
 extends RefCounted
 
@@ -76,6 +76,86 @@ static func trago() -> AudioStreamWAV:
 			var burbuja := azar.randf_range(-1.0, 1.0) * 0.18
 			muestras[primera + i] += (sin(fase) * 0.8 + burbuja) * envolvente * 0.7
 	return _wav(muestras)
+
+
+## Una campana lejana, para el objetivo nuevo (#215): parciales que no son
+## armonicos, como en una campana de verdad, y una cola larga.
+static func campana() -> AudioStreamWAV:
+	var duracion := 2.2
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * duracion))
+	# [relacion con la fundamental, volumen, lo que dura].
+	var parciales := [[1.0, 0.5, 1.6], [2.0, 0.25, 0.9], [2.76, 0.2, 0.6], [5.4, 0.08, 0.3]]
+	for i in muestras.size():
+		var t := float(i) / MEZCLA
+		var valor := 0.0
+		for p in parciales:
+			valor += sin(TAU * 196.0 * p[0] * t) * p[1] * exp(-t / p[2])
+		muestras[i] = valor * minf(1.0, t / 0.005) * 0.55
+	return _wav(muestras)
+
+
+## La voz de un dialogo (#216): un toque corto y apagado por letra, de tono
+## `hz`. No es una voz: es el ritmo del texto que se escribe.
+static func voz(hz: float) -> AudioStreamWAV:
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * 0.045))
+	var fase := 0.0
+	for i in muestras.size():
+		var t := float(i) / MEZCLA
+		fase += TAU * hz / MEZCLA
+		# Un seno con su tercer armonico, apagado: de madera, no de pitido.
+		muestras[i] = (sin(fase) + sin(fase * 3.0) * 0.2) * minf(1.0, t / 0.003) * exp(-t / 0.012) * 0.45
+	return _wav(muestras)
+
+
+## La sierra de hueso (#217), en bucle: un diente de sierra que vibra, con
+## limadura de ruido. Se oye antes de verla.
+static func sierra() -> AudioStreamWAV:
+	var azar := RandomNumberGenerator.new()
+	azar.seed = 217
+	var muestras := PackedFloat32Array()
+	# Un numero entero de ciclos del vaiven, para que el bucle no salte.
+	muestras.resize(int(MEZCLA * 0.5))
+	var fase := 0.0
+	for i in muestras.size():
+		var t := float(i) / MEZCLA
+		fase += 150.0 * (1.0 + 0.03 * sin(TAU * 8.0 * t)) / MEZCLA
+		var diente := fmod(fase, 1.0) * 2.0 - 1.0
+		muestras[i] = (diente * 0.35 + azar.randf_range(-1.0, 1.0) * 0.12) * 0.6
+	return _bucle(_wav(muestras))
+
+
+## El rayo de Genesis (#217), en bucle: un zumbido limpio, electrico. Ninguna
+## otra cosa del templo suena asi: es otra tecnologia.
+static func zumbido() -> AudioStreamWAV:
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * 0.5))
+	for i in muestras.size():
+		var t := float(i) / MEZCLA
+		var valor := sin(TAU * 120.0 * t) * 0.5 + sin(TAU * 240.0 * t) * 0.25 + sin(TAU * 1200.0 * t) * 0.05
+		muestras[i] = valor * (0.85 + 0.15 * sin(TAU * 10.0 * t)) * 0.5
+	return _bucle(_wav(muestras))
+
+
+## El rayo que se carga: un tono que sube, fino.
+static func carga() -> AudioStreamWAV:
+	var duracion := 0.6
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * duracion))
+	var fase := 0.0
+	for i in muestras.size():
+		var t := float(i) / MEZCLA
+		fase += TAU * (300.0 + 900.0 * t / duracion) / MEZCLA
+		muestras[i] = sin(fase) * (t / duracion) * 0.3
+	return _wav(muestras)
+
+
+static func _bucle(wav: AudioStreamWAV) -> AudioStreamWAV:
+	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	wav.loop_begin = 0
+	wav.loop_end = wav.data.size() / 2
+	return wav
 
 
 ## Un golpe de bombo: un seno que cae de tono, con ataque rapido y cola corta.

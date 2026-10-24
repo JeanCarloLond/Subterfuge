@@ -22,6 +22,8 @@ const PORTADA := "res://escenas/principal.tscn"
 const Sacramento := preload("res://scripts/sacramento.gd")
 ## Lo cerca del umbral que hay que estar para descender.
 const ALCANCE_UMBRAL := 20.0
+## Lo que tarda en aparecer el primer objetivo.
+const PRIMER_OBJETIVO_S := 2.0
 
 ## Por debajo de esta y se ha caido del nivel: vuelve al Altar.
 @export var limite_caida := 1060.0
@@ -62,6 +64,7 @@ func _ready() -> void:
 		luz.height = Sacramento.ALTURA_LUZ
 	_continuar()
 	_deuda_guardada()
+	_primer_objetivo()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
 		# Desde la portada y la intro (el tema epico): fundido largo, que la
@@ -77,6 +80,15 @@ func _continuar() -> void:
 	var altar: Node2D = $Altares.get_node(progreso.altar)
 	altar.encendido = true
 	_cirujano.colocar(altar.position)
+
+
+## Una partida que empieza aqui no tiene objetivo: el primero llega cuando el
+## Cirujano ya esta en pie, no encima de la entrada en la sala.
+func _primer_objetivo() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso == null or progreso.objetivo != "":
+		return
+	get_tree().create_timer(PRIMER_OBJETIVO_S).timeout.connect(progreso.fijar_objetivo.bind("muros"))
 
 
 ## La deuda de carne: al morir, la carne queda donde pisaba por ultima vez.
