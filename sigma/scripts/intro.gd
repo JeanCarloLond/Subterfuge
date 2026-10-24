@@ -76,7 +76,7 @@ func _unhandled_input(evento: InputEvent) -> void:
 
 
 func _secuencia() -> void:
-	for plano in [_vidriera, _sala_siete, _pabellon, _paredes, _titulo]:
+	for plano in [_vidriera, _sala_siete, _manos, _rostro, _pabellon, _paredes, _titulo]:
 		if _hecho:
 			return
 		await plano.call()
@@ -125,14 +125,37 @@ func _sala_siete() -> void:
 	var cirujano := _sprite("res://arte/cirujano/alza-1.png", Vector2(194, 152), Vector2(2, 2))
 	await _abrir()
 	await _decir("En la Sala N.º 7, las Manos del Sacramento operan sin mirar.")
-	cirujano.texture = load("res://arte/cirujano/reposo-0.png")
-	_mover(cirujano, Vector2(-6, 0), 1.2)
+	await _cerrar()
+	camilla.queue_free()
+	cirujano.queue_free()
+
+
+## Primer plano: las manos con el bisturi sobre la sabana. Una ilustracion
+## (scripts/cinematica-sigma.mjs), con mas detalle que el juego, como las
+## escenas de Blasphemous; las de Mariana la sustituyen con el mismo nombre.
+func _manos() -> void:
+	_nuevo_plano()
+	var manos := _ilustracion("res://arte/cinematica/manos.png", Vector2(-24, -10), 4.0)
+	_luz(Vector2(600, 90), Color(1, 0.7, 0.4), 0.9)
+	await _abrir()
+	# El bisturi se detiene sobre la sabana: un instante sin texto.
+	await get_tree().create_timer(2.2).timeout
+	await _cerrar()
+	manos.queue_free()
+
+
+## Primer plano: el rostro vendado. Aqui duda: «Hoy miro».
+func _rostro() -> void:
+	_nuevo_plano()
+	var rostro := _ilustracion("res://arte/cinematica/rostro.png", Vector2(28, -14), 8.0)
+	_luz(Vector2(600, 150), Color(1, 0.68, 0.38), 1.0)
+	await _abrir()
 	await _decir("Hoy miró.")
 	# La ley de la Mano que mira (canon, «Por que lo atacan»): sin esto, que lo
 	# persigan los suyos no se entiende.
 	await _decir("La ley es antigua: la Mano que mira, se corta.")
 	await _cerrar()
-	camilla.queue_free()
+	rostro.queue_free()
 
 
 ## El pabellon: la bandeja del diezmo, vacia.
@@ -208,6 +231,19 @@ func _sprite(ruta: String, sitio: Vector2, escala: Vector2, tinte := Color.WHITE
 	sprite.modulate = tinte
 	_plano.add_child(sprite)
 	return sprite
+
+
+## Una lamina a pantalla completa (algo mayor que la pantalla) que se desplaza
+## despacio `deriva` px en `segundos`, empezando en el lado contrario. Se panea,
+## no se hace zoom: un zoom que no sea entero deforma los pixeles.
+func _ilustracion(ruta: String, deriva: Vector2, segundos: float) -> Sprite2D:
+	var lamina := Sprite2D.new()
+	lamina.texture = load(ruta)
+	lamina.position = Vector2(320, 180) - deriva / 2.0
+	_plano.add_child(lamina)
+	var panear := lamina.create_tween()
+	panear.tween_property(lamina, "position", lamina.position + deriva, segundos).set_trans(Tween.TRANS_SINE)
+	return lamina
 
 
 func _suelo(y: float) -> void:

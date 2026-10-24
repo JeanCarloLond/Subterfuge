@@ -80,7 +80,7 @@ func _physics_process(_delta: float) -> void:
 
 	var cerca := _cirujano.position.distance_to(_umbral.position) <= ALCANCE_UMBRAL
 	_aviso_umbral.visible = cerca and not _terminado
-	if cerca and not _terminado and Input.is_action_just_pressed("interactuar"):
+	if cerca and not _terminado and Input.is_action_just_pressed("interactuar") and not _cirujano.puede_ejecutar():
 		_terminado = true
 		_fin.visible = true
 

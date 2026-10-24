@@ -173,6 +173,14 @@ mientras suena en las salas de prueba. Los efectos (pasos, tajo, golpe, guardia,
 saltar, recibir y morir son las del original (el autoload `Voces`). Autoría y licencias de
 todo en `sigma/audio/LICENCIAS.md`: **una pista nueva no entra sin su línea ahí**.
 
+**Las cinemáticas** llevan ilustraciones a pantalla completa con más detalle que el juego,
+como las escenas de _Blasphemous_ (`npm run sigma:cinematica`, `sigma/arte/cinematica/`):
+en la intro, las manos con el bisturí sobre la sábana y el rostro vendado. Son láminas de
+704×396 (un poco más que la pantalla) pintadas a media resolución, con volumen en cinco
+tonos y la luz de una vela. Se panean despacio, sin zoom: un zoom que no sea entero
+deforma los píxeles. Son provisionales: las de Mariana, con el mismo nombre y tamaño, las
+sustituyen sin tocar código.
+
 **La piedra** (`npm run sigma:silleria`) es de Sigma: una baldosa por cada combinación de
 lados al aire, en cuatro variantes, con la cara de arriba clara, los cantos con bisel y
 el interior en sombra (y vetas de carne en una de cada cuatro). `scripts/silleria.gd`

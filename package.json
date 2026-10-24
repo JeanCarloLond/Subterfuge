@@ -29,6 +29,7 @@
     "sigma:cirujano": "node scripts/cirujano-sigma.mjs",
     "sigma:devoto": "node scripts/devoto-sigma.mjs",
     "sigma:atrezo": "node scripts/atrezo-sigma.mjs",
+    "sigma:cinematica": "node scripts/cinematica-sigma.mjs",
     "sigma:hud": "node scripts/hud-sigma.mjs",
     "sigma:silleria": "node scripts/silleria-sigma.mjs",
     "sigma:vestal": "node scripts/vestal-sigma.mjs",

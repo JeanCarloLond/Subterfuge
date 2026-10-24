@@ -132,3 +132,20 @@ func test_no_golpea_a_quien_salta_por_encima() -> void:
 	_pensar(devoto, 2, Vector2(10, 0))
 	afirmar_igual(devoto.estado, Devoto.Estado.ANTICIPANDO, "cuando baja a su altura, si")
 	devoto.free()
+
+
+## La E con un aturdido al lado es para ejecutarlo (el Cirujano no reza, ni
+## toma, ni lee ese mismo fotograma): esto decide si lo hay.
+func test_la_e_elige_al_aturdido_al_alcance() -> void:
+	const Cirujano := preload("res://scripts/cirujano.gd")
+	var cerca := _devoto()
+	var lejos := _devoto()
+	cerca.position = Vector2(20, 0)
+	lejos.position = Vector2(200, 0)
+	afirmar_igual(Cirujano.elegir_ejecutable(Vector2.ZERO, [cerca, lejos]), null, "en pie, a nadie")
+	cerca.aturdir()
+	lejos.aturdir()
+	afirmar_igual(Cirujano.elegir_ejecutable(Vector2.ZERO, [cerca, lejos]), cerca, "aturdido y a un palmo, si")
+	afirmar_igual(Cirujano.elegir_ejecutable(Vector2(0, -40), [cerca]), null, "a otra altura, no")
+	cerca.free()
+	lejos.free()

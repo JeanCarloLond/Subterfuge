@@ -76,6 +76,8 @@ var vitalidad: int = Sacramento.VITALIDAD["maxima"]
 var punto_reaparicion := Vector2.ZERO
 ## Sin vitalidad, hasta volver al Altar.
 var muerto := false
+## El fotograma en que la E empezo una ejecucion (ver puede_ejecutar).
+var _e_ejecuto_en := -1
 
 ## Lo andado en el suelo: el paso va con la distancia, no con el reloj.
 ## Contra una pared no se avanza, y las piernas no deben moverse.
@@ -321,7 +323,7 @@ func aplastar() -> void:
 ## Rezar en un Altar: se arrodilla, se cura del todo, llena el frasco y ese
 ## Altar es el nuevo sitio donde vuelve. Devuelve false si no puede.
 func rezar(altar: Vector2) -> bool:
-	if not movimiento.rezar():
+	if puede_ejecutar() or not movimiento.rezar():
 		return false
 	punto_reaparicion = altar
 	vitalidad = Sacramento.VITALIDAD["maxima"]
@@ -368,17 +370,10 @@ func _embestir() -> void:
 ## Interactuar junto a un aturdido lo ejecuta. Si hay varios, el mas cercano.
 func _intentar_ejecutar() -> void:
 	var E: Dictionary = Sacramento.EJECUCION
-	var mejor: Node2D = null
-	for enemigo in get_tree().get_nodes_in_group("enemigos"):
-		if not enemigo.has_method("ejecutable") or not enemigo.ejecutable():
-			continue
-		var dx: float = absf(enemigo.position.x - position.x)
-		if dx > E["alcance_x"] or absf(enemigo.position.y - position.y) > E["alcance_y"]:
-			continue
-		if mejor == null or dx < absf(mejor.position.x - position.x):
-			mejor = enemigo
+	var mejor := _a_quien_ejecutar()
 	if mejor == null or not combate.ejecutar(movimiento.libre()):
 		return
+	_e_ejecuto_en = Engine.get_process_frames()
 
 	_victima = mejor
 	_rematada = false
@@ -391,6 +386,40 @@ func _intentar_ejecutar() -> void:
 	movimiento.blindar(E["duracion_ms"])
 	fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
 	_acercar_camara(E["duracion_ms"])
+
+
+## Si la E de ahora es para ejecutar: hay un aturdido al alcance y el cuerpo
+## esta libre, o la E de este mismo fotograma ya empezo una ejecucion. Entonces
+## la E no reza, ni toma, ni lee: con un Altar al lado, una pulsacion hacia dos
+## cosas. Lo segundo hace falta porque el Altar, la reliquia y la nota miran la
+## E en _process, despues de la fisica: para entonces el Cirujano ya no esta
+## libre y el aturdido ya no es ejecutable.
+func puede_ejecutar() -> bool:
+	if _e_ejecuto_en == Engine.get_process_frames():
+		return true
+	return movimiento.libre() and _a_quien_ejecutar() != null
+
+
+func _a_quien_ejecutar() -> Node2D:
+	if not is_inside_tree():
+		return null
+	return elegir_ejecutable(position, get_tree().get_nodes_in_group("enemigos"))
+
+
+## De `enemigos`, el aturdido mas cercano a `desde` al alcance de una
+## ejecucion, o null. Aparte del arbol, para probarlo sin escena en marcha.
+static func elegir_ejecutable(desde: Vector2, enemigos: Array) -> Node2D:
+	var E: Dictionary = Sacramento.EJECUCION
+	var mejor: Node2D = null
+	for enemigo in enemigos:
+		if not enemigo.has_method("ejecutable") or not enemigo.ejecutable():
+			continue
+		var dx: float = absf(enemigo.position.x - desde.x)
+		if dx > E["alcance_x"] or absf(enemigo.position.y - desde.y) > E["alcance_y"]:
+			continue
+		if mejor == null or dx < absf(mejor.position.x - desde.x):
+			mejor = enemigo
+	return mejor
 
 
 ## Baja el bisturi: el aturdido cae, el mundo se para y la camara tiembla.
