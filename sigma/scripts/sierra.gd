@@ -1,6 +1,6 @@
 ## La sierra de hueso (#217): instrumental de la Diocesis que el Latido hace
 ## girar. Quieta o en un rail, de ida y vuelta. Se oye antes de verla y tocarla
-## es como rozar a un enemigo: un punto y un empujon.
+## cuesta dos puntos y empuja.
 ##
 ## Arte provisional dibujado aqui: un disco de acero con dientes, oxido y
 ## sangre seca, y el rail como una ranura en la piedra.
@@ -53,7 +53,7 @@ func _physics_process(delta: float) -> void:
 	_colocar()
 	_disco.rotation += TAU * S["giro"] * delta
 	if objetivo and Peligros.circulo_toca(global_position + _disco.position, S["radio"], objetivo.caja()):
-		objetivo.recibir_contacto(global_position.x + _disco.position.x)
+		objetivo.recibir_contacto(global_position.x + _disco.position.x, S["dano"])
 
 
 func _colocar() -> void:

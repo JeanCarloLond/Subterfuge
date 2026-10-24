@@ -198,10 +198,12 @@ const COMPACTACION := {
 	"reposo_ms": 4000.0,
 }
 
-## Los peligros de las salas sin enemigos (#217, decidido por Jean). Tocarlos
-## es como rozar a un enemigo (CONTACTO): un punto y un empujon.
+## Los peligros de las salas sin enemigos (#217, decidido por Jean). El rayo
+## es como rozar a un enemigo (CONTACTO); la sierra, mas (SIERRA.dano).
 ## La sierra de hueso: instrumental de la Diocesis, en un rail o quieta.
 const SIERRA := {
+	## Mas que rozar a un enemigo (feedback de Jean): la sierra corta.
+	"dano": 2,
 	"radio": 11.0,
 	"velocidad": 60.0,
 	## Vueltas por segundo del disco: se tiene que ver que corta.

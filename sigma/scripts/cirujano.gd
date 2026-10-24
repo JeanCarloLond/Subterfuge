@@ -304,9 +304,9 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	return Resultado.HERIDO
 
 
-## Rozar a un enemigo: el mismo dano que un golpe, con otro empujon. El parry
-## no lo para: lee golpes, no evita chocarse.
-func recibir_contacto(origen_x: float) -> bool:
+## Rozar a un enemigo o a un peligro: el dano de CONTACTO, o `dano` si se da,
+## con otro empujon. El parry no lo para: lee golpes, no evita chocarse.
+func recibir_contacto(origen_x: float, dano: int = Sacramento.CONTACTO["dano"]) -> bool:
 	if muerto:
 		return false
 	var retroceso := Vector2(Sacramento.CONTACTO["retroceso_x"], Sacramento.CONTACTO["retroceso_y"])
@@ -314,7 +314,7 @@ func recibir_contacto(origen_x: float) -> bool:
 		return false
 	combate.cancelar()
 	_voz("herida")
-	_perder(Sacramento.CONTACTO["dano"])
+	_perder(dano)
 	return true
 
 
