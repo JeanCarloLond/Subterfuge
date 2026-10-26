@@ -639,6 +639,27 @@ func colocar(sitio: Vector2) -> void:
 	_volver()
 
 
+## Lo que lleva el cuerpo de una sala a otra (#226): cada sala crea su
+## Cirujano, y sin esto cruzar un paso curaba del todo.
+func estado_cuerpo() -> Dictionary:
+	return {
+		"vitalidad": vitalidad,
+		"pociones": combate.cargas_pocion,
+		"fervor": combate.fervor,
+	}
+
+
+func restaurar_cuerpo(cuerpo: Dictionary) -> void:
+	if cuerpo.is_empty():
+		return
+	vitalidad = cuerpo["vitalidad"]
+	combate.cargas_pocion = cuerpo["pociones"]
+	combate.fervor = mini(cuerpo["fervor"], combate.fervor_tope)
+	vitalidad_cambio.emit(vitalidad, Sacramento.VITALIDAD["maxima"])
+	pociones_cambio.emit(combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
+	fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
+
+
 ## Hacia donde mira al aparecer: 1 derecha, -1 izquierda.
 func mirar(lado: int) -> void:
 	movimiento.mirando = lado

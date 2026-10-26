@@ -31,6 +31,9 @@ Esc para volver a la portada"
 @export var musica := "atrio-santuario"
 @export var fundido_musica := 4.0
 
+## Lo que traia el cuerpo de la sala anterior, si se entro por un paso.
+var _cuerpo_al_entrar := {}
+
 @onready var _cirujano: CharacterBody2D = $Cirujano
 @onready var _interfaz: CanvasLayer = $Interfaz
 
@@ -53,6 +56,7 @@ func _ready() -> void:
 	if not _entrar():
 		_continuar()
 	_deuda_guardada()
+	_cirujano.restaurar_cuerpo(_cuerpo_al_entrar)
 	_primer_objetivo()
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso and marca_al_entrar != "":
@@ -96,10 +100,14 @@ func _entrar() -> bool:
 		return false
 	var entrada := get_node_or_null("Entradas/" + progreso.entrada)
 	progreso.entrada = ""
+	var cuerpo: Dictionary = progreso.cuerpo
+	progreso.cuerpo = {}
 	if entrada == null:
 		return false
 	_cirujano.colocar(entrada.position)
 	_cirujano.mirar(entrada.get_meta("mirando", 1))
+	# Despues de la deuda (que baja el tope del Fervor): ver _ready.
+	_cuerpo_al_entrar = cuerpo
 	_interfaz.abrir(ENTRADA_S)
 	return true
 
@@ -132,6 +140,7 @@ func _salir(destino: String, entrada: String) -> void:
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso:
 		progreso.entrada = entrada
+		progreso.cuerpo = _cirujano.estado_cuerpo()
 	_interfaz.cerrar(ENTRADA_S)
 	get_tree().create_timer(ENTRADA_S).timeout.connect(get_tree().change_scene_to_file.bind(destino))
 

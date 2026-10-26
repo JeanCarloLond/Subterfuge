@@ -28,6 +28,9 @@ var deuda := {}
 ## Por que entrada se aparece en la sala que se carga (paso.gd). No se
 ## guarda: «Continuar» vuelve al Altar.
 var entrada := ""
+## Lo que lleva el cuerpo al cruzar un paso (Cirujano.estado_cuerpo). No se
+## guarda: al morir o al continuar se vuelve al Altar, lleno.
+var cuerpo := {}
 ## El objetivo de ahora (su id en Objetivos), o vacio.
 var objetivo := ""
 ## Lo contado para cada objetivo que cuenta: id -> [lo hallado]. Se cuenta
