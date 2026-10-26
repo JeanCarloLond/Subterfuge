@@ -46,7 +46,9 @@ func _ready() -> void:
 	# La senal trae lo suyo (la reliquia, su nombre y efecto): no hace falta.
 	for info in disparo.get_signal_list():
 		if info["name"] == senal:
-			disparo.connect(senal, mostrar.unbind(info["args"].size()))
+			# unbind(0) es un error: sin argumentos, tal cual.
+			var n: int = info["args"].size()
+			disparo.connect(senal, mostrar if n == 0 else mostrar.unbind(n))
 
 
 func vista() -> bool:

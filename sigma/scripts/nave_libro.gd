@@ -136,4 +136,4 @@ func _al_morir() -> void:
 	var progreso := get_node_or_null("/root/Progreso")
 	if _empezada and progreso and progreso.sala == scene_file_path:
 		var antes: float = (Sacramento.MUERTE["reaparecer_ms"] - 60.0) / 1000.0
-		get_tree().create_timer(antes).timeout.connect(get_tree().reload_current_scene)
+		get_tree().create_timer(antes).timeout.connect(_ir_a.bind(scene_file_path))

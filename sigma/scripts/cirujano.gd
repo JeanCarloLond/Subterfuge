@@ -445,6 +445,13 @@ func _intentar_ejecutar() -> void:
 ## cosas. Lo segundo hace falta porque el Altar, la reliquia y la nota miran la
 ## E en _process, despues de la fisica: para entonces el Cirujano ya no esta
 ## libre y el aturdido ya no es ejecutable.
+## Si la E de ahora es para lo que hay al lado (leer, hablar, tomar): vivo y sin
+## nadie a quien ejecutar. Muerto, una nota abierta pausaba el arbol y la
+## pausa pasaba a la sala del Altar (#228).
+func e_libre() -> bool:
+	return not muerto and not puede_ejecutar()
+
+
 func puede_ejecutar() -> bool:
 	if _e_ejecuto_en == Engine.get_process_frames():
 		return true
@@ -694,7 +701,7 @@ func estado_cuerpo() -> Dictionary:
 func restaurar_cuerpo(cuerpo: Dictionary) -> void:
 	if cuerpo.is_empty():
 		return
-	vitalidad = cuerpo["vitalidad"]
+	vitalidad = maxi(1, cuerpo["vitalidad"])
 	combate.cargas_pocion = cuerpo["pociones"]
 	combate.fervor = mini(cuerpo["fervor"], combate.fervor_tope)
 	injertadora.cargas = cuerpo.get("injertos", 0)

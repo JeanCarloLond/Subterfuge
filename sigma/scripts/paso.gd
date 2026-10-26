@@ -58,7 +58,8 @@ func caja() -> Rect2:
 
 
 func _physics_process(_delta: float) -> void:
-	if cirujano == null or _cruzado or cirujano.muerto:
+	# Con la vida a cero el cuerpo aun no ha muerto (eso va diferido): tampoco.
+	if cirujano == null or _cruzado or cirujano.muerto or cirujano.vitalidad <= 0:
 		return
 	var dentro := caja().intersects(cirujano.caja())
 	if con_e:

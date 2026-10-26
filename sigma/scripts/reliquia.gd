@@ -61,7 +61,7 @@ func _process(_delta: float) -> void:
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
 	# Con un aturdido al alcance, la E es para ejecutarlo.
-	if cerca and Input.is_action_just_pressed("interactuar") and not cirujano.puede_ejecutar():
+	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
 		_tomar()
 
 

@@ -39,6 +39,11 @@ var _cuerpo_al_entrar := {}
 
 
 func _ready() -> void:
+	# Lo que una sala anterior pudo dejar a medias al irse (#228): la pausa de
+	# un panel abierto, o un hitstop cortado. Con eso, la sala nueva nacia
+	# congelada.
+	get_tree().paused = false
+	Engine.time_scale = 1.0
 	for grupo in ["Devotos", "Vestales", "Muros", "Reliquias", "Notas", "Charlas", "Visiones", "Pasos"]:
 		if not has_node(grupo):
 			continue
@@ -142,7 +147,13 @@ func _salir(destino: String, entrada: String) -> void:
 		progreso.entrada = entrada
 		progreso.cuerpo = _cirujano.estado_cuerpo()
 	_interfaz.cerrar(ENTRADA_S)
-	get_tree().create_timer(ENTRADA_S).timeout.connect(get_tree().change_scene_to_file.bind(destino))
+	get_tree().create_timer(ENTRADA_S).timeout.connect(_ir_a.bind(destino))
+
+
+## Cambia de sala. Va atado a esta sala, no al arbol: si antes se sale a la
+## portada, el temporizador ya no tiene a quien llamar y no saca de ella (#228).
+func _ir_a(ruta: String) -> void:
+	get_tree().change_scene_to_file(ruta)
 
 
 ## El final de lo hecho hasta ahora: un velo y lo que viene.
@@ -171,7 +182,7 @@ func _al_morir() -> void:
 	_poner_deuda(_cirujano.ultimo_suelo)
 	if progreso and progreso.sala != "" and progreso.sala != scene_file_path:
 		var antes: float = (Sacramento.MUERTE["reaparecer_ms"] - 60.0) / 1000.0
-		get_tree().create_timer(antes).timeout.connect(get_tree().change_scene_to_file.bind(progreso.sala))
+		get_tree().create_timer(antes).timeout.connect(_ir_a.bind(progreso.sala))
 
 
 ## Si la partida guardada dejo su carne en esta sala, ahi sigue.

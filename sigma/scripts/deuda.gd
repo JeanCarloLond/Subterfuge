@@ -61,7 +61,7 @@ func _process(_delta: float) -> void:
 	var distancia := (cirujano.position - position).abs()
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
-	if cerca and Input.is_action_just_pressed("interactuar") and not cirujano.puede_ejecutar():
+	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
 		set_process(false)
 		saldada.emit()
 		var irse := create_tween()

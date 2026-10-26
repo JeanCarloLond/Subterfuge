@@ -19,6 +19,9 @@ var _elegido := 0
 
 
 func _ready() -> void:
+	# Por si se llego aqui con el juego en pausa o en un hitstop (#228).
+	get_tree().paused = false
+	Engine.time_scale = 1.0
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso and progreso.hay_partida():
 		_destinos.append(["Continuar", progreso.sala])

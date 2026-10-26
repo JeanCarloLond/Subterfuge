@@ -163,6 +163,11 @@ func hablar(lineas: Array, retratos: Dictionary, al_terminar := Callable()) -> v
 ## Una vision (#225): la pantalla se tine de blanco frio, ella habla como en un
 ## dialogo y, al acabar, el tinte se va.
 func vision(lineas: Array, retratos: Dictionary, al_terminar := Callable()) -> void:
+	# Si en este fotograma se acaba de cerrar algo, hablar no abriria y el tinte
+	# se quedaria puesto: al siguiente (#228).
+	if _recien_cerrado() or _dialogo != null:
+		vision.call_deferred(lineas, retratos, al_terminar)
+		return
 	_vision.visible = true
 	_vision.modulate.a = 0.0
 	create_tween().tween_property(_vision, "modulate:a", 1.0, 0.6)
