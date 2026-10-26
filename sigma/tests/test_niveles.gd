@@ -9,7 +9,7 @@ const SALAS := [
 	"nivel1/pabellon", "nivel1/claustro", "nivel1/nave", "nivel1/pozo", "nivel1/capilla",
 	"nivel1/muro", "nivel1/escalera", "nivel1/umbral",
 	"nivel2/registro", "nivel2/escribania", "nivel2/sorteos", "nivel2/archivo",
-	"nivel2/pasillo", "nivel2/ala", "nivel2/laboratorio",
+	"nivel2/pasillo", "nivel2/ala", "nivel2/laboratorio", "nivel2/nave_libro",
 ]
 
 
@@ -83,7 +83,8 @@ func test_empieza_en_el_pabellon_y_lo_hecho_acaba_tras_el_laboratorio() -> void:
 		for paso in sala.get_node("Pasos").get_children():
 			if paso.destino == "":
 				finales += 1
-				afirmar_igual(nombre, "nivel2/laboratorio", "el final está en el laboratorio")
+				afirmar_igual(nombre, "nivel2/nave_libro", "el final está tras el Prior")
+				afirmar_igual(paso.pide_marca, "prior-vencido", "y pide haberlo vencido")
 		sala.free()
 	afirmar_igual(finales, 1, "un solo final")
 	var ala: Node = load(DIR + "nivel2/ala.tscn").instantiate()

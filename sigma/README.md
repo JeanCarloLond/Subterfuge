@@ -48,6 +48,12 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   la niña: la pantalla se tiñe del blanco frío de Génesis, ella aparece al lado del
   Cirujano y habla con su retrato. Desde ahí, los objetivos son suyos. La salida, en lo
   alto, solo se alcanza con el Impulso.
+- **El Prior del Diezmo** (#219), el primer guardián, en la Nave del Libro (con su Altar
+  en la antesala): de lejos, injertos en arco y sellos que se devuelven; de cerca, el
+  báculo, que se para; por debajo de la mitad, la nave se compacta y aparece el diezmo,
+  el golpe al suelo que se salta (la niña avisa de él). Vencido, se arrodilla y se le
+  remata con la E. Suelta **la Injertadora** (F: tres injertos que se recargan con lo que
+  sueltan los fieles), y la nave se abre al Atrio: el primer atajo que abre la historia.
 - **El Atrio (demostración)** (#185): la sala sola de siempre, con sus dos reliquias,
   desde la portada. En el juego es la Nave del Nivel I, sin ellas.
 - **Los objetivos** (#215): el objetivo nuevo entra arriba a la derecha con una campana;

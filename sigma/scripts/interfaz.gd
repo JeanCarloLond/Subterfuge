@@ -232,6 +232,57 @@ func _pintar_dialogo() -> void:
 	_caja_flecha.visible = _dialogo.linea_completa()
 
 
+## La barra del guardian (#219), abajo, a lo Dark Souls: su nombre y su vida.
+func guardian(nombre: String, actual: int, maxima: int) -> void:
+	var barra := get_node_or_null("Guardian")
+	if barra == null:
+		barra = Control.new()
+		barra.name = "Guardian"
+		barra.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		barra.position = Vector2(120, 318)
+		var titulo := Label.new()
+		titulo.name = "Nombre"
+		titulo.position = Vector2(0, -20)
+		titulo.add_theme_color_override("font_color", Color(0.93, 0.89, 0.85))
+		barra.add_child(titulo)
+		var fondo := ColorRect.new()
+		fondo.color = Color(0.08, 0.04, 0.04, 0.9)
+		fondo.size = Vector2(400, 6)
+		barra.add_child(fondo)
+		var lleno := ColorRect.new()
+		lleno.name = "Lleno"
+		lleno.color = Color(0.62, 0.1, 0.09)
+		lleno.size = Vector2(400, 6)
+		barra.add_child(lleno)
+		var filo := ReferenceRect.new()
+		filo.border_color = ORO.darkened(0.3)
+		filo.editor_only = false
+		filo.position = Vector2(-1, -1)
+		filo.size = Vector2(402, 8)
+		barra.add_child(filo)
+		add_child(barra)
+		move_child(barra, _caja.get_index())
+	barra.get_node("Nombre").text = nombre
+	barra.visible = true
+	barra.modulate.a = 0.0
+	create_tween().tween_property(barra, "modulate:a", 1.0, 0.6)
+	guardian_vida(actual, maxima)
+
+
+func guardian_vida(actual: int, maxima: int) -> void:
+	var barra := get_node_or_null("Guardian")
+	if barra:
+		create_tween().tween_property(barra.get_node("Lleno"), "size:x", 400.0 * actual / maxima, 0.2)
+
+
+func guardian_fuera() -> void:
+	var barra := get_node_or_null("Guardian")
+	if barra:
+		var vete := create_tween()
+		vete.tween_property(barra, "modulate:a", 0.0, 1.0)
+		vete.tween_callback(func() -> void: barra.visible = false)
+
+
 ## Ensena una mecanica en su momento, arriba en el centro, una sola vez por
 ## partida. Se va al pulsar `accion` o al rato.
 func ensenar(id: String, texto: String, accion := "") -> void:

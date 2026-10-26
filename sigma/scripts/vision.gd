@@ -18,8 +18,10 @@ const BLANCO := Color(0.78, 0.88, 0.96)
 const AL_LADO := 30.0
 
 @export var id := ""
-## Lo que la dispara (una reliquia, con su senal recogida).
+## Lo que la dispara (una reliquia, con su senal recogida, o el Prior con
+## fase_dos) y con que senal.
 @export var tras: NodePath
+@export var senal := "recogida"
 @export_multiline var lineas: PackedStringArray = []
 ## El objetivo que deja (de los suyos).
 @export var objetivo := ""
@@ -39,8 +41,12 @@ func _ready() -> void:
 	if vista():
 		return
 	var disparo := get_node_or_null(tras)
-	if disparo and disparo.has_signal("recogida"):
-		disparo.recogida.connect(func(_nombre: String, _efecto: String) -> void: mostrar())
+	if disparo == null or not disparo.has_signal(senal):
+		return
+	# La senal trae lo suyo (la reliquia, su nombre y efecto): no hace falta.
+	for info in disparo.get_signal_list():
+		if info["name"] == senal:
+			disparo.connect(senal, mostrar.unbind(info["args"].size()))
 
 
 func vista() -> bool:

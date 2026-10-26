@@ -252,6 +252,28 @@ const OFRENDA := {
 	"parpadeo_ms": 2400.0,
 }
 
+## El Prior del Diezmo (#219), el primer guardian. Avisa cada golpe con una
+## pose y su tiempo: se le gana leyendolo, no aguantando. Por debajo de la
+## mitad de vida, la nave se compacta y aparece el diezmo (el golpe al suelo
+## que se salta). Vencido, se arrodilla: se le remata con la E.
+const PRIOR := {
+	"vida": 60,
+	"fase_dos": 0.5,
+	"velocidad": 45.0,
+	## A esta distancia, o menos, el baculo; mas lejos, injertos o sello.
+	"rango_baculo": 64.0,
+	"distancia_preferida": 140.0,
+	"enfriamiento_ms": 900.0,
+	"enfriamiento_fase_dos_ms": 650.0,
+	"baculo": {"anticipacion_ms": 700.0, "duracion_ms": 160.0, "dano": 2, "alcance": 52.0},
+	"injertos": {"anticipacion_ms": 600.0, "cuantos": 3, "dano": 1, "velocidad": 260.0, "gravedad": 520.0},
+	"sello": {"anticipacion_ms": 520.0},
+	"diezmo": {"anticipacion_ms": 1000.0, "dano": 2, "velocidad": 230.0},
+	## Parado su baculo, o con su sello devuelto, se tambalea: el contragolpe.
+	"aturdimiento_ms": 900.0,
+	"contacto": 1,
+}
+
 ## La Injertadora (#191): el arma a distancia, con los numeros del original
 ## (src/config/Sacramento.ts). Tres injertos; pega casi como el cargado, no da
 ## Fervor y se recarga con los injertos que sueltan los fieles. Se gana al

@@ -19,10 +19,11 @@ const SALA_UMBRAL := "res://escenas/nivel1/umbral.tscn"
 ## se llega con unos 4 s de margen; quien se para o cae al vacio, la oye
 ## encima.
 const CIERRE_CADA_S := 0.55
-const FIN_LABORATORIO := "Detrás de esta puerta espera el que guarda la Nave del Libro.
+const FIN_NAVE := "Más abajo, las Salas de Sacramento.
 Fin de lo hecho hasta ahora.
 
 Esc para volver a la portada"
+const SALA_NAVE := "res://escenas/nivel1/nave.tscn"
 
 
 func _initialize() -> void:
@@ -32,7 +33,7 @@ func _initialize() -> void:
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
 	var errores := 0
-	for crear in [_registro, _escribania, _sorteos, _archivo, _pasillo, _ala, _laboratorio]:
+	for crear in [_registro, _escribania, _sorteos, _archivo, _pasillo, _ala, _laboratorio, _nave_libro]:
 		errores += _guardar(crear.call())
 	quit(errores)
 
@@ -241,7 +242,6 @@ A partir de hoy, los protocolos se leerán en voz alta, como oraciones, y ningun
 func _laboratorio() -> Dictionary:
 	_empezar("Laboratorio", 50, 30)
 	_nivel_2()
-	_raiz.set("fin", FIN_LABORATORIO)
 	_piedra([[0, 0, 50, 2], [0, 0, 2, 30], [48, 0, 2, 30], [0, 25, 50, 5]])
 	# El pedestal del artefacto y la repisa alta de la salida (128 px: el salto
 	# llega a 92; con el Impulso, a 150).
@@ -272,12 +272,73 @@ func _laboratorio() -> Dictionary:
 el Impulso cárnico", "saltar", "vision-laboratorio")
 	_paso("Ala", 2, 22, 2, 3, "ala", "laboratorio", true, "E  volver")
 	_puerta(3, 25)
-	_paso("Nave", 44, 14, 2, 3, "", "", true, "E  entrar")
+	_paso("Nave", 44, 14, 2, 3, "nave_libro", "oeste", true, "E  entrar")
 	_puerta(45, 17)
 	_entrada("oeste", 5, 25, 1)
+	_entrada("nave", 44, 17, -1)
 	_atrezo([["candelabro", 280, 400], ["candelabro", 520, 400]])
 	_ambiente([], [[32, 400, 736]])
 	return {"nombre": "laboratorio", "ancho": 50, "alto": 30}
+
+
+## 8 · La Nave del Libro (#219): el Prior del Diezmo. La antesala, con su
+## Altar bajo un techo bajo; la puerta que cae al empezar; la nave, entre dos
+## muros de piedra viva que se cierran en la fase dos. Tras el muro del fondo,
+## el atajo al Atrio y el camino adelante, que se abren al caer el Prior. Ver
+## scripts/nave_libro.gd.
+func _nave_libro() -> Dictionary:
+	_empezar("NaveLibro", 64, 23)
+	_raiz.set_script(load("res://scripts/nave_libro.gd"))
+	_nivel_2()
+	_raiz.set("fin", FIN_NAVE)
+	_piedra([[0, 0, 14, 10], [14, 0, 2, 1], [16, 0, 48, 2], [0, 0, 2, 23], [62, 0, 2, 23], [0, 19, 64, 4]])
+	_altar("Antesala", 6, 19)
+	_cirujano(4, 19)
+	var puerta := AnimatableBody2D.new()
+	puerta.set_script(load("res://scripts/muro.gd"))
+	puerta.position = Vector2(14 * 16, 1 * 16)
+	puerta.set("tiles", Vector2i(2, 9))
+	puerta.set("direccion", Vector2(0, 1))
+	puerta.set("recorrido", 144.0)
+	puerta.set("ciclico", false)
+	_poner(puerta, "Muros", "Puerta")
+	var compactacion := Node2D.new()
+	_poner(compactacion, "", "Compactacion")
+	for lado in [["Izquierdo", 16, Vector2.RIGHT], ["Derecho", 59, Vector2.LEFT]]:
+		var muro := AnimatableBody2D.new()
+		muro.set_script(load("res://scripts/muro.gd"))
+		muro.position = Vector2(lado[1] * 16, 2 * 16)
+		muro.set("tiles", Vector2i(3, 17))
+		muro.set("direccion", lado[2])
+		muro.set("recorrido", 96.0)
+		muro.set("ciclico", false)
+		_poner(muro, "Compactacion", lado[0])
+	var guardianes := Node2D.new()
+	_poner(guardianes, "", "Guardianes")
+	var prior: Node2D = load("res://escenas/prior.tscn").instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
+	prior.position = _pie(46, 19)
+	_poner(prior, "Guardianes", "Prior")
+	var aviso := Node2D.new()
+	aviso.set_script(load("res://scripts/vision.gd"))
+	aviso.set("id", "prior")
+	aviso.set("tras", NodePath("../../Guardianes/Prior"))
+	aviso.set("senal", "fase_dos")
+	aviso.set("lineas", PackedStringArray(["Cuando alce el báculo con las dos manos, salta. El suelo no es tuyo."]))
+	_poner(aviso, "Visiones", "Aviso")
+	_paso("Laboratorio", 2, 16, 2, 3, "laboratorio", "nave", true, "E  volver")
+	_puerta(3, 19)
+	var atajo := _paso("Atajo", 60, 16, 2, 3, SALA_NAVE, "libro", true, "E  al Atrio")
+	atajo.set("pide_marca", "prior-vencido")
+	_puerta(61, 19)
+	var adelante := _paso("Adelante", 56, 16, 2, 3, "", "", true, "E  descender")
+	adelante.set("pide_marca", "prior-vencido")
+	adelante.set("negado_texto", "No se abre mientras el Prior guarde la nave")
+	_puerta(57, 19)
+	_entrada("oeste", 5, 19, 1)
+	_entrada("atajo", 59, 19, -1)
+	_atrezo([["candelabro", 56, 304], ["candelabro", 152, 304], ["candelabro", 400, 304], ["candelabro", 840, 304]])
+	_ambiente([[480, 32, 120], [640, 32, 100]], [[256, 304, 720]])
+	return {"nombre": "nave_libro", "ancho": 64, "alto": 23}
 
 
 # --- Las piezas del Nivel II --------------------------------------------------

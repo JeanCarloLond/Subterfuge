@@ -24,7 +24,7 @@ const TOMAS := {
 	"monstruo-muerte": 2,
 }
 ## La voz y el tono de cada enemigo.
-const ENEMIGOS := {"devoto": ["cirujano", 0.8], "vestal": ["cirujano", 1.3]}
+const ENEMIGOS := {"devoto": ["cirujano", 0.8], "vestal": ["cirujano", 1.3], "prior": ["cirujano", 0.62]}
 
 var _ultima := {}
 var _azar := RandomNumberGenerator.new()

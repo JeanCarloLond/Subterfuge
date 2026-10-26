@@ -46,6 +46,13 @@ const SALAS_2 := {
 			[100, 224, "reja"], [300, 224, "charco"], [700, 224, "charco"], [1300, 224, "cadaver"],
 		],
 	},
+	"nave_libro": {
+		"penumbra": Color(0.62, 0.54, 0.54),
+		"decorado": [
+			[100, 304, "registradora"], [480, 32, "exvoto"], [600, 32, "exvoto"], [720, 32, "exvoto"],
+			[300, 304, "charco"], [700, 304, "charco"], [80, 304, "vela"], [130, 304, "vela"],
+		],
+	},
 	"laboratorio": {
 		"penumbra": Color(0.56, 0.62, 0.72),
 		"decorado": [

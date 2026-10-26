@@ -847,6 +847,24 @@ destino = "res://escenas/nivel1/pozo.tscn"
 entrada = "arriba"
 con_e = true
 
+[node name="Libro" type="Node2D" parent="Pasos"]
+script = ExtResource("40_paso")
+position = Vector2(144, 976)
+zona = Vector2(32, 32)
+destino = "res://escenas/nivel2/nave_libro.tscn"
+entrada = "atajo"
+con_e = true
+aviso = "E  a la Nave del Libro"
+pide_marca = "prior-vencido"
+negado_texto = "La piedra no cede"
+
+[node name="PuertaLibro" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(160, 1008)
+texture = ExtResource("8_umbral")
+centered = false
+offset = Vector2(-10, -34)
+
 [node name="Entradas" type="Node2D" parent="."]
 
 [node name="oeste" type="Marker2D" parent="Entradas"]
@@ -874,3 +892,7 @@ id = "parry"
 texto = "{parry}  justo antes de su golpe: lo aturdes
 {interactuar}  junto al aturdido: lo ejecutas"
 aprende = "parry"
+
+[node name="libro" type="Marker2D" parent="Entradas"]
+position = Vector2(196, 1008)
+metadata/mirando = 1

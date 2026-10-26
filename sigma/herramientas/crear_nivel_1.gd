@@ -46,7 +46,7 @@ func _initialize() -> void:
 ## Si un script no carga (un error de sintaxis), set_script deja el nodo sin
 ## el y la sala se guarda rota sin avisar: mejor no generar nada.
 func _scripts_cargan() -> bool:
-	for script in ["sala", "paso", "sierra", "rayo", "cierre", "cartel", "vision", "reliquia", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
+	for script in ["sala", "paso", "sierra", "rayo", "cierre", "cartel", "vision", "reliquia", "prior", "onda", "injerto", "nave_libro", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
 		# Con un error de sintaxis, load no da null: da un script que no se
 		# puede instanciar.
 		var cargado: GDScript = load("res://scripts/%s.gd" % script)
