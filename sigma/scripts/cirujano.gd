@@ -17,11 +17,15 @@ signal murio
 signal aviso(texto: String)
 signal fervor_cambio(actual: int, maximo: int)
 signal pociones_cambio(cargas: int, maximas: int)
+## Cuantos injertos lleva la Injertadora (#191); -1 en maximas: no la tiene.
+signal injertos_cambio(cargas: int, maximas: int)
 
 enum Resultado { PARADO, HERIDO, IGNORADO }
 
 const Movimiento := preload("res://scripts/movimiento.gd")
 const Combate := preload("res://scripts/combate.gd")
+const Injertadora := preload("res://scripts/injertadora.gd")
+const Injerto := preload("res://scripts/injerto.gd")
 const Sacramento := preload("res://scripts/sacramento.gd")
 
 ## El Cirujano de Sigma, en tres cuartos y fotograma a fotograma
@@ -74,6 +78,9 @@ const COLOR_BRASA := Color(1.0, 0.66, 0.22)
 
 var movimiento: Movimiento
 var combate: Combate
+var injertadora: Injertadora
+## Si la tiene: se gana al vencer al Prior del Diezmo (#219).
+var tiene_injertadora := false
 var vitalidad: int = Sacramento.VITALIDAD["maxima"]
 ## Donde vuelve al morir o al caer al vacio: el ultimo Altar, o donde empezo.
 var punto_reaparicion := Vector2.ZERO
@@ -118,6 +125,7 @@ func _ready() -> void:
 	movimiento = Movimiento.new(position.y)
 	movimiento.caida.connect(_al_caer)
 	combate = Combate.new()
+	injertadora = Injertadora.new()
 	_aplicar_reliquias()
 	_brasas = CPUParticles2D.new()
 	_brasas.emitting = false
@@ -182,6 +190,9 @@ func _physics_process(delta: float) -> void:
 		_sonar("trago")
 	if Input.is_action_just_pressed("interactuar"):
 		_intentar_ejecutar()
+	injertadora.paso(delta)
+	if Input.is_action_just_pressed("injertadora"):
+		_disparar_injerto()
 	if combate.accion == Combate.Accion.EJECUCION:
 		if combate.ejecucion_golpea() and not _rematada:
 			_rematar()
@@ -281,6 +292,13 @@ func _aplicar_reliquias(recien := "") -> void:
 	var tiene := func(id: String) -> bool:
 		return reliquias_libres or id == recien or (progreso != null and progreso.tiene(id))
 	movimiento.puede_doble_salto = tiene.call("pulmon")
+	var la_tenia := tiene_injertadora
+	tiene_injertadora = tiene.call("injertadora")
+	# Se gana llena (#178 del original).
+	if tiene_injertadora and (recien == "injertadora" or (reliquias_libres and recien == "")):
+		injertadora.recargar(Sacramento.INJERTADORA["carga_maxima"])
+	if tiene_injertadora != la_tenia or recien == "injertadora":
+		injertos_cambio.emit(injertadora.cargas, Sacramento.INJERTADORA["carga_maxima"])
 	movimiento.puede_dash = tiene.call("tendon")
 
 
@@ -579,6 +597,11 @@ func recoger_ofrenda(tipo: String) -> void:
 			combate.sumar_fervor(Sacramento.OFRENDA["fervor_sello"])
 			fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
 			aviso.emit("Sello del diezmo")
+		"injerto":
+			_sonar("guardia", -4.0)
+			if injertadora.recargar(1) > 0:
+				injertos_cambio.emit(injertadora.cargas, Sacramento.INJERTADORA["carga_maxima"])
+				aviso.emit("Injerto de metal")
 
 
 func _curar(puntos: int) -> void:
@@ -639,6 +662,24 @@ func colocar(sitio: Vector2) -> void:
 	_volver()
 
 
+## La Injertadora (#191): un injerto recto a la altura del pecho. Solo con el
+## cuerpo libre y sin otra accion; la presion lo empuja un poco atras.
+func _disparar_injerto() -> void:
+	if not tiene_injertadora or not movimiento.libre() or combate.accion != Combate.Accion.NINGUNA:
+		return
+	if not injertadora.disparar():
+		return
+	var I: Dictionary = Sacramento.INJERTADORA
+	var injerto := Injerto.new()
+	injerto.position = position + Vector2(movimiento.mirando * 12.0, -14.0)
+	injerto.velocidad = Vector2(movimiento.mirando * I["velocidad"], 0.0)
+	injerto.dano = I["dano"]
+	get_parent().add_child(injerto)
+	velocity.x -= movimiento.mirando * I["retroceso"]
+	_sonar("parada", -6.0)
+	injertos_cambio.emit(injertadora.cargas, I["carga_maxima"])
+
+
 ## Lo que lleva el cuerpo de una sala a otra (#226): cada sala crea su
 ## Cirujano, y sin esto cruzar un paso curaba del todo.
 func estado_cuerpo() -> Dictionary:
@@ -646,6 +687,7 @@ func estado_cuerpo() -> Dictionary:
 		"vitalidad": vitalidad,
 		"pociones": combate.cargas_pocion,
 		"fervor": combate.fervor,
+		"injertos": injertadora.cargas,
 	}
 
 
@@ -655,6 +697,9 @@ func restaurar_cuerpo(cuerpo: Dictionary) -> void:
 	vitalidad = cuerpo["vitalidad"]
 	combate.cargas_pocion = cuerpo["pociones"]
 	combate.fervor = mini(cuerpo["fervor"], combate.fervor_tope)
+	injertadora.cargas = cuerpo.get("injertos", 0)
+	if tiene_injertadora:
+		injertos_cambio.emit(injertadora.cargas, Sacramento.INJERTADORA["carga_maxima"])
 	vitalidad_cambio.emit(vitalidad, Sacramento.VITALIDAD["maxima"])
 	pociones_cambio.emit(combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
 	fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])

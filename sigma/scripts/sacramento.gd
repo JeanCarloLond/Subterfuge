@@ -252,6 +252,20 @@ const OFRENDA := {
 	"parpadeo_ms": 2400.0,
 }
 
+## La Injertadora (#191): el arma a distancia, con los numeros del original
+## (src/config/Sacramento.ts). Tres injertos; pega casi como el cargado, no da
+## Fervor y se recarga con los injertos que sueltan los fieles. Se gana al
+## vencer al Prior del Diezmo (#219), que la usaba.
+const INJERTADORA := {
+	"carga_maxima": 3,
+	"dano": 5,
+	"velocidad": 340.0,
+	"vida_ms": 1400.0,
+	"enfriamiento_ms": 420.0,
+	## La presion tambien empuja a quien dispara (px/s).
+	"retroceso": 90.0,
+}
+
 ## La deuda de carne (como la culpa de Blasphemous): mientras no se recupera,
 ## el Fervor no pasa de aqui.
 const DEUDA := {

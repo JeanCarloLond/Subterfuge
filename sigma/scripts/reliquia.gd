@@ -19,6 +19,11 @@ const RELIQUIAS := {
 		"efecto": "Impulso cárnico: un segundo salto en el aire",
 		"textura": "res://arte/reliquias/pulmon.png",
 	},
+	"injertadora": {
+		"nombre": "La Injertadora",
+		"efecto": "Dispara injertos de metal",
+		"textura": "res://arte/provisional/injertadora.png",
+	},
 	"tendon": {
 		"nombre": "El Tendón del Mil",
 		"efecto": "Shift: un impulso de golpe (dash)",
@@ -27,7 +32,7 @@ const RELIQUIAS := {
 }
 const ALCANCE := Vector2(16.0, 26.0)
 
-@export_enum("pulmon", "tendon") var id := "pulmon"
+@export_enum("pulmon", "tendon", "injertadora") var id := "pulmon"
 
 ## Quien la toma: el Cirujano. Lo pone el nivel.
 var cirujano: CharacterBody2D

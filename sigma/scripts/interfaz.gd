@@ -22,6 +22,9 @@ const ORO := Color(0.89, 0.663, 0.251)
 const VOZ_CADA := 2
 const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
 const FRASCO_VACIO := preload("res://arte/hud/frasco-vacio.png")
+const INJERTO_LLENO := preload("res://arte/provisional/hud-injerto.png")
+const INJERTO_VACIO := preload("res://arte/provisional/hud-injerto-vacio.png")
+const ICONO_INJERTADORA := preload("res://arte/provisional/hud-injertadora.png")
 ## Lo que dura un aviso en pantalla.
 const AVISO_S := 2.5
 ## Lo que se ve con la ayuda plegada.
@@ -430,6 +433,9 @@ func conectar(cirujano: CharacterBody2D) -> void:
 	cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)
 	cirujano.fervor_cambio.connect(_al_cambiar_fervor)
 	cirujano.pociones_cambio.connect(_pintar_frascos)
+	cirujano.injertos_cambio.connect(_pintar_injertos)
+	if cirujano.tiene_injertadora:
+		_pintar_injertos(cirujano.injertadora.cargas, Sacramento.INJERTADORA["carga_maxima"])
 	_vida.value = 100.0 * cirujano.vitalidad / Sacramento.VITALIDAD["maxima"]
 	_al_cambiar_fervor(cirujano.combate.fervor, Sacramento.FERVOR["maximo"])
 	_pintar_frascos(cirujano.combate.cargas_pocion, Sacramento.POCION["cargas_maximas"])
@@ -481,6 +487,31 @@ func _al_cambiar_vitalidad(actual: int, maxima: int) -> void:
 
 func _al_cambiar_fervor(actual: int, maximo: int) -> void:
 	_fervor.value = 100.0 * actual / maximo
+
+
+## Los injertos de la Injertadora (#191), bajo los frascos: el icono y uno por
+## carga. Sin Injertadora, nada. La primera vez, se ensena a disparar.
+func _pintar_injertos(cargas: int, maximas: int) -> void:
+	var fila := get_node_or_null("Injertos")
+	if fila == null:
+		fila = HBoxContainer.new()
+		fila.name = "Injertos"
+		fila.add_theme_constant_override("separation", 2)
+		fila.position = _frascos.position + Vector2(0, 16)
+		fila.scale = Vector2(2, 2)
+		fila.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		add_child(fila)
+		ensenar("injertadora", "{injertadora}  dispara un injerto de metal
+Se recarga con los que sueltan los fieles", "injertadora")
+	for hijo in fila.get_children():
+		hijo.queue_free()
+	var icono := TextureRect.new()
+	icono.texture = ICONO_INJERTADORA
+	fila.add_child(icono)
+	for i in maximas:
+		var injerto := TextureRect.new()
+		injerto.texture = INJERTO_LLENO if i < cargas else INJERTO_VACIO
+		fila.add_child(injerto)
 
 
 func _pintar_frascos(cargas: int, maximas: int) -> void:

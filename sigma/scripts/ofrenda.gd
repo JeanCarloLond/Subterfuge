@@ -56,7 +56,9 @@ static func sortear(clase: String, tirada: float, con_injertadora := false) -> S
 static func soltar(nivel: Node, sitio: Vector2, clase: String, quien_recoge: CharacterBody2D) -> void:
 	if nivel == null or not nivel.is_inside_tree():
 		return
-	var que := sortear(clase, randf())
+	# El injerto solo cae si hay Injertadora que cargar.
+	var con_injertadora: bool = quien_recoge != null and quien_recoge.get("tiene_injertadora") == true
+	var que := sortear(clase, randf(), con_injertadora)
 	if que == "":
 		return
 	var ofrenda: CharacterBody2D = load("res://scripts/ofrenda.gd").new()
