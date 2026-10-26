@@ -114,8 +114,9 @@ func _sorteos() -> Dictionary:
 	_piedra([[0, 0, 60, 2], [0, 0, 2, 15], [58, 0, 2, 23], [0, 19, 52, 4], [56, 19, 4, 4]])
 	_piedra([[20, 16, 4, 1], [26, 12, 14, 1]])
 	_cirujano(4, 19)
-	_devoto(12, 19, 150.0, 330.0)
-	_devoto(44, 19, 620.0, 800.0)
+	# Lejos de las entradas (#232): por el hueco le pegaban a los 1,35 s.
+	_devoto(16, 19, 230.0, 330.0)
+	_devoto(38, 19, 540.0, 660.0)
 	_vestal(33, 12, 440.0, 600.0)
 	_paso("Oeste", 0, 15, 2, 4, "registro", "este")
 	_paso("Hueco", 52, 21, 4, 2, "archivo", "arriba")

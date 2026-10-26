@@ -52,6 +52,7 @@ var _figura: TileMapLayer
 var _polvo: CPUParticles2D
 var _latido: AudioStreamPlayer2D
 var _crujido: AudioStreamPlayer2D
+var _consulta: PhysicsShapeQueryParameters2D
 
 
 func _ready() -> void:
@@ -120,14 +121,17 @@ func _empujar(hacia: Vector2) -> void:
 ## Tras empujarlo, mira si se ha quedado metido en otra piedra, con la caja un
 ## pixel mas pequena, para que pisar el suelo o rozar una pared no cuente.
 func _contra_la_piedra() -> bool:
-	var forma := RectangleShape2D.new()
-	forma.size = Vector2(8, 20)
-	var consulta := PhysicsShapeQueryParameters2D.new()
-	consulta.shape = forma
-	consulta.transform = Transform2D(0.0, objetivo.global_position + Vector2(0, -11))
-	consulta.collision_mask = 1
-	consulta.exclude = [get_rid(), objetivo.get_rid()]
-	return not get_world_2d().direct_space_state.intersect_shape(consulta, 1).is_empty()
+	# La consulta se hace una vez y se reutiliza: crear la forma en cada paso
+	# reservaba un recurso de fisica por fotograma de empuje (#232).
+	if _consulta == null:
+		var forma := RectangleShape2D.new()
+		forma.size = Vector2(8, 20)
+		_consulta = PhysicsShapeQueryParameters2D.new()
+		_consulta.shape = forma
+		_consulta.collision_mask = 1
+	_consulta.transform = Transform2D(0.0, objetivo.global_position + Vector2(0, -11))
+	_consulta.exclude = [get_rid(), objetivo.get_rid()]
+	return not get_world_2d().direct_space_state.intersect_shape(_consulta, 1).is_empty()
 
 
 ## El aviso y lo que acompana al movimiento: dos latidos, polvo que cae de la

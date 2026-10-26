@@ -17,6 +17,7 @@ var del_cirujano := true
 var objetivo: CharacterBody2D
 
 var _sprite: Sprite2D
+var _consulta: PhysicsPointQueryParameters2D
 
 
 func _ready() -> void:
@@ -47,7 +48,9 @@ func _physics_process(delta: float) -> void:
 
 
 func _choca_con_piedra() -> bool:
-	var consulta := PhysicsPointQueryParameters2D.new()
-	consulta.position = global_position
-	consulta.collision_mask = 1
-	return not get_world_2d().direct_space_state.intersect_point(consulta, 1).is_empty()
+	# Una consulta para todo el vuelo, no una por fotograma (#232).
+	if _consulta == null:
+		_consulta = PhysicsPointQueryParameters2D.new()
+		_consulta.collision_mask = 1
+	_consulta.position = global_position
+	return not get_world_2d().direct_space_state.intersect_point(_consulta, 1).is_empty()

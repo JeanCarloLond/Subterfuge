@@ -163,10 +163,12 @@ func _capilla() -> Dictionary:
 	# Los bancos.
 	_piedra([[12, 16, 6, 1], [24, 16, 6, 1], [36, 16, 6, 1]])
 	_cirujano(55, 19)
-	_vestal(20, 19, 200.0, 420.0)
+	# Lejos de las entradas: con el jugador quieto al llegar, le pegaban a
+	# los 2 s (#232).
+	_vestal(26, 19, 360.0, 480.0)
 	_cartel("sello", 52, 19, "{parry}  para el sello:
 vuelve contra quien lo lanzó", "parry")
-	_devoto(46, 19, 600.0, 820.0)
+	_devoto(42, 19, 600.0, 740.0)
 	_paso("Este", 58, 15, 2, 4, "pozo", "oeste")
 	_paso("Hueco", 2, 21, 4, 2, "escalera", "noroeste")
 	_entrada("este", 55, 19, -1)
@@ -216,7 +218,7 @@ func _escalera() -> Dictionary:
 		_piedra([[10 + i * 2, fila, 2, 30 - fila], [48 - i * 2, fila, 2, 30 - fila]])
 	_altar("Escalera", 25, 30)
 	_puerta(30, 30)
-	_paso("Puerta", 29, 27, 2, 3, "umbral", "oeste", true)
+	_paso("Puerta", 29, 27, 2, 3, "umbral", "oeste", true, "E  entrar")
 	# Los huecos de arriba: se cae desde ellos y se vuelve saltando a ellos.
 	_paso("Noroeste", 4, 0, 4, 4, "capilla", "hueco")
 	_paso("Noreste", 52, 0, 4, 4, "muro", "hueco")

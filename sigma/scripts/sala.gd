@@ -36,6 +36,7 @@ Esc para volver a la portada"
 
 ## Lo que traia el cuerpo de la sala anterior, si se entro por un paso.
 var _cuerpo_al_entrar := {}
+var _cierre_avisado := false
 
 @onready var _cirujano: CharacterBody2D = $Cirujano
 @onready var _interfaz: CanvasLayer = $Interfaz
@@ -84,7 +85,7 @@ func _conectar(grupo: String, pieza: Node) -> void:
 		"Devotos", "Vestales", "Muros":
 			pieza.objetivo = _cirujano
 			if grupo == "Muros":
-				pieza.cerrado.connect(_interfaz.avisar.bind("El camino de vuelta se ha cerrado"))
+				pieza.cerrado.connect(_avisar_cierre)
 		"Reliquias":
 			pieza.cirujano = _cirujano
 			pieza.recogida.connect(func(nombre: String, efecto: String) -> void:
@@ -163,6 +164,15 @@ func _salir(destino: String, entrada: String) -> void:
 	get_tree().create_timer(ENTRADA_S).timeout.connect(_ir_a.bind(destino))
 
 
+## Un cierre se avisa una vez por sala: el Pasillo tiene diecinueve techos, y
+## salian diecinueve avisos seguidos (#232).
+func _avisar_cierre() -> void:
+	if _cierre_avisado:
+		return
+	_cierre_avisado = true
+	_interfaz.avisar("El camino de vuelta se ha cerrado")
+
+
 ## Cambia de sala. Va atado a esta sala, no al arbol: si antes se sale a la
 ## portada, el temporizador ya no tiene a quien llamar y no saca de ella (#228).
 func _ir_a(ruta: String) -> void:
@@ -171,6 +181,9 @@ func _ir_a(ruta: String) -> void:
 
 ## El final de lo hecho hasta ahora: un velo y lo que viene.
 func _terminar() -> void:
+	# Detras del velo, el Cirujano ya no se mueve.
+	_cirujano.velocity = Vector2.ZERO
+	_cirujano.set_physics_process(false)
 	var capa := CanvasLayer.new()
 	capa.layer = 10
 	var velo := ColorRect.new()
@@ -236,7 +249,8 @@ func _saldar() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if _cirujano.position.y > limite_caida:
+	# Muerto y cayendo, no: se avisaba en cada fotograma, encima de «Diezmado».
+	if _cirujano.position.y > limite_caida and not _cirujano.muerto:
 		_cirujano.caer_al_vacio()
 		_interfaz.avisar("Caída al vacío")
 

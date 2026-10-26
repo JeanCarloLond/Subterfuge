@@ -14,6 +14,8 @@ const NOMBRE := "La niña"
 const RETRATO := preload("res://arte/nina/retrato.png")
 const FIGURA := preload("res://arte/nina/figura.png")
 const BLANCO := Color(0.78, 0.88, 0.96)
+## Lo que espera tras lo que la dispara.
+const RETRASO_S := 1.2
 ## Donde se le aparece, respecto al Cirujano: delante, a un paso.
 const AL_LADO := 30.0
 
@@ -48,12 +50,18 @@ func _ready() -> void:
 		if info["name"] == senal:
 			# unbind(0) es un error: sin argumentos, tal cual.
 			var n: int = info["args"].size()
-			disparo.connect(senal, mostrar if n == 0 else mostrar.unbind(n))
+			disparo.connect(senal, _tras_un_momento if n == 0 else _tras_un_momento.unbind(n))
 
 
 func vista() -> bool:
 	var progreso := get_node_or_null("/root/Progreso")
 	return progreso != null and progreso.aprendido("vision-" + id)
+
+
+## Un momento despues de lo que la dispara: que se lea antes el aviso de la
+## reliquia, que la caja tapaba (#232).
+func _tras_un_momento() -> void:
+	get_tree().create_timer(RETRASO_S).timeout.connect(mostrar)
 
 
 ## Empieza la vision: ella aparece al lado del Cirujano, y habla.

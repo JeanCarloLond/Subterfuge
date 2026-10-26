@@ -44,10 +44,13 @@ func _process(_delta: float) -> void:
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
 		var progreso := get_node_or_null("/root/Progreso")
 		if progreso:
+			# El objetivo, solo la primera vez: releer el Libro tras el
+			# laboratorio hacia retroceder el objetivo (#232).
+			var primera: bool = not progreso.leida(id)
 			progreso.leer(id)
 			if cuenta != "":
 				progreso.contar(cuenta, id)
-			if objetivo != "":
+			if objetivo != "" and primera:
 				progreso.fijar_objetivo(objetivo)
 		_sprite.modulate = Color(0.7, 0.66, 0.62)
 		leida.emit(titulo, texto)

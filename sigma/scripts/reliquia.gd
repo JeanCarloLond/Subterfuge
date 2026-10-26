@@ -26,7 +26,7 @@ const RELIQUIAS := {
 	},
 	"tendon": {
 		"nombre": "El Tendón del Mil",
-		"efecto": "Shift: un impulso de golpe (dash)",
+		"efecto": "Un impulso de golpe, en el suelo o en el aire",
 		"textura": "res://arte/reliquias/tendon.png",
 	},
 }

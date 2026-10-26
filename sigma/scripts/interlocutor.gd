@@ -35,6 +35,8 @@ func _process(_delta: float) -> void:
 	_aviso.visible = cerca
 	# Con un aturdido al alcance, la E es para ejecutarlo.
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
+		# Mientras habla, el «E  hablar» sobra (y con el juego parado se quedaba).
+		_aviso.visible = false
 		habla.emit(_que_dice(), {nombre: retrato}, _termino)
 
 
