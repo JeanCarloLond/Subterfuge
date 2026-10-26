@@ -325,6 +325,8 @@ func herir(x: float, origen_x: float, retroceso: Vector2) -> bool:
 	_fin_invulnerable = ahora + Sacramento.VITALIDAD["invulnerabilidad_ms"]
 	_gravedad = true
 	_velocidad_max_x = M["velocidad_caminar"]
+	_aceleracion_x = 0.0
+	_friccion_x = M["friccion_aire"]
 	velocidad = Vector2(direccion * retroceso.x, -retroceso.y)
 	return true
 
@@ -391,8 +393,10 @@ func _quieto() -> bool:
 
 
 func _actualizar_quieto(en_suelo: bool) -> void:
-	# En suelo se queda clavado; en el aire conserva la inercia.
-	if en_suelo:
+	# En suelo se queda clavado; en el aire conserva la inercia. Recien
+	# empujado (aun subiendo) no: el primer paso aun pisa el suelo, y el roce
+	# de suelo se comia el empujon (#231).
+	if en_suelo and velocidad.y >= 0.0:
 		_aceleracion_x = 0.0
 		_friccion_x = M["friccion_suelo"] * 2.0
 	if ahora >= _fin_quieto:

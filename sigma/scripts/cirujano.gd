@@ -316,6 +316,9 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	var retroceso := Vector2(Sacramento.VITALIDAD["retroceso_x"], Sacramento.VITALIDAD["retroceso_y"])
 	if not movimiento.herir(position.x, origen_x, retroceso):
 		return Resultado.IGNORADO
+	# El empujon, ya: si no, el paso siguiente lo pisaba con la velocidad de
+	# antes y el Cirujano se quedaba clavado (#231).
+	velocity = movimiento.velocidad
 	combate.cancelar()
 	_voz("herida")
 	_perder(dano)
@@ -330,6 +333,7 @@ func recibir_contacto(origen_x: float, dano: int = Sacramento.CONTACTO["dano"]) 
 	var retroceso := Vector2(Sacramento.CONTACTO["retroceso_x"], Sacramento.CONTACTO["retroceso_y"])
 	if not movimiento.herir(position.x, origen_x, retroceso):
 		return false
+	velocity = movimiento.velocidad
 	combate.cancelar()
 	_voz("herida")
 	_perder(dano)
