@@ -11,7 +11,7 @@
 ## se hunde, y aparecen el atajo al Atrio (la Nave del Libro y el Atrio se
 ## funden: el mapa se compacta cuando cae un eslabon) y el camino adelante.
 ## Queda la Injertadora donde cayo. Morir en la pelea la reinicia desde el
-## Altar, como en Dark Souls.
+## Altar, como en Dark Souls (lo hace sala.gd con cualquier muerte).
 extends "res://scripts/sala.gd"
 
 const RELIQUIA := preload("res://escenas/reliquia.tscn")
@@ -103,11 +103,7 @@ func _vencido() -> void:
 		progreso.aprender("prior-vencido")
 		progreso.fijar_objetivo("adentro")
 	# La Injertadora, donde cayo.
-	var injertadora := RELIQUIA.instantiate()
-	injertadora.id = "injertadora"
-	injertadora.position = _prior.position
-	$Reliquias.add_child(injertadora)
-	_conectar("Reliquias", injertadora)
+	_dejar_injertadora(_prior.position)
 	# La nave se abre: sube la puerta, vuelven los muros y el del fondo se hunde.
 	$Temblor.temblar()
 	var abre := create_tween().set_parallel().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
@@ -125,15 +121,19 @@ func _vencido() -> void:
 ## Ya vencido (se vuelve a la nave): sin Prior, abierta.
 func _ya_vencido() -> void:
 	if is_instance_valid(_prior):
+		# Si no se recogio la Injertadora (murio, salio...), sigue donde cayo
+		# el Prior (#229): sin esto se perdia para siempre.
+		var progreso := get_node_or_null("/root/Progreso")
+		if progreso and not progreso.tiene("injertadora"):
+			_dejar_injertadora(_prior.position)
 		_prior.queue_free()
 	_derecho.queue_free()
 
 
-## Morir en la pelea la reinicia: el Prior entero y la puerta abierta. Si el
-## Altar es el de la antesala; si no, sala.gd ya vuelve a la otra sala.
-func _al_morir() -> void:
-	super()
-	var progreso := get_node_or_null("/root/Progreso")
-	if _empezada and progreso and progreso.sala == scene_file_path:
-		var antes: float = (Sacramento.MUERTE["reaparecer_ms"] - 60.0) / 1000.0
-		get_tree().create_timer(antes).timeout.connect(_ir_a.bind(scene_file_path))
+func _dejar_injertadora(sitio: Vector2) -> void:
+	var injertadora := RELIQUIA.instantiate()
+	injertadora.id = "injertadora"
+	injertadora.position = sitio
+	$Reliquias.add_child(injertadora)
+	_conectar("Reliquias", injertadora)
+

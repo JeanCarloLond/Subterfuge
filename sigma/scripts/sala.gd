@@ -27,6 +27,9 @@ Esc para volver a la portada"
 ## La marca que deja entrar en esta sala (vacio: ninguna): asi un cierre se
 ## sella para siempre solo cuando ya se esta del lado bueno.
 @export var marca_al_entrar := ""
+## Si la carne quedo en esta sala (una que la marca sella), pasa aqui, a la
+## entrada `oeste`: si no, quedaria donde ya no se puede volver.
+@export_file("*.tscn") var rescata_deuda_de := ""
 ## La pista de la sala (musica.gd) y lo que tarda en entrar.
 @export var musica := "atrio-santuario"
 @export var fundido_musica := 4.0
@@ -60,12 +63,17 @@ func _ready() -> void:
 		luz.height = Sacramento.ALTURA_LUZ
 	if not _entrar():
 		_continuar()
+	_encender_altar()
 	_deuda_guardada()
 	_cirujano.restaurar_cuerpo(_cuerpo_al_entrar)
 	_primer_objetivo()
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso and marca_al_entrar != "":
 		progreso.aprender(marca_al_entrar)
+	if progreso and rescata_deuda_de != "" and progreso.deuda.get("sala", "") == rescata_deuda_de and has_node("Entradas/oeste"):
+		var sitio: Vector2 = get_node("Entradas/oeste").position
+		progreso.endeudar(scene_file_path, sitio)
+		_poner_deuda(sitio)
 	var pista := get_node_or_null("/root/Musica")
 	if pista and musica != "":
 		pista.poner(musica, fundido_musica)
@@ -122,9 +130,14 @@ func _continuar() -> void:
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso == null or progreso.sala != scene_file_path or not has_node("Altares/" + progreso.altar):
 		return
-	var altar: Node2D = get_node("Altares/" + progreso.altar)
-	altar.encendido = true
-	_cirujano.colocar(altar.position)
+	_cirujano.colocar(get_node("Altares/" + progreso.altar).position)
+
+
+## El Altar donde se rezo, encendido, se entre como se entre en la sala.
+func _encender_altar() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso and progreso.sala == scene_file_path and has_node("Altares/" + progreso.altar):
+		get_node("Altares/" + progreso.altar).encendido = true
 
 
 ## Una partida que empieza aqui no tiene objetivo: el primero llega cuando el
@@ -173,16 +186,19 @@ func _terminar() -> void:
 	add_child(capa)
 
 
-## Muerto: la carne queda donde pisaba por ultima vez, y si el Altar esta en
-## otra sala, se vuelve alli con la pantalla ya a negro.
+## Muerto: la carne queda donde pisaba por ultima vez y, con la pantalla ya a
+## negro, se carga la sala del Altar, aunque sea esta: se vuelve siempre igual,
+## al Altar, con la sala entera y el frasco lleno (#229). Antes, en la sala del
+## Altar se reaparecia en la puerta por la que se habia entrado. Sin Altar
+## rezado aun, se recarga la sala.
 func _al_morir() -> void:
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso:
 		progreso.endeudar(scene_file_path, _cirujano.ultimo_suelo)
 	_poner_deuda(_cirujano.ultimo_suelo)
-	if progreso and progreso.sala != "" and progreso.sala != scene_file_path:
-		var antes: float = (Sacramento.MUERTE["reaparecer_ms"] - 60.0) / 1000.0
-		get_tree().create_timer(antes).timeout.connect(_ir_a.bind(progreso.sala))
+	var destino: String = progreso.sala if progreso and progreso.sala != "" else scene_file_path
+	var antes: float = (Sacramento.MUERTE["reaparecer_ms"] - 60.0) / 1000.0
+	get_tree().create_timer(antes).timeout.connect(_ir_a.bind(destino))
 
 
 ## Si la partida guardada dejo su carne en esta sala, ahi sigue.

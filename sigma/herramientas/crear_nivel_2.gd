@@ -207,6 +207,7 @@ func _ala() -> Dictionary:
 	_empezar("Ala", 60, 23)
 	_nivel_2()
 	_raiz.set("marca_al_entrar", "pasillo-sellado")
+	_raiz.set("rescata_deuda_de", dir + "pasillo.tscn")
 	_piedra([[0, 0, 60, 2], [0, 0, 2, 23], [58, 0, 2, 23], [0, 19, 60, 4]])
 	_piedra([[36, 15, 8, 1]])
 	_altar("Ala", 6, 19)
