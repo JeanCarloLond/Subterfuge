@@ -91,12 +91,12 @@ tenerla.
 
 El doble salto y el dash en el primer nivel eran demasiado pronto para un juego entero.
 
-| Nivel                     | Qué se gana                                           |
-| ------------------------- | ----------------------------------------------------- |
-| I · Atrio                 | Nada: el bisturí y la membrana bastan para bajar      |
-| II · Pasillos             | La Injertadora (el Prior del Diezmo)                  |
-| III · Salas de Sacramento | El **Pulmón Vacío** (doble salto)                     |
-| IV · Criptas              | El **Tendón del Mil** (dash), que ayuda en las Mareas |
+| Nivel                     | Qué se gana                                                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| I · Atrio                 | Nada: el bisturí y la membrana bastan para bajar                                                                            |
+| II · Pasillos             | El **Pulmón Vacío** (doble salto, el Impulso cárnico): el artefacto del laboratorio; y la Injertadora (el Prior del Diezmo) |
+| III · Salas de Sacramento | Por decidir                                                                                                                 |
+| IV · Criptas              | El **Tendón del Mil** (dash), que ayuda en las Mareas                                                                       |
 
 Con las dos se abre el camino alto del Atrio, y volver tiene premio (un secreto, una
 nota).
@@ -175,9 +175,9 @@ abajo, al llegar, y a partir de ahí devuelven al Atrio en un momento.
                  │  de bajada: el Cegado, sin reliquias           │
                  └───────┬───────────────────────────────┬────────┘
                          │                               │ ducto (se abre desde abajo)
-              II · PASILLOS (Génesis, Injertadora) ──────┤
+              II · PASILLOS (Pulmón Vacío, Injertadora) ─┤
                          │                               │
-              III · SALAS DE SACRAMENTO (Pulmón Vacío) ──┤
+              III · SALAS DE SACRAMENTO ─────────────────┤
                          │                               │
               IV · CRIPTAS (Tendón del Mil, las Mareas) ─┤
                          │                               │
@@ -200,7 +200,7 @@ principio.
 ## Las puertas: reliquias
 
 Las habilidades son restos de los Primigenios (hechas: el **Pulmón Vacío** da el doble
-salto y el **Tendón del Mil** el dash; se ganan en los niveles III y IV, ver arriba). La
+salto y el **Tendón del Mil** el dash; se ganan en los niveles II y IV, ver arriba). La
 regla para cada una:
 
 1. **Se ve la puerta antes que la llave.** Una repisa alta, un hueco largo: el jugador

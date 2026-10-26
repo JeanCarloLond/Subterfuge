@@ -43,6 +43,11 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   lado, el Ala de Génesis con sus rayos, un Altar, el tercer registro, un atajo de vuelta
   al Registro y la puerta que pide los tres. El cierre se sella al llegar al Ala, del
   lado bueno: nunca deja encerrado.
+- **El laboratorio y la primera visión** (#225): tras la puerta, el Pulmón Vacío en su
+  pedestal, el primer objeto divino. Al tomarlo, el **Impulso cárnico** (doble salto) y
+  la niña: la pantalla se tiñe del blanco frío de Génesis, ella aparece al lado del
+  Cirujano y habla con su retrato. Desde ahí, los objetivos son suyos. La salida, en lo
+  alto, solo se alcanza con el Impulso.
 - **El Atrio (demostración)** (#185): la sala sola de siempre, con sus dos reliquias,
   desde la portada. En el juego es la Nave del Nivel I, sin ellas.
 - **Los objetivos** (#215): el objetivo nuevo entra arriba a la derecha con una campana;

@@ -75,6 +75,14 @@ Génesis Vestal: los protocolos antes de ser liturgia, la corporación, los labo
 sellados. Es lo opuesto al Cirujano: él eligió no ver; el Cirujano elige seguir mirando.
 Al final se relee como el único que tenía razón.
 
+### El artefacto: el Pulmón Vacío
+
+Decidido por Jean. El artefacto del laboratorio 7 de Génesis es **el primer objeto divino
+del juego**: unos pulmones de uno de los Mil, que todavía respiran. Dan el doble salto, el
+**Impulso cárnico**. Al tomarlos, el Cirujano ve a la niña por primera vez: lo que respira
+con él ya no es solo suyo. Génesis no lo destruyó «porque nadie sabe cómo» (el tercer
+registro) y selló el laboratorio con él dentro.
+
 ### Los objetivos son de la niña
 
 Decidido por Jean. El juego dice qué se busca («Averigua por qué se mueven los muros»).
@@ -119,7 +127,7 @@ otra.
 
 ## Abierto
 
-- **Qué es el artefacto** y quién lo dejó en el laboratorio.
+- **Quién dejó el artefacto** en el laboratorio.
 - **El nombre del Cegado.** Propuestas: Casiano, Ulpiano.
 - **Cómo nota el jugador** que solo él la ve, sin que se adivine el giro antes de tiempo.
 - **Qué pide el final B.** Una idea: como en _Blasphemous_, que solo se abra si el jugador

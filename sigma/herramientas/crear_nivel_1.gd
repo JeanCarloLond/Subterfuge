@@ -46,7 +46,7 @@ func _initialize() -> void:
 ## Si un script no carga (un error de sintaxis), set_script deja el nodo sin
 ## el y la sala se guarda rota sin avisar: mejor no generar nada.
 func _scripts_cargan() -> bool:
-	for script in ["sala", "paso", "sierra", "rayo", "cierre", "cartel", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
+	for script in ["sala", "paso", "sierra", "rayo", "cierre", "cartel", "vision", "reliquia", "atrezo", "ambiente", "temblor", "muro", "nave", "telon", "silleria"]:
 		# Con un error de sintaxis, load no da null: da un script que no se
 		# puede instanciar.
 		var cargado: GDScript = load("res://scripts/%s.gd" % script)
@@ -280,7 +280,7 @@ func _empezar(nombre: String, ancho: int, alto: int) -> void:
 	_membranas.tile_set = MEMBRANA
 	_membranas.add_to_group("clavable", true)
 	_poner(_membranas, "", "Membranas")
-	for grupo in ["Atrezo", "Ambiente", "Temblor", "Devotos", "Vestales", "Altares", "Muros", "Peligros", "Notas", "Charlas", "Carteles", "Pasos", "Entradas"]:
+	for grupo in ["Atrezo", "Ambiente", "Temblor", "Devotos", "Vestales", "Altares", "Muros", "Peligros", "Notas", "Charlas", "Reliquias", "Visiones", "Carteles", "Pasos", "Entradas"]:
 		var nodo := Node2D.new()
 		match grupo:
 			"Atrezo":

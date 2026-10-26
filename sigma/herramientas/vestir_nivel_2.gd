@@ -46,6 +46,14 @@ const SALAS_2 := {
 			[100, 224, "reja"], [300, 224, "charco"], [700, 224, "charco"], [1300, 224, "cadaver"],
 		],
 	},
+	"laboratorio": {
+		"penumbra": Color(0.56, 0.62, 0.72),
+		"decorado": [
+			[100, 400, "tanque"], [340, 400, "tanque"], [560, 400, "tanque"], [680, 272, "maquina"],
+			[440, 400, "radiografia"], [620, 400, "pantalla"], [300, 400, "holograma"],
+			[200, 400, "charco"], [720, 400, "holograma"],
+		],
+	},
 	"ala": {
 		"penumbra": Color(0.6, 0.66, 0.74),
 		"decorado": [

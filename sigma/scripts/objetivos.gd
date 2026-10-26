@@ -30,6 +30,12 @@ const CATALOGO := {
 		"texto": "Ve hacia dentro",
 		"de_la_nina": true,
 	},
+	## Tras la primera vision: lo que ella pide. El Prior guarda la Nave del
+	## Libro; ella lo llama solo «el que guarda la puerta».
+	"puerta": {
+		"texto": "Pasa al que guarda la puerta",
+		"de_la_nina": true,
+	},
 }
 
 const COLOR := Color(0.89, 0.663, 0.251)

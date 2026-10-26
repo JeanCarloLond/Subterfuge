@@ -54,6 +54,15 @@ func _initialize() -> void:
 		if not (archivo.begins_with("test_") and archivo.ends_with(".gd")):
 			continue
 		var script: GDScript = load("%s/%s" % [CARPETA, archivo])
+		# Un archivo que no compila es un fallo, no un cuelgue: sin esto, el
+		# ejecutor se quedaba parado y el CI esperaba hasta agotar el tiempo.
+		if script == null or not script.can_instantiate():
+			total += 1
+			fallidos += 1
+			print("  FALLO  %s · no compila" % archivo.get_basename())
+			for error in escucha.vaciar():
+				print("         %s" % error)
+			continue
 		var caso: Object = script.new()
 		for metodo in caso.get_method_list():
 			var nombre: String = metodo["name"]

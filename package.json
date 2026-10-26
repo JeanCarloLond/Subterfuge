@@ -35,6 +35,7 @@
     "sigma:vestal": "node scripts/vestal-sigma.mjs",
     "sigma:fondos": "node scripts/fondos-sigma.mjs",
     "sigma:cegado": "node scripts/cegado-sigma.mjs",
+    "sigma:nina": "node scripts/nina-sigma.mjs",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {

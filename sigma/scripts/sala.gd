@@ -36,7 +36,7 @@ Esc para volver a la portada"
 
 
 func _ready() -> void:
-	for grupo in ["Devotos", "Vestales", "Muros", "Reliquias", "Notas", "Charlas", "Pasos"]:
+	for grupo in ["Devotos", "Vestales", "Muros", "Reliquias", "Notas", "Charlas", "Visiones", "Pasos"]:
 		if not has_node(grupo):
 			continue
 		for pieza in get_node(grupo).get_children():
@@ -79,6 +79,9 @@ func _conectar(grupo: String, pieza: Node) -> void:
 		"Charlas":
 			pieza.cirujano = _cirujano
 			pieza.habla.connect(_interfaz.hablar)
+		"Visiones":
+			pieza.cirujano = _cirujano
+			pieza.aparece.connect(_interfaz.vision)
 		"Pasos":
 			pieza.cirujano = _cirujano
 			pieza.cruzado.connect(_salir)

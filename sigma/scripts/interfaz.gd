@@ -58,6 +58,13 @@ var _caja_texto: Label
 var _caja_retrato: TextureRect
 var _caja_nombre: Label
 var _caja_flecha: Polygon2D
+## El velo de las visiones: el blanco frio de Genesis sobre todo, menos la caja.
+var _vision: ColorRect
+## Las dos alturas de la caja: abajo, o arriba si el Cirujano esta abajo y lo
+## taparia.
+var _caja_texto_panel: Panel
+var _caja_retrato_panel: Panel
+var _cirujano: CharacterBody2D
 var _voz: AudioStreamPlayer
 var _voces: Array[AudioStream] = []
 var _letras := 0
@@ -86,6 +93,7 @@ func _ready() -> void:
 	_preparar_lectura()
 	_preparar_objetivo()
 	_preparar_caja()
+	_preparar_vision()
 	_preparar_ensenanza()
 	var progreso := _progreso()
 	if progreso:
@@ -141,11 +149,39 @@ func hablar(lineas: Array, retratos: Dictionary, al_terminar := Callable()) -> v
 		return
 	_dialogo = Dialogo.new(lineas)
 	_retratos = retratos
+	_colocar_caja()
 	_al_terminar = al_terminar
 	_letras = 0
 	_caja.visible = true
 	get_tree().paused = true
 	_pintar_dialogo()
+
+
+## Una vision (#225): la pantalla se tine de blanco frio, ella habla como en un
+## dialogo y, al acabar, el tinte se va.
+func vision(lineas: Array, retratos: Dictionary, al_terminar := Callable()) -> void:
+	_vision.visible = true
+	_vision.modulate.a = 0.0
+	create_tween().tween_property(_vision, "modulate:a", 1.0, 0.6)
+	hablar(lineas, retratos, func() -> void:
+		var vete := create_tween()
+		vete.tween_property(_vision, "modulate:a", 0.0, 1.0)
+		vete.tween_callback(func() -> void: _vision.visible = false)
+		if al_terminar.is_valid():
+			al_terminar.call()
+	)
+
+
+func _preparar_vision() -> void:
+	_vision = ColorRect.new()
+	_vision.name = "Vision"
+	_vision.color = Color(Objetivos.COLOR_NINA, 0.32)
+	_vision.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vision.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_vision.visible = false
+	add_child(_vision)
+	# Debajo de la caja: lo que ella dice se lee limpio.
+	move_child(_vision, _caja.get_index())
 
 
 func hablando() -> bool:
@@ -171,6 +207,18 @@ func _soltar_e() -> void:
 
 func _recien_cerrado() -> bool:
 	return _cerrado_en == Engine.get_process_frames()
+
+
+## La caja va abajo, salvo que el Cirujano este en la mitad de abajo de la
+## pantalla: entonces arriba, para que se vea quien habla con quien.
+func _colocar_caja() -> void:
+	var y := 222.0
+	if _cirujano and _cirujano.is_inside_tree():
+		var en_pantalla := _cirujano.get_global_transform_with_canvas().origin
+		if en_pantalla.y > get_viewport().get_visible_rect().size.y * 0.55:
+			y = 12.0
+	_caja_texto_panel.position.y = y
+	_caja_retrato_panel.position.y = y
 
 
 func _pintar_dialogo() -> void:
@@ -239,6 +287,8 @@ func _preparar_caja() -> void:
 	_caja.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var texto := _panel(Rect2(16, 222, 472, 128))
 	var retrato := _panel(Rect2(496, 222, 128, 128))
+	_caja_texto_panel = texto
+	_caja_retrato_panel = retrato
 	_caja_texto = Label.new()
 	_caja_texto.position = Vector2(14, 10)
 	_caja_texto.size = Vector2(444, 108)
@@ -374,6 +424,7 @@ func _preparar_objetivo() -> void:
 
 
 func conectar(cirujano: CharacterBody2D) -> void:
+	_cirujano = cirujano
 	cirujano.murio.connect(morir)
 	cirujano.aviso.connect(avisar)
 	cirujano.vitalidad_cambio.connect(_al_cambiar_vitalidad)

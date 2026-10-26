@@ -1,5 +1,7 @@
 ## Una reliquia: un resto que los Primigenios dejan al compactarse, un organo
-## suelto que aun funciona. Cada una le da al Cirujano una habilidad del cuerpo
+## suelto que aun funciona. El Pulmon Vacio es el artefacto del laboratorio de
+## Genesis (#225), el primer objeto divino del juego: al tomarlo llega la
+## primera vision. Cada una le da al Cirujano una habilidad del cuerpo
 ## que no es suya, como en Blasphemous: el doble salto y el dash ya no vienen
 ## de serie, se encuentran.
 ##
@@ -14,7 +16,7 @@ signal recogida(nombre: String, efecto: String)
 const RELIQUIAS := {
 	"pulmon": {
 		"nombre": "El Pulmón Vacío",
-		"efecto": "Un segundo salto en el aire",
+		"efecto": "Impulso cárnico: un segundo salto en el aire",
 		"textura": "res://arte/reliquias/pulmon.png",
 	},
 	"tendon": {
@@ -60,6 +62,8 @@ func _process(_delta: float) -> void:
 
 func _tomar() -> void:
 	set_process(false)
+	# Si llega una vision, el juego se para con la reliquia aun a la vista.
+	_aviso.visible = false
 	cirujano.ganar_reliquia(id)
 	recogida.emit(RELIQUIAS[id]["nombre"], RELIQUIAS[id]["efecto"])
 	var irse := create_tween()

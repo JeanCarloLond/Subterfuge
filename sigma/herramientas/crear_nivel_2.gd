@@ -19,8 +19,8 @@ const SALA_UMBRAL := "res://escenas/nivel1/umbral.tscn"
 ## se llega con unos 4 s de margen; quien se para o cae al vacio, la oye
 ## encima.
 const CIERRE_CADA_S := 0.55
-const FIN_ALA := "Detrás de esta puerta está el laboratorio de Génesis Vestal.
-Aquí empezará la primera visión.
+const FIN_LABORATORIO := "Detrás de esta puerta espera el que guarda la Nave del Libro.
+Fin de lo hecho hasta ahora.
 
 Esc para volver a la portada"
 
@@ -32,7 +32,7 @@ func _initialize() -> void:
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
 	var errores := 0
-	for crear in [_registro, _escribania, _sorteos, _archivo, _pasillo, _ala]:
+	for crear in [_registro, _escribania, _sorteos, _archivo, _pasillo, _ala, _laboratorio]:
 		errores += _guardar(crear.call())
 	quit(errores)
 
@@ -204,7 +204,6 @@ func _ala() -> Dictionary:
 	_empezar("Ala", 60, 23)
 	_nivel_2()
 	_raiz.set("marca_al_entrar", "pasillo-sellado")
-	_raiz.set("fin", FIN_ALA)
 	_piedra([[0, 0, 60, 2], [0, 0, 2, 23], [58, 0, 2, 23], [0, 19, 60, 4]])
 	_piedra([[36, 15, 8, 1]])
 	_altar("Ala", 6, 19)
@@ -222,15 +221,63 @@ A partir de hoy, los protocolos se leerán en voz alta, como oraciones, y ningun
 	var atajo := _paso("Atajo", 10, 16, 2, 3, "registro", "atajo", true, "E  abrir el atajo")
 	atajo.set("abre", "atajo-ala")
 	_puerta(11, 19)
-	var laboratorio := _paso("Laboratorio", 54, 16, 2, 3, "", "", true, "E  entrar")
+	var laboratorio := _paso("Laboratorio", 54, 16, 2, 3, "laboratorio", "oeste", true, "E  entrar")
 	laboratorio.set("pide_objetivo", "registros")
 	laboratorio.set("negado_texto", "La puerta de Génesis pide los tres registros (%d/%d)")
 	_puerta(55, 19)
 	_entrada("oeste", 3, 19, 1)
 	_entrada("atajo", 11, 19, 1)
+	_entrada("laboratorio", 55, 19, -1)
 	_atrezo([["candelabro", 72, 304], ["candelabro", 136, 304]])
 	_ambiente([], [[32, 304, 896]])
 	return {"nombre": "ala", "ancho": 60, "alto": 23}
+
+
+## 7 · El laboratorio 7 de Genesis (#225): lo que se sello con el artefacto
+## dentro. Dos rayos a la entrada y, en su pedestal, el Pulmon Vacio: el primer
+## objeto divino. Al tomarlo, el Impulso carnico (el doble salto) y la primera
+## vision de la nina. La salida esta en lo alto: solo se llega con el
+## Impulso, que se aprende aqui mismo.
+func _laboratorio() -> Dictionary:
+	_empezar("Laboratorio", 50, 30)
+	_nivel_2()
+	_raiz.set("fin", FIN_LABORATORIO)
+	_piedra([[0, 0, 50, 2], [0, 0, 2, 30], [48, 0, 2, 30], [0, 25, 50, 5]])
+	# El pedestal del artefacto y la repisa alta de la salida (128 px: el salto
+	# llega a 92; con el Impulso, a 150).
+	_piedra([[22, 22, 4, 3], [40, 17, 8, 1]])
+	_cirujano(4, 25)
+	_rayo(12, 2, Vector2.DOWN, 368.0, 0.0)
+	_rayo(16, 2, Vector2.DOWN, 368.0, 600.0)
+	var pulmon: Node2D = load("res://escenas/reliquia.tscn").instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
+	pulmon.position = _pie(24, 22)
+	pulmon.set("id", "pulmon")
+	_poner(pulmon, "Reliquias", "Pulmon")
+	var vision := Node2D.new()
+	vision.set_script(load("res://scripts/vision.gd"))
+	vision.set("id", "laboratorio")
+	vision.set("tras", NodePath("../../Reliquias/Pulmon"))
+	vision.set("objetivo", "puerta")
+	vision.set("lineas", PackedStringArray([
+		"¿Me ves?",
+		"Nadie me ve. Nadie mira. Tú sí.",
+		"Por eso te persiguen, Mano: te temen porque ya ves lo que ellos no.",
+		"Esos pulmones eran de alguien muy grande. Ahora respiran contigo. Salta: no te van a dejar caer.",
+		"Los muros no se mueven para hacerte daño. Se buscan. Como yo te he buscado a ti.",
+		"Más adentro hay uno que guarda la puerta. Te dirá que es la ley.",
+		"No le escuches. Pasa. Yo te enseño el camino.",
+	]))
+	_poner(vision, "Visiones", "Primera")
+	_cartel("impulso", 36, 25, "En el aire, {saltar} otra vez:
+el Impulso cárnico", "saltar", "vision-laboratorio")
+	_paso("Ala", 2, 22, 2, 3, "ala", "laboratorio", true, "E  volver")
+	_puerta(3, 25)
+	_paso("Nave", 44, 14, 2, 3, "", "", true, "E  entrar")
+	_puerta(45, 17)
+	_entrada("oeste", 5, 25, 1)
+	_atrezo([["candelabro", 280, 400], ["candelabro", 520, 400]])
+	_ambiente([], [[32, 400, 736]])
+	return {"nombre": "laboratorio", "ancho": 50, "alto": 30}
 
 
 # --- Las piezas del Nivel II --------------------------------------------------

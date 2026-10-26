@@ -9,7 +9,7 @@ const SALAS := [
 	"nivel1/pabellon", "nivel1/claustro", "nivel1/nave", "nivel1/pozo", "nivel1/capilla",
 	"nivel1/muro", "nivel1/escalera", "nivel1/umbral",
 	"nivel2/registro", "nivel2/escribania", "nivel2/sorteos", "nivel2/archivo",
-	"nivel2/pasillo", "nivel2/ala",
+	"nivel2/pasillo", "nivel2/ala", "nivel2/laboratorio",
 ]
 
 
@@ -74,7 +74,7 @@ func test_cada_entrada_cae_a_piedra_y_no_esta_en_su_paso() -> void:
 		sala.free()
 
 
-func test_empieza_en_el_pabellon_y_lo_hecho_acaba_en_la_puerta_del_laboratorio() -> void:
+func test_empieza_en_el_pabellon_y_lo_hecho_acaba_tras_el_laboratorio() -> void:
 	var intro: GDScript = load("res://scripts/intro.gd")
 	afirmar_igual(intro.SIGUIENTE, DIR + "nivel1/pabellon.tscn", "la intro lleva al Pabellón")
 	var finales := 0
@@ -83,10 +83,35 @@ func test_empieza_en_el_pabellon_y_lo_hecho_acaba_en_la_puerta_del_laboratorio()
 		for paso in sala.get_node("Pasos").get_children():
 			if paso.destino == "":
 				finales += 1
-				afirmar_igual(nombre, "nivel2/ala", "el final está en el Ala")
-				afirmar_igual(paso.pide_objetivo, "registros", "y pide los tres registros")
+				afirmar_igual(nombre, "nivel2/laboratorio", "el final está en el laboratorio")
 		sala.free()
 	afirmar_igual(finales, 1, "un solo final")
+	var ala: Node = load(DIR + "nivel2/ala.tscn").instantiate()
+	afirmar_igual(ala.get_node("Pasos/Laboratorio").pide_objetivo, "registros", "la puerta del laboratorio pide los registros")
+	ala.free()
+
+
+## El laboratorio (#225): el Pulmon en su pedestal dispara la primera vision,
+## que deja un objetivo de la nina; el cartel del Impulso sale despues de ella,
+## y la salida esta donde solo llega el doble salto.
+func test_el_laboratorio_da_el_pulmon_y_la_primera_vision() -> void:
+	var Objetivos: GDScript = load("res://scripts/objetivos.gd")
+	var Sacramento: GDScript = load("res://scripts/sacramento.gd")
+	var lab: Node = load(DIR + "nivel2/laboratorio.tscn").instantiate()
+	var pulmon: Node = lab.get_node("Reliquias/Pulmon")
+	afirmar_igual(pulmon.id, "pulmon", "el artefacto es el Pulmón Vacío")
+	var vision: Node = lab.get_node("Visiones/Primera")
+	afirmar_igual(vision.get_node(vision.tras), pulmon, "la visión la dispara el Pulmón")
+	afirmar(Objetivos.de_la_nina(vision.objetivo), "y deja un objetivo de la niña")
+	for texto in vision.lineas:
+		for prohibida in ["NPC", "boss", "HP", "mana", "checkpoint", "stamina"]:
+			afirmar(not (" %s " % prohibida) in (" %s " % texto), "«%s» en: %s" % [prohibida, texto])
+	afirmar_igual(lab.get_node("Carteles/Impulso").despues_de, "vision-laboratorio", "el cartel del Impulso, tras la visión")
+	var salida: Node = lab.get_node("Pasos/Nave")
+	var suelo := 25 * 16.0
+	var alto: float = suelo - (salida.position.y + salida.zona.y)
+	afirmar(alto > Sacramento.altura_de_salto(Sacramento.MOVIMIENTO["impulso_salto"]), "la salida no se alcanza de un salto (%s px)" % alto)
+	lab.free()
 
 
 ## El cierre del Pasillo (#190): sella de verdad (sus techos cubren el pasillo
