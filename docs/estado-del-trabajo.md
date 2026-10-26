@@ -3,7 +3,7 @@
 > **Léelo antes de seguir.** Es el traspaso entre sesiones (de Claude o de quien sea): qué
 > reglas mandan, qué está hecho, qué sigue y qué trampas ya se han pisado. Lo que no esté
 > aquí ni en el repo, **no se da por hecho**: se comprueba (`git log`, `gh issue list`) o se
-> pregunta. Última actualización: 23 de octubre de 2026.
+> pregunta. Última actualización: 26 de octubre de 2026.
 
 ## Reglas que no se discuten
 
@@ -198,6 +198,18 @@ salas (`escenas/nivel1/`, creadas una vez con `herramientas/crear_nivel_1.gd`; a
 editan en el editor). «Empezar» va ya al Pabellón N.º 7; el Atrio con reliquias queda como
 demostración.
 
+**Del 24 al 26 de octubre**, tras jugar Jean el Nivel I: #220 la letra a 18 px («Mano» se
+leía «Nano»), #221 carteles de controles al desbloquear cada mecánica, #222 y #223 más
+dificultad (sierras a 2), #224 el Nivel I vestido, #226 pasar de sala ya no cura. El
+**Nivel II** (#190) en ocho salas (`escenas/nivel2/`, `herramientas/crear_nivel_2.gd` y
+`vestir_nivel_2.gd`): el Registro de Diezmos, los tres registros de Génesis, el **Pasillo
+que se cierra** (el techo cae en ola detrás), el Ala de Génesis con sus rayos y el atajo,
+el **laboratorio** con el artefacto, que es el **Pulmón Vacío** (decidido por Jean: el
+doble salto, el Impulso cárnico) y la **primera visión** de la niña (#225), y el **Prior
+del Diezmo** (#219), el primer guardián, que suelta **la Injertadora** (#191) y abre el
+atajo al Atrio. «Empezar» lleva de la intro al Pabellón y se juega hasta la puerta de las
+Salas de Sacramento.
+
 **Presentación de Sigma** para los compañeros y el profesor, en el tono de la conversación:
 https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la comparta).
 
@@ -208,10 +220,8 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
 2. **Decidir el mapa** (`sigma/docs/mapa.md`) antes de rehacer niveles, y rehacer el Atrio a
    640×360: el salto al nicho del Tendón aterriza 4 px pasado el borde; la caja de 10×22 se
    queda corta con un sprite de 50 px.
-3. Que Jean juegue el Nivel I y diga qué cambia. Después, el **Nivel II** del plano: #190
-   los Pasillos (con el primer cierre), los tres registros de Génesis, el laboratorio y la
-   primera visión (#188) y el Prior del Diezmo (#219), que suelta la Injertadora (#191; las
-   ofrendas ya sortean el injerto con `con_injertadora`).
+3. Que Jean juegue el Nivel II y el Prior y diga qué cambia. Después, el Nivel III (las
+   Salas de Sacramento: qué reliquia da, por decidir) y las demás visiones (#188).
 4. El nombre del Cegado (abierto en el canon: Casiano, Ulpiano).
 5. Vestir las salas de prueba y los niveles que lleguen como el Atrio, y el arte de Mariana
    cuando se le cuente (el flujo de `.aseprite` está en `sigma/README.md`).
@@ -279,3 +289,12 @@ https://claude.ai/artifact/Baab66uQRQbBX6qXmFtW91 (privada hasta que Jean la com
   apunta el fotograma en que cierra y en él no abre nada.
 - **Un script de prueba con `change_scene_to_file`**: `current_scene` es null unos fotogramas;
   esperar a que exista antes de tocar la sala.
+- **Un `Tween` no mueve un `AnimatableBody2D`** (los muros) si corre en `_process`: van
+  sincronizados con la física. `set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)`.
+- **Simular teclas en un script de prueba**: `Input.parse_input_event` desde `_process` se
+  pierde para lo que lee la tecla en `_physics_process` (la E de ejecutar). Pulsar desde
+  `_physics_process` o llamar a la función directamente.
+- **`load` de un script con error de sintaxis no da `null`**: da un script que no se puede
+  instanciar (`can_instantiate()`). El ejecutor de tests y los generadores lo miran así.
+- **Cada sala crea su Cirujano**: lo que lleva el cuerpo pasa por `Progreso.cuerpo` al
+  cruzar un paso (#226).
