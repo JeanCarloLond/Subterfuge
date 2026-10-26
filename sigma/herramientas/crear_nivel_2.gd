@@ -63,8 +63,10 @@ En la última hoja, con otra letra, más antigua que el libro: «Los registros d
 	pasillo.set("sellado_por", "pasillo-sellado")
 	pasillo.set("negado_texto", "Sellado: el pasillo se cerró a tu espalda")
 	_puerta(40, 24)
+	# Se abre en cuanto se ha llegado al Ala (y el pasillo se sello): si pidiera
+	# cruzarlo desde alli, morir en el Ala sin rezar dejaba encerrado (#227).
 	var atajo := _paso("Atajo", 28, 21, 2, 3, "ala", "atajo", true, "E  abrir")
-	atajo.set("pide_marca", "atajo-ala")
+	atajo.set("pide_marca", "pasillo-sellado")
 	atajo.set("negado_texto", "No cede: está atrancada desde el otro lado")
 	_puerta(29, 24)
 	_entrada("oeste", 4, 24, 1)
@@ -219,8 +221,7 @@ func _ala() -> Dictionary:
 	_registro_nota("registro-genesis-3", 40, 15, "Génesis Vestal · Orden de cierre", "«Se sella el laboratorio 7. El artefacto queda dentro: no se destruye, porque nadie sabe cómo.
 
 A partir de hoy, los protocolos se leerán en voz alta, como oraciones, y ninguna Mano mirará lo que corta. Que lo llamen fe. Que no pregunten.»").set("cuenta", "registros")
-	var atajo := _paso("Atajo", 10, 16, 2, 3, "registro", "atajo", true, "E  abrir el atajo")
-	atajo.set("abre", "atajo-ala")
+	_paso("Atajo", 10, 16, 2, 3, "registro", "atajo", true, "E  abrir el atajo")
 	_puerta(11, 19)
 	var laboratorio := _paso("Laboratorio", 54, 16, 2, 3, "laboratorio", "oeste", true, "E  entrar")
 	laboratorio.set("pide_objetivo", "registros")

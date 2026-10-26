@@ -132,11 +132,11 @@ func test_el_cierre_sella_y_no_deja_encerrado() -> void:
 	var ala: Node = load(DIR + "nivel2/ala.tscn").instantiate()
 	afirmar(ala.get_node("Altares").get_child_count() > 0, "el Ala tiene Altar")
 	afirmar_igual(ala.marca_al_entrar, "pasillo-sellado", "y se sella al llegar a ella")
-	var atajo: Node = ala.get_node("Pasos/Atajo")
-	afirmar_igual(atajo.abre, "atajo-ala", "el atajo se abre desde el Ala")
 	ala.free()
 	var registro: Node = load(DIR + "nivel2/registro.tscn").instantiate()
-	afirmar_igual(registro.get_node("Pasos/Atajo").pide_marca, "atajo-ala", "y en el Registro lo pide")
+	# Lo que abre el atajo es lo mismo que sella el pasillo: no hay un momento en
+	# que el pasillo este sellado y el atajo cerrado (#227).
+	afirmar_igual(registro.get_node("Pasos/Atajo").pide_marca, "pasillo-sellado", "el atajo se abre al sellarse el pasillo")
 	afirmar_igual(registro.get_node("Pasos/Pasillo").sellado_por, "pasillo-sellado", "el pasillo, sellado, ya no se abre")
 	registro.free()
 

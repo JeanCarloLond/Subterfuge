@@ -3,6 +3,10 @@
 ## puerta cae detras y el Prior despierta; en su fase dos, los muros de los
 ## lados se cierran y la pelea se estrecha.
 ##
+## El muro izquierdo no esta en la fase uno: iria de suelo a techo junto a la
+## puerta y taparia la entrada (#227). Brota en la fase dos, pegado a la
+## puerta ya cerrada, y al vencer vuelve y se hunde.
+##
 ## Rematado, la nave se abre: la puerta sube, los muros vuelven y el del fondo
 ## se hunde, y aparecen el atajo al Atrio (la Nave del Libro y el Atrio se
 ## funden: el mapa se compacta cuando cae un eslabon) y el camino adelante.
@@ -31,6 +35,7 @@ func _ready() -> void:
 	super()
 	for muro in [_izquierdo, _derecho]:
 		muro.objetivo = _cirujano
+	_esconder(_izquierdo)
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso and progreso.aprendido("prior-vencido"):
 		_ya_vencido()
@@ -67,11 +72,27 @@ func _cerrar_puerta() -> void:
 
 ## La fase dos: los muros de los lados avanzan, y las ondas llegan hasta ellos.
 func _compactar() -> void:
+	_brotar(_izquierdo)
 	_izquierdo.disparar()
 	_derecho.disparar()
 	_prior.limite_izquierdo += _izquierdo.recorrido
 	_prior.limite_derecho -= _derecho.recorrido
 	$Temblor.temblar()
+
+
+## Fuera del juego: sin verse ni chocar.
+func _esconder(muro: Node2D) -> void:
+	muro.visible = false
+	muro.collision_layer = 0
+
+
+## Brota donde estaba escondido. Si el Cirujano esta en su sitio, sale a un lado.
+func _brotar(muro: Node2D) -> void:
+	muro.visible = true
+	muro.collision_layer = 1
+	var sitio: Rect2 = muro.rect()
+	if sitio.intersects(_cirujano.caja()):
+		_cirujano.position.x = sitio.end.x + 8.0
 
 
 func _vencido() -> void:
@@ -92,9 +113,13 @@ func _vencido() -> void:
 	var abre := create_tween().set_parallel().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	abre.tween_property(_puerta, "position:y", _puerta.position.y - _puerta.recorrido, 1.6).set_delay(1.0)
 	for muro in [_izquierdo, _derecho]:
+		# Que su ciclo no siga avanzando por debajo del tween (#229).
+		muro.ciclo.estado = muro.ciclo.Estado.CERRADO
+		muro.ciclo._fin_estado = INF
 		var vuelta: float = muro.direccion.x * muro.ciclo.avance
 		abre.tween_property(muro, "position:x", muro.position.x - vuelta, 1.6).set_delay(1.0)
 	abre.chain().tween_property(_derecho, "position:y", _derecho.position.y + _derecho.tiles.y * 16.0, 2.0)
+	abre.tween_callback(_esconder.bind(_izquierdo))
 
 
 ## Ya vencido (se vuelve a la nave): sin Prior, abierta.
