@@ -18,11 +18,6 @@ const SILLERIA := preload("res://arte/silleria/vientre.tres")
 const MEMBRANA := preload("res://arte/silleria/membrana.tres")
 const UMBRAL := preload("res://arte/provisional/umbral.png")
 const VINETA := preload("res://arte/vineta.gdshader")
-## Sin dash: en el Nivel I aun no hay reliquias.
-const AYUDA := "←→ moverse · Espacio saltar
-J golpear (mantén: cargado) · ↑ ↓ + J: arriba, abajo
-K parry, luego J: contragolpe · K en la membrana: clavarse
-E rezar, hablar, leer o ejecutar · Q poción · Esc salir"
 
 ## Donde van las salas. crear_nivel_2.gd extiende este y la cambia.
 var dir := DIR
@@ -322,7 +317,6 @@ func _cerrar(ancho: int, alto: int) -> void:
 	velo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_poner(velo, "Vineta")
 	var interfaz: CanvasLayer = load("res://escenas/interfaz.tscn").instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
-	interfaz.set("ayuda", AYUDA)
 	_poner(interfaz, "", "Interfaz")
 	var penumbra := CanvasModulate.new()
 	penumbra.color = Color(0.74, 0.7, 0.74)

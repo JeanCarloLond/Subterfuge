@@ -241,9 +241,12 @@ func _physics_process(_delta: float) -> void:
 		_interfaz.avisar("Caída al vacío")
 
 
+## Esc abre la pausa (#230): salir a la portada es una de sus opciones, y
+## pregunta antes, porque se pierde lo hecho desde el ultimo Altar.
 func _unhandled_input(evento: InputEvent) -> void:
 	if evento.is_action_pressed("pausa"):
-		get_tree().change_scene_to_file(PORTADA)
+		_interfaz.pausar()
+		get_viewport().set_input_as_handled()
 
 
 func _al_rezar(altar: Node2D) -> void:

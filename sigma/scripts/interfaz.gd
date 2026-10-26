@@ -7,7 +7,7 @@
 ## arriba a la derecha, se queda un momento y se va (#215). Los dialogos, a lo
 ## Stardew Valley (#216): una caja abajo con el retrato y el nombre de quien
 ## habla, y el texto que se escribe letra a letra. Todo en la letra legible del tema (arte/tema.tres).
-## Cada sala la conecta a su Cirujano y pone su propia ayuda.
+## Cada sala la conecta a su Cirujano; la ayuda sale de lo que este ya tiene.
 extends CanvasLayer
 
 const Sacramento := preload("res://scripts/sacramento.gd")
@@ -37,13 +37,14 @@ const TEXTO_MUERTE := "Diezmado"
 const FUENTE_MUERTE := preload("res://arte/fuentes/Jacquard12-Regular.ttf")
 const COLOR_MUERTE := Color(0.66, 0.1, 0.09)
 
-@export_multiline var ayuda := "":
-	set(valor):
-		ayuda = valor
-		if is_node_ready():
-			_pintar_ayuda()
-
 var _ayuda_abierta := false
+## La pausa: lo que se elige, si se ven los controles y si salir ya pregunta.
+const OPCIONES_PAUSA := ["Seguir", "Controles", "Salir a la portada"]
+var _pausa: PanelContainer
+var _pausa_texto: Label
+var _pausa_elegida := 0
+var _pausa_controles := false
+var _pausa_confirma := false
 var _velo: ColorRect
 var _banda: ColorRect
 var _muerte: Label
@@ -118,6 +119,11 @@ func _unhandled_input(evento: InputEvent) -> void:
 			get_tree().paused = false
 			_soltar_e()
 			get_viewport().set_input_as_handled()
+		return
+	if _pausa and _pausa.visible:
+		# Antes de mover: salir a la portada saca a la interfaz del arbol.
+		get_viewport().set_input_as_handled()
+		_mover_pausa(evento)
 		return
 	if evento.is_action_pressed("ayuda"):
 		_ayuda_abierta = not _ayuda_abierta
@@ -418,8 +424,111 @@ func _pintar_ayuda() -> void:
 		return
 	var progreso := _progreso()
 	var objetivo: String = progreso.texto_objetivo() if progreso else ""
-	_ayuda.text = ayuda if objetivo == "" else "Objetivo: %s
-%s" % [objetivo, ayuda]
+	var lineas := controles()
+	_ayuda.text = lineas if objetivo == "" else "Objetivo: %s
+%s" % [objetivo, lineas]
+	# Crece hacia arriba desde el borde de abajo: con el objetivo son cinco
+	# lineas, y antes la ultima se salia de la pantalla (#232).
+	_ayuda.offset_top = -12.0 - _ayuda.get_line_count() * 21.0
+
+
+## Los controles, con las teclas de verdad y solo lo que ya se tiene: el
+## Impulso y la Injertadora aparecen al ganarlos (#232).
+func controles() -> String:
+	var lineas := ["{izquierda} {derecha} moverse · {saltar} saltar"]
+	if _cirujano and _cirujano.movimiento and _cirujano.movimiento.puede_doble_salto:
+		lineas[0] += " (en el aire, otra vez)"
+	lineas.append("{golpear} golpear (mantén: cargado) · {arriba} {abajo} + {golpear}: arriba, abajo")
+	lineas.append("{parry} parry, luego {golpear}: contragolpe · {parry} en la membrana: clavarse")
+	var ultima := "{interactuar} rezar, hablar, leer o ejecutar · {pocion} poción"
+	if _cirujano and _cirujano.tiene_injertadora:
+		ultima += " · {injertadora} Injertadora"
+	lineas.append(ultima)
+	return Controles.rellenar("
+".join(lineas))
+
+
+## La pausa (#230): Seguir, Controles y Salir a la portada (que pregunta).
+
+
+func pausar() -> void:
+	if _dialogo or _lectura.visible or (_pausa and _pausa.visible):
+		return
+	if _pausa == null:
+		_preparar_pausa()
+	_pausa_elegida = 0
+	_pausa_controles = false
+	_pausa_confirma = false
+	_pausa.visible = true
+	get_tree().paused = true
+	_pintar_pausa()
+
+
+func _cerrar_pausa() -> void:
+	_pausa.visible = false
+	get_tree().paused = false
+	_soltar_e()
+
+
+func _mover_pausa(evento: InputEvent) -> void:
+	if evento.is_action_pressed("pausa"):
+		_cerrar_pausa()
+	elif evento.is_action_pressed("abajo") or evento.is_action_pressed("arriba"):
+		var paso := 1 if evento.is_action_pressed("abajo") else -1
+		_pausa_elegida = (_pausa_elegida + paso + OPCIONES_PAUSA.size()) % OPCIONES_PAUSA.size()
+		_pausa_controles = false
+		_pausa_confirma = false
+		_pintar_pausa()
+	elif evento.is_action_pressed("interactuar") or evento.is_action_pressed("saltar"):
+		match _pausa_elegida:
+			0:
+				_cerrar_pausa()
+			1:
+				_pausa_controles = not _pausa_controles
+				_pintar_pausa()
+			2:
+				if _pausa_confirma:
+					get_tree().paused = false
+					get_tree().change_scene_to_file("res://escenas/principal.tscn")
+				else:
+					_pausa_confirma = true
+					_pintar_pausa()
+
+
+func _pintar_pausa() -> void:
+	var lineas := PackedStringArray()
+	var progreso := _progreso()
+	var objetivo: String = progreso.texto_objetivo() if progreso else ""
+	if objetivo != "":
+		lineas.append("Objetivo: %s" % objetivo)
+		lineas.append("")
+	for i in OPCIONES_PAUSA.size():
+		var opcion: String = OPCIONES_PAUSA[i]
+		if i == 2 and _pausa_confirma:
+			opcion = "¿Salir? Se pierde lo hecho desde el último Altar"
+		lineas.append(("›  %s  ‹" if i == _pausa_elegida else "%s") % opcion)
+	if _pausa_controles:
+		lineas.append("")
+		lineas.append(controles())
+	_pausa_texto.text = "
+".join(lineas)
+	_pausa.reset_size()
+	_pausa.position = (get_viewport().get_visible_rect().size - _pausa.size) / 2.0
+
+
+func _preparar_pausa() -> void:
+	_pausa = PanelContainer.new()
+	_pausa.name = "Pausa"
+	var estilo := StyleBoxFlat.new()
+	estilo.bg_color = Color(0.06, 0.04, 0.045, 0.95)
+	estilo.border_color = ORO.darkened(0.25)
+	estilo.set_border_width_all(2)
+	estilo.set_content_margin_all(14)
+	_pausa.add_theme_stylebox_override("panel", estilo)
+	_pausa_texto = Label.new()
+	_pausa_texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_pausa.add_child(_pausa_texto)
+	add_child(_pausa)
 
 
 func _progreso() -> Node:

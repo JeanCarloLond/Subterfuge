@@ -13,6 +13,9 @@ signal objetivo_cambio(id: String)
 const Objetivos := preload("res://scripts/objetivos.gd")
 
 const RUTA := "user://partida.cfg"
+## La demo y las salas de prueba juegan aparte (#230): lo que se toma o se reza
+## en ellas no llega a la partida de verdad.
+const RUTA_DEMO := "user://demo.cfg"
 
 ## Donde se guarda. Los tests la cambian para no pisar la partida de verdad.
 var ruta := RUTA
@@ -133,6 +136,19 @@ func aprender(id: String) -> void:
 		return
 	_aprendido[id] = true
 	guardar()
+
+
+## Para jugar la demo o una sala de prueba: una partida aparte, en blanco.
+func usar_demo() -> void:
+	ruta = RUTA_DEMO
+	nueva()
+
+
+## De vuelta en la portada: la partida de verdad, si se venia de la demo.
+func usar_partida() -> void:
+	if ruta == RUTA_DEMO:
+		ruta = RUTA
+		cargar()
 
 
 func hay_partida() -> bool:

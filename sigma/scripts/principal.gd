@@ -23,6 +23,8 @@ func _ready() -> void:
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	var progreso := get_node_or_null("/root/Progreso")
+	if progreso:
+		progreso.usar_partida()
 	if progreso and progreso.hay_partida():
 		_destinos.append(["Continuar", progreso.sala])
 	_destinos.append(["Empezar", INTRO])
@@ -45,6 +47,8 @@ func _unhandled_input(evento: InputEvent) -> void:
 		var progreso := get_node_or_null("/root/Progreso")
 		if destino[0] == "Empezar" and progreso:
 			progreso.nueva()
+		elif progreso and SALAS.has(destino):
+			progreso.usar_demo()
 		get_tree().change_scene_to_file(destino[1])
 
 

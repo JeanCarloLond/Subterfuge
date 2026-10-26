@@ -59,3 +59,17 @@ func test_las_notas_leidas_se_guardan() -> void:
 	antes.nueva()
 	antes.free()
 	despues.free()
+
+
+## La demo y las salas de prueba juegan aparte (#230): lo que se toma en ellas
+## no llega a la partida, y al volver a la portada vuelve la de verdad.
+func test_la_demo_no_toca_la_partida() -> void:
+	var progreso: Node = Progreso.new()
+	progreso.ruta = Progreso.RUTA_DEMO
+	progreso.nueva()
+	progreso.ganar("pulmon")
+	afirmar_igual(progreso.ruta, Progreso.RUTA_DEMO, "la demo guarda en su archivo")
+	progreso.usar_demo()
+	afirmar(not progreso.tiene("pulmon"), "cada demo empieza en blanco")
+	progreso.nueva()
+	progreso.free()

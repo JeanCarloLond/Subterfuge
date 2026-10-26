@@ -812,10 +812,6 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Interfaz" parent="." unique_id=1038421006 instance=ExtResource("7_interfaz")]
-ayuda = "←→ moverse · Espacio saltar · Shift dash
-J golpear (mantén: cargado) · ↑ ↓ + J: arriba, abajo
-K parry, luego J: contragolpe · K en la membrana: clavarse
-E rezar, tomar o ejecutar · Q poción · Esc salir"
 
 [node name="Fin" type="CanvasLayer" parent="." unique_id=811240813]
 visible = false

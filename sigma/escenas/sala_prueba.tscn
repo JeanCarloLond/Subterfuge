@@ -13,8 +13,6 @@ reliquias_libres = true
 position = Vector2(104, 304)
 
 [node name="Interfaz" parent="." instance=ExtResource("3_interfaz")]
-ayuda = "←→ moverse · Espacio saltar · Shift dash
-K en la membrana (la torre roja): clavarse · ↑ trepar · Esc salir"
 
 [node name="Telon" type="CanvasLayer" parent="."]
 script = ExtResource("9_telon")

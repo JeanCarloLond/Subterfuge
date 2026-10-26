@@ -792,10 +792,6 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="Interfaz" parent="." unique_id=1038421006 instance=ExtResource("7_interfaz")]
-ayuda = "←→ moverse · Espacio saltar
-J golpear (mantén: cargado) · ↑ ↓ + J: arriba, abajo
-K parry, luego J: contragolpe · K en la membrana: clavarse
-E rezar, hablar, leer o ejecutar · Q poción · Esc salir"
 
 [node name="Penumbra" type="CanvasModulate" parent="." unique_id=1578228578]
 color = Color(0.74, 0.7, 0.74, 1)
