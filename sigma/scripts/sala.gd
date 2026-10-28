@@ -11,6 +11,7 @@ extends Node2D
 
 const PORTADA := "res://escenas/principal.tscn"
 const Sacramento := preload("res://scripts/sacramento.gd")
+const Relieve := preload("res://scripts/relieve.gd")
 ## Lo que tarda en aparecer el primer objetivo de una partida nueva.
 const PRIMER_OBJETIVO_S := 2.0
 ## Lo que tarda la pantalla en abrirse al entrar por un paso.
@@ -59,6 +60,9 @@ func _ready() -> void:
 			altar.rezado.connect(_al_rezar.bind(altar))
 	_interfaz.conectar(_cirujano)
 	_cirujano.murio.connect(_al_morir)
+	# El vacio y las bajadas, que se lean (#240). Antes que las luces: las de
+	# las bajadas tambien van a su altura.
+	Relieve.marcar(self)
 	# Las luces, a su altura: con los mapas de normales modelan la figura.
 	for luz in find_children("*", "PointLight2D", true, false):
 		luz.height = Sacramento.ALTURA_LUZ
