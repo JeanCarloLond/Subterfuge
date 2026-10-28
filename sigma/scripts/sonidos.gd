@@ -151,6 +151,92 @@ static func carga() -> AudioStreamWAV:
 	return _wav(muestras)
 
 
+## El parry logrado (#234): parar un golpe tiene que dar gusto. Cuatro capas a
+## la vez: el chasquido del choque, el timbre del metal que vibra y se apaga
+## (parciales inarmonicos, como una hoja; dos casi iguales para que bata), el
+## peso grave por debajo y una cola corta de nave. A 44,1 kHz: el brillo del
+## metal vive por encima de lo que da la mezcla de los demas.
+const PARADAS := [
+	# Parciales: [relacion con la fundamental, volumen, lo que tarda en apagarse].
+	# 0, acero: brillante y seco.
+	{"hz": 1240.0, "dura": 0.9, "chasquido": 0.9, "peso": 0.7, "siseo": 0.0, "eco": 0.12,
+		"parciales": [[1.0, 0.5, 0.2], [1.007, 0.3, 0.28], [1.503, 0.35, 0.13], [2.09, 0.3, 0.09],
+			[2.83, 0.22, 0.06], [3.71, 0.15, 0.04]]},
+	# 1, hueso: mas grave y con mas cuerpo, una campana pequena.
+	{"hz": 520.0, "dura": 1.2, "chasquido": 0.7, "peso": 0.9, "siseo": 0.0, "eco": 0.15,
+		"parciales": [[1.0, 0.6, 0.3], [0.995, 0.35, 0.4], [1.58, 0.4, 0.2], [2.24, 0.3, 0.14],
+			[3.1, 0.2, 0.09], [4.4, 0.12, 0.05]]},
+	# 2, hoja: el «shing» de una espada, agudo y con siseo.
+	{"hz": 2100.0, "dura": 1.0, "chasquido": 1.0, "peso": 0.6, "siseo": 0.35, "eco": 0.12,
+		"parciales": [[1.0, 0.55, 0.25], [1.004, 0.4, 0.33], [1.33, 0.3, 0.16], [1.98, 0.25, 0.1],
+			[2.71, 0.18, 0.06]]},
+]
+const TASA_PARADA := 44100
+
+
+static func parada(variante := 0) -> AudioStreamWAV:
+	var V: Dictionary = PARADAS[variante]
+	var azar := RandomNumberGenerator.new()
+	azar.seed = 234 + variante
+	var tasa := TASA_PARADA
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(tasa * float(V["dura"])))
+	var parciales: Array = V["parciales"]
+	var fases := PackedFloat32Array()
+	fases.resize(parciales.size())
+	var ruido_lento := 0.0
+	var fase_peso := 0.0
+	for i in muestras.size():
+		var t := float(i) / tasa
+		# El timbre: cada parcial con su volumen y lo que tarda en apagarse.
+		var timbre := 0.0
+		for p in parciales.size():
+			fases[p] += TAU * float(V["hz"]) * float(parciales[p][0]) / tasa
+			timbre += sin(fases[p]) * float(parciales[p][1]) * exp(-t / float(parciales[p][2]))
+		timbre *= minf(1.0, t / 0.0015)
+		# El chasquido: ruido sin lo grave (ruido menos su media lenta), un instante.
+		var ruido := azar.randf_range(-1.0, 1.0)
+		ruido_lento += (ruido - ruido_lento) * 0.2
+		var chasquido := (ruido - ruido_lento) * exp(-t / 0.004) * float(V["chasquido"])
+		# El peso: un seno que cae de 120 a 55 Hz.
+		fase_peso += TAU * (55.0 + 65.0 * exp(-t / 0.03)) / tasa
+		var peso := sin(fase_peso) * minf(1.0, t / 0.002) * exp(-t / 0.06) * float(V["peso"])
+		# El siseo de la hoja: ruido agudo que se apaga despacio.
+		var siseo := (ruido - ruido_lento) * exp(-t / 0.15) * float(V["siseo"]) * 0.3
+		muestras[i] = timbre + chasquido + peso + siseo
+	_nave(muestras, tasa, float(V["eco"]))
+	# Saturacion suave y al tope: que pegue sin romperse. Con mas ganancia, la
+	# saturacion levantaba la cola y el metal no se apagaba nunca. El ultimo
+	# cuarto se funde a cero: ni un clic al cortar.
+	var tope := 0.0
+	var fundido := muestras.size() * 3 / 4
+	for i in muestras.size():
+		muestras[i] = tanh(muestras[i])
+		if i > fundido:
+			muestras[i] *= float(muestras.size() - i) / (muestras.size() - fundido)
+		tope = maxf(tope, absf(muestras[i]))
+	for i in muestras.size():
+		muestras[i] *= 0.9 / tope
+	return _wav(muestras, tasa)
+
+
+## Una cola de nave: cuatro ecos que se realimentan (filtros peine, de
+## Schroeder) y se mezclan con `cuanto` de lo seco.
+static func _nave(muestras: PackedFloat32Array, tasa: int, cuanto: float) -> void:
+	var cola := PackedFloat32Array()
+	cola.resize(muestras.size())
+	for ms in [29.7, 37.1, 41.1, 43.7]:
+		var retardo := int(ms / 1000.0 * tasa)
+		var linea := PackedFloat32Array()
+		linea.resize(muestras.size())
+		for i in muestras.size():
+			var atras := linea[i - retardo] if i >= retardo else 0.0
+			linea[i] = muestras[i] + atras * 0.6
+			cola[i] += linea[i] * 0.25
+	for i in muestras.size():
+		muestras[i] += cola[i] * cuanto
+
+
 static func _bucle(wav: AudioStreamWAV) -> AudioStreamWAV:
 	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	wav.loop_begin = 0
@@ -169,13 +255,13 @@ static func _golpe(muestras: PackedFloat32Array, inicio_s: float, dura_s: float,
 		muestras[primera + i] += sin(fase) * envolvente * volumen
 
 
-static func _wav(muestras: PackedFloat32Array) -> AudioStreamWAV:
+static func _wav(muestras: PackedFloat32Array, tasa := MEZCLA) -> AudioStreamWAV:
 	var datos := PackedByteArray()
 	datos.resize(muestras.size() * 2)
 	for i in muestras.size():
 		datos.encode_s16(i * 2, int(clampf(muestras[i], -1.0, 1.0) * 32767.0))
 	var wav := AudioStreamWAV.new()
 	wav.format = AudioStreamWAV.FORMAT_16_BITS
-	wav.mix_rate = MEZCLA
+	wav.mix_rate = tasa
 	wav.data = datos
 	return wav

@@ -67,6 +67,9 @@ const CAIDA_CON_POLVO := 260.0
 const CAIDA_QUE_SUENA := 120.0
 const COLOR_POLVO := Color(0.55, 0.47, 0.4, 0.8)
 const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
+## El destello del parry logrado (#234): su radio y lo que tarda en apagarse.
+const DESTELLO_PX := 13.0
+const DESTELLO_DURA := 0.16
 ## La carga del golpe con Fervor: el cuerpo se calienta hacia el ambar del
 ## Fervor mientras carga, suben brasas, y al completarse da un destello.
 const AMBAR := Color(1.45, 1.05, 0.45)
@@ -308,9 +311,9 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	if muerto:
 		return Resultado.IGNORADO
 	if combate.parar():
-		_sonar("parada")
+		_sonar("parry")
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
-		_chispas(position + Vector2(movimiento.mirando * 8.0, -26.0))
+		_parry_logrado(position + Vector2(movimiento.mirando * 8.0, -26.0))
 		_pausa_de_impacto(Sacramento.IMPACTO["parry_ms"])
 		return Resultado.PARADO
 	var retroceso := Vector2(Sacramento.VITALIDAD["retroceso_x"], Sacramento.VITALIDAD["retroceso_y"])
@@ -537,6 +540,37 @@ func _polvo(donde: Vector2, cuantas: int) -> void:
 ## Las chispas del parry: el metal contra el metal, lo unico limpio del juego.
 func _chispas(donde: Vector2) -> void:
 	_rafaga(donde, 14, COLOR_CHISPA, Vector2(movimiento.mirando, -0.3), 70.0, 60.0, 160.0, Vector2(0, 300), 0.3)
+
+
+## Parar un golpe tiene que verse (#234): un destello en el choque, una lluvia
+## de chispas hacia el que atacaba y una sacudida corta. El destello nace
+## durante la pausa de impacto, quieto y lleno, y se abre y se apaga cuando el
+## mundo vuelve a moverse.
+func _parry_logrado(donde: Vector2) -> void:
+	var frente := Vector2(movimiento.mirando, -0.2)
+	_rafaga(donde, 24, COLOR_CHISPA, frente, 55.0, 120.0, 260.0, Vector2(0, 420), 0.35)
+	_rafaga(donde, 6, AMBAR, frente, 90.0, 40.0, 90.0, Vector2(0, 200), 0.5)
+	var destello := Polygon2D.new()
+	destello.name = "Destello"
+	destello.position = donde
+	destello.color = Color(1.0, 0.97, 0.85)
+	# Una estrella de ocho puntas: larga en horizontal, el filo del choque.
+	var puntas := PackedVector2Array()
+	for i in 16:
+		var angulo := TAU * i / 16.0
+		var radio := (DESTELLO_PX if i % 4 == 0 else DESTELLO_PX * 0.45) if i % 2 == 0 else 1.5
+		puntas.append(Vector2(cos(angulo) * radio * 1.6, sin(angulo) * radio))
+	destello.polygon = puntas
+	# Suma luz en vez de tapar: brilla sobre el bisturi y sobre el que ataca.
+	var luz := CanvasItemMaterial.new()
+	luz.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	destello.material = luz
+	get_parent().add_child(destello)
+	var abrir := destello.create_tween()
+	abrir.tween_property(destello, "scale", Vector2.ONE * 1.8, DESTELLO_DURA).from(Vector2.ONE)
+	abrir.parallel().tween_property(destello, "modulate:a", 0.0, DESTELLO_DURA)
+	abrir.tween_callback(destello.queue_free)
+	_sacudir()
 
 
 func _rafaga(donde: Vector2, cuantas: int, color: Color, direccion: Vector2, abertura: float,

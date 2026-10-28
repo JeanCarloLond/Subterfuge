@@ -19,6 +19,12 @@ const EFECTOS := {
 	"caida": [1, -6.0],
 }
 const VOLUMEN_TRAGO_DB := -3.0
+## El parry logrado (#234): calculado en sonidos.gd y guardado como archivo por
+## herramientas/crear_parry.gd (calcularlo al arrancar costaba 0,2 s). Hay tres
+## versiones: 0 acero, 1 hueso, 2 hoja. Esta es la que suena.
+const PARRY := 0
+const RUTA_PARRY := "res://audio/efectos/parry-%d.wav"
+const VOLUMEN_PARRY_DB := -2.0
 const VARIACION_TONO := 0.06
 ## Cuantos pueden sonar a la vez.
 const VOCES := 8
@@ -40,6 +46,8 @@ func _ready() -> void:
 		_volumen[nombre] = EFECTOS[nombre][1]
 	_tomas["trago"] = [Sonidos.trago()]
 	_volumen["trago"] = VOLUMEN_TRAGO_DB
+	_tomas["parry"] = [load(RUTA_PARRY % PARRY)]
+	_volumen["parry"] = VOLUMEN_PARRY_DB
 	# Calculados tambien: la campana del objetivo y la carga del rayo. La voz
 	# de los dialogos la lleva la interfaz: suena con el juego parado.
 	_tomas["campana"] = [Sonidos.campana()]

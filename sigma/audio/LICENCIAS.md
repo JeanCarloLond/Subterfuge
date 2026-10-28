@@ -37,12 +37,18 @@ no es obligatorio, pero lo damos. Renombrados al uso que tienen aquí:
 | `efectos/golpe-0..1.ogg`     | `knifeSlice.ogg`, `2` | Un golpe que entra               |
 | `efectos/golpe-fuerte-0.ogg` | `chop.ogg`            | Cargado, contragolpe y ejecución |
 | `efectos/guardia-0.ogg`      | `metalClick.ogg`      | Alzar la guardia (parry)         |
-| `efectos/parada-0..2.ogg`    | `metalPot1..3.ogg`    | Un parry logrado                 |
+| `efectos/parada-0..2.ogg`    | `metalPot1..3.ogg`    | El disparo de la Injertadora     |
 | `efectos/salto-0..3.ogg`     | `cloth1..4.ogg`       | El salto                         |
 | `efectos/caida-0.ogg`        | `dropLeather.ogg`     | Tocar suelo                      |
 
 El trago de la Poción no es un archivo: se calcula en `scripts/sonidos.gd`, como el Latido y
 el crujido de los muros.
+
+El parry logrado (#234) también se calcula ahí (`Sonidos.parada()`: choque, metal que vibra
+y se apaga, peso grave y cola de nave), pero se guarda como archivo para no calcularlo al
+arrancar: `efectos/parry-0..2.wav`, tres versiones (acero, hueso, hoja), escritas por
+`herramientas/crear_parry.gd`. Suena la que elige `Efectos.PARRY`. Ni grabado ni generado
+por IA: ondas y ruido.
 
 ## Voces
 
