@@ -20,12 +20,12 @@
 [ext_resource type="Texture2D" path="res://arte/provisional/vela.png" id="11_uyti8"]
 [ext_resource type="Script" path="res://scripts/paso.gd" id="12_8v7qi"]
 [ext_resource type="PackedScene" path="res://escenas/cirujano.tscn" id="13_imx18"]
-[ext_resource type="Texture2D" path="res://arte/provisional/codice.png" id="14_adk6l"]
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-grietas.png" id="14_i3frj"]
 [ext_resource type="Texture2D" path="res://arte/provisional/umbral.png" id="15_qbudj"]
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="15_y0ns7"]
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="16_uyti8"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="17_i3frj"]
+[ext_resource type="Script" path="res://scripts/figura.gd" id="90_figura"]
 
 [sub_resource type="Gradient" id="Gradient_wsb7v"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -112,14 +112,16 @@ position = Vector2(90, 384)
 texture = ExtResource("6_8v7qi")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_imx18")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("Su nombre no consta, Mano.", "Sin turno no se registra.")
 
 [node name="Registradora1" type="Sprite2D" parent="Decorado" unique_id=1320520883]
 position = Vector2(760, 384)
 texture = ExtResource("6_8v7qi")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_imx18")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("Sorteo a puerta cerrada.", "Las dos cifras, siempre.")
 
 [node name="Charco2" type="Sprite2D" parent="Decorado" unique_id=379031538]
 position = Vector2(420, 384)
@@ -151,13 +153,6 @@ centered = false
 offset = Vector2(-5, 0)
 script = ExtResource("7_imx18")
 vida = 2
-
-[node name="Codice6" type="Sprite2D" parent="Decorado" unique_id=1076230755]
-position = Vector2(600, 384)
-texture = ExtResource("14_adk6l")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_imx18")
 
 [node name="Vela7" type="Sprite2D" parent="Decorado" unique_id=1535196168]
 position = Vector2(880, 384)
@@ -298,7 +293,7 @@ tile_set = ExtResource("6_yj3fh")
 
 [node name="Atrezo" type="Node2D" parent="." unique_id=1435380903]
 script = ExtResource("7_hnchk")
-piezas = [["candelabro", 264, 384], ["candelabro", 328, 384], ["candelabro", 600, 384], ["hongos", 860, 208]]
+piezas = [["candelabro", 264, 384], ["candelabro", 328, 384], ["candelabro", 600, 384], ["hongos", 884, 208]]
 
 [node name="Ambiente" type="Node2D" parent="." unique_id=1584040215]
 script = ExtResource("8_63ju2")
@@ -424,15 +419,6 @@ drag_left_margin = 0.125
 drag_top_margin = 0.125
 drag_right_margin = 0.125
 drag_bottom_margin = 0.125
-
-[node name="Libro" type="Sprite2D" parent="." unique_id=1205531865]
-z_index = -3
-texture_filter = 1
-position = Vector2(552, 384)
-scale = Vector2(6, 6)
-texture = ExtResource("14_adk6l")
-centered = false
-offset = Vector2(-4, -10)
 
 [node name="Puerta" type="Sprite2D" parent="." unique_id=2106206328]
 z_index = -1

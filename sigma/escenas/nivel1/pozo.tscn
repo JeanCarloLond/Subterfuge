@@ -27,6 +27,7 @@
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="15_ym7ni"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="16_4ghe6"]
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="16_p1gg7"]
+[ext_resource type="Script" path="res://scripts/figura.gd" id="90_figura"]
 
 [sub_resource type="Gradient" id="Gradient_cbjqj"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -168,7 +169,8 @@ position = Vector2(480, 432)
 texture = ExtResource("8_4ghe6")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_ym7ni")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("Los hongos no crecen ya.", "Abajo late más fuerte.")
 
 [node name="FlorHueso4" type="Sprite2D" parent="Decorado" unique_id=191840920]
 position = Vector2(220, 656)

@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://scripts/silleria.gd" id="5_1n6xn"]
 [ext_resource type="Texture2D" path="res://arte/provisional/columna.png" id="5_o2eqy"]
 [ext_resource type="TileSet" path="res://arte/silleria/membrana.tres" id="6_xorll"]
-[ext_resource type="Texture2D" path="res://arte/provisional/codice.png" id="6_yguni"]
 [ext_resource type="Script" path="res://scripts/pieza.gd" id="7_ne764"]
 [ext_resource type="Script" path="res://scripts/atrezo.gd" id="7_yit1a"]
 [ext_resource type="Script" path="res://scripts/ambiente.gd" id="8_4tqcj"]
@@ -106,48 +105,6 @@ offset = Vector2(-6, -41)
 
 [node name="Decorado" type="Node2D" parent="." unique_id=1261599345]
 z_index = -5
-
-[node name="Codice0" type="Sprite2D" parent="Decorado" unique_id=1683781704]
-position = Vector2(200, 80)
-texture = ExtResource("6_yguni")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_ne764")
-
-[node name="Codice1" type="Sprite2D" parent="Decorado" unique_id=1183219845]
-position = Vector2(500, 160)
-texture = ExtResource("6_yguni")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_ne764")
-
-[node name="Codice2" type="Sprite2D" parent="Decorado" unique_id=378608644]
-position = Vector2(150, 240)
-texture = ExtResource("6_yguni")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_ne764")
-
-[node name="Codice3" type="Sprite2D" parent="Decorado" unique_id=2071689906]
-position = Vector2(560, 320)
-texture = ExtResource("6_yguni")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_ne764")
-
-[node name="Codice4" type="Sprite2D" parent="Decorado" unique_id=2147103530]
-position = Vector2(200, 400)
-texture = ExtResource("6_yguni")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_ne764")
-
-[node name="Codice5" type="Sprite2D" parent="Decorado" unique_id=1457583274]
-position = Vector2(520, 480)
-texture = ExtResource("6_yguni")
-centered = false
-offset = Vector2(-4, -10)
-script = ExtResource("7_ne764")
 
 [node name="Charco6" type="Sprite2D" parent="Decorado" unique_id=668136089]
 position = Vector2(300, 560)

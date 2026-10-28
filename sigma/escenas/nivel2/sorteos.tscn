@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="13_ydjnu"]
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="14_gfl03"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="15_aaebk"]
+[ext_resource type="Script" path="res://scripts/figura.gd" id="90_figura"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ydjnu"]
 shader = ExtResource("14_gfl03")
@@ -87,7 +88,8 @@ position = Vector2(520, 192)
 texture = ExtResource("6_mxfn8")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_geywk")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("Hoy no salió ningún nombre.", "Aquí no se sortea a Manos.")
 
 [node name="Columna1" type="Sprite2D" parent="Decorado" unique_id=925634188]
 modulate = Color(0.91, 0.89, 0.88, 0.85)

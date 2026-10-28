@@ -27,6 +27,7 @@
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="15_yrmlu"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="16_6hp3r"]
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="16_wha82"]
+[ext_resource type="Script" path="res://scripts/figura.gd" id="90_figura"]
 
 [sub_resource type="Gradient" id="Gradient_o0o23"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -112,21 +113,24 @@ position = Vector2(330, 304)
 texture = ExtResource("6_dr6jj")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_yrmlu")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("Anoche se movió el muro.", "No mires, Mano. Reza.")
 
 [node name="Fiel1" type="Sprite2D" parent="Decorado" unique_id=1341962196]
 position = Vector2(530, 304)
 texture = ExtResource("6_dr6jj")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_yrmlu")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("La carne no ha llegado.", "Mi casa paga, y no llega.")
 
 [node name="Fiel2" type="Sprite2D" parent="Decorado" unique_id=669072051]
 position = Vector2(730, 304)
 texture = ExtResource("6_dr6jj")
 centered = false
 offset = Vector2(-11, -34)
-script = ExtResource("7_yrmlu")
+script = ExtResource("90_figura")
+lineas = PackedStringArray("Cierra los ojos al pasar.", "El templo se asienta, dicen.")
 
 [node name="Exvoto3" type="Sprite2D" parent="Decorado" unique_id=549271844]
 position = Vector2(240, 32)
