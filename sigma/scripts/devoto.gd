@@ -13,6 +13,7 @@ extends CharacterBody2D
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Texturas := preload("res://scripts/texturas.gd")
 const Herida := preload("res://scripts/herida.gd")
+const Gesto := preload("res://scripts/gesto.gd")
 const Ofrenda := preload("res://scripts/ofrenda.gd")
 const Bocadillo := preload("res://scripts/bocadillo.gd")
 ## Lo que grita al verlo: cumple la ley de la Mano que mira (canon). Mas
@@ -373,7 +374,8 @@ func _pintar(delta: float) -> void:
 	_marca.visible = estado == Estado.ATURDIDO
 	if _marca.visible:
 		_marca.scale = Vector2.ONE * (1.0 + 0.15 * sin(ahora / 80.0))
-	_figura.scale = Vector2(mirando, 1.0)
+	# Le entra el bisturi: se encoge un instante (#235).
+	_figura.scale = Vector2(mirando, 1.0) * Gesto.escala(Gesto.Tipo.GOLPEADO, ahora - _herido_en)
 	# Aturdido se tambalea: abierto, para castigarlo.
 	_figura.rotation = sin(ahora / 50.0) * 0.06 if estado == Estado.ATURDIDO else 0.0
 

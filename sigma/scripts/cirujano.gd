@@ -33,6 +33,8 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 const ARTE := "res://arte/cirujano/"
 const Animaciones := preload("res://arte/cirujano/animaciones.gd")
 const Texturas := preload("res://scripts/texturas.gd")
+const Gesto := preload("res://scripts/gesto.gd")
+const Herida := preload("res://scripts/herida.gd")
 ## Las fases de cada golpe, como en Blasphemous: los fotogramas de aviso, el del
 ## smear (el arco del bisturi), el del impacto, que se sostiene, y los de la
 ## recuperacion, que se ven ya con el cuerpo libre.
@@ -70,6 +72,18 @@ const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
 ## El destello del parry logrado (#234): su radio y lo que tarda en apagarse.
 const DESTELLO_PX := 13.0
 const DESTELLO_DURA := 0.16
+## El impacto de un golpe que entra (#235): un destello mas pequeno y breve.
+const IMPACTO_PX := 7.0
+const IMPACTO_DURA := 0.1
+## El arco del tajo (#235): por donde pasa el bisturi.
+const COLOR_ARCO := Color(1.0, 0.95, 0.85, 0.7)
+const ARCO_DURA := 0.12
+## El aliento del Pulmon en el doble salto.
+const COLOR_ALIENTO := Color(0.85, 0.9, 0.95, 0.6)
+## La caida con la que el aterrizaje aplasta del todo; las cortas, menos.
+const CAIDA_PLENA := 420.0
+## Cada cuanto suelta polvo la pared mientras trepa.
+const POLVO_PARED_MS := 110.0
 ## La carga del golpe con Fervor: el cuerpo se calienta hacia el ambar del
 ## Fervor mientras carga, suben brasas, y al completarse da un destello.
 const AMBAR := Color(1.45, 1.05, 0.45)
@@ -114,6 +128,17 @@ var _fin_aterrizaje := -INF
 var _proxima_estela := -INF
 var _caida_antes := 0.0
 var _colgado_antes := false
+## El gesto del cuerpo de ahora (#235): cual, desde cuando, cuanto y hacia que
+## lado se inclina.
+var _gesto: int = Gesto.Tipo.NINGUNO
+var _gesto_desde := -INF
+var _gesto_fuerza := 1.0
+var _gesto_lado := 1.0
+## Corriendo por el suelo, y hacia donde: arrancar, frenar y girar levantan polvo.
+var _corriendo := false
+var _signo_carrera := 0.0
+var _proximo_polvo_pared := -INF
+var _zona_antes := false
 ## Brasas que suben mientras carga el golpe con Fervor.
 var _brasas: CPUParticles2D
 var _cargado_avisado := false
@@ -218,17 +243,24 @@ func _physics_process(delta: float) -> void:
 
 	movimiento.velocidad = velocity
 	var subia := velocity.y
-	movimiento.paso(delta, entrada, is_on_floor(), pared, position.y)
+	var pisaba := is_on_floor()
+	var colgaba := movimiento.estado == Movimiento.Estado.AGARRE
+	movimiento.paso(delta, entrada, pisaba, pared, position.y)
 	velocity = movimiento.velocidad
 	# Un salto: la velocidad pasa de golpe a subir.
 	if entrada.saltar_pulsado and velocity.y < -250.0 and velocity.y < subia - 200.0:
 		_voz("salto")
 		_sonar("salto")
+		_al_saltar(pisaba, colgaba)
 	_caida_antes = velocity.y
 	move_and_slide()
 	_efectos_de_movimiento()
 
-	if combate.zona_activa():
+	var zona_activa := combate.zona_activa()
+	if zona_activa and not _zona_antes:
+		_arco()
+	_zona_antes = zona_activa
+	if zona_activa:
 		_golpear_enemigos()
 	if combate.fervor != fervor_antes:
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
@@ -324,6 +356,7 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 	velocity = movimiento.velocidad
 	combate.cancelar()
 	_voz("herida")
+	_herido(origen_x)
 	_perder(dano)
 	return Resultado.HERIDO
 
@@ -339,6 +372,7 @@ func recibir_contacto(origen_x: float, dano: int = Sacramento.CONTACTO["dano"]) 
 	velocity = movimiento.velocidad
 	combate.cancelar()
 	_voz("herida")
+	_herido(origen_x)
 	_perder(dano)
 	return true
 
@@ -400,6 +434,7 @@ func _golpear_enemigos() -> void:
 		if dano == 0:
 			continue
 		enemigo.recibir_dano(dano, position.x)
+		_destello(zona.intersection(enemigo.caja()).get_center(), IMPACTO_PX, IMPACTO_DURA)
 		_sonar("golpe" if combate.tipo == Combate.Tipo.BASICO else "golpe-fuerte")
 		_pausa_de_impacto(_pausa_del_golpe())
 		if combate.tipo != Combate.Tipo.BASICO:
@@ -504,12 +539,22 @@ func _efectos_de_movimiento() -> void:
 	var colgado := movimiento.estado == Movimiento.Estado.AGARRE
 	if colgado and not _colgado_antes:
 		_chispas(position + Vector2(movimiento.mirando * 9.0, -40.0))
+		_gesticular(Gesto.Tipo.AGARRE)
 	_colgado_antes = colgado
+	# Trepando por la membrana: se desprende polvo de donde se agarra (#235).
+	if colgado and absf(velocity.y) > 10.0 and combate.ahora >= _proximo_polvo_pared:
+		_proximo_polvo_pared = combate.ahora + POLVO_PARED_MS
+		var lado := -movimiento.mirando if movimiento.agarre_girado else movimiento.mirando
+		_polvo(position + Vector2(lado * 6.0, -38.0), 2, -lado)
 	if is_on_floor() and not _en_suelo_antes and _caida_antes > CAIDA_QUE_SUENA:
-		# Al tocar suelo: mas fuerte cuanto mas cae.
+		# Al tocar suelo: mas fuerte cuanto mas cae, y se aplasta (#235).
 		_sonar("caida", -8.0 if _caida_antes < CAIDA_CON_POLVO else 0.0)
+		_gesticular(Gesto.Tipo.ATERRIZAJE, clampf(_caida_antes / CAIDA_PLENA, 0.35, 1.0))
+		if _caida_antes <= CAIDA_CON_POLVO:
+			_polvo(position, 4)
 	if is_on_floor() and not _en_suelo_antes and _caida_antes > CAIDA_CON_POLVO:
 		_polvo(position, 10)
+	_polvo_de_carrera()
 	var rapido := movimiento.estado == Movimiento.Estado.DASH or (
 		combate.accion == Combate.Accion.GOLPE and combate.tipo == Combate.Tipo.CONTRAGOLPE)
 	if rapido and combate.ahora >= _proxima_estela:
@@ -533,8 +578,101 @@ func _estela() -> void:
 	apagar.tween_callback(copia.queue_free)
 
 
-func _polvo(donde: Vector2, cuantas: int) -> void:
-	_rafaga(donde, cuantas, COLOR_POLVO, Vector2(0, -1), 80.0, 20.0, 60.0, Vector2(0, 60), 0.45)
+## Polvo hacia arriba o, con `hacia` (-1 o 1), raso hacia ese lado.
+func _polvo(donde: Vector2, cuantas: int, hacia := 0.0) -> void:
+	if hacia == 0.0:
+		_rafaga(donde, cuantas, COLOR_POLVO, Vector2(0, -1), 80.0, 20.0, 60.0, Vector2(0, 60), 0.45)
+	else:
+		_rafaga(donde, cuantas, COLOR_POLVO, Vector2(hacia, -0.5), 30.0, 25.0, 65.0, Vector2(0, 60), 0.4)
+
+
+## Arrancar, frenar y girar en el suelo levantan polvo de los pies (#235).
+func _polvo_de_carrera() -> void:
+	var vx := velocity.x
+	if not (is_on_floor() and _en_suelo_antes):
+		# En el aire no levanta nada; si cae ya deprisa, no "arranca" al tocar suelo.
+		_corriendo = absf(vx) > 100.0
+		_signo_carrera = signf(vx)
+		return
+	if not _corriendo and absf(vx) > 100.0:
+		_corriendo = true
+		_signo_carrera = signf(vx)
+		_polvo(position + Vector2(-_signo_carrera * 4.0, 0.0), 4, -_signo_carrera)
+	elif _corriendo and absf(vx) < 30.0:
+		_corriendo = false
+		_polvo(position + Vector2(_signo_carrera * 4.0, 0.0), 4, _signo_carrera)
+	elif _corriendo and signf(vx) != _signo_carrera:
+		_polvo(position + Vector2(_signo_carrera * 4.0, 0.0), 5, _signo_carrera)
+		_signo_carrera = signf(vx)
+
+
+## El salto se ve en el cuerpo (#235). Del suelo se estira y levanta polvo; de
+## la pared se impulsa y suelta polvo de la piedra; en el aire, el Pulmon
+## exhala hacia abajo.
+func _al_saltar(desde_suelo: bool, desde_pared: bool) -> void:
+	var hacia := signf(velocity.x)
+	if desde_suelo:
+		_gesticular(Gesto.Tipo.DESPEGUE)
+		_polvo(position, 6)
+	elif desde_pared:
+		_gesticular(Gesto.Tipo.IMPULSO, 1.0, hacia if hacia != 0.0 else float(movimiento.mirando))
+		_polvo(position + Vector2(-hacia * 6.0, -30.0), 6, hacia)
+	else:
+		_gesticular(Gesto.Tipo.IMPULSO, 0.7)
+		_rafaga(position + Vector2(0, -8), 8, COLOR_ALIENTO, Vector2(0, 1), 70.0, 30.0, 80.0, Vector2.ZERO, 0.35)
+
+
+## Golpeado (#235): se echa atras, hacia donde lo empujan, y sangra.
+func _herido(origen_x: float) -> void:
+	var hacia := -1.0 if origen_x > position.x else 1.0
+	# El giro de la herida es negativo: con -hacia, la cabeza va con el empujon.
+	_gesticular(Gesto.Tipo.HERIDA, 1.0, -hacia)
+	Herida.salpicar(get_parent(), position + Vector2(0, -24), hacia, 10)
+
+
+## Empieza un gesto del cuerpo (gesto.gd). `lado` decide hacia donde se
+## inclina; sin el, hacia donde mira.
+func _gesticular(tipo: int, fuerza := 1.0, lado := 0.0) -> void:
+	_gesto = tipo
+	_gesto_desde = combate.ahora
+	_gesto_fuerza = fuerza
+	_gesto_lado = lado if lado != 0.0 else float(movimiento.mirando)
+
+
+## El tajo se ve (#235): un arco de luz por donde pasa el bisturi, que se
+## apaga enseguida. Sigue a la zona que hace dano: delante, arriba o abajo.
+func _arco() -> void:
+	var zona := combate.zona(position, movimiento.mirando)
+	var radio := maxf(zona.size.x, zona.size.y) * 0.6
+	var puntos := PackedVector2Array()
+	# El borde de fuera, de arriba abajo, y el de dentro de vuelta: una media
+	# luna gruesa en el centro y afilada en las puntas.
+	for i in 9:
+		var a := lerpf(-1.1, 0.9, i / 8.0)
+		puntos.append(Vector2(cos(a), sin(a)) * radio)
+	for i in range(8, -1, -1):
+		var a := lerpf(-1.1, 0.9, i / 8.0)
+		puntos.append(Vector2(cos(a), sin(a)) * (radio - sin(PI * i / 8.0) * radio * 0.35))
+	var arco := Polygon2D.new()
+	arco.polygon = puntos
+	arco.color = COLOR_ARCO
+	var luz := CanvasItemMaterial.new()
+	luz.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	arco.material = luz
+	match combate.direccion:
+		Combate.Direccion.ARRIBA:
+			arco.position = position + Vector2(0, -30)
+			arco.rotation = -PI / 2.0
+		Combate.Direccion.ABAJO:
+			arco.position = position + Vector2(0, -8)
+			arco.rotation = PI / 2.0
+		_:
+			arco.position = position + Vector2(movimiento.mirando * 4.0, -20)
+			arco.scale = Vector2(movimiento.mirando, 1.0)
+	get_parent().add_child(arco)
+	var apagar := arco.create_tween()
+	apagar.tween_property(arco, "modulate:a", 0.0, ARCO_DURA)
+	apagar.tween_callback(arco.queue_free)
 
 
 ## Las chispas del parry: el metal contra el metal, lo unico limpio del juego.
@@ -550,27 +688,31 @@ func _parry_logrado(donde: Vector2) -> void:
 	var frente := Vector2(movimiento.mirando, -0.2)
 	_rafaga(donde, 24, COLOR_CHISPA, frente, 55.0, 120.0, 260.0, Vector2(0, 420), 0.35)
 	_rafaga(donde, 6, AMBAR, frente, 90.0, 40.0, 90.0, Vector2(0, 200), 0.5)
+	_destello(donde, DESTELLO_PX, DESTELLO_DURA)
+	_sacudir()
+
+
+## Una estrella de luz en `donde`: ocho puntas, larga en horizontal (el filo
+## del choque). Suma luz en vez de tapar, y se abre y se apaga en `dura`.
+func _destello(donde: Vector2, radio_px: float, dura: float) -> void:
 	var destello := Polygon2D.new()
 	destello.name = "Destello"
 	destello.position = donde
 	destello.color = Color(1.0, 0.97, 0.85)
-	# Una estrella de ocho puntas: larga en horizontal, el filo del choque.
 	var puntas := PackedVector2Array()
 	for i in 16:
 		var angulo := TAU * i / 16.0
-		var radio := (DESTELLO_PX if i % 4 == 0 else DESTELLO_PX * 0.45) if i % 2 == 0 else 1.5
+		var radio := (radio_px if i % 4 == 0 else radio_px * 0.45) if i % 2 == 0 else 1.5
 		puntas.append(Vector2(cos(angulo) * radio * 1.6, sin(angulo) * radio))
 	destello.polygon = puntas
-	# Suma luz en vez de tapar: brilla sobre el bisturi y sobre el que ataca.
 	var luz := CanvasItemMaterial.new()
 	luz.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	destello.material = luz
 	get_parent().add_child(destello)
 	var abrir := destello.create_tween()
-	abrir.tween_property(destello, "scale", Vector2.ONE * 1.8, DESTELLO_DURA).from(Vector2.ONE)
-	abrir.parallel().tween_property(destello, "modulate:a", 0.0, DESTELLO_DURA)
+	abrir.tween_property(destello, "scale", Vector2.ONE * 1.8, dura).from(Vector2.ONE)
+	abrir.parallel().tween_property(destello, "modulate:a", 0.0, dura)
 	abrir.tween_callback(destello.queue_free)
-	_sacudir()
 
 
 func _rafaga(donde: Vector2, cuantas: int, color: Color, direccion: Vector2, abertura: float,
@@ -678,6 +820,9 @@ func _morir() -> void:
 	muerto = true
 	_voz("muerte")
 	combate.cancelar()
+	# Muerto no se pinta: sin esto se quedaba inclinado como lo pillo el golpe.
+	_figura.rotation = 0.0
+	_figura.scale = Vector2(movimiento.mirando, 1.0)
 	movimiento.blindar(Sacramento.MUERTE["reaparecer_ms"])
 	# Se desploma con su animacion: el golpe lo echa atras, se le doblan las
 	# rodillas y cae postrado. Despues se tine de carne y se apaga.
@@ -771,7 +916,11 @@ func _pintar(delta: float) -> void:
 	var cuadro := _cuadro(delta)
 	var lista: Array = _cuadros[cuadro[0]]
 	_sprite.texture = lista[clampi(cuadro[1], 0, lista.size() - 1)]
-	_figura.scale = Vector2(movimiento.mirando, 1.0)
+	# El gesto de ahora (#235) estira, aplasta o inclina la figura.
+	var ms_gesto := combate.ahora - _gesto_desde
+	var forma := Gesto.escala(_gesto, ms_gesto, _gesto_fuerza)
+	_figura.scale = Vector2(movimiento.mirando * forma.x, forma.y)
+	_figura.rotation = Gesto.giro(_gesto, ms_gesto, _gesto_fuerza) * _gesto_lado
 	# La ejecucion blinda, pero no es un golpe recibido: no parpadea.
 	var ejecutando := combate.accion == Combate.Accion.EJECUCION
 	var alfa := 0.5 if movimiento.invulnerable and not ejecutando else 1.0

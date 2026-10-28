@@ -27,6 +27,7 @@ const FRASES := [
 ]
 const PAUSA_FRASES_MS := 9000.0
 const Herida := preload("res://scripts/herida.gd")
+const Gesto := preload("res://scripts/gesto.gd")
 const Ofrenda := preload("res://scripts/ofrenda.gd")
 const Sello := preload("res://scripts/sello.gd")
 const V := Sacramento.VESTAL
@@ -287,7 +288,8 @@ func _voz(voz: String) -> void:
 
 func _pintar(delta: float) -> void:
 	_sprite.texture = _cuadro(delta)
-	_figura.scale = Vector2(mirando, 1.0)
+	# Le entra el bisturi: se encoge un instante (#235).
+	_figura.scale = Vector2(mirando, 1.0) * Gesto.escala(Gesto.Tipo.GOLPEADO, ahora - _herido_en)
 	_marca.visible = ejecutable()
 	if _marca.visible:
 		_marca.scale = Vector2.ONE * (1.0 + 0.15 * sin(ahora / 80.0))

@@ -30,6 +30,7 @@ signal golpea_suelo
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Cirujano := preload("res://scripts/cirujano.gd")
 const Herida := preload("res://scripts/herida.gd")
+const Gesto := preload("res://scripts/gesto.gd")
 const Sello := preload("res://scripts/sello.gd")
 const Injerto := preload("res://scripts/injerto.gd")
 const Onda := preload("res://scripts/onda.gd")
@@ -328,7 +329,8 @@ func _voz(voz: String) -> void:
 
 func _pintar() -> void:
 	_sprite.texture = _texturas[_pose()]
-	_figura.scale = Vector2(mirando, 1.0)
+	# Le entra el bisturi: se encoge un instante (#235).
+	_figura.scale = Vector2(mirando, 1.0) * Gesto.escala(Gesto.Tipo.GOLPEADO, ahora - _herido_en)
 	_marca.visible = ejecutable()
 	if _marca.visible:
 		_marca.scale = Vector2.ONE * (1.0 + 0.15 * sin(ahora / 80.0))
