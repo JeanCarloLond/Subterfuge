@@ -20,8 +20,9 @@ const EFECTOS := {
 const VOLUMEN_TRAGO_DB := -3.0
 ## El parry logrado (#234): calculado en sonidos.gd y guardado como archivo por
 ## herramientas/crear_sonidos.gd (calcularlo al arrancar costaba 0,2 s). Hay tres
-## versiones: 0 acero, 1 hueso, 2 hoja. Esta es la que suena.
-const PARRY := 0
+## versiones: 0 acero, 1 hueso, 2 hoja. Suena la hoja: Jean eligio la que mas
+## se parece al parry de un bisturi, una hoja fina, aguda y que sisea.
+const PARRY := 2
 const RUTA_PARRY := "res://audio/efectos/parry-%d.wav"
 const VOLUMEN_PARRY_DB := -2.0
 ## El disparo de la Injertadora (#241): calculado y guardado igual que el parry.
