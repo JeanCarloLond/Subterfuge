@@ -21,6 +21,12 @@ el portal oficial de una Diócesis que no debería existir. Lo que el jugador
 descubre bajando en el juego se abre también en la web, si juega en el mismo
 navegador; y hay claves escondidas donde el bible dice que deben estar.
 
+### [Subterfuge Sigma](https://jeancarlolond.github.io/Subterfuge/sigma/)
+
+La evolución del juego, rehecha en Godot con el lore nuevo: el templo se está
+compactando. Demo jugable en el navegador, con teclado o mando, y arte
+provisional mientras se pinta el definitivo. Más en [sigma/](sigma/README.md).
+
 ## Descripción
 
 Subterfuge es un teaser jugable en formato de videojuego 2D ambientado en el universo narrativo de " Subterfuge -- La Diócesis de la Carne". El proyecto surge como una evolución del ArtBook tradicional, transformando la entrega visual en una experiencia interactiva que permite al jugador sumergirse en el mundo de forma orgánica y visceral.

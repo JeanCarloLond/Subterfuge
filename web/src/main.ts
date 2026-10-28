@@ -161,6 +161,9 @@ function prepararClave(): void {
 function prepararEnlaceAlJuego(): void {
   const enlace = document.getElementById('enlace-juego') as HTMLAnchorElement | null;
   if (enlace) enlace.href = import.meta.env.BASE_URL;
+  // Sigma, el remake en Godot (#233), cuelga de /sigma/ en el mismo despliegue.
+  const sigma = document.getElementById('enlace-sigma') as HTMLAnchorElement | null;
+  if (sigma) sigma.href = `${import.meta.env.BASE_URL}sigma/`;
 }
 
 window.addEventListener('hashchange', navegar);

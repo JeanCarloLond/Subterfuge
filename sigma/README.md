@@ -4,8 +4,9 @@ El remake de Subterfuge en **Godot 4.7**, con el lore nuevo: el templo se está
 compactando. El canon está en [docs/canon.md](docs/canon.md) y la propuesta de mapa,
 en [docs/mapa.md](docs/mapa.md).
 
-> En construcción. Se enseña al equipo cuando haya una base sólida. Las tareas son las
-> issues con la etiqueta
+> En construcción, con arte provisional. Se juega en el navegador:
+> **[jeancarlolond.github.io/Subterfuge/sigma/](https://jeancarlolond.github.io/Subterfuge/sigma/)**.
+> Las tareas son las issues con la etiqueta
 > [`sigma`](https://github.com/JeanCarloLond/Subterfuge/issues?q=label%3Asigma).
 
 ## Jugarlo
@@ -133,6 +134,27 @@ godot --headless --path sigma -s res://tests/ejecutar.gd
 
 Cada `tests/test_*.gd` extiende `tests/caso.gd`, y cada función `test_*` es un test. El
 CI los pasa en cada push y cada PR.
+
+## En la web
+
+Cada push a `main` lo publica en GitHub Pages (#233): `deploy.yml` pasa los tests, lo
+exporta con el preset «Web» de `export_presets.cfg` a `dist/sigma/juego/` y lo sube junto
+al teaser y al Portal. La página de entrada, con el aviso de arte provisional y los
+controles, es `public/sigma/index.html`.
+
+El preset es el de **un solo hilo**: GitHub Pages no envía las cabeceras COOP/COEP que pide
+el de varios. Se queda fuera lo que no es juego (`tests/`, `herramientas/`, `docs/`). La
+partida web se guarda en el navegador (IndexedDB), aparte de la de escritorio.
+
+Para probarlo en local hace falta la plantilla web de Godot 4.7.2
+(`web_nothreads_release.zip`, en _Editor → Gestionar plantillas de exportación_):
+
+```bash
+npm run build                                     # dist/, con public/sigma/ dentro
+mkdir -p dist/sigma/juego                         # Godot no crea la carpeta
+godot --headless --path sigma --export-release "Web" ../dist/sigma/juego/index.html
+npx vite preview                                  # Sigma queda en /sigma/
+```
 
 ## El arte
 

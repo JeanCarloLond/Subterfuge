@@ -21,6 +21,8 @@ jobs:
   build:
     name: Compilar para Pages
     runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: 4.7.2
     steps:
       - uses: actions/checkout@v4
 
@@ -44,6 +46,49 @@ jobs:
         env:
           # El sitio cuelga de github.io/Subterfuge/, no de la raíz del dominio.
           BASE_URL: /Subterfuge/
+
+      # Subterfuge Sigma (#233): se exporta a web y se publica en /sigma/juego/,
+      # bajo la página de entrada que trae public/sigma/. De las plantillas de
+      # exportación (1,3 GB, todas las plataformas) solo se guarda la web de un
+      # hilo: Pages no envía las cabeceras COOP/COEP que pide la de varios.
+      - name: Godot y su plantilla web en caché
+        id: cache-godot-web
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-web-${{ env.GODOT_VERSION }}
+
+      - name: Instalar Godot y su plantilla web
+        if: steps.cache-godot-web.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          curl -fsSL -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
+          plantillas=~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -p "$plantillas"
+          curl -fsSL -o /tmp/plantillas.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q -j /tmp/plantillas.tpz templates/version.txt templates/web_nothreads_release.zip -d "$plantillas"
+          rm /tmp/plantillas.tpz
+
+      - name: Importar Sigma
+        run: ~/godot/godot --headless --path sigma --import
+
+      # Como el resto: a Pages no llega un Sigma con los tests en rojo.
+      - name: Tests de Sigma
+        run: ~/godot/godot --headless --path sigma -s res://tests/ejecutar.gd
+
+      # Godot puede acabar sin error aunque la exportación falle: se comprueba
+      # que estén las piezas, y si falta alguna no se publica nada.
+      - name: Exportar Sigma a web
+        run: |
+          mkdir -p dist/sigma/juego
+          ~/godot/godot --headless --path sigma --export-release "Web" "$GITHUB_WORKSPACE/dist/sigma/juego/index.html"
+          for pieza in index.html index.js index.wasm index.pck; do
+            test -s "dist/sigma/juego/$pieza" || { echo "Falta $pieza en la exportación de Sigma"; exit 1; }
+          done
 
       # `enablement` da de alta el sitio de Pages la primera vez, usando el
       # propio token del workflow. Sin esto, el despliegue falla con

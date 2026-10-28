@@ -1,0 +1,229 @@
+<!doctype html>
+<!--
+  La entrada a Subterfuge Sigma en la web (#233). El juego, exportado de Godot
+  por deploy.yml, cuelga de ./juego/; esta pagina avisa antes de que es una
+  demo con arte provisional y de como se juega. Vive en public/ para que Vite
+  la copie tal cual: por eso todas las rutas son relativas.
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subterfuge Sigma · Demo jugable</title>
+    <meta
+      name="description"
+      content="El templo se está compactando. Bajas a averiguar por qué. Demo jugable en el navegador, en desarrollo."
+    />
+    <meta name="theme-color" content="#0b080a" />
+    <link rel="icon" type="image/png" href="./icono.png" />
+    <link rel="apple-touch-icon" href="./icono-180.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Subterfuge Sigma · Demo jugable" />
+    <meta property="og:description" content="El templo se está compactando. Bajas a averiguar por qué." />
+    <meta property="og:image" content="https://jeancarlolond.github.io/Subterfuge/sigma/compartir.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --fondo: #0b080a;
+        --panel: #150f12;
+        --hueso: #ede4d8;
+        --gris: #a89c8f;
+        --oro: #e3a940;
+        --sangre: #b8342c;
+        --sangre-honda: #6e1d1a;
+        --frio: #c8e0f0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--fondo);
+        color: var(--hueso);
+        font-family: VT323, Consolas, monospace;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 16px 56px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        text-align: center;
+      }
+      .logo {
+        width: 100%;
+        max-width: 860px;
+        height: auto;
+        image-rendering: pixelated;
+      }
+      .lema {
+        margin: 0;
+        font-size: 30px;
+      }
+      .aviso {
+        width: 100%;
+        border: 2px solid var(--oro);
+        background: var(--panel);
+        padding: 18px 22px;
+        text-align: left;
+      }
+      .aviso h2 {
+        margin: 0 0 6px;
+        font-family: 'Jacquard 12', serif;
+        font-weight: 400;
+        font-size: 34px;
+        color: var(--oro);
+      }
+      .aviso p {
+        margin: 0;
+        color: var(--gris);
+      }
+      .movil {
+        display: none;
+        border-color: var(--frio);
+      }
+      .movil h2 {
+        color: var(--frio);
+      }
+      .es-tactil .movil {
+        display: block;
+      }
+      a {
+        color: var(--oro);
+      }
+      .jugar {
+        display: inline-block;
+        padding: 14px 40px;
+        font-family: 'Jacquard 12', serif;
+        font-size: 44px;
+        color: var(--hueso);
+        background: var(--sangre-honda);
+        border: 2px solid var(--sangre);
+        text-decoration: none;
+      }
+      .jugar:hover,
+      .jugar:focus-visible {
+        background: var(--sangre);
+        outline: 2px solid var(--hueso);
+        outline-offset: 3px;
+      }
+      .es-tactil .jugar {
+        font-size: 32px;
+        opacity: 0.75;
+      }
+      .nota {
+        margin: -12px 0 0;
+        color: var(--gris);
+        font-size: 20px;
+      }
+      .controles {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 6px 24px;
+        margin: 0;
+        text-align: left;
+      }
+      .controles div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid #2a2024;
+      }
+      .controles dt {
+        color: var(--gris);
+      }
+      .controles dd {
+        margin: 0;
+        white-space: nowrap;
+      }
+      footer {
+        color: var(--gris);
+        font-size: 19px;
+      }
+      footer p {
+        margin: 6px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img
+        class="logo"
+        src="./logo.png"
+        width="1280"
+        height="340"
+        alt="Subterfuge Sigma"
+      />
+      <p class="lema">El templo se está compactando. Bajas a averiguar por qué.</p>
+
+      <section class="aviso" aria-labelledby="titulo-aviso">
+        <h2 id="titulo-aviso">Demo en desarrollo · arte provisional</h2>
+        <p>
+          El Cirujano y el resto de personajes llevan un diseño provisional, hecho para poder
+          jugar. El arte definitivo se está pintando a mano, píxel a píxel.
+        </p>
+      </section>
+
+      <section class="aviso movil" aria-labelledby="titulo-movil">
+        <h2 id="titulo-movil">Se juega con teclado o mando</h2>
+        <p>
+          Sigma todavía no tiene controles táctiles. En el celular puedes jugar
+          <a href="../">el teaser de Subterfuge</a>, que sí los tiene.
+        </p>
+      </section>
+
+      <a class="jugar" href="./juego/">Jugar la demo</a>
+      <p class="nota">
+        Con teclado o mando. La primera carga son unos 50 MB. La partida se guarda en este
+        navegador.
+      </p>
+
+      <dl class="controles" aria-label="Controles">
+        <div><dt>Moverse</dt><dd>A D · ← →</dd></div>
+        <div><dt>Saltar</dt><dd>Espacio</dd></div>
+        <div><dt>Golpear</dt><dd>J · clic</dd></div>
+        <div><dt>Parar el golpe</dt><dd>K · clic derecho</dd></div>
+        <div><dt>Interactuar</dt><dd>E</dd></div>
+        <div><dt>Controles y objetivo</dt><dd>H</dd></div>
+        <div><dt>Pausa</dt><dd>P</dd></div>
+        <div><dt>Beber la poción</dt><dd>Q</dd></div>
+      </dl>
+
+      <footer>
+        <p>
+          Del universo de Subterfuge: <a href="../">el teaser</a> ·
+          <a href="../web/">el Portal de la Diócesis</a>
+        </p>
+        <p>
+          Un juego de Jean Carlo Londoño Ocampo, Alejandro Garcés Ramírez, Agustín Figueroa y
+          Mariana Echeverri Ramírez. Hecho con Godot Engine.
+        </p>
+        <p>
+          Música: «Arcanos, Sorcerer of the Old Banished Woods», de ProjectHelmet (Philémon
+          Weber), CC BY 4.0; el resto del audio, CC0.
+          <a
+            href="https://github.com/JeanCarloLond/Subterfuge/blob/main/sigma/audio/LICENCIAS.md"
+            >Créditos completos</a
+          >
+        </p>
+      </footer>
+    </main>
+    <script>
+      // Sin raton ni teclado a la vista (un celular): se avisa antes de jugar.
+      if (matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches) {
+        document.documentElement.classList.add('es-tactil');
+      }
+    </script>
+  </body>
+</html>

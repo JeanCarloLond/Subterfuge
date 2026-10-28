@@ -535,6 +535,16 @@ button:disabled {
   color: #fff;
   text-shadow: none;
 }
+/* Sigma (#233): el remake, junto al teaser; en oro para no competir con Descender. */
+.nav .nav-sigma {
+  color: var(--oro);
+  background: transparent;
+  border-color: var(--oro);
+}
+.nav .nav-sigma:hover {
+  background: rgba(209, 173, 88, 0.16);
+  color: var(--tinta);
+}
 
 /* El botón de sonido: dos barras de pixel que se mueven si suena. */
 .boton-musica {
