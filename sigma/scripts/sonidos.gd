@@ -220,6 +220,53 @@ static func parada(variante := 0) -> AudioStreamWAV:
 	return _wav(muestras, tasa)
 
 
+## El disparo de la Injertadora (#241): un arma, no una lata. Un golpe grave que
+## cae (el peso), la detonacion seca, el cuerpo de metal de un cerrojo que
+## golpea (parciales graves e inarmonicos, cortos) y el aire que corta el
+## injerto al salir. Con una cola corta de nave.
+static func disparo() -> AudioStreamWAV:
+	var azar := RandomNumberGenerator.new()
+	azar.seed = 241
+	var tasa := TASA_PARADA
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(tasa * 0.6))
+	var cerrojo := [[310.0, 0.5, 0.05], [467.0, 0.35, 0.04], [742.0, 0.25, 0.03], [1130.0, 0.15, 0.02]]
+	var fases := PackedFloat32Array()
+	fases.resize(cerrojo.size())
+	var fase_peso := 0.0
+	var ruido_lento := 0.0
+	var aire := 0.0
+	for i in muestras.size():
+		var t := float(i) / tasa
+		var ruido := azar.randf_range(-1.0, 1.0)
+		ruido_lento += (ruido - ruido_lento) * 0.2
+		# El peso: de 150 a 45 Hz, rapido, y se queda un poco.
+		fase_peso += TAU * (45.0 + 105.0 * exp(-t / 0.025)) / tasa
+		var peso := sin(fase_peso) * minf(1.0, t / 0.001) * exp(-t / 0.09) * 1.1
+		# La detonacion: ruido sin graves, un instante.
+		var detonacion := (ruido - ruido_lento) * exp(-t / 0.006) * 1.2
+		# El cerrojo: metal grave que golpea y se calla.
+		var metal := 0.0
+		for p in cerrojo.size():
+			fases[p] += TAU * float(cerrojo[p][0]) / tasa
+			metal += sin(fases[p]) * float(cerrojo[p][1]) * exp(-t / float(cerrojo[p][2]))
+		# El aire: ruido apagado (filtro de un polo) que sube y se va.
+		aire += (ruido - aire) * 0.06
+		var soplido := aire * minf(1.0, t / 0.02) * exp(-t / 0.12) * 1.6
+		muestras[i] = peso + detonacion + metal * 0.8 + soplido
+	_nave(muestras, tasa, 0.15)
+	var tope := 0.0
+	var fundido := muestras.size() * 3 / 4
+	for i in muestras.size():
+		muestras[i] = tanh(muestras[i])
+		if i > fundido:
+			muestras[i] *= float(muestras.size() - i) / (muestras.size() - fundido)
+		tope = maxf(tope, absf(muestras[i]))
+	for i in muestras.size():
+		muestras[i] *= 0.9 / tope
+	return _wav(muestras, tasa)
+
+
 ## Una cola de nave: cuatro ecos que se realimentan (filtros peine, de
 ## Schroeder) y se mezclan con `cuanto` de lo seco.
 static func _nave(muestras: PackedFloat32Array, tasa: int, cuanto: float) -> void:

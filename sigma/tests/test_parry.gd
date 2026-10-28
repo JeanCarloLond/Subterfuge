@@ -50,11 +50,31 @@ func test_las_versiones_guardadas_existen_y_la_elegida_es_una_de_ellas() -> void
 	afirmar(Efectos.PARRY >= 0 and Efectos.PARRY < Sonidos.PARADAS.size(), "la versión elegida existe")
 
 
-func test_el_parry_suena_con_su_sonido_y_no_con_el_de_la_injertadora() -> void:
+func test_el_parry_y_la_injertadora_suenan_con_lo_suyo() -> void:
 	var efectos := Efectos.new()
 	efectos._ready()
 	var tomas: Array = efectos._tomas["parry"]
 	afirmar_igual(tomas.size(), 1, "una toma de parry")
 	afirmar_igual(tomas[0].resource_path, Efectos.RUTA_PARRY % Efectos.PARRY, "la versión elegida")
-	afirmar(efectos._tomas.has("parada"), "la Injertadora conserva su metal")
+	afirmar_igual(efectos._tomas["disparo"][0].resource_path, Efectos.RUTA_DISPARO, "la Injertadora, su disparo")
+	afirmar(not efectos._tomas.has("parada"), "la lata ya no suena")
 	efectos.free()
+
+
+## El disparo de la Injertadora (#241): un arma, no una lata. Pega en el acto,
+## con peso por debajo, y se apaga en medio segundo.
+func test_el_disparo_pega_con_peso_y_se_apaga() -> void:
+	var wav := Sonidos.disparo()
+	var muestras := _muestras(wav)
+	var tasa := wav.mix_rate
+	var inicio := _db(muestras, tasa, 0.0, 0.05)
+	afirmar(inicio > -10.0, "suena fuerte en el acto (%s dB)" % inicio)
+	afirmar(_db(muestras, tasa, 0.4, 0.5) < inicio - 25.0, "a 0,4 s ya se ha ido")
+	afirmar(_db(muestras, tasa, 0.55, 0.6) < -45.0, "acaba en silencio")
+	# El peso: lo grave del principio. Un seno de 60 Hz cruza cero cada 8 ms;
+	# se cuentan los cruces de los primeros 50 ms, ya sin la detonacion.
+	var cruces := 0
+	for i in range(int(0.01 * tasa), int(0.06 * tasa)):
+		if signf(muestras[i]) != signf(muestras[i - 1]):
+			cruces += 1
+	afirmar(cruces < 40, "domina lo grave al empezar (%d cruces en 50 ms)" % cruces)

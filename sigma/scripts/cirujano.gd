@@ -866,7 +866,7 @@ func _disparar_injerto() -> void:
 	injerto.dano = I["dano"]
 	get_parent().add_child(injerto)
 	velocity.x -= movimiento.mirando * I["retroceso"]
-	_sonar("parada", -6.0)
+	_sonar("disparo")
 	injertos_cambio.emit(injertadora.cargas, I["carga_maxima"])
 
 
