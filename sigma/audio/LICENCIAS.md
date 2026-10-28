@@ -5,17 +5,24 @@ lo que es CC0 no lo pide, pero lo damos igual.
 
 ## Música
 
-| Archivo                      | Título original                                          | Autor                          | Licencia  | Dónde suena                                |
-| ---------------------------- | -------------------------------------------------------- | ------------------------------ | --------- | ------------------------------------------ |
-| `musica/portada-arcanos.ogg` | Arcanos, Sorcerer of the Old Banished Woods (boss theme) | ProjectHelmet (Philémon Weber) | CC-BY 4.0 | La portada y la intro                      |
-| `musica/atrio-santuario.ogg` | Dark Shrine Loop                                         | qubodup, sobre «Shrine» de yd  | CC0       | El Atrio                                   |
-| `musica/catedral-bosque.ogg` | Cathedral in the forest (ambient loop)                   | congusbongus                   | CC0       | El siguiente nivel (y las salas de prueba) |
+| Archivo                        | Título original                                          | Autor                          | Licencia  | Dónde suena                                |
+| ------------------------------ | -------------------------------------------------------- | ------------------------------ | --------- | ------------------------------------------ |
+| `musica/portada-arcanos.ogg`   | Arcanos, Sorcerer of the Old Banished Woods (boss theme) | ProjectHelmet (Philémon Weber) | CC-BY 4.0 | La portada y la intro                      |
+| `musica/atrio-santuario.ogg`   | Dark Shrine Loop                                         | qubodup, sobre «Shrine» de yd  | CC0       | El Atrio                                   |
+| `musica/catedral-bosque.ogg`   | Cathedral in the forest (ambient loop)                   | congusbongus                   | CC0       | El siguiente nivel (y las salas de prueba) |
+| `musica/guardian-colossus.ogg` | Colossal Boss Battle Theme («Blackmoor Colossus», loop)  | Matthew Pablo                  | CC-BY 3.0 | La pelea con el Prior del Diezmo           |
 
 **Crédito obligatorio (CC-BY 4.0):** «Arcanos, Sorcerer of the Old Banished Woods», tema de
 jefe de _Quest of the Elf's Scrolls_, de **ProjectHelmet (Philémon Weber)**
 (https://opengameart.org/node/155832; su proyecto: https://helmet2.bandcamp.com/music), bajo
 licencia https://creativecommons.org/licenses/by/4.0/. Convertida de MP3 a OGG sin más
 cambios. El autor pide que se le enlace el proyecto que la use.
+
+**Crédito obligatorio (CC-BY 3.0):** «Colossal Boss Battle Theme» («Blackmoor Colossus»,
+versión en bucle con coros), **Music by Matthew Pablo**, http://www.matthewpablo.com
+(https://opengameart.org/content/colossal-boss-battle-theme), bajo licencia
+https://creativecommons.org/licenses/by/3.0/. Convertida de WAV a OGG sin más cambios. El
+crédito va como el autor lo pide en su web: «Music by Matthew Pablo» y su dirección.
 
 Las otras dos, CC0 (https://creativecommons.org/publicdomain/zero/1.0/):
 

@@ -99,3 +99,17 @@ func test_parado_se_tambalea() -> void:
 	afirmar_igual(prior.estado, prior.Estado.ATURDIDO, "aturdido")
 	afirmar(not prior.ejecutable(), "pero no ejecutable: eso, solo vencido")
 	prior.free()
+
+
+## Antes de pelear hablan los dos (#242): cada uno con su retrato, y la pelea
+## tiene su musica.
+func test_antes_de_pelear_hablan_los_dos_y_suena_su_musica() -> void:
+	var NaveLibro: GDScript = load("res://scripts/nave_libro.gd")
+	var quienes := {}
+	for palabra: Array in NaveLibro.PALABRAS:
+		quienes[palabra[0]] = true
+		afirmar(not String(palabra[1]).is_empty(), "ninguna línea vacía")
+	afirmar_igual(quienes.size(), 2, "hablan el Prior y el Cirujano")
+	for quien: String in quienes:
+		afirmar(NaveLibro.RETRATOS.get(quien) is Texture2D, "%s tiene retrato" % quien)
+	afirmar(ResourceLoader.exists("res://audio/musica/%s.ogg" % NaveLibro.MUSICA_PELEA), "la música de la pelea existe")

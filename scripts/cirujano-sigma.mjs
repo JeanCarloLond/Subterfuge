@@ -983,6 +983,62 @@ export function hoja(cuadros, k = 4) {
   return out.length ? out : [new Array(ancho).fill(fondo)];
 }
 
+/**
+ * El retrato de los diálogos (#242): busto de frente, 48x48 (se pinta al
+ * doble). La capucha, la venda con el ojo abierto a tajo (su marca y su
+ * culpa), el cubrebocas y la mitra de hueso. Provisional, como todo él.
+ */
+export function retrato() {
+  return rasterizar(
+    [
+      // Los hombros, el hábito y el escapulario.
+      [
+        poligono([
+          [1, 48],
+          [8, 37],
+          [40, 37],
+          [47, 48],
+        ]),
+        'habito',
+      ],
+      [capsula([24, 39], [24, 48], 3), 'escapulario'],
+      // La capucha y la cara.
+      [elipse([24, 27], 12, 13), 'capucha'],
+      [elipse([24, 28], 8.5, 10), 'piel'],
+      // La venda sobre los ojos, abierta a tajo sobre uno.
+      [capsula([15, 25], [33, 25], 2.2), 'venda'],
+      [elipse([28.5, 25], 1.8, 0.9), 'interior'],
+      [capsula([28.5, 26.5], [28.5, 29], 0.5), 'sangre'],
+      // El cubrebocas.
+      [
+        poligono([
+          [17, 30],
+          [31, 30],
+          [30, 37],
+          [24, 39],
+          [18, 37],
+        ]),
+        'venda',
+      ],
+      // La mitra, con su banda y su franja.
+      [
+        poligono([
+          [15, 17],
+          [33, 17],
+          [30, 4],
+          [24, -1],
+          [18, 4],
+        ]),
+        'mitra',
+      ],
+      [capsula([24, 16], [24, 2], 0.7), 'oro'],
+      [capsula([15.5, 16.5], [32.5, 16.5], 1), 'oro'],
+    ],
+    48,
+    48,
+  );
+}
+
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
@@ -1011,6 +1067,7 @@ if (esPrincipal) {
     ].join('\n'),
   );
   writeFileSync(join(destino, 'hoja.png'), png(hoja(cuadros)));
+  writeFileSync(join(destino, 'retrato.png'), png(retrato()));
   const reliquias = join(raiz, 'sigma/arte/reliquias');
   mkdirSync(reliquias, { recursive: true });
   for (const [nombre, lista] of Object.entries(RELIQUIAS)) {

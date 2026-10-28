@@ -16,6 +16,27 @@ extends "res://scripts/sala.gd"
 
 const RELIQUIA := preload("res://escenas/reliquia.tscn")
 const NOMBRE := "El Prior del Diezmo"
+const CIRUJANO := "El Cirujano"
+## Lo que se dicen antes de pelear (#242): no se pelea porque si. Solo la
+## primera vez; al volver tras morir, el Prior ya no tiene nada que hablar.
+const PALABRAS := [
+	[NOMBRE, "Una Mano fuera de su Sala. Sin turno. Con la máscara abierta."],
+	[CIRUJANO, "Los muros se mueven, Prior. La carne no llega a los pabellones. Quiero saber por qué."],
+	[NOMBRE, "Por qué. Las Manos no preguntan por qué: cortan y callan. Así se ha sostenido siempre el templo."],
+	[CIRUJANO, "¿Sostenido?"],
+	[NOMBRE, "Cada diezmo que cobro es un nudo. Mientras yo cobre, esta nave aguanta."],
+	[NOMBRE, "Y tú bajas soltando nudos. En los Pasillos ya te dan un nombre."],
+	[CIRUJANO, "No sé de qué nombre me hablas."],
+	[NOMBRE, "Lo sabrás. Pero no de aquí en adelante, y no con los ojos abiertos."],
+]
+const RETRATOS := {
+	NOMBRE: preload("res://arte/prior/retrato.png"),
+	CIRUJANO: preload("res://arte/cirujano/retrato.png"),
+}
+## La musica de la pelea (#242), y lo que tarda en entrar y en irse.
+const MUSICA_PELEA := "guardian-colossus"
+const FUNDIDO_PELEA_S := 1.5
+const FUNDIDO_FIN_S := 5.0
 ## Lo que dice al caer.
 const CAIDO := "El Prior del Diezmo ha caído"
 ## Lo que tarda la puerta en caer.
@@ -57,7 +78,34 @@ func _physics_process(delta: float) -> void:
 	if not _empezada and is_instance_valid(_prior) and _cirujano.position.x > inicio_x:
 		_empezada = true
 		_cerrar_puerta()
-		_prior.despertar()
+		# Primero cae la puerta (con el juego parado se quedaria a medias), y
+		# luego hablan: la pelea empieza al acabar.
+		get_tree().create_timer(PUERTA_S + 0.3).timeout.connect(_hablar)
+
+
+func _hablar() -> void:
+	var progreso := get_node_or_null("/root/Progreso")
+	if progreso and progreso.aprendido("prior-hablado"):
+		_pelear()
+		return
+	var lineas := []
+	for palabra in PALABRAS:
+		lineas.append({"quien": palabra[0], "texto": palabra[1]})
+	_interfaz.hablar(lineas, RETRATOS, func() -> void:
+		if progreso:
+			progreso.aprender("prior-hablado")
+		_pelear()
+	)
+
+
+## Despierta el Prior y entra la musica de la pelea.
+func _pelear() -> void:
+	if not is_instance_valid(_prior):
+		return
+	_prior.despertar()
+	var pista := get_node_or_null("/root/Musica")
+	if pista:
+		pista.poner(MUSICA_PELEA, FUNDIDO_PELEA_S)
 
 
 ## La puerta cae de golpe, no al ritmo de la compactacion: con 6 s, un golpe
@@ -98,6 +146,10 @@ func _brotar(muro: Node2D) -> void:
 func _vencido() -> void:
 	_interfaz.guardian_fuera()
 	_interfaz.avisar(CAIDO)
+	# La pelea se acaba: su musica se va despacio y vuelve la de la nave.
+	var pista := get_node_or_null("/root/Musica")
+	if pista:
+		pista.poner(musica, FUNDIDO_FIN_S)
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso:
 		progreso.aprender("prior-vencido")

@@ -123,10 +123,57 @@ const POSES = {
   arrodillado: () => [...baculo([36, 70], [36, 26]), ...cuerpo(16), ...brazo([30, 46], [36, 50])],
 };
 
+/**
+ * El retrato del diálogo antes de la pelea (#242): busto de frente, 48x48 (se
+ * pinta al doble). La máscara ciega, sin ojos y con la boca cosida, bajo la
+ * mitra.
+ */
+export function retrato() {
+  return rasterizar(
+    [
+      // Los hombros, la sotana y la estola de oro.
+      [
+        poligono([
+          [1, 48],
+          [8, 36],
+          [40, 36],
+          [47, 48],
+        ]),
+        'sotana',
+      ],
+      [capsula([18, 38], [16, 48], 1.6), 'oro'],
+      [capsula([30, 38], [32, 48], 1.6), 'oro'],
+      // La máscara ciega, lisa, y la boca cosida.
+      [elipse([24, 27], 9, 11), 'hueso'],
+      [capsula([20, 33], [28, 33], 0.6), 'boca'],
+      [capsula([21, 32], [21, 34], 0.4), 'boca'],
+      [capsula([24, 32], [24, 34], 0.4), 'boca'],
+      [capsula([27, 32], [27, 34], 0.4), 'boca'],
+      // La mitra, alta y sin cruz, con su filo y su franja de oro.
+      [
+        poligono([
+          [14, 19],
+          [34, 19],
+          [30, 4],
+          [24, -1],
+          [18, 4],
+        ]),
+        'mitra',
+      ],
+      [capsula([24, 18], [24, 2], 0.7), 'oro'],
+      [capsula([14.5, 18.5], [33.5, 18.5], 1.1), 'oro'],
+    ],
+    48,
+    48,
+    PALETA,
+  );
+}
+
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
   for (const [nombre, pose] of Object.entries(POSES))
     writeFileSync(join(destino, `${nombre}.png`), png(rasterizar(pose(), ANCHO, ALTO, PALETA)));
-  console.log(`el Prior: ${Object.keys(POSES).length} poses -> sigma/arte/prior/`);
+  writeFileSync(join(destino, 'retrato.png'), png(retrato()));
+  console.log(`el Prior: ${Object.keys(POSES).length} poses y retrato -> sigma/arte/prior/`);
 }
