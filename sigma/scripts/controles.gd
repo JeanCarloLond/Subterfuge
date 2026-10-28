@@ -66,8 +66,37 @@ static func rellenar(texto: String) -> String:
 	return texto
 
 
+## Las flechas de las teclas (#237): ninguna fuente del juego las tiene. En
+## escritorio salian de las del sistema; en la web no hay sistema y salian
+## cajas con el codigo. Van de reserva en todas (herramientas/crear_flechas.py).
+const FLECHAS := preload("res://arte/fuentes/FlechasSigma.ttf")
+const FUENTES := [
+	"res://arte/fuentes/VT323-Regular.ttf",
+	"res://arte/fuentes/Jacquard12-Regular.ttf",
+	"res://arte/fuentes/JacquardaBastarda9-Regular.ttf",
+]
+## Las fuentes ya con sus flechas. Sin quien las sujete, Godot suelta la que
+## nadie usa y la siguiente carga llega sin reserva.
+static var _con_flechas: Array[Font] = []
+
+
 func _enter_tree() -> void:
 	registrar()
+	poner_flechas()
+
+
+## Pone las flechas de reserva en las fuentes del juego. Se puede llamar mas
+## de una vez.
+static func poner_flechas() -> void:
+	for ruta in FUENTES:
+		var fuente: Font = load(ruta)
+		if not _con_flechas.has(fuente):
+			_con_flechas.append(fuente)
+		if fuente.fallbacks.has(FLECHAS):
+			continue
+		var reservas := fuente.fallbacks.duplicate()
+		reservas.append(FLECHAS)
+		fuente.fallbacks = reservas
 
 
 ## Da de alta todas las acciones. Se puede llamar mas de una vez.

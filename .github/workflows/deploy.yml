@@ -90,6 +90,11 @@ jobs:
             test -s "dist/sigma/juego/$pieza" || { echo "Falta $pieza en la exportación de Sigma"; exit 1; }
           done
 
+      # Lo exportado no es lo del proyecto (#237): convertidas a binario, las
+      # escenas perdían sus diálogos sin avisar. Se abre el paquete y se mira.
+      - name: Comprobar lo exportado
+        run: ~/godot/godot --headless --main-pack dist/sigma/juego/index.pck -s "$GITHUB_WORKSPACE/sigma/herramientas/comprobar_exportacion.gd"
+
       # `enablement` da de alta el sitio de Pages la primera vez, usando el
       # propio token del workflow. Sin esto, el despliegue falla con
       # "Get Pages site failed ... Not Found" en cada ejecución, que es lo que

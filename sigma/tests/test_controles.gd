@@ -62,3 +62,24 @@ func test_rellenar_cambia_las_acciones_por_sus_teclas() -> void:
 	if not Input.get_connected_joypads().is_empty():
 		return
 	afirmar_igual(Controles.rellenar("{parry}  clávate · {arriba}  trepa"), "K  clávate · ↑  trepa", "las dos")
+
+
+## En la web no hay fuentes del sistema (#237): lo que no tenga la fuente del
+## juego, ni su reserva de flechas, sale como una caja.
+func test_los_nombres_de_teclas_y_botones_se_pueden_dibujar() -> void:
+	Controles.poner_flechas()
+	var fuente: Font = load("res://arte/tema.tres").default_font
+	var nombres: Array = Controles.NOMBRES_TECLA.values() + Controles.NOMBRES_MANDO.values()
+	for nombre: String in nombres:
+		for i in nombre.length():
+			var c := nombre.unicode_at(i)
+			var dibujable := fuente.has_char(c) or fuente.fallbacks.any(func(f: Font) -> bool: return f.has_char(c))
+			afirmar(dibujable, "«%s» de «%s» no está en la fuente ni en su reserva" % [nombre[i], nombre])
+
+
+func test_las_flechas_van_de_reserva_una_sola_vez() -> void:
+	Controles.poner_flechas()
+	Controles.poner_flechas()
+	for ruta in Controles.FUENTES:
+		var fuente: Font = load(ruta)
+		afirmar_igual(fuente.fallbacks.count(Controles.FLECHAS), 1, "%s: flechas de reserva" % ruta.get_file())
