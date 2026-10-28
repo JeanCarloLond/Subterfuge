@@ -267,4 +267,4 @@ func _al_rezar(altar: Node2D) -> void:
 	for otro in $Altares.get_children():
 		if otro != altar:
 			otro.encendido = false
-	_interfaz.avisar("Altar: aquí volverás")
+	_interfaz.avisar("La fuente te llena el frasco. Aquí volverás")

@@ -37,6 +37,7 @@
     "sigma:cegado": "node scripts/cegado-sigma.mjs",
     "sigma:nina": "node scripts/nina-sigma.mjs",
     "sigma:prior": "node scripts/prior-sigma.mjs",
+    "sigma:fuente": "node scripts/fuente-sigma.mjs",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
