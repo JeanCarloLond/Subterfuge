@@ -36,6 +36,12 @@ export function renderPortada(contenedor: HTMLElement): () => void {
       </header>
 
       <div class="portada-texto">
+      <!-- Lo que pasa en Sigma (#236), en la voz de la Diócesis: se asienta. -->
+      <a class="comunicado" href="#/avisos">
+        <div class="eyebrow">Comunicado</div>
+        Los muros del Vientre se desplazan. La Diócesis informa a los fieles de lo que deben
+        hacer mientras el templo se asienta. <span class="comunicado-leer">Leer los avisos →</span>
+      </a>
       <section class="seccion">
         <h2>Bienvenido. Su diezmo ya está en buenas manos.</h2>
         <div class="filete"></div>
@@ -106,6 +112,13 @@ export function renderPortada(contenedor: HTMLElement): () => void {
             <h3>Subterfuge</h3>
             <p>Acompañe a las Manos del Sacramento N.º 7 en una jornada ordinaria de trabajo.</p>
           </a>
+          <!-- Sigma (#236): con su emblema, no con su Cirujano, que es provisional. -->
+          <a class="tarjeta" href="${import.meta.env.BASE_URL}sigma/">
+            <img class="lamina" src="${import.meta.env.BASE_URL}sigma/icono-180.png" width="72" height="72" alt="" aria-hidden="true" />
+            <span class="profundidad">capa VII · el asentamiento</span>
+            <h3>Subterfuge Sigma</h3>
+            <p>Los muros se mueven y la carne no llega. Una Mano baja sin turno a ver por qué.</p>
+          </a>
         </div>
       </section>
 
@@ -119,6 +132,7 @@ export function renderPortada(contenedor: HTMLElement): () => void {
           <tr><td>Visitas a Reformados</td><td>—</td><td>No se autorizan. Las familias pueden honrarlos desde el Atrio.</td></tr>
           <tr><td>Reclamaciones sobre el peso</td><td>—</td><td>El Registro no admite reclamaciones. Las dos cifras son definitivas.</td></tr>
           <tr><td>Consulta del Libro de Diezmos</td><td>Oficina del Decano de cada pabellón</td><td>Cualquier día. <a href="#/pabellon">Pabellón 9, en línea.</a></td></tr>
+          <tr><td>Reparto de carne a los pabellones</td><td>Pasillos de Preparación</td><td>Retrasado mientras el templo se asienta. <a href="#/avisos">Ver avisos.</a></td></tr>
           ${
             hitoAbierto('nina')
               ? '<tr><td>Sala de Sacramento N.º 7</td><td>—</td><td>Cerrada hasta nuevo aviso. Los turnos anotados pasan a otras Salas.</td></tr>'

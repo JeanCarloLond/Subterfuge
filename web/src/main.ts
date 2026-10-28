@@ -19,6 +19,7 @@ import { renderSacramentos } from './paginas/sacramentos';
 import { renderExamen } from './paginas/examen';
 import { renderSacramento } from './paginas/sacramento';
 import { renderPabellon } from './paginas/pabellon';
+import { renderAvisos } from './paginas/avisos';
 import { presentarClave } from './memoria';
 import { actualizarPie } from './pie';
 import { ambienteDe, arrancarAmbiente } from './ambiente';
@@ -39,6 +40,9 @@ const RUTAS: Readonly<Record<string, Ruta>> = {
   // El Atrio por dentro: un pabellón y su Libro (#79). Está a la altura de la
   // portada, en la superficie, porque ahí vive la gente.
   pabellon: { pagina: renderPabellon, profundidad: 0, titulo: 'Pabellón 9', ancha: true },
+  // Lo que pasa en Sigma, como lo cuenta la Diócesis (#236): en la superficie,
+  // porque es lo que se cuelga para los fieles.
+  avisos: { pagina: renderAvisos, profundidad: 0, titulo: 'Avisos a los fieles' },
   doctrina: { pagina: renderDoctrina, profundidad: 1, titulo: 'Doctrina' },
   registro: { pagina: renderRegistro, profundidad: 2, titulo: 'Registro', ancha: true },
   vientre: { pagina: renderVientre, profundidad: 3, titulo: 'El Vientre', ancha: true },

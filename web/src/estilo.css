@@ -535,6 +535,66 @@ button:disabled {
   color: #fff;
   text-shadow: none;
 }
+/* -- Avisos a los fieles (#236): lo de Sigma, como lo cuenta la Diócesis ------- */
+.comunicado {
+  display: block;
+  margin: 0 0 8px;
+  padding: 14px 18px;
+  border-left: 4px solid var(--sangre);
+  background: var(--panel);
+  color: var(--tinta);
+  text-decoration: none;
+  font-size: 19px;
+  line-height: 1.45;
+}
+.comunicado .eyebrow {
+  margin-bottom: 4px;
+  color: var(--sangre);
+}
+.comunicado:hover {
+  background: rgba(140, 47, 47, 0.18);
+}
+.comunicado .comunicado-leer {
+  color: var(--oro);
+  white-space: nowrap;
+}
+.aviso-diocesis {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--regla);
+}
+.aviso-diocesis h2 {
+  margin: 4px 0 12px;
+}
+.aviso-diocesis p,
+.aviso-diocesis li {
+  font-size: 18px;
+  line-height: 1.55;
+}
+.aviso-numero {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+.aviso-diocesis ul {
+  padding-left: 22px;
+}
+/* El margen: otra mano, otra tinta. */
+.aviso-margen {
+  font-family: var(--f-mono);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--sangre);
+  transform: rotate(-2deg);
+  padding-left: 18px;
+}
+.aviso-pie {
+  margin-top: 40px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+
 /* Sigma (#233): el remake, junto al teaser; en oro para no competir con Descender. */
 .nav .nav-sigma {
   color: var(--oro);
