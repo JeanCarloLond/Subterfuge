@@ -8,6 +8,7 @@
  */
 
 import { REGISTRO, type Familia } from '../../../src/lore/Registro';
+import { TECNOLOGIA } from '../mundo';
 import { pintarFigura } from '../arte';
 import { fichaAbierta } from '../memoria';
 import { acentuar, elemento, html, parrafo } from '../texto';
@@ -65,6 +66,10 @@ export function renderRegistro(contenedor: HTMLElement): void {
               <span class="indice-cita">${vistas} de ${fichas.length} habilitadas</span>
             </button></li>`;
           }).join('')}
+          <li><button type="button" data-familia="tecnologia">
+            <span class="indice-nombre">El aparato de Génesis</span>
+            <span class="indice-cita">${TECNOLOGIA.length} piezas heredadas</span>
+          </button></li>
         </ol>
       </nav>
     </article>
@@ -109,6 +114,30 @@ export function renderRegistro(contenedor: HTMLElement): void {
     }
     raiz.append(seccion);
   }
+
+  // La tecnología que sostiene el mundo no cabe en las cinco familias del
+  // juego: va aparte, con su origen real y lo que el pueblo cree que es.
+  const tecnologia = elemento(`
+    <section class="seccion" data-seccion="tecnologia" tabindex="-1">
+      <div class="eyebrow">El aparato de Génesis</div>
+      <h2>La máquina debajo del templo</h2>
+      <p style="color:var(--tinta-2);margin:4px 0 16px">
+        Toda tecnología del mundo pertenece a una de tres familias: la fósil, que sigue funcionando
+        aunque nadie la entienda; la viva, que nació de la frontera porosa; y la ritual, que
+        convirtió objetos médicos en reliquias.
+      </p>
+      <div class="tabla-scroll">
+        <table class="tabla">
+          <tr><th>Pieza</th><th>Origen real</th><th>Uso en la Diócesis</th><th>Lo que cree el pueblo</th></tr>
+          ${TECNOLOGIA.map(
+            (pieza) =>
+              `<tr><td><b>${html(pieza.nombre)}</b></td><td>${html(pieza.origen)}</td><td>${html(pieza.uso)}</td><td>${html(pieza.creencia)}</td></tr>`,
+          ).join('')}
+        </table>
+      </div>
+    </section>
+  `);
+  raiz.append(tecnologia);
 
   // El índice lleva a la sección y le pasa el foco, para que el teclado siga
   // leyendo desde ahí y no desde arriba. Sin enlaces de ancla: la web va por

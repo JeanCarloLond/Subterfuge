@@ -19,7 +19,9 @@ Registro con sus láminas, el corte del Vientre, el **Linaje** (de dónde viene
 cada uno y quién manda) y los **Sacramentos**, dos minijuegos. Se presenta como
 el portal oficial de una Diócesis que no debería existir. Lo que el jugador
 descubre bajando en el juego se abre también en la web, si juega en el mismo
-navegador; y hay claves escondidas donde el bible dice que deben estar.
+navegador; y hay claves escondidas donde el bible dice que deben estar. El
+**expediente del asentamiento** reúne lo que el Portal puede contar de
+Subterfuge Sigma sin adelantar el giro.
 
 ### [Subterfuge Sigma](https://jeancarlolond.github.io/Subterfuge/sigma/)
 

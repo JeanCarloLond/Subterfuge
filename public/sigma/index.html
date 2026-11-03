@@ -12,14 +12,17 @@
     <title>Subterfuge Sigma · Demo jugable</title>
     <meta
       name="description"
-      content="El templo se está compactando. Bajas a averiguar por qué. Demo jugable en el navegador, en desarrollo."
+      content="El templo se está compactando. Bajas a averiguar por qué. Demo jugable de Subterfuge Sigma en el navegador: Nivel I, Pasillos, el Prior del Diezmo y el Primer Ojo."
     />
     <meta name="theme-color" content="#0b080a" />
     <link rel="icon" type="image/png" href="./icono.png" />
     <link rel="apple-touch-icon" href="./icono-180.png" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Subterfuge Sigma · Demo jugable" />
-    <meta property="og:description" content="El templo se está compactando. Bajas a averiguar por qué." />
+    <meta
+      property="og:description"
+      content="El templo se está compactando. Bajas a averiguar por qué. Demo jugable en el navegador."
+    />
     <meta property="og:image" content="https://jeancarlolond.github.io/Subterfuge/sigma/compartir.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -179,6 +182,87 @@
         margin: 0;
         white-space: nowrap;
       }
+      .duo {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+        text-align: left;
+      }
+      .bloque {
+        border: 1px solid #2a2024;
+        background: rgba(21, 15, 18, 0.72);
+        padding: 16px 18px;
+        text-align: left;
+      }
+      .bloque h2 {
+        margin: 0 0 6px;
+        font-family: 'Jacquard 12', serif;
+        font-weight: 400;
+        font-size: 30px;
+        color: var(--oro);
+      }
+      .bloque p,
+      .bloque li {
+        color: var(--gris);
+        margin: 0;
+      }
+      .bloque ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      .bloque li + li {
+        margin-top: 4px;
+      }
+      .niveles {
+        width: 100%;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        text-align: left;
+      }
+      .nivel {
+        display: grid;
+        grid-template-columns: 132px minmax(0, 1fr);
+        gap: 14px;
+        border-left: 2px solid #4a2a2c;
+        padding: 8px 12px;
+        background: rgba(21, 15, 18, 0.55);
+      }
+      .nivel b {
+        color: var(--oro);
+        font-family: 'Jacquard 12', serif;
+        font-size: 21px;
+        font-weight: 400;
+        line-height: 1.1;
+      }
+      .nivel span {
+        color: var(--gris);
+        font-size: 18px;
+        line-height: 1.3;
+      }
+      .expediente {
+        color: var(--gris);
+        max-width: 720px;
+      }
+      .expediente a {
+        color: var(--oro);
+      }
+      .nota-sigma {
+        margin-top: 10px !important;
+        font-family: 'Jacquard 12', serif;
+        font-size: 27px;
+        color: var(--oro);
+      }
+      @media (max-width: 560px) {
+        .nivel {
+          grid-template-columns: 1fr;
+          gap: 2px;
+        }
+      }
       footer {
         color: var(--gris);
         font-size: 19px;
@@ -238,11 +322,97 @@
         navegador.
       </p>
 
+      <section class="bloque" aria-labelledby="titulo-asentamiento">
+        <h2 id="titulo-asentamiento">El templo se está compactando</h2>
+        <p>
+          Los Mil no están en el templo: son el templo. Sus cuerpos son las paredes, los ductos y
+          las salas. Después de milenios quietos, las paredes se mueven y las capas se juntan. La
+          carne deja de llegar a los pabellones y una Mano del Sacramento baja sin turno a ver por
+          qué. Ese descenso es la demo: el Nivel I y los Pasillos de Preparación, hasta la puerta de
+          las Salas de Sacramento.
+        </p>
+      </section>
+
+      <section class="duo" aria-label="Lo que hay en la demo">
+        <article class="bloque">
+          <h2>Nivel I · de bajada</h2>
+          <p>
+            Ocho salas del Pabellón N.º 7 a la Escalera de los Ciegos: sierras, membranas, el techo
+            que late, la Vestal y el Cegado. Cada sala enseña una cosa y se pasa por sus pasos.
+          </p>
+        </article>
+        <article class="bloque">
+          <h2>Nivel II · los Pasillos</h2>
+          <p>
+            El Registro de Diezmos, la Escribanía, el Archivo y el pasillo que se cierra a la
+            espalda. Los tres registros de Génesis abren el ala sellada; los rayos de Génesis
+            avisan antes de quemar.
+          </p>
+        </article>
+        <article class="bloque">
+          <h2>El laboratorio</h2>
+          <p>
+            Tras la puerta, el Primer Ojo y la primera visión. Mirar abre puentes de carne que solo
+            existen mientras se mira; desde ahí, los objetivos cambian de color.
+          </p>
+        </article>
+        <article class="bloque">
+          <h2>El Prior del Diezmo</h2>
+          <p>
+            El primer guardián, en la Nave del Libro: injertos en arco, sellos que se devuelven y
+            un báculo que se para. Al caer suelta la Injertadora y la nave se abre al Atrio.
+          </p>
+        </article>
+        <article class="bloque">
+          <h2>Combate y reliquias</h2>
+          <p>
+            Golpe cargado con Fervor, parry, contragolpe y ejecución. Mirar con el ojo abre lo que
+            otros no ven. El Pulmón Vacío da el doble salto (en la campaña, Nivel III; sigue en el
+            Atrio de demostración); el Tendón del Mil, el dash. Rezar guarda; morir deja una deuda
+            de carne.
+          </p>
+        </article>
+        <article class="bloque">
+          <h2>Lo que se dice</h2>
+          <p>
+            La ley de la Mano que mira, los laboratorios sellados de Génesis Vestal y el nombre que
+            los Pasillos repiten en voz baja: el Último Sacramento. Pistas, no la verdad.
+          </p>
+        </article>
+      </section>
+
+      <section aria-labelledby="titulo-plano">
+        <div class="bloque" style="margin-bottom: 12px">
+          <h2 id="titulo-plano">El plano, de arriba abajo</h2>
+          <p>
+            Seis capas. En Sigma no se abren con llaves: el templo se asienta y dos capas se
+            juntan. El plano del Portal cuenta las juntas una a una.
+          </p>
+        </div>
+        <ol class="niveles">
+          <li class="nivel"><b>I · Atrio</b><span>La ciudad visible: pabellones, capillas y el Muro de los Dientes.</span></li>
+          <li class="nivel"><b>II · Pasillos</b><span>El Registro de Diezmos y la Sala de Sorteos. El Libro, colosal.</span></li>
+          <li class="nivel"><b>III · Salas</b><span>Siete quirófanos-altar. La puerta de la Sala N.º 7 se reconoce de lejos.</span></li>
+          <li class="nivel"><b>IV · Criptas</b><span>Los Elegidos, sedados, esperando turno. Las Mareas del Hambre.</span></li>
+          <li class="nivel"><b>V · Reformados</b><span>El hospital vuelto santuario, entero e inclinado.</span></li>
+          <li class="nivel"><b>VI · Vientre Profundo</b><span>El santuario de los Mil. Una pared que late. Sin visitas.</span></li>
+        </ol>
+      </section>
+
+      <p class="expediente">
+        El Portal de la Diócesis lleva el expediente del asentamiento: los avisos, el plano que se
+        cierra y los nombres que constan. <a href="../web/#/avisos">Leer el expediente</a>.
+      </p>
+
       <dl class="controles" aria-label="Controles">
         <div><dt>Moverse</dt><dd>A D · ← →</dd></div>
         <div><dt>Saltar</dt><dd>Espacio</dd></div>
         <div><dt>Golpear</dt><dd>J · clic</dd></div>
         <div><dt>Parar el golpe</dt><dd>K · clic derecho</dd></div>
+        <div><dt>Contragolpe</dt><dd>J tras un parry</dd></div>
+        <div><dt>Mirar con el ojo</dt><dd>O · R3</dd></div>
+        <div><dt>Clavarse en la membrana</dt><dd>K en el aire</dd></div>
+        <div><dt>Ejecutar</dt><dd>E sobre el aturdido</dd></div>
         <div><dt>Interactuar</dt><dd>E</dd></div>
         <div><dt>Controles y objetivo</dt><dd>H</dd></div>
         <div><dt>Pausa</dt><dd>P</dd></div>
@@ -252,8 +422,10 @@
       <footer>
         <p>
           Del universo de Subterfuge: <a href="../">el teaser</a> ·
-          <a href="../web/">el Portal de la Diócesis</a>
+          <a href="../web/">el Portal de la Diócesis</a> ·
+          <a href="../web/#/avisos">el expediente del asentamiento</a>
         </p>
+        <p class="nota-sigma">Sigma, por la desviación estándar.</p>
         <p>
           Un juego de Jean Carlo Londoño Ocampo, Alejandro Garcés Ramírez, Agustín Figueroa y
           Mariana Echeverri Ramírez. Hecho con Godot Engine.

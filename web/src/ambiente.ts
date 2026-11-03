@@ -39,7 +39,7 @@ interface Capa {
   musica: string;
 }
 
-/** Una entrada por profundidad, de la portada (0) a los Sacramentos (5). */
+/** Una entrada por profundidad, de la portada (0) al Asentamiento (6). */
 const CAPAS: readonly Capa[] = [
   { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
   { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
@@ -57,6 +57,13 @@ const CAPAS: readonly Capa[] = [
   {
     muro: ['muro-salas-b', 'muro-salas-a'],
     polvo: '178, 108, 104',
+    musica: 'jefe-tambores',
+  },
+  // La capa VI, el expediente del asentamiento de Sigma (#236). Se abre
+  // después de los Sacramentos y oscurece un paso más el mismo muro.
+  {
+    muro: ['muro-salas-b', 'muro-salas-a'],
+    polvo: '170, 104, 100',
     musica: 'jefe-tambores',
   },
 ];
@@ -332,23 +339,49 @@ function prepararMusica(): void {
 
 // -- El riel de profundidad ------------------------------------------------------
 
+/** Secciones que tienen parada propia en el riel. */
+const SECCIONES_DEL_RIEL = new Set([
+  '',
+  'pabellon',
+  'doctrina',
+  'registro',
+  'vientre',
+  'linaje',
+  'sacramentos',
+  'avisos',
+]);
+
+/** La sección de la URL, con los trámites de Sacramentos bajo su parada. */
+function seccionDeLaUrl(): string {
+  const ruta = location.hash.replace(/^#\/?/, '').split('?')[0].replace(/\/$/, '');
+  const seccion = ruta.split('/')[0];
+  if (seccion === 'examen' || seccion === 'sacramento' || seccion === 'sacramentos') {
+    return 'sacramentos';
+  }
+  return SECCIONES_DEL_RIEL.has(seccion) ? seccion : '';
+}
+
 function prepararRiel(): void {
   const riel = document.getElementById('riel');
   if (!riel) return;
-  const paradas: ReadonlyArray<[string, string, string]> = [
-    ['', 'Portal', '0'],
-    ['doctrina', 'Doctrina', 'I'],
-    ['registro', 'Registro', 'II'],
-    ['vientre', 'El Vientre', 'III'],
-    ['linaje', 'Linaje', 'IV'],
-    ['sacramentos', 'Sacramentos', 'V'],
+  const paradas: ReadonlyArray<[string, string, string, number]> = [
+    // El portal es la entrada; el Pabellón es la primera parada de la
+    // superficie. Comparten cota (0 m), pero no parada: cada uno tiene la suya.
+    ['', 'Portal', '⌂', 0],
+    ['pabellon', 'Pabellón', '0', 0],
+    ['doctrina', 'Doctrina', 'I', 1],
+    ['registro', 'Registro', 'II', 2],
+    ['vientre', 'El Vientre', 'III', 3],
+    ['linaje', 'Linaje', 'IV', 4],
+    ['sacramentos', 'Sacramentos', 'V', 5],
+    ['avisos', 'El Asentamiento', 'VI', 6],
   ];
   riel.innerHTML = `
     <span class="riel-cadena" aria-hidden="true"></span>
     ${paradas
       .map(
-        ([ruta, nombre, numero], i) =>
-          `<a class="riel-parada" href="#/${ruta}" data-profundidad="${i}" title="${nombre}">
+        ([ruta, nombre, numero, profundidad]) =>
+          `<a class="riel-parada" href="#/${ruta}" data-ruta="${ruta}" data-profundidad="${profundidad}" title="${nombre}">
              <span class="riel-numero">${numero}</span><span class="riel-nombre">${nombre}</span>
            </a>`,
       )
@@ -376,10 +409,12 @@ export function ambienteDe(profundidad: number): void {
   ponerMuro(profundidad);
   ponerPista(capa.musica);
 
+  const seccion = seccionDeLaUrl();
   for (const parada of document.querySelectorAll<HTMLElement>('.riel-parada')) {
     const n = Number(parada.dataset.profundidad);
-    parada.classList.toggle('actual', n === profundidad);
-    parada.classList.toggle('pasada', n < profundidad);
+    const actual = parada.dataset.ruta === seccion;
+    parada.classList.toggle('actual', actual);
+    parada.classList.toggle('pasada', !actual && n < profundidad);
   }
   const cota = document.getElementById('riel-cota');
   // Cuarenta metros por capa: el número no está en el bible, es del plano.

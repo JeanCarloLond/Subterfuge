@@ -36,11 +36,11 @@ export function renderPortada(contenedor: HTMLElement): () => void {
       </header>
 
       <div class="portada-texto">
-      <!-- Lo que pasa en Sigma (#236), en la voz de la Diócesis: se asienta. -->
+      <!-- El expediente de Sigma (#236), en la voz de la Diócesis: se asienta. -->
       <a class="comunicado" href="#/avisos">
-        <div class="eyebrow">Comunicado</div>
+        <div class="eyebrow">Comunicado · el asentamiento</div>
         Los muros del Vientre se desplazan. La Diócesis informa a los fieles de lo que deben
-        hacer mientras el templo se asienta. <span class="comunicado-leer">Leer los avisos →</span>
+        hacer mientras el templo se asienta. <span class="comunicado-leer">Leer el expediente →</span>
       </a>
       <section class="seccion">
         <h2>Bienvenido. Su diezmo ya está en buenas manos.</h2>
@@ -108,14 +108,14 @@ export function renderPortada(contenedor: HTMLElement): () => void {
           </a>
           <a class="tarjeta" href="${import.meta.env.BASE_URL}">
             <canvas class="lamina" data-figura="cirujano" width="72" height="72" aria-hidden="true"></canvas>
-            <span class="profundidad">capa VI · el descenso</span>
+            <span class="profundidad">el descenso</span>
             <h3>Subterfuge</h3>
             <p>Acompañe a las Manos del Sacramento N.º 7 en una jornada ordinaria de trabajo.</p>
           </a>
           <!-- Sigma (#247): con el rostro del Cirujano de Mariana, a x2. -->
           <a class="tarjeta" href="${import.meta.env.BASE_URL}sigma/">
             <img class="lamina" src="${import.meta.env.BASE_URL}sigma/cirujano-cara.png" width="72" height="72" alt="" aria-hidden="true" />
-            <span class="profundidad">capa VII · el asentamiento</span>
+            <span class="profundidad">capa VI · el asentamiento</span>
             <h3>Subterfuge Sigma</h3>
             <p>Los muros se mueven y la carne no llega. Una Mano baja sin turno a ver por qué.</p>
           </a>

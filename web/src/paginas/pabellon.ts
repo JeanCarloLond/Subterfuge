@@ -23,6 +23,17 @@
  * Voz: la del Decano y la de la Diócesis, como todo el portal. No explica; anota.
  */
 
+import {
+  ARTES,
+  ARQUITECTURA,
+  CALENDARIO,
+  CASA,
+  CLASES,
+  LEYES,
+  LEYENDAS,
+  OFICIOS as OFICIOS_MUNDO,
+  PARENTESCO,
+} from '../mundo';
 import { descensoAbierto, hitoAbierto } from '../memoria';
 import { elemento, html } from '../texto';
 
@@ -533,6 +544,126 @@ export function renderPabellon(contenedor: HTMLElement): () => void {
           ).join('')}
         </div>
         <div class="momento-cuerpo documento" id="momento-cuerpo" role="tabpanel" aria-live="polite"></div>
+      </section>
+
+      <section class="seccion" id="leyes">
+        <div class="eyebrow">El Libro de costumbres</div>
+        <h2>Las leyes de la carne</h2>
+        <p>
+          La ley de la Diócesis es el Códice, y la aplican los Decanos en los pabellones y la Orden
+          de la Cruzada en todo lo demás. No hay cárceles: la deuda es el castigo.
+        </p>
+        <div class="tabla-scroll">
+        <table class="tabla">
+          <tr><th>Falta</th><th>Por qué es falta</th><th>Castigo</th></tr>
+          ${LEYES.map(
+            (ley) =>
+              `<tr><td><b>${html(ley.falta)}</b></td><td>${html(ley.motivo)}</td><td>${html(ley.castigo)}</td></tr>`,
+          ).join('')}
+        </table>
+        </div>
+      </section>
+
+      <section class="seccion" id="calendario">
+        <div class="eyebrow">El calendario del pabellón</div>
+        <h2>Los días que se recuerdan</h2>
+        <div class="rejilla">
+          ${CALENDARIO.map(
+            (fecha) => `
+            <article class="documento ficha-mundo">
+              <h3>${html(fecha.nombre)}</h3>
+              <p>${html(fecha.texto)}</p>
+            </article>`,
+          ).join('')}
+        </div>
+      </section>
+
+      <section class="seccion" id="oficios">
+        <div class="eyebrow">Los oficios del Atrio</div>
+        <h2>Lo que cada casa sabe hacer</h2>
+        <p>
+          Los oficios volvieron a ser gremios de aprendices y maestros, y se transmiten de Mano a
+          Mano. A los doce años cada niño se empareja con una mano mayor que lo forma hasta
+          dejarle el puesto.
+        </p>
+        <div class="tabla-scroll">
+        <table class="tabla">
+          <tr><th>Oficio</th><th>Qué hace</th><th>Dónde</th></tr>
+          ${OFICIOS_MUNDO.map(
+            (oficio) =>
+              `<tr><td><b>${html(oficio.nombre)}</b></td><td>${html(oficio.texto)}</td><td>${html(oficio.donde)}</td></tr>`,
+          ).join('')}
+        </table>
+        </div>
+      </section>
+
+      <section class="seccion" id="clases">
+        <div class="eyebrow">La mesa y la casa</div>
+        <h2>Quién come qué</h2>
+        <p>
+          La riqueza no se mide en monedas sino en carne: cuánta se tiene en el cuerpo, cuánta se
+          puede ofrecer y cuánta se debe. Comer carne alterada acerca a los dioses; comer carne
+          común es comer como los apagados.
+        </p>
+        <div class="tabla-scroll">
+        <table class="tabla">
+          <tr><th>Clase</th><th>Dónde vive</th><th>Qué come</th><th>Cómo vive</th></tr>
+          ${CLASES.map(
+            (clase) =>
+              `<tr><td><b>${html(clase.clase)}</b></td><td>${html(clase.donde)}</td><td>${html(clase.come)}</td><td>${html(clase.vive)}</td></tr>`,
+          ).join('')}
+        </table>
+        </div>
+      </section>
+
+      <section class="seccion" id="parentesco">
+        <div class="eyebrow">Parentesco e identidad</div>
+        <h2>La casa, la palma y la costura</h2>
+        <article class="documento ficha-mundo">
+          <ul class="lista-mundo">
+            ${PARENTESCO.map((linea) => `<li>${html(linea)}</li>`).join('')}
+          </ul>
+        </article>
+      </section>
+
+      <section class="seccion" id="artes">
+        <div class="eyebrow">Lo que se hace con las manos</div>
+        <h2>El arte de los restos</h2>
+        <div class="rejilla">
+          ${ARTES.map(
+            (arte) => `
+            <article class="documento ficha-mundo">
+              <h3>${html(arte.nombre)}</h3>
+              <p>${html(arte.texto)}</p>
+            </article>`,
+          ).join('')}
+          <article class="documento ficha-mundo">
+            <h3>La casa</h3>
+            <ul class="lista-mundo">${CASA.map((linea) => `<li>${html(linea)}</li>`).join('')}</ul>
+          </article>
+          <article class="documento ficha-mundo">
+            <h3>La arquitectura y la ropa</h3>
+            <ul class="lista-mundo">${ARQUITECTURA.map((linea) => `<li>${html(linea)}</li>`).join('')}</ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="seccion" id="leyendas">
+        <div class="eyebrow">Historias que se cuentan</div>
+        <h2>Las figuras del pabellón</h2>
+        <p>
+          No son dioses ni santos: son vecinos que hicieron algo que el pabellón recuerda. La
+          Diócesis las cuenta como ejemplo; los Ayunantes, como advertencia.
+        </p>
+        <div class="rejilla">
+          ${LEYENDAS.map(
+            (leyenda) => `
+            <article class="documento ficha-mundo">
+              <h3>${html(leyenda.nombre)}</h3>
+              <p>${html(leyenda.texto)}</p>
+            </article>`,
+          ).join('')}
+        </div>
       </section>
     </article>
   `);
