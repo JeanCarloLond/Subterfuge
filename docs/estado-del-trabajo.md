@@ -157,6 +157,17 @@ del original; fuentes góticas (OFL); interfaz con medallón; la piedra por veci
 contragolpe en un dash dejaba al Cirujano flotando. Una **propuesta de mapa** en
 `sigma/docs/mapa.md`, por decidir.
 
+**El Portal presenta Sigma** (#236): la portada lo anuncia con un comunicado y una tarjeta con
+su emblema; `#/avisos` reúne el expediente del asentamiento con el parte oficial, el plano de
+las seis capas que se juntan y los nombres que constan. Es contenido propio del Portal, no de
+`src/lore`, y mantiene la regla de la issue: pistas, no el giro. El lore vive en
+`web/src/sigma.ts`, con sus tests.
+
+Además, el Portal recuperó de la biblia lo que no estaba: la Intemperie, los tres Libros, los
+otros relatos y la lengua en Doctrina; las leyes, el calendario, los oficios, las clases, el arte
+y las leyendas en el Pabellón; el aparato de Génesis en el Registro; y la cronología, las escuelas
+y los linajes en Linaje. Los datos viven en `web/src/mundo.ts`, con sus tests.
+
 **Las rondas de feedback de Jean** (22 y 23 de octubre), cada punto en su issue y cerrado:
 
 - **Legibilidad:** un tema común (`arte/tema.tres`, VT323 16 con contorno) para toda la
