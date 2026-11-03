@@ -239,7 +239,12 @@ func _pintar_dialogo() -> void:
 	var quien := _dialogo.quien()
 	_caja_texto.text = _dialogo.texto_visible()
 	_caja_nombre.text = quien
-	_caja_retrato.texture = _retratos.get(quien)
+	var retrato: Texture2D = _retratos.get(quien)
+	_caja_retrato.texture = retrato
+	# Los de 48 px (en codigo) se pintan al doble; los de Mariana (#244) van a
+	# su tamano: reescalados a 96, sus pixeles salian desiguales.
+	var al_doble := retrato != null and retrato.get_height() <= 48
+	_caja_retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if al_doble else TextureRect.STRETCH_KEEP_CENTERED
 	_caja_flecha.visible = _dialogo.linea_completa()
 
 

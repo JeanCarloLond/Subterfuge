@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4xqm1w13fpf1"
-path="res://.godot/imported/retrato.png-e6ddc1bc497dda2f33f312c1b63deffd.ctex"
+uid="uid://bouxt35ty8gwm"
+path="res://.godot/imported/cirujano.png-fe5a69deb83ba7068081e63f40093f19.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://arte/cirujano/retrato.png"
-dest_files=["res://.godot/imported/retrato.png-e6ddc1bc497dda2f33f312c1b63deffd.ctex"]
+source_file="res://arte/retratos/cirujano.png"
+dest_files=["res://.godot/imported/cirujano.png-fe5a69deb83ba7068081e63f40093f19.ctex"]
 
 [params]
 

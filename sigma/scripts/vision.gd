@@ -11,7 +11,7 @@ extends Node2D
 signal aparece(lineas: Array, retratos: Dictionary, al_terminar: Callable)
 
 const NOMBRE := "La niña"
-const RETRATO := preload("res://arte/nina/retrato.png")
+const RETRATO := preload("res://arte/retratos/nina.png")
 const FIGURA := preload("res://arte/nina/figura.png")
 const BLANCO := Color(0.78, 0.88, 0.96)
 ## Lo que espera tras lo que la dispara.

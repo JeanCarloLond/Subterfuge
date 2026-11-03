@@ -31,7 +31,7 @@ const PALABRAS := [
 ]
 const RETRATOS := {
 	NOMBRE: preload("res://arte/prior/retrato.png"),
-	CIRUJANO: preload("res://arte/cirujano/retrato.png"),
+	CIRUJANO: preload("res://arte/retratos/cirujano.png"),
 }
 ## La musica de la pelea (#242), y lo que tarda en entrar y en irse.
 const MUSICA_PELEA := "guardian-colossus"
