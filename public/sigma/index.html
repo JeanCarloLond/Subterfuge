@@ -70,6 +70,38 @@
         margin: 0;
         font-size: 30px;
       }
+      /* El Cirujano de Mariana (#247): su retrato a x3, sin suavizar. */
+      .presentacion {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        text-align: left;
+      }
+      .presentacion h2 {
+        margin: 0 0 8px;
+        font-family: 'Jacquard 12', serif;
+        font-weight: 400;
+        font-size: 40px;
+        color: var(--oro);
+      }
+      .presentacion p {
+        margin: 0 0 10px;
+      }
+      .retrato {
+        flex: none;
+        width: 213px;
+        height: 237px;
+        image-rendering: pixelated;
+        border: 2px solid var(--oro);
+        background: var(--panel);
+      }
+      @media (max-width: 560px) {
+        .presentacion {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
       .aviso {
         width: 100%;
         border: 2px solid var(--oro);
@@ -165,13 +197,30 @@
         height="340"
         alt="Subterfuge Sigma"
       />
-      <p class="lema">El templo se está compactando. Bajas a averiguar por qué.</p>
+      <section class="presentacion" aria-labelledby="titulo-cirujano">
+        <img
+          class="retrato"
+          src="./cirujano.png"
+          width="71"
+          height="79"
+          alt="El Cirujano: mitra blanca con una gema roja, el rostro descubierto y el ojo izquierdo rojo, sangrando"
+        />
+        <div>
+          <h2 id="titulo-cirujano">El Cirujano</h2>
+          <p>
+            Mano del Sacramento N.º 7. Las Manos operan con una máscara ciega y nunca miran
+            lo que cortan. Un día, él miró.
+          </p>
+          <p class="lema">El templo se está compactando. Bajas a averiguar por qué.</p>
+        </div>
+      </section>
 
       <section class="aviso" aria-labelledby="titulo-aviso">
-        <h2 id="titulo-aviso">Demo en desarrollo · arte provisional</h2>
+        <h2 id="titulo-aviso">Demo en desarrollo · sprites provisionales</h2>
         <p>
-          El Cirujano y el resto de personajes llevan un diseño provisional, hecho para poder
-          jugar. El arte definitivo se está pintando a mano, píxel a píxel.
+          El diseño de los personajes es el de Mariana Echeverri, pintado a mano. Las figuras
+          que se mueven en el juego todavía son provisionales, hechas en código para poder
+          jugar, hasta que lleguen sus sprites.
         </p>
       </section>
 

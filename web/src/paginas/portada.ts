@@ -112,9 +112,9 @@ export function renderPortada(contenedor: HTMLElement): () => void {
             <h3>Subterfuge</h3>
             <p>Acompañe a las Manos del Sacramento N.º 7 en una jornada ordinaria de trabajo.</p>
           </a>
-          <!-- Sigma (#236): con su emblema, no con su Cirujano, que es provisional. -->
+          <!-- Sigma (#247): con el rostro del Cirujano de Mariana, a x2. -->
           <a class="tarjeta" href="${import.meta.env.BASE_URL}sigma/">
-            <img class="lamina" src="${import.meta.env.BASE_URL}sigma/icono-180.png" width="72" height="72" alt="" aria-hidden="true" />
+            <img class="lamina" src="${import.meta.env.BASE_URL}sigma/cirujano-cara.png" width="72" height="72" alt="" aria-hidden="true" />
             <span class="profundidad">capa VII · el asentamiento</span>
             <h3>Subterfuge Sigma</h3>
             <p>Los muros se mueven y la carne no llega. Una Mano baja sin turno a ver por qué.</p>
