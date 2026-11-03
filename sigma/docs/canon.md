@@ -88,8 +88,10 @@ no lo destruyó «porque nadie sabe cómo» (el tercer registro) y selló el lab
 dentro.
 
 **Mirar** es su habilidad: mantenido, el Cirujano ve lo que los demás no ven. Los puentes de
-carne que el templo ya está formando al unirse (solo sostienen mientras mira), y la niña
-esperando donde quiere que vaya. **El coste es la ley**: mientras mira, los eslabones lo
+carne que el templo ya está formando al unirse (solo sostienen mientras mira), la niña
+esperando donde quiere que vaya, y **los hilos de carne** que atan a cada eslabón con lo que
+sostiene: el Devoto, la bóveda; la Vestal, los muros; el Prior, su nave entera (#187).
+Cuando cae uno, el hilo se recoge, la piedra cruje y cae polvo: eso se ve sin mirar. **El coste es la ley**: mientras mira, los eslabones lo
 sienten de más lejos y los muros se mueven antes. Mirar sirve, y acerca el templo a unirse.
 
 El **Pulmón Vacío** (el doble salto, el Impulso cárnico) deja de ser el artefacto: es la

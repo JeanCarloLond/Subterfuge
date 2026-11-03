@@ -24,6 +24,9 @@ const FRASES := [
 	"Vuelve a tu sala, Mano.",
 	"El diezmo no perdona.",
 	"Lo que mira, se sella.",
+	# Mas adentro, menos ley y mas el apodo (canon, «Por que lo atacan»).
+	"El Último Sacramento baja.",
+	"Es él. El Último Sacramento.",
 ]
 const PAUSA_FRASES_MS := 9000.0
 const Herida := preload("res://scripts/herida.gd")
