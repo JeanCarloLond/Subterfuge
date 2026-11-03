@@ -238,7 +238,7 @@ func _physics_process(delta: float) -> void:
 		if combate.ejecucion_golpea() and not _rematada:
 			_rematar()
 	elif _victima != null:
-		_victima = null
+		_soltar_victima()
 
 	var entrada := Movimiento.Entrada.new()
 	entrada.eje_x = int(signf(Input.get_axis("izquierda", "derecha")))
@@ -535,6 +535,14 @@ static func elegir_ejecutable(desde: Vector2, enemigos: Array) -> Node2D:
 		if mejor == null or dx < absf(mejor.position.x - desde.x):
 			mejor = enemigo
 	return mejor
+
+
+## La ejecucion se acabo: si no llego el tajo, la victima vuelve a estar a
+## merced (#246), en vez de quedarse ejecutada para siempre.
+func _soltar_victima() -> void:
+	if is_instance_valid(_victima) and not _rematada and _victima.has_method("soltar"):
+		_victima.soltar()
+	_victima = null
 
 
 ## Baja el bisturi: el aturdido cae, el mundo se para y la camara tiembla.
@@ -835,6 +843,7 @@ func _morir() -> void:
 	muerto = true
 	_voz("muerte")
 	combate.cancelar()
+	_soltar_victima()
 	# Muerto no se pinta: sin esto se quedaba inclinado como lo pillo el golpe.
 	_figura.rotation = 0.0
 	_figura.scale = Vector2(movimiento.mirando, 1.0)

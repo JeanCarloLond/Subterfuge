@@ -12,6 +12,9 @@
  * - manos.png   las manos con el bisturi sobre la sabana, en la manga blanca del
  *               diseño de Mariana (#245).
  *
+ * - mascara.png la mascara ciega de las Manos, sobre el rostro (#246): lisa, sin
+ *               ojos, con las costuras. En la intro se la quita al «Hoy miro».
+ *
  * El rostro ya no sale de aqui (#245): `rostro.png` es el retrato de Mariana
  * (`arte/retratos/cirujano.png`) ampliado x4 sobre la lamina, sin la sangre ni
  * el rojo del ojo, que en la intro aun no tiene. Volver a correr esto no lo toca.
@@ -60,6 +63,9 @@ const MATERIALES = {
   // Las manos, desnudas: la piel del retrato de Mariana.
   cuero: tonos('#2a1810', '#43291c', '#6a4430', '#8a5c40', '#a87656'),
   acero: tonos('#2a3034', '#4e585e', '#7f8a92', '#bcc6cc', '#f2f6f8'),
+  // La mascara ciega de las Manos (#246): hueso pulido.
+  hueso: tonos('#4a443a', '#7a7262', '#aea490', '#d8cfba', '#f2ead8'),
+  grieta: tonos('#140e0c', '#1e1612', '#2a201a', '#3a2c24', '#4a3a30'),
   sabana: tonos('#4a4438', '#746c5c', '#a49a84', '#cec4ac', '#ece4d0'),
   contorno: tonos('#060404', '#060404', '#060404', '#060404', '#060404'),
 };
@@ -254,9 +260,42 @@ function manos() {
   return pintar(piezas, [0.95, -0.3], fondoVela([620, 80]));
 }
 
+/**
+ * La mascara ciega, a la medida del rostro de `rostro.png` (el retrato de
+ * Mariana a x4): lisa, sin ojos, con dos costuras donde estarian y otra en la
+ * boca, como la del Prior. Va sobre transparente: la intro la pone encima del
+ * rostro y la retira.
+ */
+function mascara() {
+  const piezas = [
+    // Ancha en la frente, estrecha en la barbilla: la cara, no un huevo.
+    [
+      poligono([
+        [258, 172],
+        [388, 172],
+        [398, 222],
+        [384, 268],
+        [356, 300],
+        [324, 310],
+        [292, 300],
+        [264, 268],
+        [250, 222],
+      ]),
+      'hueso',
+    ],
+    // Los parpados, cerrados para siempre, y la boca cosida.
+    [capsula([276, 220], [306, 226], 2.2), 'grieta'],
+    [capsula([338, 226], [368, 220], 2.2), 'grieta'],
+    [capsula([306, 280], [340, 280], 1.6), 'grieta'],
+    ...[312, 323, 334].map((x) => [capsula([x, 275], [x, 285], 1.1), 'grieta']),
+  ];
+  return pintar(piezas, [0.95, -0.3], () => [0, 0, 0, 0]);
+}
+
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
   writeFileSync(join(destino, 'manos.png'), png(manos()));
-  console.log('las manos -> sigma/arte/cinematica/manos.png');
+  writeFileSync(join(destino, 'mascara.png'), png(mascara()));
+  console.log('las manos y la máscara -> sigma/arte/cinematica/');
 }

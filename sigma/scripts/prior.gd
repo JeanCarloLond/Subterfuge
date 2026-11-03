@@ -300,6 +300,14 @@ func ejecutar(desde_x: float) -> void:
 	mirando = 1 if desde_x > position.x else -1
 
 
+## La ejecucion se corto antes del tajo (#246: aplastaron al Cirujano, o lo
+## hirieron): vuelve a estar vencido, de rodillas, para que se le remate. Si
+## no, se quedaba ejecutado para siempre y la nave no se abria.
+func soltar() -> void:
+	if estado == Estado.EJECUTADO:
+		estado = Estado.VENCIDO
+
+
 func rematar() -> void:
 	if estado == Estado.MUERTO:
 		return

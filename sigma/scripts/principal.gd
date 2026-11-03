@@ -4,9 +4,12 @@
 extends Node2D
 
 const INTRO := "res://escenas/intro.tscn"
-## [nombre, escena]. Las salas de prueba, para quien desarrolla.
+## [nombre, escena]. La demostracion del Atrio y las salas de prueba, para
+## quien desarrolla. En la web, las de prueba no salen (#246): son nuestras.
 const SALAS := [
 	["El Atrio (demostración)", "res://escenas/atrio.tscn"],
+]
+const PRUEBAS := [
 	["Sala del movimiento", "res://escenas/sala_prueba.tscn"],
 	["Sala de la compactación", "res://escenas/sala_compactacion.tscn"],
 	["Sala de los peligros", "res://escenas/sala_peligros.tscn"],
@@ -29,6 +32,8 @@ func _ready() -> void:
 		_destinos.append(["Continuar", progreso.sala])
 	_destinos.append(["Empezar", INTRO])
 	_destinos.append_array(SALAS)
+	if not OS.has_feature("web"):
+		_destinos.append_array(PRUEBAS)
 	_pintar()
 	var musica := get_node_or_null("/root/Musica")
 	if musica:
@@ -47,7 +52,7 @@ func _unhandled_input(evento: InputEvent) -> void:
 		var progreso := get_node_or_null("/root/Progreso")
 		if destino[0] == "Empezar" and progreso:
 			progreso.nueva()
-		elif progreso and SALAS.has(destino):
+		elif progreso and (SALAS.has(destino) or PRUEBAS.has(destino)):
 			progreso.usar_demo()
 		get_tree().change_scene_to_file(destino[1])
 

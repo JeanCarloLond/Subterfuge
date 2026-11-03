@@ -113,3 +113,19 @@ func test_antes_de_pelear_hablan_los_dos_y_suena_su_musica() -> void:
 	for quien: String in quienes:
 		afirmar(NaveLibro.RETRATOS.get(quien) is Texture2D, "%s tiene retrato" % quien)
 	afirmar(ResourceLoader.exists("res://audio/musica/%s.ogg" % NaveLibro.MUSICA_PELEA), "la música de la pelea existe")
+
+
+## Una ejecucion cortada antes del tajo (#246: aplastaron al Cirujano) no lo
+## deja ejecutado para siempre: vuelve a estar vencido y se le remata.
+func test_si_la_ejecucion_se_corta_vuelve_a_estar_vencido() -> void:
+	var prior := _prior()
+	prior.despertar()
+	prior.recibir_dano(P["vida"], 0.0)
+	prior.ejecutar(370.0)
+	afirmar(not prior.ejecutable(), "mientras lo ejecutan, no se le vuelve a ejecutar")
+	prior.soltar()
+	afirmar_igual(prior.estado, prior.Estado.VENCIDO, "cortada la ejecución, vencido otra vez")
+	afirmar(prior.ejecutable(), "y se le puede rematar")
+	prior.soltar()
+	afirmar_igual(prior.estado, prior.Estado.VENCIDO, "soltar sin ejecución no cambia nada")
+	prior.free()

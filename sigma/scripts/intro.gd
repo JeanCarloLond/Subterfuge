@@ -123,6 +123,11 @@ func _sala_siete() -> void:
 	_sprite("res://arte/provisional/vela.png", Vector2(420, 218), Vector2(2, 2))
 	_luz(Vector2(425, 220), Color(1, 0.7, 0.4), 1.1)
 	var cirujano := _sprite("res://arte/cirujano/alza-1.png", Vector2(194, 152), Vector2(2, 2))
+	# Las Manos operan con la mascara ciega puesta (#246): aqui aun la lleva.
+	var borde := _ovalo(Vector2(21.6, 17.2), Vector2(3.6, 4.2), Color(0.08, 0.05, 0.05))
+	var mascara := _ovalo(Vector2(21.6, 17.2), Vector2(2.9, 3.5), Color(0.86, 0.82, 0.74))
+	cirujano.add_child(borde)
+	cirujano.add_child(mascara)
 	await _abrir()
 	await _decir("En la Sala N.º 7, las Manos del Sacramento operan sin mirar.")
 	await _cerrar()
@@ -144,12 +149,21 @@ func _manos() -> void:
 	manos.queue_free()
 
 
-## Primer plano: el rostro vendado. Aqui duda: «Hoy miro».
+## Primer plano: el rostro, con la mascara ciega. Aqui duda, y se la quita:
+## «Hoy miro» (#246). Es la primera vez que se le ve la cara.
 func _rostro() -> void:
 	_nuevo_plano()
 	var rostro := _ilustracion("res://arte/cinematica/rostro.png", Vector2(28, -14), 8.0)
+	# La mascara va pegada a la lamina: se desplaza con ella.
+	var mascara := Sprite2D.new()
+	mascara.texture = load("res://arte/cinematica/mascara.png")
+	rostro.add_child(mascara)
 	_luz(Vector2(600, 150), Color(1, 0.68, 0.38), 1.0)
 	await _abrir()
+	await get_tree().create_timer(1.0).timeout
+	var quitar := mascara.create_tween().set_parallel()
+	quitar.tween_property(mascara, "position:y", 46.0, 1.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	quitar.tween_property(mascara, "modulate:a", 0.0, 1.1).set_delay(0.3)
 	await _decir("Hoy miró.")
 	# La ley de la Mano que mira (canon, «Por que lo atacan»): sin esto, que lo
 	# persigan los suyos no se entiende.
@@ -236,6 +250,18 @@ func _sprite(ruta: String, sitio: Vector2, escala: Vector2, tinte := Color.WHITE
 ## Una lamina a pantalla completa (algo mayor que la pantalla) que se desplaza
 ## despacio `deriva` px en `segundos`, empezando en el lado contrario. Se panea,
 ## no se hace zoom: un zoom que no sea entero deforma los pixeles.
+## Un ovalo de `radios` en `centro` (en pixeles de la figura que lo lleva).
+func _ovalo(centro: Vector2, radios: Vector2, color: Color) -> Polygon2D:
+	var puntos := PackedVector2Array()
+	for i in 16:
+		var a := TAU * i / 16.0
+		puntos.append(centro + Vector2(cos(a) * radios.x, sin(a) * radios.y))
+	var ovalo := Polygon2D.new()
+	ovalo.polygon = puntos
+	ovalo.color = color
+	return ovalo
+
+
 func _ilustracion(ruta: String, deriva: Vector2, segundos: float) -> Sprite2D:
 	var lamina := Sprite2D.new()
 	lamina.texture = load(ruta)

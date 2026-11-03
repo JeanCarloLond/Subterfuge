@@ -149,3 +149,15 @@ func test_la_e_elige_al_aturdido_al_alcance() -> void:
 	afirmar_igual(Cirujano.elegir_ejecutable(Vector2(0, -40), [cerca]), null, "a otra altura, no")
 	cerca.free()
 	lejos.free()
+
+
+## Una ejecucion cortada antes del tajo (#246) lo deja aturdido otra vez, no
+## de rodillas para siempre.
+func test_si_la_ejecucion_se_corta_vuelve_a_estar_aturdido() -> void:
+	var devoto := _devoto()
+	devoto.aturdir()
+	devoto.ejecutar(30.0)
+	devoto.soltar()
+	afirmar_igual(devoto.estado, Devoto.Estado.ATURDIDO, "aturdido otra vez")
+	afirmar(devoto.ejecutable(), "y ejecutable")
+	devoto.free()

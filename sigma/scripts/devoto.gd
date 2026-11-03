@@ -214,6 +214,13 @@ func ejecutar(desde_x: float) -> void:
 	velocity.x = 0.0
 
 
+## La ejecucion se corto antes del tajo (#246): vuelve a quedar aturdido,
+## ejecutable otra vez. Si no, se quedaba de rodillas para siempre.
+func soltar() -> void:
+	if estado == Estado.EJECUTADO:
+		aturdir()
+
+
 ## El tajo de la ejecucion: muere, sea cual sea su vida, y sangra.
 func rematar() -> void:
 	if estado == Estado.MUERTO:
