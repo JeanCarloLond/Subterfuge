@@ -46,21 +46,26 @@ const hx = (c) => [
 const trio = (base, luz, sombra) => [hx(base), hx(luz), hx(sombra)];
 
 /**
- * Carne y oxido, la paleta del canon de Sigma: bata de hueso manchada,
- * escapulario de sangre, cuero y oxido. Base, luz y sombra de cada material.
+ * El diseño de Mariana (#245): hábito y velo blancos, la mitra blanca con su
+ * filo de oro y la gema roja, el rojo del escapulario, y el rostro descubierto,
+ * de piel oscura y barba de días. Ya no lleva máscara: la Mano que mira se la
+ * quitó. Base, luz y sombra de cada material.
  */
 const PALETA = {
   contorno: hx('#140c0b'),
-  habito: trio('#b9a888', '#d9cbb0', '#8a7a60'),
+  habito: trio('#e2dcd2', '#f6f2ec', '#aaa198'),
   interior: trio('#3a2420', '#5a3830', '#140c0b'),
   escapulario: trio('#8e2a24', '#b0433a', '#5e1a16'),
-  oro: trio('#a8562a', '#c87a45', '#6e3418'),
-  capucha: trio('#5a3830', '#7a4e42', '#3a2420'),
-  mitra: trio('#8a7a60', '#b9a888', '#5c5040'),
+  oro: trio('#c89a38', '#ecc860', '#7a5a1c'),
+  capucha: trio('#d4cec4', '#ebe6de', '#968e84'),
+  mitra: trio('#ece6dc', '#fbf8f2', '#b4aca0'),
+  gema: trio('#c8281c', '#f05030', '#7a1410'),
+  barba: trio('#2e1c14', '#3e281c', '#1e120c'),
+  ojo: trio('#1a0e0a', '#2a1a12', '#0e0806'),
   guante: trio('#4a2e22', '#6a4432', '#2a1812'),
   acero: trio('#c9ced4', '#f2f4f6', '#7f8690'),
   smear: trio('#f2e6d0', '#fffaf0', '#d9cbb0'),
-  piel: trio('#c9a88a', '#e3c7a9', '#9a7a60'),
+  piel: trio('#6a4430', '#8a5c40', '#43291c'),
   venda: trio('#d9cbb0', '#efe5d2', '#a8987c'),
   sangre: trio('#8e2a24', '#a8382f', '#5e1a16'),
   vidrio: trio('#9fb3b8', '#d8e6e8', '#5f7378'),
@@ -221,7 +226,9 @@ function piezas(p) {
     out.push([arco(hombroCerca, rIn, rOut, t0, t1, porArriba), 'smear']);
   }
 
-  // La cabeza: capucha, la cara en tres cuartos, la venda y el cubrebocas.
+  // La cabeza: el velo que baja de la mitra a la nuca y la cara en tres
+  // cuartos, descubierta.
+  out.push([capsula(mas(cabeza, [-2.5, 0]), mas(cuello, [-3, 2.5]), 2.6, 2.2), 'capucha']);
   out.push([elipse(mas(cabeza, [-0.5, 0]), 4.3, 4.6), 'capucha']);
   const cara = [
     [0, -3],
@@ -234,16 +241,17 @@ function piezas(p) {
     [0, 4],
   ];
   out.push([poligono(cara.map((v) => en(cabeza, v))), 'piel']);
-  out.push([capsula(en(cabeza, [-1.5, -1.2]), en(cabeza, [4.6, -1.2]), 1.15), 'venda']);
-  out.push([elipse(en(cabeza, [3, -1]), 0.9, 0.8), 'sangre']);
-  const boca = [
-    [0.5, 1.2],
-    [5, 1],
-    [4.8, 3.8],
-    [2.4, 4.8],
-    [0.5, 4.2],
+  // La barba de días, por la mandíbula, y el ojo. El rojo del ojo de los Mil
+  // no está aquí: lo pone el juego, con su luz, desde el laboratorio (#243).
+  const barba = [
+    [0.6, 2.2],
+    [4.6, 2],
+    [4.4, 3.6],
+    [2.6, 4.6],
+    [0.4, 4],
   ];
-  out.push([poligono(boca.map((v) => en(cabeza, v))), 'venda']);
+  out.push([poligono(barba.map((v) => en(cabeza, v))), 'barba']);
+  out.push([elipse(en(cabeza, [3, -1]), 0.7, 0.6), 'ojo']);
   // La mitra, con su banda.
   const mitraLean = cabezaLean * 0.6;
   const mitra = [
@@ -258,6 +266,9 @@ function piezas(p) {
     capsula(en(cabeza, [0, -3.5], mitraLean), en(cabeza, [1, -14], mitraLean), 0.55),
     'oro',
   ]);
+  // La gema roja al frente, en su engaste de oro.
+  out.push([elipse(en(cabeza, [0.5, -7.5], mitraLean), 1.3, 1.5), 'oro']);
+  out.push([elipse(en(cabeza, [0.5, -7.5], mitraLean), 0.7, 0.9), 'gema']);
   out.push([
     capsula(en(cabeza, [-4, -3.4], mitraLean), en(cabeza, [3.6, -3.4], mitraLean), 0.6),
     'oro',

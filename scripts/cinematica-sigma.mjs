@@ -9,8 +9,12 @@
  * cinco tonos segun lo lejos que esta cada pixel del borde que mira a la luz,
  * con trama de Bayer entre tono y tono. La luz es la de una vela, a la derecha.
  *
- * - rostro.png  el Cirujano de cerca: la venda con sangre, el cubrebocas, la mitra.
- * - manos.png   las manos con el bisturi sobre la sabana.
+ * - manos.png   las manos con el bisturi sobre la sabana, en la manga blanca del
+ *               diseño de Mariana (#245).
+ *
+ * El rostro ya no sale de aqui (#245): `rostro.png` es el retrato de Mariana
+ * (`arte/retratos/cirujano.png`) ampliado x4 sobre la lamina, sin la sangre ni
+ * el rojo del ojo, que en la intro aun no tiene. Volver a correr esto no lo toca.
  *
  * Sale a `sigma/arte/cinematica/`. Uso:  npm run sigma:cinematica
  */
@@ -51,9 +55,10 @@ const MATERIALES = {
   piel: tonos('#3e2a20', '#6a4a3a', '#9a7460', '#c8a084', '#e8c8a8'),
   venda: tonos('#5a4e40', '#8a7c66', '#b8a88c', '#dccdb0', '#f4ead4'),
   sangre: tonos('#2a0806', '#4e100c', '#7a1a14', '#a82a20', '#d04838'),
-  habito: tonos('#3a3226', '#5c5040', '#8a7a60', '#b4a284', '#d8caac'),
+  habito: tonos('#4a4640', '#7a746c', '#b0aaa2', '#dcd8d0', '#f6f4ee'),
   escapulario: tonos('#2a0a08', '#4a1410', '#6e1e18', '#9a2e24', '#c04434'),
-  cuero: tonos('#140a06', '#24140c', '#3a2216', '#563424', '#744a34'),
+  // Las manos, desnudas: la piel del retrato de Mariana.
+  cuero: tonos('#2a1810', '#43291c', '#6a4430', '#8a5c40', '#a87656'),
   acero: tonos('#2a3034', '#4e585e', '#7f8a92', '#bcc6cc', '#f2f6f8'),
   sabana: tonos('#4a4438', '#746c5c', '#a49a84', '#cec4ac', '#ece4d0'),
   contorno: tonos('#060404', '#060404', '#060404', '#060404', '#060404'),
@@ -151,126 +156,17 @@ function fondoVela(vela) {
 
 const sobre = (cx, cy, rx, ry) => [cx - rx - 2, cy - ry - 2, cx + rx + 3, cy + ry + 3];
 
-// -- El rostro ----------------------------------------------------------------
-
-function rostro() {
-  // Una cinta curva hecha de tramos: la venda que rodea la cabeza.
-  const cinta = (puntos, r, material) =>
-    puntos.slice(1).map((p, k) => [capsula(puntos[k], p, r), material]);
-  const piezas = [
-    // La capucha enmarca la cara y cae sobre los hombros.
-    [
-      poligono([
-        [150, 360],
-        [185, 250],
-        [205, 150],
-        [245, 85],
-        [300, 58],
-        [372, 62],
-        [425, 98],
-        [452, 165],
-        [462, 255],
-        [500, 360],
-      ]),
-      'capucha',
-    ],
-    // El habito y el escapulario, abajo.
-    [
-      poligono([
-        [110, 360],
-        [175, 312],
-        [300, 300],
-        [420, 298],
-        [520, 312],
-        [580, 360],
-      ]),
-      'habito',
-    ],
-    [
-      poligono([
-        [335, 360],
-        [348, 306],
-        [408, 302],
-        [420, 360],
-      ]),
-      'escapulario',
-    ],
-    [capsula([350, 306], [338, 360], 2.5), 'oro'],
-    [capsula([406, 302], [418, 360], 2.5), 'oro'],
-    // La cara, en tres cuartos: frente, entrecejo, nariz, labios y barbilla.
-    [
-      poligono([
-        [262, 112],
-        [330, 92],
-        [398, 100],
-        [426, 128],
-        [438, 160],
-        [454, 192],
-        [440, 202],
-        [444, 230],
-        [432, 262],
-        [398, 290],
-        [330, 294],
-        [286, 264],
-        [262, 210],
-      ]),
-      'piel',
-    ],
-    [elipse([272, 192], 12, 20), 'piel', sobre(272, 192, 12, 20)],
-    // La mitra: se estrecha hacia la punta, con su banda y una piedra.
-    [
-      poligono([
-        [246, 104],
-        [436, 84],
-        [414, 24],
-        [372, -24],
-        [304, -22],
-        [266, 34],
-      ]),
-      'mitra',
-    ],
-    [capsula([248, 101], [434, 82], 7), 'oro'],
-    [capsula([342, 92], [348, -24], 5), 'oro'],
-    [elipse([344, 92], 6, 6), 'sangre', sobre(344, 92, 6, 6)],
-    // La venda alrededor de los ojos, y sus dos cabos atados detras.
-    ...cinta(
-      [
-        [258, 154],
-        [300, 144],
-        [350, 140],
-        [402, 142],
-        [446, 158],
-      ],
-      14,
-      'venda',
-    ),
-    [capsula([262, 158], [232, 216], 6, 4), 'venda'],
-    [capsula([266, 162], [250, 232], 5, 3.5), 'venda'],
-    // La sangre donde estaria el ojo, y lo que gotea por la venda.
-    [elipse([398, 148], 13, 10), 'sangre', sobre(398, 148, 13, 10)],
-    [capsula([394, 156], [390, 186], 3, 1.6), 'sangre'],
-    // El cubrebocas, de la nariz a la barbilla, atado hacia atras.
-    [
-      poligono([
-        [298, 196],
-        [440, 190],
-        [452, 206],
-        [448, 240],
-        [432, 268],
-        [398, 292],
-        [330, 296],
-        [298, 268],
-      ]),
-      'venda',
-    ],
-    [capsula([300, 212], [264, 206], 4), 'venda'],
-    [capsula([318, 224], [444, 216], 1.2), 'venda'],
-    [capsula([318, 252], [432, 248], 1.2), 'venda'],
-  ];
-  return pintar(piezas, [0.92, -0.38], fondoVela([600, 150]));
-}
-
 // -- Las manos ----------------------------------------------------------------
+
+/**
+ * Un dedo en dos falanges, de la base `a` al nudillo `b` y de ahi a la punta
+ * `c`, que se estrecha (#245: con una capsula recta por dedo, parecian
+ * salchichas).
+ */
+const dedo = (a, b, c, r) => [
+  [capsula(a, b, r, r * 0.88), 'cuero'],
+  [capsula(b, c, r * 0.88, r * 0.7), 'cuero'],
+];
 
 function manos() {
   const piezas = [
@@ -305,11 +201,13 @@ function manos() {
       ]),
       'habito',
     ],
-    [elipse([140, 238], 34, 16), 'cuero', sobre(140, 238, 34, 16)],
-    ...[0, 1, 2, 3].map((i) => [
-      capsula([150 + i * 4, 230 + i * 4], [196 + i * 3, 226 + i * 7], 5.5),
-      'cuero',
-    ]),
+    [elipse([142, 238], 26, 14), 'cuero', sobre(142, 238, 26, 14)],
+    // Los cuatro dedos, planos y algo abiertos, y el pulgar por encima.
+    ...dedo([164, 228], [180, 226], [192, 228], 5.6),
+    ...dedo([167, 236], [185, 236], [198, 239], 5.8),
+    ...dedo([165, 244], [182, 246], [194, 250], 5.4),
+    ...dedo([159, 250], [172, 254], [181, 257], 4.8),
+    ...dedo([142, 226], [154, 217], [164, 214], 5.8),
     // El brazo que baja desde arriba y la mano que sostiene el bisturi.
     [
       poligono([
@@ -321,21 +219,19 @@ function manos() {
       ]),
       'habito',
     ],
+    // El dorso, y el pulgar que aprieta el mango desde abajo.
     [
       poligono([
-        [350, 110],
-        [450, 98],
-        [470, 150],
-        [400, 178],
-        [350, 160],
+        [355, 112],
+        [445, 100],
+        [462, 140],
+        [440, 166],
+        [382, 174],
+        [352, 150],
       ]),
       'cuero',
     ],
-    ...[0, 1, 2].map((i) => [
-      capsula([440 - i * 10, 150 + i * 6], [470 - i * 8, 186 + i * 5], 7),
-      'cuero',
-    ]),
-    [capsula([360, 150], [392, 190], 8), 'cuero'], // el pulgar
+    ...dedo([370, 152], [404, 176], [432, 180], 7),
     // El bisturi: mango de oro y la hoja, con la punta sobre la sabana.
     [capsula([420, 130], [470, 200], 4.5), 'oro'],
     [
@@ -348,6 +244,12 @@ function manos() {
       'acero',
     ],
     [capsula([516, 256], [518, 262], 2.2, 1), 'sangre'],
+    // Los dedos sobre el mango: el indice a lo largo, encima; los otros tres,
+    // doblados por debajo.
+    ...dedo([408, 168], [414, 183], [408, 190], 5.2),
+    ...dedo([424, 165], [432, 183], [424, 191], 6),
+    ...dedo([440, 158], [452, 179], [444, 189], 6.4),
+    ...dedo([450, 128], [466, 150], [473, 166], 6),
   ];
   return pintar(piezas, [0.95, -0.3], fondoVela([620, 80]));
 }
@@ -355,7 +257,6 @@ function manos() {
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
-  writeFileSync(join(destino, 'rostro.png'), png(rostro()));
   writeFileSync(join(destino, 'manos.png'), png(manos()));
-  console.log('2 ilustraciones -> sigma/arte/cinematica/');
+  console.log('las manos -> sigma/arte/cinematica/manos.png');
 }

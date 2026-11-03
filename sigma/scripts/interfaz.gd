@@ -22,6 +22,10 @@ const ORO := Color(0.89, 0.663, 0.251)
 ## ojo (#243) tine con el mismo, mas tenue.
 const BLANCO_VISION := Color(0.78, 0.88, 0.96)
 const TINTE_MIRADA := 0.16
+## El medallon (#245): el rostro del diseño de Mariana; con el ojo de los Mil,
+## el izquierdo es rojo y sangra.
+const MEDALLON := preload("res://arte/hud/medallon.png")
+const MEDALLON_OJO := preload("res://arte/hud/medallon-ojo.png")
 ## Cada cuantas letras suena la voz: en todas, ametralla.
 const VOZ_CADA := 2
 const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
@@ -140,6 +144,7 @@ func _process(delta: float) -> void:
 		_ensenanza_accion = ""
 		_ocultar_ensenanza(0.6)
 	_pintar_mirada(delta)
+	_pintar_medallon()
 	if _dialogo == null:
 		return
 	var nuevas := _dialogo.paso(delta)
@@ -210,6 +215,13 @@ func _preparar_vision() -> void:
 	_mirada.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_mirada)
 	move_child(_mirada, 0)
+
+
+func _pintar_medallon() -> void:
+	var con_ojo: bool = _cirujano != null and is_instance_valid(_cirujano) and _cirujano.tiene_ojo
+	var textura := MEDALLON_OJO if con_ojo else MEDALLON
+	if _medallon.texture != textura:
+		_medallon.texture = textura
 
 
 ## El tinte de mirar sube y baja deprisa, no de golpe.

@@ -6,9 +6,11 @@
 
 ## Cómo entregarlo
 
-- **El diseño**: el rediseño de Alejo (tres cuartos, hábito de hueso, mitra, cara vendada,
-  bisturí en la derecha). La referencia de pose y tamaño son los provisionales de
-  `sigma/arte/cirujano/` (un PNG por fotograma).
+- **El diseño**: el de tu retrato (mitra blanca con la gema roja, el velo, el hábito blanco
+  con el escapulario, el rostro descubierto) sobre las poses en tres cuartos de Alejo, con
+  el bisturí en la derecha. La referencia de pose y tamaño son los provisionales de
+  `sigma/arte/cirujano/` (un PNG por fotograma). El ojo rojo no hace falta dibujarlo: lo
+  pone el juego, con su luz, desde el laboratorio.
 - **Tamaño**: 48 × 58 px por fotograma, fondo transparente. Si alguna pose necesita más
   (el tajo, el contragolpe), se puede: avisa y lo ajustamos.
 - **Los pies**: siempre en el mismo punto, x = 21, y = 57. Ahí está el origen del cuerpo:

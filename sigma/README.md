@@ -161,8 +161,8 @@ npx vite preview                                  # Sigma queda en /sigma/
 ## El arte
 
 **El Cirujano** es el de Sigma, no el del original: en tres cuartos, de unos 50 px de
-alto (lo que mide el Penitente de _Blasphemous_ a 640×360), con la cara vendada, la
-paleta de carne y óxido y 53 fotogramas en 18 animaciones (reposo, carrera, salto,
+alto (lo que mide el Penitente de _Blasphemous_ a 640×360), con el diseño de Mariana
+(#245: mitra blanca con su gema, velo, hábito blanco y el rostro descubierto) y 53 fotogramas en 18 animaciones (reposo, carrera, salto,
 caída, aterrizaje, dash, agarre, herido, rezar, guardia, golpe, cargado, arriba, abajo,
 contragolpe, poción y ejecución). Cada golpe tiene aviso sostenido, un fotograma de
 _smear_ (el arco del bisturí), impacto y recuperación.

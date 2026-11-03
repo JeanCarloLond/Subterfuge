@@ -2,7 +2,8 @@
  * La interfaz de Subterfuge Sigma, ornamentada como la de Blasphemous: un
  * medallon con el rostro del Cirujano, un marco con remates para las barras
  * de vida y de Fervor, y los frascos. Con la identidad de Sigma: oro viejo,
- * oxido, sangre y la venda.
+ * oxido y sangre. El rostro es el del diseño de Mariana (#245), en dos
+ * versiones: antes del laboratorio y con el ojo de los Mil (#243).
  *
  * Sale a `sigma/arte/hud/`. Las barras son pares lleno/vacio para un
  * TextureProgressBar de Godot. Uso:  npm run sigma:hud
@@ -30,22 +31,58 @@ const PALETA = {
   oro: trio('#b8862a', '#e8c060', '#6e4a14'),
   oxido: trio('#7a3a1e', '#a0582e', '#4a200e'),
   fondo: trio('#1c1214', '#2a1c1e', '#100a0b'),
-  piel: trio('#c9a88a', '#e3c7a9', '#9a7a60'),
-  venda: trio('#d9cbb0', '#efe5d2', '#a8987c'),
+  // Un punto mas clara que en el retrato: a 36 px, si no, la cara se pierde.
+  piel: trio('#8a5a3e', '#a8744e', '#5a3824'),
+  barba: trio('#2e1c14', '#3e281c', '#1e120c'),
+  ojo: trio('#1a0e0a', '#2a1a12', '#0e0806'),
   sangre: trio('#8e2a24', '#b8443a', '#5e1a16'),
-  mitra: trio('#8a7a60', '#b9a888', '#5c5040'),
+  gema: trio('#c8281c', '#f05030', '#7a1410'),
+  mitra: trio('#ece6dc', '#fbf8f2', '#b4aca0'),
+  velo: trio('#d4cec4', '#ebe6de', '#968e84'),
   vidrio: trio('#6a8288', '#a8c2c6', '#3e5054'),
 };
 
-/** El medallon: un aro de oro con el rostro vendado dentro. */
-function medallon() {
+/**
+ * El medallon: un aro de oro con el rostro dentro. La mitra blanca con su gema,
+ * el velo, la piel oscura y la barba. Con `ojo`, el izquierdo es rojo y sangra:
+ * el ojo de los Mil, desde el laboratorio.
+ */
+function medallon(ojo = false) {
   const c = [18, 18];
   return rasterizar(
     [
       [elipse(c, 17, 17), 'oro'],
       [elipse(c, 14, 14), 'oxido'],
       [elipse(c, 12.5, 12.5), 'fondo'],
-      // La mitra, el rostro, la venda con su sangre y el cubrebocas.
+      // El velo, que baja de la mitra.
+      [
+        poligono([
+          [10.5, 12],
+          [25.5, 12],
+          [27, 28],
+          [9, 28],
+        ]),
+        'velo',
+      ],
+      // El rostro, la barba y los ojos.
+      [elipse([18, 19.5], 5.5, 7), 'piel'],
+      [
+        poligono([
+          [13.5, 23],
+          [22.5, 23],
+          [21.5, 25.5],
+          [18, 26.8],
+          [14.5, 25.5],
+        ]),
+        'barba',
+      ],
+      // Las cejas, el ceño del retrato.
+      [capsula([14, 16.2], [16.8, 16.6], 0.45), 'barba'],
+      [capsula([19.2, 16.6], [22, 16.2], 0.45), 'barba'],
+      [elipse([15.5, 18], 0.9, 0.7), 'ojo'],
+      [elipse([20.5, 18], 0.9, 0.7), ojo ? 'gema' : 'ojo'],
+      ...(ojo ? [[capsula([20.5, 19], [20, 23], 0.5), 'sangre']] : []),
+      // La mitra blanca, su banda de oro y la gema roja.
       [
         poligono([
           [11, 12],
@@ -56,19 +93,9 @@ function medallon() {
         ]),
         'mitra',
       ],
-      [elipse([18, 19], 6.5, 8), 'piel'],
-      [capsula([11.5, 17], [24.5, 17], 1.8), 'venda'],
-      [elipse([21, 17], 1.3, 1.1), 'sangre'],
-      [
-        poligono([
-          [12.5, 21],
-          [23.5, 21],
-          [22, 26],
-          [18, 27.5],
-          [14, 26],
-        ]),
-        'venda',
-      ],
+      [capsula([11.5, 12], [24.5, 12], 0.9), 'oro'],
+      [elipse([18, 7.5], 1.5, 1.7), 'oro'],
+      [elipse([18, 7.5], 0.8, 1), 'gema'],
       // Cuatro remaches en cruz sobre el aro.
       ...[
         [18, 2],
@@ -170,6 +197,7 @@ if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
   const piezas = {
     medallon: medallon(),
+    'medallon-ojo': medallon(true),
     marco: marco(),
     'vida-llena': barra(108, 10, PALETA.sangre, 6),
     'vida-vacia': barra(108, 10, PALETA.fondo, 6),
