@@ -25,21 +25,23 @@ carnicería. Y el **hambre**: desde que las paredes se mueven, **la carne deja d
 los pabellones. Quiere saber por qué se mueven unas paredes quietas desde hace milenios: es
 la pregunta de un cirujano ante un cuerpo enfermo, y la de un hombre cuya gente pasa hambre.
 Baja a buscar la causa y, en uno de los laboratorios de **Génesis Vestal** (lo que
-había antes de la Diócesis, cuando los manuales aún no eran escritura sagrada), **toca un
-artefacto**. Desde ese momento ve a la niña. Sin saberlo, es quien lleva los ojos al cuerpo.
-**Es el villano**, y el jugador no lo entiende hasta el final.
+había antes de la Diócesis, cuando los manuales aún no eran escritura sagrada), **se pone
+un ojo de los Mil**. Desde ese momento ve a la niña. Sin saberlo, es quien lleva los ojos al
+cuerpo, y los lleva puestos. **Es el villano**, y el jugador no lo entiende hasta el final.
 
 **La niña son los ojos de los dioses, y no ha nacido.** No es parte activa del juego: no
-acompaña, no pelea, no abre nada. **Solo se le aparece al Cirujano en visiones**, desde que
-toca el artefacto. Es lo que los dioses serán cuando se unan, y le habla a él porque es el
-único que la ve. Lo guía y lo manipula sin que se note: cada paso que él da por entender la
+acompaña, no pelea, no abre nada. **Solo se le aparece al Cirujano**, desde que mira con el
+ojo: en las visiones y, cuando él mira, esperando donde quiere que vaya. Es lo que los dioses
+serán cuando se unan, y le habla a él porque es el único que la ve: solo la ve el ojo de
+ellos. Lo guía y lo manipula sin que se note: cada paso que él da por entender la
 compactación la acerca a nacer.
 
-**En las visiones es perfecta**: una niña normal, sin una marca. Por eso el Cirujano confía
-en ella. Un ser así, que lo salva en los momentos desesperados, no puede querer el mal, y él
+**En las visiones es perfecta**: una niña normal, con los ojos tapados por una venda roja.
+La venda es su perfección: son los ojos de los Mil, que aún no han nacido y siguen cerrados.
+Por eso el Cirujano confía en ella. Un ser así, que lo salva en los momentos desesperados, no puede querer el mal, y él
 cree que hace lo correcto. **Solo al final la ve como es**: la unión de los Mil apenas en
-formación, deforme, con medio rostro y un brazo más corto. Lo que él mismo ayudó a formar. Y
-ahí tiene que elegir.
+formación, deforme, con medio rostro y un brazo más corto, y la venda cae: los ojos se abren.
+Lo que él mismo ayudó a formar. Y ahí tiene que elegir.
 
 **Los que el jugador llama enemigos son los últimos eslabones.** Sostienen partes del templo
 para que no se una. Devotos, Vestales, guardias, cazarrecompensas: cada uno aguanta una pieza.
@@ -56,8 +58,9 @@ entiende al final:
    máscara ciega, sin ojos, y nunca ven lo que cortan. **La ley de la Mano que mira** dice
    que la Mano que mira se corta. El Cirujano miró («Hoy miró», en la intro) y además baja
    sin turno. Los Devotos no son monstruos: cumplen la ley contra un hereje. Por eso le
-   gritan «¡La Mano que mira!» o «Cierra los ojos, Mano». La máscara del Cirujano tiene **un
-   ojo abierto a tajo**, a mano: es su marca y su culpa.
+   gritan «¡La Mano que mira!» o «Cierra los ojos, Mano». El Cirujano **ya no lleva la
+   máscara**: la Mano que mira se la quitó. Desde el laboratorio, su ojo derecho es rojo y
+   sangra: es su marca y su culpa.
 2. **Lo que dice la niña.** En las visiones le da la razón: «Te temen porque ya ves lo que
    ellos no». El jugador se siente justo, y ella lo empuja hacia dentro. Es mentira a medias.
 3. **Lo que es de verdad.** Son los eslabones, y sienten la compactación alrededor de él.
@@ -75,19 +78,28 @@ Génesis Vestal: los protocolos antes de ser liturgia, la corporación, los labo
 sellados. Es lo opuesto al Cirujano: él eligió no ver; el Cirujano elige seguir mirando.
 Al final se relee como el único que tenía razón.
 
-### El artefacto: el Pulmón Vacío
+### El artefacto: el Primer Ojo
 
-Decidido por Jean. El artefacto del laboratorio 7 de Génesis es **el primer objeto divino
-del juego**: unos pulmones de uno de los Mil, que todavía respiran. Dan el doble salto, el
-**Impulso cárnico**. Al tomarlos, el Cirujano ve a la niña por primera vez: lo que respira
-con él ya no es solo suyo. Génesis no lo destruyó «porque nadie sabe cómo» (el tercer
-registro) y selló el laboratorio con él dentro.
+Decidido por Jean el 3 de noviembre, con el diseño de Mariana (#243). El artefacto del
+laboratorio 7 de Génesis es **un ojo de los Mil, el primero que llegó a formarse**: el
+primer objeto divino del juego. El Cirujano no lo toca, **se lo pone**: es el ojo rojo y la
+sangre de su retrato. Desde entonces ve a la niña, porque mira con el ojo de ellos. Génesis
+no lo destruyó «porque nadie sabe cómo» (el tercer registro) y selló el laboratorio con él
+dentro.
+
+**Mirar** es su habilidad: mantenido, el Cirujano ve lo que los demás no ven. Los puentes de
+carne que el templo ya está formando al unirse (solo sostienen mientras mira), y la niña
+esperando donde quiere que vaya. **El coste es la ley**: mientras mira, los eslabones lo
+sienten de más lejos y los muros se mueven antes. Mirar sirve, y acerca el templo a unirse.
+
+El **Pulmón Vacío** (el doble salto, el Impulso cárnico) deja de ser el artefacto: es la
+reliquia del Nivel III.
 
 ### Los objetivos son de la niña
 
 Decidido por Jean. El juego dice qué se busca («Averigua por qué se mueven los muros»).
 Hasta el laboratorio, los objetivos son del Cirujano; **desde la primera visión los pone
-la niña**, y cambian de color. El jugador obedece el texto de la pantalla como si fuera
+la niña**, y cambian de color: al rojo de su venda y del ojo del Cirujano. El jugador obedece el texto de la pantalla como si fuera
 neutral, y al final entiende a quién obedecía.
 
 ## La estructura
@@ -95,7 +107,7 @@ neutral, y al final entiende a quién obedecía.
 1. **La grieta.** Las paredes se mueven y la carne deja de llegar. El Cirujano, hombre de
    oficio que ya duda de su oficio, baja a entender por qué. Los eslabones le cortan el
    paso, y el jugador cree que son el problema.
-2. **Las visiones.** En un laboratorio de Génesis Vestal toca el artefacto y empieza a ver a
+2. **Las visiones.** En un laboratorio de Génesis Vestal se pone el ojo y empieza a ver a
    la niña. Ella le explica, le señala caminos, le pide ir hacia dentro. Los eslabones le
    llaman el Último Sacramento, y suena a amenaza.
 3. **La Puerta del Cuerpo.** La verdad: la niña perfecta de las visiones era la máscara de lo
@@ -110,8 +122,10 @@ otra.
 - **La unión** (el final **canónico**). Por su deseo egoísta de sobrevivir, el Cirujano se
   funde con la niña. El cuerpo ve. A cambio, el sacrificio de toda la humanidad: es el fin de
   la carne. Es el canon porque el nacimiento abre las historias de después.
-- **El sacrificio.** Da su vida para salvar a la humanidad. Los ojos llegan con él: morir él,
-  antes de que el cuerpo termine de formarse, es la única manera de acabar con ella. Se
+- **El sacrificio.** Da su vida para salvar a la humanidad. Los ojos llegan con él: **se
+  arranca el ojo**, como el Cegado se arrancó los suyos, y muere antes de que el cuerpo
+  termine de formarse. Es la única manera de acabar con ella. El Cegado lo anuncia desde el
+  Nivel I. Se
   vuelve leyenda, recordada por siglos: arriba, la Diócesis levanta su estatua, alzando el
   bisturí.
 
@@ -129,9 +143,9 @@ otra.
 
 - **Quién dejó el artefacto** en el laboratorio.
 - **El nombre del Cegado.** Propuestas: Casiano, Ulpiano.
-- **Cómo nota el jugador** que solo él la ve, sin que se adivine el giro antes de tiempo.
 - **Qué pide el final B.** Una idea: como en _Blasphemous_, que solo se abra si el jugador
-  desconfió de las visiones alguna vez.
+  desconfió de ella alguna vez; con el ojo, por ejemplo, haber dejado de mirar donde ella
+  pedía mirar.
 - **La niña del altar** del original (la voluntaria del Pabellón 9): si tiene sitio en Sigma
   o se reescriben los textos que hablan de ella.
 

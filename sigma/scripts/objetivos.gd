@@ -39,9 +39,9 @@ const CATALOGO := {
 }
 
 const COLOR := Color(0.89, 0.663, 0.251)
-## La nina: un blanco frio, de luz de laboratorio. Ninguna otra cosa del juego
-## es de este color.
-const COLOR_NINA := Color(0.78, 0.88, 0.96)
+## La nina (#243): el rojo de su venda y del ojo del Cirujano. Lo que ella pide
+## se lee del mismo color con que se la ve.
+const COLOR_NINA := Color(0.94, 0.42, 0.19)
 
 
 static func existe(id: String) -> bool:

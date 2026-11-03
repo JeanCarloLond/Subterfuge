@@ -22,6 +22,8 @@ const ACCIONES := {
 	"codice": {"teclas": [KEY_L], "mando": [JOY_BUTTON_BACK]},
 	"pausa": {"teclas": [KEY_ESCAPE, KEY_P], "mando": [JOY_BUTTON_START]},
 	"ayuda": {"teclas": [KEY_H, KEY_TAB]},
+	# Mirar con el ojo de los Mil (#243): se mantiene. O de ojo.
+	"mirar": {"teclas": [KEY_O], "mando": [JOY_BUTTON_RIGHT_STICK]},
 	"silencio": {"teclas": [KEY_M]},
 }
 
@@ -36,7 +38,7 @@ const NOMBRES_MANDO := {
 	JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
 	JOY_BUTTON_LEFT_SHOULDER: "LB", JOY_BUTTON_RIGHT_SHOULDER: "RB",
 	JOY_BUTTON_DPAD_LEFT: "←", JOY_BUTTON_DPAD_RIGHT: "→", JOY_BUTTON_DPAD_UP: "↑", JOY_BUTTON_DPAD_DOWN: "↓",
-	JOY_BUTTON_START: "Start", JOY_BUTTON_BACK: "Back",
+	JOY_BUTTON_START: "Start", JOY_BUTTON_BACK: "Back", JOY_BUTTON_RIGHT_STICK: "R3",
 }
 
 

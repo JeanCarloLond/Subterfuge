@@ -44,11 +44,13 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   lado, el Ala de Génesis con sus rayos, un Altar, el tercer registro, un atajo de vuelta
   al Registro y la puerta que pide los tres. El cierre se sella al llegar al Ala, del
   lado bueno: nunca deja encerrado.
-- **El laboratorio y la primera visión** (#225): tras la puerta, el Pulmón Vacío en su
-  pedestal, el primer objeto divino. Al tomarlo, el **Impulso cárnico** (doble salto) y
-  la niña: la pantalla se tiñe del blanco frío de Génesis, ella aparece al lado del
-  Cirujano y habla con su retrato. Desde ahí, los objetivos son suyos. La salida, en lo
-  alto, solo se alcanza con el Impulso.
+- **El laboratorio y la primera visión** (#225, #243): tras la puerta, el Primer Ojo en
+  su pedestal, un ojo de los Mil y el primer objeto divino. El Cirujano se lo pone y llega
+  la niña: la pantalla se tiñe del blanco frío de Génesis, ella aparece a su lado y habla
+  con su retrato. Desde ahí, los objetivos son suyos (en rojo). **Mirar** (mantener O):
+  se ven los puentes de carne y la niña, pero los eslabones lo sienten de más lejos y los
+  muros se adelantan. La salida, en lo alto, se alcanza por un puente que solo existe
+  mirando.
 - **El Prior del Diezmo** (#219), el primer guardián, en la Nave del Libro (con su Altar
   en la antesala): de lejos, injertos en arco y sellos que se devuelven; de cerca, el
   báculo, que se para; por debajo de la mitad, la nave se compacta y aparece el diezmo,

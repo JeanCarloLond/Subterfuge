@@ -237,6 +237,10 @@ A partir de hoy, los protocolos se leerán en voz alta, como oraciones, y ningun
 	return {"nombre": "ala", "ancho": 60, "alto": 23}
 
 
+## Ojo (#243): esto es como se genero. Despues, el artefacto paso a ser el
+## Primer Ojo y la salida, un puente que solo existe mirando: se cambio a mano
+## en escenas/nivel2/laboratorio.tscn. Volver a correr esto lo desharia.
+##
 ## 7 · El laboratorio 7 de Genesis (#225): lo que se sello con el artefacto
 ## dentro. Dos rayos a la entrada y, en su pedestal, el Pulmon Vacio: el primer
 ## objeto divino. Al tomarlo, el Impulso carnico (el doble salto) y la primera

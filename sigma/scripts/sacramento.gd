@@ -124,6 +124,18 @@ const POCION := {
 	"duracion_ms": 600.0,
 }
 
+## Mirar con el ojo de los Mil (#243): se ve lo que los demas no (los puentes
+## de carne, la nina), pero la ley se cumple sola: mientras mira, los
+## eslabones lo sienten de mas lejos y los muros se mueven antes.
+const MIRADA := {
+	## Por cuanto se multiplica la distancia a la que lo detectan.
+	"vista": 1.8,
+	## Por cuanto se acelera el ciclo de los muros.
+	"muros": 1.6,
+	## Lo que tarda en abrirse y cerrarse lo que se ve mirando.
+	"fundido_s": 0.15,
+}
+
 ## La pausa al conectar (hitstop): lo que hace que un golpe se sienta solido.
 const IMPACTO := {
 	"golpe_ms": 55.0,

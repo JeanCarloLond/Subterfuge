@@ -92,26 +92,34 @@ func test_empieza_en_el_pabellon_y_lo_hecho_acaba_tras_el_laboratorio() -> void:
 	ala.free()
 
 
-## El laboratorio (#225): el Pulmon en su pedestal dispara la primera vision,
-## que deja un objetivo de la nina; el cartel del Impulso sale despues de ella,
-## y la salida esta donde solo llega el doble salto.
-func test_el_laboratorio_da_el_pulmon_y_la_primera_vision() -> void:
+## El laboratorio (#225, #243): el ojo en su pedestal dispara la primera
+## vision, que deja un objetivo de la nina; el cartel de mirar sale despues de
+## ella, y la salida no se alcanza de un salto: se llega por el puente de
+## carne, que solo existe mirando.
+func test_el_laboratorio_da_el_ojo_y_la_primera_vision() -> void:
 	var Objetivos: GDScript = load("res://scripts/objetivos.gd")
 	var Sacramento: GDScript = load("res://scripts/sacramento.gd")
 	var lab: Node = load(DIR + "nivel2/laboratorio.tscn").instantiate()
-	var pulmon: Node = lab.get_node("Reliquias/Pulmon")
-	afirmar_igual(pulmon.id, "pulmon", "el artefacto es el Pulmón Vacío")
+	var ojo: Node = lab.get_node("Reliquias/Ojo")
+	afirmar_igual(ojo.id, "ojo", "el artefacto es el ojo")
 	var vision: Node = lab.get_node("Visiones/Primera")
-	afirmar_igual(vision.get_node(vision.tras), pulmon, "la visión la dispara el Pulmón")
+	afirmar_igual(vision.get_node(vision.tras), ojo, "la visión la dispara el ojo")
 	afirmar(Objetivos.de_la_nina(vision.objetivo), "y deja un objetivo de la niña")
 	for texto in vision.lineas:
 		for prohibida in ["NPC", "boss", "HP", "mana", "checkpoint", "stamina"]:
 			afirmar(not (" %s " % prohibida) in (" %s " % texto), "«%s» en: %s" % [prohibida, texto])
-	afirmar_igual(lab.get_node("Carteles/Impulso").despues_de, "vision-laboratorio", "el cartel del Impulso, tras la visión")
+	var cartel: Node = lab.get_node("Carteles/Mirar")
+	afirmar_igual(cartel.despues_de, "vision-laboratorio", "el cartel de mirar, tras la visión")
+	afirmar_igual(cartel.aprende, "mirar", "y enseña a mirar")
+	var salto: float = Sacramento.altura_de_salto(Sacramento.MOVIMIENTO["impulso_salto"])
 	var salida: Node = lab.get_node("Pasos/Nave")
 	var suelo := 25 * 16.0
-	var alto: float = suelo - (salida.position.y + salida.zona.y)
-	afirmar(alto > Sacramento.altura_de_salto(Sacramento.MOVIMIENTO["impulso_salto"]), "la salida no se alcanza de un salto (%s px)" % alto)
+	var repisa: float = salida.position.y + salida.zona.y
+	afirmar(suelo - repisa > salto, "la salida no se alcanza de un salto (%s px)" % (suelo - repisa))
+	var puente: Node = lab.get_node("Mirada/Puente")
+	afirmar(suelo - puente.position.y < salto, "del suelo al puente, de un salto")
+	afirmar(puente.position.y - repisa < salto, "del puente a la salida, de otro")
+	afirmar(lab.get_node("Mirada/Nina").get_script().resource_path.ends_with("aparicion.gd"), "y ella espera, mirando")
 	lab.free()
 
 

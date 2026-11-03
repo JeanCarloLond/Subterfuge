@@ -56,7 +56,7 @@ const AVISOS: readonly Aviso[] = [
       <ul>
         <li>No se entra.</li>
         <li>No se abre.</li>
-        <li>No se toca lo que todavía respira.</li>
+        <li>No se mira lo que todavía mira.</li>
       </ul>`,
   },
   {

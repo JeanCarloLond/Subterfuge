@@ -1,9 +1,10 @@
 ## Una reliquia: un resto que los Primigenios dejan al compactarse, un organo
-## suelto que aun funciona. El Pulmon Vacio es el artefacto del laboratorio de
-## Genesis (#225), el primer objeto divino del juego: al tomarlo llega la
-## primera vision. Cada una le da al Cirujano una habilidad del cuerpo
-## que no es suya, como en Blasphemous: el doble salto y el dash ya no vienen
-## de serie, se encuentran.
+## suelto que aun funciona. El artefacto del laboratorio de Genesis es el ojo
+## (#243): un ojo de los Mil, el primero que llego a formarse. El Cirujano se
+## lo pone; desde entonces mira lo que nadie ve y le llega la primera vision.
+## Cada una le da una habilidad del cuerpo que no es suya, como en Blasphemous:
+## el dash y el doble salto (el Pulmon Vacio, reliquia del Nivel III; en el
+## Atrio de demostracion sigue a mano) ya no vienen de serie, se encuentran.
 ##
 ## Como el Altar: hay que estar delante y pulsar interactuar. Flota y late con
 ## su luz para verse desde lejos. Si ya se tiene, no aparece.
@@ -14,6 +15,11 @@ signal recogida(nombre: String, efecto: String)
 ## Que reliquia es, y lo que hace. Los nombres son una propuesta: restos de
 ## organos, como los dioses (corazones, cerebros, estomagos).
 const RELIQUIAS := {
+	"ojo": {
+		"nombre": "El Primer Ojo",
+		"efecto": "Mirar: lo que ellos no ven",
+		"textura": "res://arte/reliquias/ojo.png",
+	},
 	"pulmon": {
 		"nombre": "El Pulmón Vacío",
 		"efecto": "Impulso cárnico: un segundo salto en el aire",
@@ -32,7 +38,7 @@ const RELIQUIAS := {
 }
 const ALCANCE := Vector2(16.0, 26.0)
 
-@export_enum("pulmon", "tendon", "injertadora") var id := "pulmon"
+@export_enum("ojo", "pulmon", "tendon", "injertadora") var id := "pulmon"
 
 ## Quien la toma: el Cirujano. Lo pone el nivel.
 var cirujano: CharacterBody2D

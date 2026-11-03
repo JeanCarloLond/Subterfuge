@@ -192,7 +192,9 @@ func rematar() -> void:
 
 func _situarse(hacia: Vector2) -> void:
 	var distancia := position.distance_to(hacia)
-	if distancia > V["rango_deteccion"]:
+	# La Mano que mira se siente (#243): mirando, la ve de mas lejos.
+	var sentido: float = Sacramento.MIRADA["vista"] if objetivo != null and objetivo.get("mirando") else 1.0
+	if distancia > V["rango_deteccion"] * sentido:
 		if ahora - _ultimo_avistamiento > V["memoria_ms"]:
 			velocity.x = 0.0
 			estado = Estado.ESPERA

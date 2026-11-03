@@ -71,6 +71,12 @@ const COLOR_POLVO := Color(0.55, 0.47, 0.4, 0.8)
 const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
 ## El destello del parry logrado (#234): su radio y lo que tarda en apagarse.
 const DESTELLO_PX := 13.0
+## El ojo rojo (#243): donde esta en la cara, mirando a la derecha, su color y
+## cuanto brilla quieto y mirando.
+const OJO := Vector2(3.0, -40.0)
+const COLOR_OJO := Color(1.0, 0.25, 0.12)
+const OJO_QUIETO := 0.5
+const OJO_MIRANDO := 1.1
 const DESTELLO_DURA := 0.16
 ## El impacto de un golpe que entra (#235): un destello mas pequeno y breve.
 const IMPACTO_PX := 7.0
@@ -98,6 +104,10 @@ var combate: Combate
 var injertadora: Injertadora
 ## Si la tiene: se gana al vencer al Prior del Diezmo (#219).
 var tiene_injertadora := false
+## El ojo de los Mil (#243): si lo lleva y si esta mirando con el. Lo leen los
+## puentes de carne, la nina, la interfaz y los eslabones, que lo sienten.
+var tiene_ojo := false
+var mirando := false
 var vitalidad: int = Sacramento.VITALIDAD["maxima"]
 ## Donde vuelve al morir o al caer al vacio: el ultimo Altar, o donde empezo.
 var punto_reaparicion := Vector2.ZERO
@@ -139,6 +149,7 @@ var _corriendo := false
 var _signo_carrera := 0.0
 var _proximo_polvo_pared := -INF
 var _zona_antes := false
+var _ojo: PointLight2D
 ## Brasas que suben mientras carga el golpe con Fervor.
 var _brasas: CPUParticles2D
 var _cargado_avisado := false
@@ -154,6 +165,7 @@ func _ready() -> void:
 	movimiento.caida.connect(_al_caer)
 	combate = Combate.new()
 	injertadora = Injertadora.new()
+	_ojo = _luz_del_ojo()
 	_aplicar_reliquias()
 	_brasas = CPUParticles2D.new()
 	_brasas.emitting = false
@@ -177,6 +189,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	mirando = tiene_ojo and not muerto and Input.is_action_pressed("mirar")
 	if is_on_floor() and not muerto:
 		ultimo_suelo = position
 		if _pisa_piedra_quieta():
@@ -335,6 +348,8 @@ func _aplicar_reliquias(recien := "") -> void:
 	if tiene_injertadora != la_tenia or recien == "injertadora":
 		injertos_cambio.emit(injertadora.cargas, Sacramento.INJERTADORA["carga_maxima"])
 	movimiento.puede_dash = tiene.call("tendon")
+	tiene_ojo = tiene.call("ojo")
+	_ojo.visible = tiene_ojo
 
 
 ## Un golpe de un enemigo desde `origen_x`. Si la ventana del parry esta
@@ -926,6 +941,37 @@ func _pintar(delta: float) -> void:
 	var alfa := 0.5 if movimiento.invulnerable and not ejecutando else 1.0
 	_figura.modulate = Color(1, 1, 1, alfa)
 	_pintar_carga()
+	_pintar_ojo()
+
+
+## El ojo rojo en la cara (#243): un brillo que se ve en lo oscuro, y que se
+## enciende al mirar.
+func _luz_del_ojo() -> PointLight2D:
+	var degradado := Gradient.new()
+	degradado.set_color(0, Color.WHITE)
+	degradado.set_color(1, Color(1, 1, 1, 0))
+	var mancha := GradientTexture2D.new()
+	mancha.gradient = degradado
+	mancha.fill = GradientTexture2D.FILL_RADIAL
+	mancha.fill_from = Vector2(0.5, 0.5)
+	mancha.fill_to = Vector2(1.0, 0.5)
+	mancha.width = 10
+	mancha.height = 10
+	var luz := PointLight2D.new()
+	luz.name = "Ojo"
+	luz.texture = mancha
+	luz.color = COLOR_OJO
+	luz.height = Sacramento.ALTURA_LUZ
+	luz.visible = false
+	add_child(luz)
+	return luz
+
+
+func _pintar_ojo() -> void:
+	if not tiene_ojo:
+		return
+	_ojo.position = Vector2(OJO.x * movimiento.mirando, OJO.y)
+	_ojo.energy = OJO_MIRANDO if mirando else OJO_QUIETO
 
 
 ## La carga con Fervor (feedback de Jean): mientras se mantiene J y hay Fervor

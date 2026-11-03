@@ -18,6 +18,10 @@ const Controles := preload("res://scripts/controles.gd")
 ## Lo que se queda una ensenanza en pantalla si no se hace antes.
 const ENSENANZA_S := 7.0
 const ORO := Color(0.89, 0.663, 0.251)
+## El tinte de las visiones: blanco frio, de luz de laboratorio. Mirar con el
+## ojo (#243) tine con el mismo, mas tenue.
+const BLANCO_VISION := Color(0.78, 0.88, 0.96)
+const TINTE_MIRADA := 0.16
 ## Cada cuantas letras suena la voz: en todas, ametralla.
 const VOZ_CADA := 2
 const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
@@ -64,6 +68,7 @@ var _caja_nombre: Label
 var _caja_flecha: Polygon2D
 ## El velo de las visiones: el blanco frio de Genesis sobre todo, menos la caja.
 var _vision: ColorRect
+var _mirada: ColorRect
 ## Las dos alturas de la caja: abajo, o arriba si el Cirujano esta abajo y lo
 ## taparia.
 var _caja_texto_panel: Panel
@@ -134,6 +139,7 @@ func _process(delta: float) -> void:
 	if _ensenanza.visible and _ensenanza_accion != "" and Input.is_action_just_pressed(_ensenanza_accion):
 		_ensenanza_accion = ""
 		_ocultar_ensenanza(0.6)
+	_pintar_mirada(delta)
 	if _dialogo == null:
 		return
 	var nuevas := _dialogo.paso(delta)
@@ -189,13 +195,28 @@ func vision(lineas: Array, retratos: Dictionary, al_terminar := Callable()) -> v
 func _preparar_vision() -> void:
 	_vision = ColorRect.new()
 	_vision.name = "Vision"
-	_vision.color = Color(Objetivos.COLOR_NINA, 0.32)
+	_vision.color = Color(BLANCO_VISION, 0.32)
 	_vision.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_vision.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_vision.visible = false
 	add_child(_vision)
 	# Debajo de la caja: lo que ella dice se lee limpio.
 	move_child(_vision, _caja.get_index())
+	# Mirar con el ojo (#243): el mismo blanco, mas tenue. Debajo de todo.
+	_mirada = ColorRect.new()
+	_mirada.name = "Mirada"
+	_mirada.color = Color(BLANCO_VISION, 0.0)
+	_mirada.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_mirada.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_mirada)
+	move_child(_mirada, 0)
+
+
+## El tinte de mirar sube y baja deprisa, no de golpe.
+func _pintar_mirada(delta: float) -> void:
+	var mira: bool = _cirujano != null and is_instance_valid(_cirujano) and _cirujano.mirando
+	var objetivo := TINTE_MIRADA if mira else 0.0
+	_mirada.color.a = move_toward(_mirada.color.a, objetivo, delta * TINTE_MIRADA / Sacramento.MIRADA["fundido_s"])
 
 
 func hablando() -> bool:
@@ -445,6 +466,8 @@ func controles() -> String:
 		lineas[0] += " (en el aire, otra vez)"
 	lineas.append("{golpear} golpear (mantén: cargado) · {arriba} {abajo} + {golpear}: arriba, abajo")
 	lineas.append("{parry} parry, luego {golpear}: contragolpe · {parry} en la membrana: clavarse")
+	if _cirujano and _cirujano.tiene_ojo:
+		lineas.append("mantén {mirar}: mirar con el ojo lo que ellos no ven")
 	var ultima := "{interactuar} rezar, hablar, leer o ejecutar · {pocion} poción"
 	if _cirujano and _cirujano.tiene_injertadora:
 		ultima += " · {injertadora} Injertadora"

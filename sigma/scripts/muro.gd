@@ -99,7 +99,9 @@ func rect() -> Rect2:
 
 
 func _physics_process(delta: float) -> void:
-	var movido := ciclo.paso(delta)
+	# Mirar con el ojo acerca el templo a unirse (#243): el muro se adelanta.
+	var prisa: float = Sacramento.MIRADA["muros"] if objetivo != null and objetivo.get("mirando") else 1.0
+	var movido := ciclo.paso(delta * prisa)
 	position += direccion * movido
 	_avisar()
 	if movido != 0.0 and objetivo != null:

@@ -237,7 +237,13 @@ func zona_golpe() -> Rect2:
 
 
 func _detecta(hacia: Vector2) -> bool:
-	return position.distance_to(hacia) <= D["rango_deteccion"]
+	return position.distance_to(hacia) <= D["rango_deteccion"] * _sentido()
+
+
+## La Mano que mira se siente (#243): mientras mira con el ojo, lo detecta de
+## mas lejos.
+func _sentido() -> float:
+	return Sacramento.MIRADA["vista"] if objetivo != null and objetivo.get("mirando") else 1.0
 
 
 func _patrullar(hacia: Vector2) -> void:

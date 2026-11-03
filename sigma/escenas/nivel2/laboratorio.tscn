@@ -29,6 +29,8 @@
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="16_xo6t8"]
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="17_68wj0"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="18_n4vat"]
+[ext_resource type="Script" path="res://scripts/puente.gd" id="90_puente"]
+[ext_resource type="Script" path="res://scripts/aparicion.gd" id="91_aparicion"]
 
 [sub_resource type="Gradient" id="Gradient_8yo5e"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -330,28 +332,40 @@ desfase_ms = 600.0
 
 [node name="Reliquias" type="Node2D" parent="." unique_id=1572339833]
 
-[node name="Pulmon" parent="Reliquias" unique_id=194171128 instance=ExtResource("11_3j574")]
+[node name="Ojo" parent="Reliquias" unique_id=194171128 instance=ExtResource("11_3j574")]
 position = Vector2(392, 352)
+id = "ojo"
 
 [node name="Visiones" type="Node2D" parent="." unique_id=542525261]
 
 [node name="Primera" type="Node2D" parent="Visiones" unique_id=1207649845]
 script = ExtResource("12_ibp4i")
 id = "laboratorio"
-tras = NodePath("../../Reliquias/Pulmon")
-lineas = PackedStringArray("¿Me ves?", "Nadie me ve. Nadie mira. Tú sí.", "Por eso te persiguen, Mano: te temen porque ya ves lo que ellos no.", "Esos pulmones eran de alguien muy grande. Ahora respiran contigo. Salta: no te van a dejar caer.", "Los muros no se mueven para hacerte daño. Se buscan. Como yo te he buscado a ti.", "Más adentro hay uno que guarda la puerta. Te dirá que es la ley.", "No le escuches. Pasa. Yo te enseño el camino.")
+tras = NodePath("../../Reliquias/Ojo")
+lineas = PackedStringArray("¿Me ves?", "Nadie me ve. Nadie mira. Tú sí.", "Por eso te persiguen, Mano: te temen porque ya ves lo que ellos no.", "Ese ojo era de alguien muy grande. El primero que llegó a abrirse. Ahora mira contigo.", "Mira, Mano. Mira bien. Hay caminos que solo se ven así.", "Los muros no se mueven para hacerte daño. Se buscan. Como yo te he buscado a ti.", "Más adentro hay uno que guarda la puerta. Te dirá que es la ley.", "No le escuches. Pasa. Yo te enseño el camino.")
 objetivo = "puerta"
 
 [node name="Carteles" type="Node2D" parent="." unique_id=1917316835]
 
-[node name="Impulso" type="Node2D" parent="Carteles" unique_id=1745997984]
+[node name="Mirar" type="Node2D" parent="Carteles" unique_id=1745997984]
 position = Vector2(584, 400)
 script = ExtResource("13_xtef2")
-id = "impulso"
-texto = "En el aire, {saltar} otra vez:
-el Impulso cárnico"
-aprende = "saltar"
+id = "mirar"
+texto = "Mantén {mirar}:
+mira con el ojo"
+aprende = "mirar"
 despues_de = "vision-laboratorio"
+
+[node name="Mirada" type="Node2D" parent="." unique_id=1243000001]
+
+[node name="Puente" type="StaticBody2D" parent="Mirada" unique_id=1243000002]
+position = Vector2(560, 336)
+script = ExtResource("90_puente")
+ancho = 4
+
+[node name="Nina" type="Sprite2D" parent="Mirada" unique_id=1243000003]
+position = Vector2(688, 272)
+script = ExtResource("91_aparicion")
 
 [node name="Pasos" type="Node2D" parent="." unique_id=1637070868]
 
