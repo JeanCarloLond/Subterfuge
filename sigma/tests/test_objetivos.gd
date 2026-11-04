@@ -14,14 +14,14 @@ func _progreso() -> Node:
 
 
 func test_el_texto_lleva_su_contador() -> void:
-	afirmar_igual(Objetivos.texto("muros"), "Averigua por qué se mueven los muros", "sin contador")
+	afirmar_igual(Objetivos.texto("muros"), "¿Por qué se mueven los muros?", "sin contador")
 	afirmar_igual(Objetivos.texto("registros", 1), "Reúne los registros de Génesis (1/3)", "con contador")
 	afirmar_igual(Objetivos.texto("registros", 7), "Reúne los registros de Génesis (3/3)", "no pasa del total")
 	afirmar_igual(Objetivos.texto("nada"), "", "uno que no existe")
 
 
 func test_los_de_la_nina_tienen_otro_color() -> void:
-	afirmar(Objetivos.de_la_nina("adentro"), "«Ve hacia dentro» es de ella")
+	afirmar(Objetivos.de_la_nina("adentro"), "«Baja, que ya falta poco» es de ella")
 	afirmar(not Objetivos.de_la_nina("muros"), "el primero es del Cirujano")
 	afirmar(Objetivos.color("adentro") != Objetivos.color("muros"), "y se pinta distinto")
 

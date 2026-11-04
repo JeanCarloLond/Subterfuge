@@ -113,7 +113,7 @@ texture = ExtResource("6_8v7qi")
 centered = false
 offset = Vector2(-11, -34)
 script = ExtResource("90_figura")
-lineas = PackedStringArray("Su nombre no consta, Mano.", "Sin turno no se registra.")
+lineas = PackedStringArray("¿Turno? ¿Casa? ¿Número?", "Entonces usted no consta.")
 
 [node name="Registradora1" type="Sprite2D" parent="Decorado" unique_id=1320520883]
 position = Vector2(760, 384)
@@ -121,7 +121,7 @@ texture = ExtResource("6_8v7qi")
 centered = false
 offset = Vector2(-11, -34)
 script = ExtResource("90_figura")
-lineas = PackedStringArray("Sorteo a puerta cerrada.", "Las dos cifras, siempre.")
+lineas = PackedStringArray("Cuarenta y uno, cuarenta y…", "Ya me ha hecho perder.")
 
 [node name="Charco2" type="Sprite2D" parent="Decorado" unique_id=379031538]
 position = Vector2(420, 384)
@@ -323,9 +323,9 @@ position = Vector2(296, 384)
 position = Vector2(584, 384)
 id = "libro-de-diezmos"
 titulo = "Libro de Diezmos, tomo DCCXL"
-texto = "«Casa 31: un brazo. Casa 32: un riñón. Casa 33: nada que dar; se toma a la hija.»
+texto = "«Casa 31: un brazo. Casa 32: un riñón. Casa 33: nada que dar; se toma a la hija. Casa 34: un brazo, el otro.»
 
-En la última hoja, con otra letra, más antigua que el libro: «Los registros de Génesis Vestal no se queman. Se reparten, para que nadie los lea juntos. Uno a la Escribanía, otro al Archivo, el último se queda con ellos, detrás.»"
+En la última hoja, con otra letra, más antigua que el libro: «Los registros de Génesis no se queman, que dan mal humo. Se reparten, para que nadie los lea juntos: uno a la Escribanía, otro al Archivo, y el último se queda con ellos, detrás.»"
 objetivo = "registros"
 
 [node name="Charlas" type="Node2D" parent="." unique_id=1963493808]
@@ -368,7 +368,7 @@ entrada = "oeste"
 con_e = true
 aviso = "E  entrar"
 sellado_por = "pasillo-sellado"
-negado_texto = "Sellado: el pasillo se cerró a tu espalda"
+negado_texto = "Aquí había un pasillo"
 
 [node name="Atajo" type="Node2D" parent="Pasos" unique_id=1402078683]
 position = Vector2(448, 336)
@@ -379,7 +379,7 @@ entrada = "atajo"
 con_e = true
 aviso = "E  abrir"
 pide_marca = "pasillo-sellado"
-negado_texto = "No cede: está atrancada desde el otro lado"
+negado_texto = "Atrancada. Desde el otro lado"
 
 [node name="Entradas" type="Node2D" parent="." unique_id=1168687463]
 

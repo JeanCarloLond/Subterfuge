@@ -43,9 +43,9 @@ const MARCA := preload("res://arte/provisional/bisturi.png")
 const COLOR_ATURDIDO := Color(0.91, 0.851, 0.627)
 ## Lo que dice: la ley, la de la Mano que mira (canon).
 const FRASES := {
-	"despierta": "La Mano que mira no pasa de aquí.",
-	"fase_dos": "El diezmo se cobra entero.",
-	"vencido": "Tú no sabes lo que abres.",
+	"despierta": "Ven, que te apunto.",
+	"fase_dos": "Esto te lo cobro entero.",
+	"vencido": "¿Sabes qué estás abriendo?",
 }
 ## Lo que dura la pose del golpe despues de dar.
 const RECUPERACION_MS := 380.0

@@ -340,9 +340,9 @@ ronda_derecha = 600.0
 position = Vector2(728, 176)
 id = "registro-genesis-1"
 titulo = "Génesis Vestal · Protocolo 7, revisión 3"
-texto = "«El sujeto no presenta órganos de visión. Responde al tacto, al calor y a lo que se le da de comer. Hipótesis: los Mil no perciben el mundo; lo digieren.
+texto = "«El sujeto no presenta órganos de visión. Reacciona al tacto, al calor y a lo que se le da de comer. Aurelia cree que no percibe nada: que va digiriendo lo que le llega, y eso es todo lo que sabe del mundo.
 
-Nota del turno de noche: anoche, la pared del pabellón 7 se movió hacia la del 8. Medido: un palmo.»"
+Turno de noche: la pared del pabellón 7 se ha movido hacia la del 8. Un palmo. Mandé repetir la medida y salió lo mismo. Nadie quiere firmar esto.»"
 cuenta = "registros"
 
 [node name="Charlas" type="Node2D" parent="." unique_id=1741304687]

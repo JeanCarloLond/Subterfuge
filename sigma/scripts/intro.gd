@@ -43,15 +43,15 @@ func _ready() -> void:
 	# frases largas parten en dos lineas.
 	_texto.offset_left = 24.0
 	_texto.offset_right = -24.0
-	_texto.offset_top = -104.0
-	_texto.offset_bottom = -24.0
+	_texto.offset_top = -92.0
+	_texto.offset_bottom = -8.0
 	_texto.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_texto.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_texto.add_theme_font_size_override("font_size", 32)
 	_texto.add_theme_color_override("font_color", TEXTO)
 	_texto.add_theme_color_override("font_outline_color", FONDO)
-	_texto.add_theme_constant_override("outline_size", 4)
+	_texto.add_theme_constant_override("outline_size", 10)
 	capa.add_child(_texto)
 	var salto := Label.new()
 	salto.text = "Espacio: saltar"
@@ -101,8 +101,8 @@ func _vidriera() -> void:
 	_mover(lejos, Vector2(0, -10), 7.0)
 	_mover(boveda, Vector2(-40, -10), 7.0)
 	await _abrir()
-	await _decir("Hace tres generaciones que no aparece un dios nuevo.")
-	await _decir("El Vientre los venera igual.")
+	await _decir("El último dios nuevo lo vio mi abuela. Decía que olía a pan.")
+	await _decir("Desde entonces, ninguno. El Vientre sigue rezando, por si acaso.")
 	await _cerrar()
 
 
@@ -129,7 +129,7 @@ func _sala_siete() -> void:
 	cirujano.add_child(borde)
 	cirujano.add_child(mascara)
 	await _abrir()
-	await _decir("En la Sala N.º 7, las Manos del Sacramento operan sin mirar.")
+	await _decir("Las Manos operamos a ciegas, con la máscara puesta. En la N.º 7 como en todas.")
 	await _cerrar()
 	camilla.queue_free()
 	cirujano.queue_free()
@@ -149,8 +149,7 @@ func _manos() -> void:
 	manos.queue_free()
 
 
-## Primer plano: el rostro, con la mascara ciega. Aqui duda, y se la quita:
-## «Hoy miro» (#246). Es la primera vez que se le ve la cara.
+## Primer plano: el rostro, con la mascara ciega. Aqui duda, y se la quita (#246). Es la primera vez que se le ve la cara.
 func _rostro() -> void:
 	_nuevo_plano()
 	var rostro := _ilustracion("res://arte/cinematica/rostro.png", Vector2(28, -14), 8.0)
@@ -164,10 +163,10 @@ func _rostro() -> void:
 	var quitar := mascara.create_tween().set_parallel()
 	quitar.tween_property(mascara, "position:y", 46.0, 1.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	quitar.tween_property(mascara, "modulate:a", 0.0, 1.1).set_delay(0.3)
-	await _decir("Hoy miró.")
+	await _decir("Yo nunca supe qué hay debajo de esas sábanas. Él, sí.")
 	# La ley de la Mano que mira (canon, «Por que lo atacan»): sin esto, que lo
 	# persigan los suyos no se entiende.
-	await _decir("La ley es antigua: la Mano que mira, se corta.")
+	await _decir("La ley te la enseñan antes que a coser: la Mano que mira, se corta.")
 	await _cerrar()
 	rostro.queue_free()
 
@@ -183,7 +182,7 @@ func _pabellon() -> void:
 	# Lo ultimo que quedaba se va.
 	var irse := carne.create_tween()
 	irse.tween_property(carne, "modulate:a", 0.0, 2.5)
-	await _decir("Desde entonces, la carne no llega a los pabellones.")
+	await _decir("Al poco, la carne dejó de llegar a los pabellones.")
 	await _cerrar()
 	bandeja.queue_free()
 
@@ -202,7 +201,7 @@ func _paredes() -> void:
 	_mover(izquierda, Vector2(70, 0), 2.2)
 	_mover(derecha, Vector2(-70, 0), 2.2)
 	_temblar(2.2)
-	await _decir("Y las paredes, quietas desde hace milenios, se mueven.")
+	await _decir("Y luego las paredes. Mil años quietas, y una noche la puerta ya no está donde estaba.")
 	await _cerrar()
 
 
@@ -219,7 +218,7 @@ func _titulo() -> void:
 	titulo.add_theme_font_size_override("font_size", 24)
 	_plano.add_child(titulo)
 	await _abrir()
-	await _decir("El templo se está compactando.")
+	await _decir("«El templo se compacta», dicen. Como quien dice que llueve.")
 	await _cerrar()
 
 

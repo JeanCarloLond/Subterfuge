@@ -170,7 +170,7 @@ texture = ExtResource("8_4ghe6")
 centered = false
 offset = Vector2(-11, -34)
 script = ExtResource("90_figura")
-lineas = PackedStringArray("Los hongos no crecen ya.", "Abajo late más fuerte.")
+lineas = PackedStringArray("Ya no me crecen los hongos.", "Pon la mano aquí. ¿Lo notas?")
 
 [node name="FlorHueso4" type="Sprite2D" parent="Decorado" unique_id=191840920]
 position = Vector2(220, 656)
@@ -508,8 +508,8 @@ desfase = 1.0
 position = Vector2(152, 96)
 script = ExtResource("11_4yko5")
 id = "membrana"
-texto = "La piedra roja es membrana:
-en ella se clava el bisturí"
+texto = "En la piedra roja
+se clava el bisturí"
 
 [node name="Clavarse" type="Node2D" parent="Carteles" unique_id=2138710501]
 position = Vector2(408, 880)

@@ -30,9 +30,9 @@ const COLOR_POLVO := Color(0.5, 0.45, 0.42, 0.9)
 const RECOGER_S := 0.25
 ## Lo que dicen al caer: que soltaban algo. Se releen tras la revelacion.
 const ULTIMAS := {
-	"devoto": ["Se suelta…", "Aguantaba la bóveda…", "Ya no la sostengo."],
-	"vestal": ["El muro… se va.", "Ya baja todo.", "Lo dejo caer, Mano."],
-	"prior": ["La nave… se suelta."],
+	"devoto": ["¿Quién la agarra ahora?", "Se me va… la bóveda…", "Yo la tenía, yo la tenía."],
+	"vestal": ["Nadie me relevó…", "Avisa al turno…", "Ya baja. Ya baja todo."],
+	"prior": ["¿Quién… apunta ahora?"],
 }
 
 ## El enemigo que sostiene, que tipo es y a donde esta atado (en el mundo).

@@ -412,9 +412,11 @@ desfase_ms = 900.0
 position = Vector2(648, 240)
 id = "registro-genesis-3"
 titulo = "Génesis Vestal · Orden de cierre"
-texto = "«Se sella el laboratorio 7. El artefacto queda dentro: no se destruye, porque nadie sabe cómo.
+texto = "«Se sella el laboratorio 7 con el artefacto dentro. Se intentó destruirlo dos veces; la segunda nos costó un turno entero.
 
-A partir de hoy, los protocolos se leerán en voz alta, como oraciones, y ninguna Mano mirará lo que corta. Que lo llamen fe. Que no pregunten.»"
+Desde hoy los protocolos se leerán en voz alta y de pie, y las Manos operarán con la cara tapada. Dentro de cuatro generaciones nadie recordará que esto era un manual. Mejor así.
+
+Apagad la luz al salir.»"
 cuenta = "registros"
 
 [node name="Charlas" type="Node2D" parent="." unique_id=1210437819]
@@ -429,8 +431,8 @@ cuenta = "registros"
 position = Vector2(248, 304)
 script = ExtResource("13_hbivl")
 id = "rayo"
-texto = "Los rayos de Génesis avisan con un hilo:
-cruza cuando se apagan"
+texto = "Primero un hilo, después el rayo:
+cruza cuando se apague"
 
 [node name="Pasos" type="Node2D" parent="." unique_id=1773059370]
 
@@ -452,7 +454,7 @@ entrada = "oeste"
 con_e = true
 aviso = "E  entrar"
 pide_objetivo = "registros"
-negado_texto = "La puerta de Génesis pide los tres registros (%d/%d)"
+negado_texto = "Sin los tres registros no abre (%d/%d)"
 
 [node name="Entradas" type="Node2D" parent="." unique_id=828291764]
 

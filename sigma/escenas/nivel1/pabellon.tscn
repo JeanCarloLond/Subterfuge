@@ -332,9 +332,9 @@ position = Vector2(88, 304)
 position = Vector2(392, 240)
 id = "parte-pabellon-7"
 titulo = "Parte del Pabellón N.º 7"
-texto = "«Tercer día sin carne. Las bandejas vuelven vacías del ducto. Los Elegidos preguntan, y las Manos no contestan: no es nuestro oficio contestar.
+texto = "«Tercer día sin carne. Las bandejas vuelven del ducto tal como bajaron. Los Elegidos preguntan; les he dicho que mañana. Mañana les diré lo mismo.
 
-Anoche la pared del fondo se movió un palmo. Nadie la ha tocado en mil años.»"
+Anoche la pared del fondo se movió un palmo. Lo medí dos veces, porque no me lo creía. Hay una marca de mil años en el suelo, y la pared ya no está encima.»"
 
 [node name="Charlas" type="Node2D" parent="." unique_id=2070256050]
 

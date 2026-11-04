@@ -863,11 +863,13 @@ color_ramp = SubResource("Gradient_qvp73")
 position = Vector2(144, 752)
 id = "registro-pabellon-7"
 titulo = "Registro del Pabellón N.º 7"
-texto = "«Las Manos operan sin mirar. No es crueldad: es cuidado.
-Lo que mira, abre. Lo que se abre no se vuelve a cerrar.
-Si una Mano mira, córtese la Mano.»
+texto = "«Art. 4. La Mano entra en Sala con la máscara puesta y sale con ella. No se la levanta ni para toser.
 
-Al margen, con otra letra: «¿Abre a qué?»"
+Art. 5. Lo mirado no cierra, por más hilo que le des.
+
+Art. 6. Si una Mano mira, avise ella misma. Se le cortará la del bisturí; la otra se le deja para rezar.»
+
+Al margen, con otra letra: «¿Y qué pasa si mira? Nadie me lo ha sabido decir.»"
 
 [node name="Charlas" type="Node2D" parent="." unique_id=1216216216]
 

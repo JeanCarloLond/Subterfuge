@@ -36,3 +36,15 @@ func test_las_figuras_que_hablan_caben_y_hablan_como_el_mundo() -> void:
 						afirmar(not (" %s " % frase.to_lower()).contains(" %s " % palabra), "«%s» usa «%s»" % [frase, palabra])
 			escena.free()
 	afirmar(vistas >= 8, "las figuras que hablan siguen ahí (%d)" % vistas)
+
+
+## Lo que manda docs/voz.md y se puede mirar sin leer (#251): ni «no es X, es Y»
+## ni «no X: Y», en lo que se dice en las salas.
+func test_nadie_habla_con_antitesis() -> void:
+	var antitesis := RegEx.create_from_string("(?i)\\bno (es|son|falta) [^.:;,«»\"]{1,40}[:;,] *(es |son |falta )")
+	for carpeta in ["res://escenas", "res://escenas/nivel1", "res://escenas/nivel2"]:
+		for archivo in DirAccess.get_files_at(carpeta):
+			if not archivo.ends_with(".tscn"):
+				continue
+			var hallada := antitesis.search(FileAccess.get_file_as_string(carpeta.path_join(archivo)))
+			afirmar(hallada == null, "%s: «%s»" % [archivo, hallada.get_string() if hallada else ""])

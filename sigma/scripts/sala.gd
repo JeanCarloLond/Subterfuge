@@ -179,7 +179,7 @@ func _avisar_cierre() -> void:
 	if _cierre_avisado:
 		return
 	_cierre_avisado = true
-	_interfaz.avisar("El camino de vuelta se ha cerrado")
+	_interfaz.avisar("Por ahí ya no se vuelve")
 
 
 ## Cambia de sala. Va atado a esta sala, no al arbol: si antes se sale a la
@@ -254,14 +254,14 @@ func _saldar() -> void:
 		progreso.saldar()
 	_cirujano.combate.fijar_tope(Sacramento.FERVOR["maximo"])
 	_interfaz.marcar_tope(Sacramento.FERVOR["maximo"])
-	_interfaz.avisar("Recuperas tu carne")
+	_interfaz.avisar("Tu carne, otra vez tuya")
 
 
 func _physics_process(_delta: float) -> void:
 	# Muerto y cayendo, no: se avisaba en cada fotograma, encima de «Diezmado».
 	if _cirujano.position.y > limite_caida and not _cirujano.muerto:
 		_cirujano.caer_al_vacio()
-		_interfaz.avisar("Caída al vacío")
+		_interfaz.avisar("Ahí abajo no hay nada")
 
 
 ## Esc abre la pausa (#230): salir a la portada es una de sus opciones, y
@@ -276,4 +276,4 @@ func _al_rezar(altar: Node2D) -> void:
 	for otro in $Altares.get_children():
 		if otro != altar:
 			otro.encendido = false
-	_interfaz.avisar("La fuente te llena el frasco. Aquí volverás")
+	_interfaz.avisar("Frasco lleno. Aquí despertarás")

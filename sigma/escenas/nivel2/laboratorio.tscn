@@ -342,7 +342,7 @@ id = "ojo"
 script = ExtResource("12_ibp4i")
 id = "laboratorio"
 tras = NodePath("../../Reliquias/Ojo")
-lineas = PackedStringArray("¿Me ves?", "Nadie me ve. Nadie mira. Tú sí.", "Por eso te persiguen, Mano: te temen porque ya ves lo que ellos no.", "Ese ojo era de alguien muy grande. El primero que llegó a abrirse. Ahora mira contigo.", "Mira, Mano. Mira bien. Hay caminos que solo se ven así.", "Los muros no se mueven para hacerte daño. Se buscan. Como yo te he buscado a ti.", "Más adentro hay uno que guarda la puerta. Te dirá que es la ley.", "No le escuches. Pasa. Yo te enseño el camino.")
+lineas = PackedStringArray("¿Me ves?", "A ver. ¿Cuántos dedos tengo?", "Nadie acierta. Aquí nadie mira.", "Te llamé mucho. No contestabas.", "Arriba corren detrás de ti, ¿no? Les da miedo que veas.", "Ese ojo era de alguien más grande. Te va a quedar flojo un tiempo.", "Mira ahí delante. ¿A que antes no había suelo?", "Las paredes andan buscándose. A ti no te hacen nada, si no te pones en medio.", "Más adentro hay un señor con un palo, que cobra. Te va a hablar de la ley.", "Tú no le contestes. Yo te digo por dónde.")
 objetivo = "puerta"
 
 [node name="Carteles" type="Node2D" parent="." unique_id=1917316835]

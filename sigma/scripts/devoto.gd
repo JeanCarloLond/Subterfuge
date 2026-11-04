@@ -20,10 +20,10 @@ const Bocadillo := preload("res://scripts/bocadillo.gd")
 ## adentro, cuando haya mas niveles, hablaran del Ultimo Sacramento.
 const FRASES := [
 	"¡La Mano que mira!",
-	"Cierra los ojos, Mano.",
-	"Sin turno no se baja.",
-	"¡Ha mirado!",
-	"La Mano que mira, se corta.",
+	"¡Tápate la cara!",
+	"¿Quién te dio turno?",
+	"¡No me mires, no me mires!",
+	"¡Córtate tú, por piedad!",
 ]
 ## Entre frase y frase: que no repita al perderlo y volver a verlo.
 const PAUSA_FRASES_MS := 9000.0

@@ -65,7 +65,7 @@ colors = PackedColorArray(0.79, 0.71, 0.54, 0, 0.79, 0.71, 0.54, 0.35, 0.79, 0.7
 [node name="NaveLibro" type="Node2D" unique_id=469606538]
 script = ExtResource("1_swiff")
 fin = "Más abajo, las Salas de Sacramento.
-Fin de lo hecho hasta ahora.
+Hasta aquí está hecho.
 
 Esc para volver a la portada"
 musica = "catedral-bosque"
@@ -118,7 +118,7 @@ texture = ExtResource("6_iq718")
 centered = false
 offset = Vector2(-11, -34)
 script = ExtResource("90_figura")
-lineas = PackedStringArray("El Prior cobra entero.", "Nadie pasa del Prior.")
+lineas = PackedStringArray("Yo que usted, no entraba.", "El último aún está pagando.")
 
 [node name="Exvoto1" type="Sprite2D" parent="Decorado" unique_id=1220722111]
 position = Vector2(480, 32)
@@ -350,12 +350,12 @@ script = ExtResource("12_iq718")
 id = "prior"
 tras = NodePath("../../Guardianes/Prior")
 senal = "fase_dos"
-lineas = PackedStringArray("Cuando alce el báculo con las dos manos, salta. El suelo no es tuyo.")
+lineas = PackedStringArray("Cuando levante el palo con las dos manos, salta. A él el suelo le hace caso.")
 
 [node name="Antesala" type="Node2D" parent="Visiones" unique_id=1880000001]
 script = ExtResource("12_iq718")
 id = "antesala"
-lineas = PackedStringArray("Detrás de esa puerta hay uno que sostiene mucho.", "Cada uno que cae me acerca a ti.", "No tengas miedo de lo que se suelte. Lo que se suelta, se junta.")
+lineas = PackedStringArray("Es ahí. Se le oye contar.", "Lleva tanto tiempo agarrando que se le han quedado las manos así.", "Yo cuento a los que caen. Con cada uno te oigo mejor.")
 zona = Rect2(120, 230, 150, 90)
 
 [node name="TrasPrior" type="Node2D" parent="Visiones" unique_id=1880000002]
@@ -363,7 +363,7 @@ script = ExtResource("12_iq718")
 id = "tras-prior"
 tras = NodePath("../../Guardianes/Prior")
 senal = "cae"
-lineas = PackedStringArray("¿Lo has sentido? Algo se ha soltado.", "Respiro mejor. Casi puedo verte entero.", "Ve hacia dentro, Mano. Ya falta poco.")
+lineas = PackedStringArray("¿Has oído? Como cuando se rompe un hilo.", "Ya respiro mejor. Y te veo hasta el hombro. Antes solo la mano.", "Baja, que ya falta poco.")
 
 [node name="Carteles" type="Node2D" parent="." unique_id=1441430376]
 
@@ -394,7 +394,7 @@ script = ExtResource("13_5giu1")
 zona = Vector2(32, 48)
 con_e = true
 pide_marca = "prior-vencido"
-negado_texto = "No se abre mientras el Prior guarde la nave"
+negado_texto = "Mientras el Prior cobre, esto no se abre"
 
 [node name="Entradas" type="Node2D" parent="." unique_id=1191489349]
 

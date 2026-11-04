@@ -20,14 +20,16 @@ const CIRUJANO := "El Cirujano"
 ## Lo que se dicen antes de pelear (#242): no se pelea porque si. Solo la
 ## primera vez; al volver tras morir, el Prior ya no tiene nada que hablar.
 const PALABRAS := [
-	[NOMBRE, "Una Mano fuera de su Sala. Sin turno. Con la máscara abierta."],
-	[CIRUJANO, "Los muros se mueven, Prior. La carne no llega a los pabellones. Quiero saber por qué."],
-	[NOMBRE, "Por qué. Las Manos no preguntan por qué: cortan y callan. Así se ha sostenido siempre el templo."],
-	[CIRUJANO, "¿Sostenido?"],
-	[NOMBRE, "Cada diezmo que cobro es un nudo. Mientras yo cobre, esta nave aguanta."],
-	[NOMBRE, "Y tú bajas soltando nudos. En los Pasillos ya te dan un nombre."],
-	[CIRUJANO, "No sé de qué nombre me hablas."],
-	[NOMBRE, "Lo sabrás. Pero no de aquí en adelante, y no con los ojos abiertos."],
+	[NOMBRE, "Sala N.º 7. Sin turno, sin bandeja y con la cara al aire. Eso lo apunto aparte."],
+	[CIRUJANO, "La carne no llega a los pabellones."],
+	[NOMBRE, "Apuntado."],
+	[CIRUJANO, "Y las paredes se mueven."],
+	[NOMBRE, "También."],
+	[CIRUJANO, "¿Y tú aquí, cobrando?"],
+	[NOMBRE, "Cobrando, sí. Cada casa que paga aprieta un poco esto de aquí arriba. Llevo toda la vida cobrando y la nave sigue en pie. Saca tú la cuenta."],
+	[NOMBRE, "Luego llegas tú, y por donde pasas se me aflojan cosas. En los Pasillos ya te han puesto nombre."],
+	[CIRUJANO, "¿Qué nombre?"],
+	[NOMBRE, "Acércate, hijo. Esto no tiene por qué doler más de lo que pone en el libro."],
 ]
 const RETRATOS := {
 	NOMBRE: preload("res://arte/prior/retrato.png"),
@@ -38,7 +40,7 @@ const MUSICA_PELEA := "guardian-colossus"
 const FUNDIDO_PELEA_S := 1.5
 const FUNDIDO_FIN_S := 5.0
 ## Lo que dice al caer.
-const CAIDO := "El Prior del Diezmo ha caído"
+const CAIDO := "Diezmo saldado"
 ## Lo que tarda la puerta en caer.
 const PUERTA_S := 0.35
 ## Pasado esto (x del mundo), la pelea empieza.
@@ -115,7 +117,7 @@ func _cerrar_puerta() -> void:
 	var cae := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	cae.tween_property(_puerta, "position:y", _puerta.position.y + _puerta.recorrido, PUERTA_S).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	cae.tween_callback($Temblor.temblar)
-	_interfaz.avisar("La puerta se ha cerrado")
+	_interfaz.avisar("Ya no se sale por ahí")
 
 
 ## La fase dos: los muros de los lados avanzan, y las ondas llegan hasta ellos.

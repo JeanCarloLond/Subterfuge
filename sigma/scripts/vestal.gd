@@ -20,12 +20,12 @@ const Bocadillo := preload("res://scripts/bocadillo.gd")
 ## Lo que dice al verlo: administra el diezmo, y la ley de la Mano que mira
 ## tambien es suya (canon).
 const FRASES := [
-	"Mirar no es tu oficio.",
-	"Vuelve a tu sala, Mano.",
-	"El diezmo no perdona.",
-	"Lo que mira, se sella.",
+	"Baja la vista, te digo.",
+	"A tu Sala, hijo.",
+	"Tu casa pagó por esas manos.",
+	"Aquí se reza callado.",
 	# Mas adentro, menos ley y mas el apodo (canon, «Por que lo atacan»).
-	"El Último Sacramento baja.",
+	"Avisad abajo: ya viene.",
 	"Es él. El Último Sacramento.",
 ]
 const PAUSA_FRASES_MS := 9000.0

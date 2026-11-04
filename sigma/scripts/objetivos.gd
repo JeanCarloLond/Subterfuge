@@ -13,7 +13,7 @@ extends RefCounted
 ## de_la_nina}.
 const CATALOGO := {
 	"muros": {
-		"texto": "Averigua por qué se mueven los muros",
+		"texto": "¿Por qué se mueven los muros?",
 	},
 	"genesis": {
 		"texto": "Busca el laboratorio de Génesis Vestal",
@@ -27,13 +27,13 @@ const CATALOGO := {
 		"texto": "Entra en el laboratorio",
 	},
 	"adentro": {
-		"texto": "Ve hacia dentro",
+		"texto": "Baja, que ya falta poco",
 		"de_la_nina": true,
 	},
 	## Tras la primera vision: lo que ella pide. El Prior guarda la Nave del
-	## Libro; ella lo llama solo «el que guarda la puerta».
+	## Libro; ella lo llama «el señor del palo».
 	"puerta": {
-		"texto": "Pasa al que guarda la puerta",
+		"texto": "Pasa al señor del palo",
 		"de_la_nina": true,
 	},
 }

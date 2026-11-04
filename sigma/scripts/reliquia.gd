@@ -17,22 +17,22 @@ signal recogida(nombre: String, efecto: String)
 const RELIQUIAS := {
 	"ojo": {
 		"nombre": "El Primer Ojo",
-		"efecto": "Mirar: lo que ellos no ven",
+		"efecto": "Mantenlo abierto y verás por dónde",
 		"textura": "res://arte/reliquias/ojo.png",
 	},
 	"pulmon": {
 		"nombre": "El Pulmón Vacío",
-		"efecto": "Impulso cárnico: un segundo salto en el aire",
+		"efecto": "Un segundo salto, ya en el aire",
 		"textura": "res://arte/reliquias/pulmon.png",
 	},
 	"injertadora": {
 		"nombre": "La Injertadora",
-		"efecto": "Dispara injertos de metal",
+		"efecto": "Injertos de metal, a distancia",
 		"textura": "res://arte/provisional/injertadora.png",
 	},
 	"tendon": {
 		"nombre": "El Tendón del Mil",
-		"efecto": "Un impulso de golpe, en el suelo o en el aire",
+		"efecto": "Te lanza de golpe, en el suelo o en el aire",
 		"textura": "res://arte/reliquias/tendon.png",
 	},
 }

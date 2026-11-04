@@ -295,7 +295,7 @@ script = ExtResource("10_o2eqy")
 position = Vector2(536, 560)
 id = "registro-genesis-2"
 titulo = "Génesis Vestal · Informe de campo"
-texto = "«Los corazones laten a la vez cuando se acercan. Medido en cuatro salas: cuanto más juntos, más rápido. Si llegan a tocarse, el sistema estará completo salvo en una cosa.»
+texto = "«Cuatro salas, el mismo resultado: los corazones se ponen de acuerdo. Cuanto más cerca, más deprisa. Repetí la medida con el reloj de Aurelia, por si era el mío. Si llegan a tocarse, el sistema estará completo salvo en una cosa.»
 
 Al margen: «¿Cuál?». Debajo, tachado tres veces, algo que ya no se lee."
 cuenta = "registros"

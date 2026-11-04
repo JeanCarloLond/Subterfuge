@@ -89,7 +89,7 @@ texture = ExtResource("6_mxfn8")
 centered = false
 offset = Vector2(-11, -34)
 script = ExtResource("90_figura")
-lineas = PackedStringArray("Hoy no salió ningún nombre.", "Aquí no se sortea a Manos.")
+lineas = PackedStringArray("Hoy no ha salido nadie.", "Mañana, dicen. Ayer también.")
 
 [node name="Columna1" type="Sprite2D" parent="Decorado" unique_id=925634188]
 modulate = Color(0.91, 0.89, 0.88, 0.85)

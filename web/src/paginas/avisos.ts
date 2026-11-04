@@ -97,27 +97,26 @@ export function renderAvisos(contenedor: HTMLElement): void {
             <div class="eyebrow">El reparto</div>
             <h3>La carne no llega</h3>
             <p>
-              El diezmo se retrasa en los pabellones bajos. No falta carne: falta camino. Los
-              Pasillos por los que bajaba están cerrados mientras el templo se asienta, y la
-              Oficina no reparte: registra.
+              El diezmo se retrasa en los pabellones bajos. Carne hay; lo que faltan son Pasillos por
+              donde bajarla, cerrados mientras el templo se asienta. La Oficina toma nota de cada
+              queja y la archiva por orden de llegada.
             </p>
           </article>
           <article class="documento pieza-sigma">
             <div class="eyebrow">La ley</div>
             <h3>La Mano que mira</h3>
             <p>
-              Las Manos del Sacramento operan con la máscara cerrada y no ven lo que cortan. La ley
-              es antigua: la Mano que mira se corta. Una Mano ha abandonado su Sala sin turno y
-              desciende por los Pasillos.
+              Las Manos del Sacramento operan con la máscara cerrada. La ley se aprende antes que el
+              oficio: la Mano que mira se corta. Anoche una Mano dejó su Sala sin turno; se la ha
+              visto en los Pasillos, bajando, con la cara descubierta.
             </p>
           </article>
           <article class="documento pieza-sigma">
             <div class="eyebrow">El origen</div>
             <h3>Génesis Vestal</h3>
             <p>
-              Antes del Códice hubo una corporación: Génesis Vestal. Sus manuales técnicos se
-              volvieron escritura sagrada y sus laboratorios quedaron sellados. Lo que todavía
-              mira dentro no pertenece a la Diócesis ni a los fieles.
+              Antes del Códice estaba Génesis Vestal, una corporación con laboratorios y manuales. Los
+              manuales los rezamos hoy. De los laboratorios, sellados, se prefiere no hablar.
             </p>
           </article>
         </div>

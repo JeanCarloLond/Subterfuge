@@ -421,8 +421,8 @@ recorrido = Vector2(128, 0)
 position = Vector2(104, 304)
 script = ExtResource("12_8s4hr")
 id = "latido"
-texto = "Escucha el Latido: el techo
-avisa dos veces antes de bajar"
+texto = "El techo late dos veces
+antes de bajar"
 
 [node name="Pasos" type="Node2D" parent="." unique_id=442805714]
 
