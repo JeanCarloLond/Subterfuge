@@ -15,6 +15,14 @@ script = ExtResource("1_principal")
 position = Vector2(320, 44)
 script = ExtResource("10_logo")
 
+[node name="Lema" type="Label" parent="."]
+offset_top = 170.0
+offset_right = 640.0
+offset_bottom = 192.0
+theme_override_colors/font_color = Color(0.72, 0.53, 0.26, 1)
+text = "La Mano que mira, se corta."
+horizontal_alignment = 1
+
 [node name="Menu" type="Label" parent="."]
 offset_top = 198.0
 offset_right = 640.0
