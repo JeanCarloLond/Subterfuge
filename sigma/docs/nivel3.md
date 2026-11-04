@@ -1,16 +1,6 @@
-# Nivel III · Las Salas de Sacramento (propuesta)
+# Nivel III · Las Salas de Sacramento
 
-> #250. Propuesta para que Jean decida antes de construir. Donde hay que elegir, van las
-> opciones y una recomendación. Lo decidido pasa a `mapa.md` y a `canon.md`.
-
-## Lo que hay que decidir
-
-1. **El guardián** (abajo, «El guardián»): A, B o C.
-2. **Dónde está el Pulmón Vacío**: a mitad del nivel (recomendado) o tras el guardián.
-3. **Quién dejó el ojo** en el laboratorio.
-4. **Qué pide el segundo final.**
-5. **El nombre del Cegado**: Casiano o Ulpiano.
-6. **La niña del altar** del original: si tiene sitio en Sigma, y cuál.
+> #250. Decidido por Jean el 4 de noviembre de 2026. Falta construirlo.
 
 ## Qué es
 
@@ -41,68 +31,42 @@ con el ojo de los Mil puesto, y lo que era rutina ya no lo es. Es el nivel del *
 | 8   | **La Sala N.º 7**       | El guardián.                                                                                |
 | 9   | El ducto                | Atajo: la Sala N.º 7 se funde con el Pabellón del Nivel I (abajo, «La compactación»).       |
 
-**Por qué el Pulmón a mitad del nivel (recomendado):** la Injertadora ya fue el premio de
+**Por qué el Pulmón a mitad del nivel:** la Injertadora ya fue el premio de
 un guardián; variar. Así la segunda mitad y el guardián se juegan con el doble salto, y al
 volver hacia arriba se abren los sitios que lo esperaban: el camino alto de la derecha del
 Atrio (como ya dice el mapa) y unas repisas altas del Registro y del Archivo con hojas del
 Códice.
 
-## El guardián
+## El guardián: el Decano de las Manos
 
-Las tres son eslabones: sostienen la N.º 7, y al caer se funde con el Pabellón.
+Es un eslabón: sostiene la N.º 7, y al caer se funde con el Pabellón.
 
-- **A · El Decano de las Manos.** El que formó al Cirujano: otra Mano, con su máscara
-  ciega. Pelea de espejo: parry contra parry, el contragolpe como arma principal. Es
-  ciego y oye: **si el Cirujano mira, lo encuentra** (el coste de mirar llevado al
-  extremo); sin mirar, no ve los golpes que avisan con la luz. Habla antes de pelear, como
-  el Prior: es el que más sabe de la ley.
-- **B · El Remedo de la Sala N.º 7.** Todo el instrumental de su sala hecho un cuerpo,
-  alrededor de la camilla de la intro. Pelea de patrones y peligros (bandejas, sierras,
-  cortinas de carne), sin espejo. Más espectáculo, menos historia.
-- **C · La Vestal Mayor.** Sostiene los muros de las siete salas: la pelea compacta la
-  sala por fases, como el Prior pero más. Repite su idea.
-
-**Recomendación: A.** Pone en juego mirar (la mecánica nueva) y la ley (la historia), y
-el Decano es quien puede decir lo más cerca de la verdad sin decirla: por qué existe la
-ley de la Mano que mira.
+El que formó al Cirujano: otra Mano, con su máscara ciega. Pelea de espejo: parry contra
+parry, el contragolpe como arma principal. Es ciego y oye: **si el Cirujano mira, lo
+encuentra** (el coste de mirar llevado al extremo); sin mirar, no ve los golpes que avisan
+con la luz. Habla antes de pelear, como el Prior: es quien puede decir lo más cerca de la
+verdad sin decirla, por qué existe la ley de la Mano que mira.
 
 ## La compactación
 
 Al caer el guardián, la Sala N.º 7 **se funde con el Pabellón** del Nivel I, donde empezó.
 El lugar donde miró queda pegado a su casa. La niña lo dice en la visión de después.
 
-## Lo abierto del canon
+## Lo que cierra del canon
 
-**Quién dejó el ojo en el laboratorio.**
+**Quién dejó el ojo.** Nadie: ella lo llamó. Génesis lo selló y la niña guió al Cirujano hasta
+él, desde antes de que él la viera; por eso miró aquel día en la N.º 7.
 
-- _a)_ **Nadie lo dejó: ella lo llamó.** Génesis lo selló y la niña guió al Cirujano hasta
-  él, desde antes de que él la viera: por eso miró aquel día en la N.º 7. Cierra el
-  círculo sin otro personaje. **Recomendado.**
-- _b)_ El Cegado, que lo encontró, lo selló otra vez y escribió «No vengas.». Más culpa
-  para el Cegado.
-- _c)_ El padre del Cirujano («el que se detuvo», del original). Une con el teaser, pero
-  pide traer su historia a Sigma.
+**Qué pide el segundo final.** Haberse negado a mirar donde ella pedía. Unos pocos momentos
+opcionales en los que ella pide mirar y el jugador puede no hacerlo: la desconfianza hecha
+mecánica, con lo que ya existe.
 
-**Qué pide el segundo final.**
+**La niña del altar del original** (la voluntaria del Pabellón 9). Era quien estaba bajo la
+sábana en la Sala N.º 7 el día que él miró: miró porque era una niña. La niña de las visiones
+tiene la cara de lo último que él miró antes de ponerse el ojo. Hay que cuidar no adelantar
+el giro: aquí se puede dejar ver la sábana, y poco más.
 
-- _a)_ **Haber dejado de mirar donde ella pedía mirar.** Unos pocos momentos opcionales en
-  los que ella pide mirar y el jugador puede negarse. Es la desconfianza hecha mecánica, y
-  sale de lo que ya existe. **Recomendado.**
-- _b)_ Haberlo sabido todo: los registros de Génesis completos y el Cegado escuchado
-  entero tras el Prior.
-- _c)_ Las dos.
-
-**El nombre del Cegado.** **Ulpiano** (recomendado): fue un jurista; el Cegado se arrancó
-los ojos para volver a la ley. O Casiano.
-
-**La niña del altar del original** (la voluntaria del Pabellón 9).
-
-- _a)_ **Era quien estaba bajo la sábana en la Sala N.º 7** el día que él miró: miró
-  porque era una niña. La niña de las visiones tiene la cara de lo último que él miró
-  antes de ponerse el ojo. La relectura es fuerte; hay que cuidar no adelantar el giro.
-- _b)_ No tiene sitio en Sigma, y se reescriben los textos que hablan de ella.
-
-## Lo que haría después de decidir
+## El orden de construcción
 
 1. Las piezas nuevas en una sala de prueba: el Remedo, el Asistente y el relicario del
    Pulmón.

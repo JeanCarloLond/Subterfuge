@@ -107,13 +107,13 @@ El juego dice qué se busca: aparece al cambiar (entra, se queda un momento y se
 un sonido) y está siempre en la ayuda (H). No va fijo en pantalla. Los contadores, como
 «Reúne los registros de Génesis (1/3)», avanzan solos.
 
-1. «Averigua por qué se mueven los muros»
+1. «¿Por qué se mueven los muros?»
 2. «Busca el laboratorio de Génesis Vestal» (tras hablar con el Cegado)
 3. «Reúne los registros de Génesis (0/3)»
 4. «Entra en el laboratorio»
 
-**El giro:** después del laboratorio, **los objetivos los pone la niña** («Ve hacia
-dentro», «Él no debe caer») y cambian de color. El jugador sigue el texto de la pantalla
+**El giro:** después del laboratorio, **los objetivos los pone la niña** («Pasa al
+señor del palo», «Baja, que ya falta poco») y cambian de color. El jugador sigue el texto de la pantalla
 como si fuera neutral; al final entiende que llevaba medio juego obedeciéndola.
 
 ### Los diálogos, a lo Stardew Valley
@@ -228,7 +228,7 @@ II, III y IV, ver arriba). La regla para cada una:
 2. **El Nivel I de bajada**, con el Atrio de hoy como su sala 3, y el Cegado.
 3. **Los Pasillos (#190)**, Génesis y el Prior del Diezmo.
 4. Los niveles III a VI, cuando el arranque se sienta bien. El III, propuesto en
-   [nivel3.md](nivel3.md), a falta de decidir (#250).
+   [nivel3.md](nivel3.md), ya decidido (#250).
 
 [meowdb]: https://meowdb.com/db/blasphemous/zones
 [plat]: https://platprices.com/ie/game/6701-blasphemous

@@ -56,23 +56,23 @@ entiende al final:
 
 1. **Lo que dice la Diócesis.** Las Manos del Sacramento **operan sin mirar**: llevan una
    máscara ciega, sin ojos, y nunca ven lo que cortan. **La ley de la Mano que mira** dice
-   que la Mano que mira se corta. El Cirujano miró («Hoy miró», en la intro) y además baja
+   que la Mano que mira se corta. El Cirujano miró (se quita la máscara en la intro) y además baja
    sin turno. Los Devotos no son monstruos: cumplen la ley contra un hereje. Por eso le
-   gritan «¡La Mano que mira!» o «Cierra los ojos, Mano». El Cirujano **ya no lleva la
+   gritan «¡La Mano que mira!» o «¡No me mires!». El Cirujano **ya no lleva la
    máscara**: la Mano que mira se la quitó. Desde el laboratorio, su ojo derecho es rojo y
    sangra: es su marca y su culpa.
-2. **Lo que dice la niña.** En las visiones le da la razón: «Te temen porque ya ves lo que
-   ellos no». El jugador se siente justo, y ella lo empuja hacia dentro. Es mentira a medias.
+2. **Lo que dice la niña.** En las visiones le da la razón: «Les da miedo que veas». El jugador se siente justo, y ella lo empuja hacia dentro. Es mentira a medias.
 3. **Lo que es de verdad.** Son los eslabones, y sienten la compactación alrededor de él.
    Cuanto más adentro, menos hablan de la ley y más del **Último Sacramento**. Al final se
    entiende por qué existía la ley: **siempre fue una salvaguarda**. «Los dioses no miran,
    son mirados»: a un cuerpo ciego que quiere ver, una Mano que mira es la puerta por la que
    le llegan los ojos. La Diócesis lo sabía, o lo sabía quien escribió la ley.
 
-### El Cegado
+### El Cegado: Ulpiano
 
 Decidido por Jean. **Una Mano del Sacramento que miró antes que el Cirujano** y, para volver
-a la ley, **se arrancó los ojos**. Vive en la Escalera de los Ciegos, al final del Nivel I.
+a la ley, **se arrancó los ojos**. Se llama **Ulpiano**, aunque el juego lo presenta como el
+Cegado y el nombre solo lo dice él una vez. Suya es, sin nombre, la voz de la intro. Vive en la Escalera de los Ciegos, al final del Nivel I.
 Es quien escribió «No vengas.» en el margen del Códice. Le cuenta al Cirujano qué fue
 Génesis Vestal: los protocolos antes de ser liturgia, la corporación, los laboratorios
 sellados. Es lo opuesto al Cirujano: él eligió no ver; el Cirujano elige seguir mirando.
@@ -84,8 +84,13 @@ Decidido por Jean el 3 de noviembre, con el diseño de Mariana (#243). El artefa
 laboratorio 7 de Génesis es **un ojo de los Mil, el primero que llegó a formarse**: el
 primer objeto divino del juego. El Cirujano no lo toca, **se lo pone**: es el ojo rojo y la
 sangre de su retrato. Desde entonces ve a la niña, porque mira con el ojo de ellos. Génesis
-no lo destruyó «porque nadie sabe cómo» (el tercer registro) y selló el laboratorio con él
-dentro.
+intentó destruirlo dos veces (el tercer registro) y selló el laboratorio con él dentro.
+**Nadie lo dejó ahí para él: ella lo llamó.** Lo guiaba desde antes de que él la viera, y por
+eso miró aquel día en la N.º 7. «Te llamé mucho. No contestabas.»
+
+**Bajo la sábana de la Sala N.º 7**, el día que miró, había una niña: la voluntaria del
+Pabellón 9, la niña del altar del original. Miró porque era una niña. La de las visiones
+tiene la cara de lo último que él vio antes de ponerse el ojo. No se dice hasta el Nivel III.
 
 **Mirar** es su habilidad: mantenido, el Cirujano ve lo que los demás no ven. Los puentes de
 carne que el templo ya está formando al unirse (solo sostienen mientras mira), la niña
@@ -135,21 +140,21 @@ otra.
 
 - «Los dioses no miran.» Ahora es la herida: un cuerpo ciego que quiere ver.
 - Génesis Vestal: los protocolos quirúrgicos se volvieron liturgia; los manuales técnicos,
-  escritura sagrada. El artefacto es un resto de antes, y alguien lo dejó ahí.
+  escritura sagrada. El artefacto es un resto de antes, y ella lo llamó.
 - El margen del Códice, «No vengas.»: un aviso de alguien que ya lo sabía.
 - «Hace tres generaciones no aparece un dios nuevo»; «el Vientre se está quedando sin
   dientes». Los dioses ya no crecen: se juntan.
 - El Latido que sube solo y las Vestales que lo leen como alarma: es la compactación.
 
-## Abierto
+## Decidido para el Nivel III
 
-- **Quién dejó el artefacto** en el laboratorio.
-- **El nombre del Cegado.** Propuestas: Casiano, Ulpiano.
-- **Qué pide el final B.** Una idea: como en _Blasphemous_, que solo se abra si el jugador
-  desconfió de ella alguna vez; con el ojo, por ejemplo, haber dejado de mirar donde ella
-  pedía mirar.
-- **La niña del altar** del original (la voluntaria del Pabellón 9): si tiene sitio en Sigma
-  o se reescriben los textos que hablan de ella.
+Por Jean, el 4 de noviembre de 2026 (#250). El detalle, en `nivel3.md`.
+
+- **El guardián: el Decano de las Manos**, el que formó al Cirujano. Pelea de espejo.
+- **El Pulmón Vacío**, a mitad del nivel, en la Sala N.º 5.
+- **Qué pide el final B**: haberse negado a mirar donde ella pedía. Unos pocos momentos
+  opcionales en los que ella lo pide y el jugador puede no hacerlo. Como en _Blasphemous_,
+  solo se abre si el jugador desconfió de ella alguna vez.
 
 ## Reglas que no cambian
 
