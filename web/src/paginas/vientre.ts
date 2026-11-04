@@ -393,7 +393,7 @@ const CAMINOS: readonly Paso[] = [
     de: 'sala7',
     a: 'reformados',
     tipo: 'pozo',
-    nota: 'Lo que no se completa baja. No hay puerta: hay desagüe.',
+    nota: 'Lo que no se completa baja, por el desagüe. Puerta no hay.',
   },
   {
     de: 'sala7',
@@ -568,7 +568,7 @@ export function renderVientre(contenedor: HTMLElement): void {
         <div class="eyebrow">Fuera del Vientre · la Intemperie</div>
         <h2>La superficie que casi nadie conoce</h2>
         <p>
-          El Vientre no es todo el mundo: es el mundo entero para quien vive dentro. Fuera queda la
+          Para quien vive dentro, el Vientre es el mundo entero. Fuera queda la
           Intemperie, la Baviera apagada desde el Silencio. Solo la conocen las Ermitas, los
           porteadores y quien se atreve a salir de la Boca.
         </p>

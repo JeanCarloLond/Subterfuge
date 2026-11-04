@@ -88,9 +88,8 @@ export function renderAvisos(contenedor: HTMLElement): void {
             <div class="eyebrow">Los muros</div>
             <h3>El templo se asienta</h3>
             <p>
-              Los Mil no están en el templo: son el templo. Sus cuerpos son las paredes, los ductos
-              y las salas. Después de milenios quietos, las paredes se desplazan y las capas se
-              juntan. La Diócesis lo llama asentamiento y pide calma.
+              Los cuerpos de los Mil son las paredes, los ductos y las salas del templo. Llevaban
+              milenios quietos; ahora las paredes se desplazan y las capas se juntan. La Diócesis lo llama asentamiento y pide calma.
             </p>
           </article>
           <article class="documento pieza-sigma">

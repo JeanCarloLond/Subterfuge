@@ -147,7 +147,7 @@ export const OTROS_RELATOS: readonly RelatoMundo[] = [
   {
     nombre: 'Los Anatomistas · El Protocolo',
     texto:
-      'No hay dioses ni Madre Escriba: hubo un comité, una Fase 3 que falló y una cadena de decisiones para ocultarla. Su versión vive en los manuales técnicos originales, que se copian a escondidas desde hace generaciones.',
+      'Nunca hubo dioses ni Madre Escriba. Hubo un comité, una Fase 3 que falló y una cadena de decisiones para ocultarla. Su versión vive en los manuales técnicos originales, que se copian a escondidas desde hace generaciones.',
   },
   {
     nombre: 'Los Ayunantes · La Rehusada',
@@ -694,7 +694,7 @@ export const CASA: readonly string[] = [
 ];
 
 export const ARQUITECTURA: readonly string[] = [
-  'La Diócesis no construyó su templo: lo heredó y fue cubriéndolo. Arriba quedan columnas, sillería y ventanas ojivales; en los Pasillos, la piedra está parcheada con chapa remachada; en las Criptas ya no hay arquitectura, solo celdas y filas de camillas; en las Salas la máquina no se disimula, es el altar.',
+  'La Diócesis heredó su templo y lo fue cubriendo. Arriba quedan columnas, sillería y ventanas ojivales; en los Pasillos, la piedra está parcheada con chapa remachada; en las Criptas ya no hay arquitectura, solo celdas y filas de camillas; en las Salas la máquina no se disimula, es el altar.',
   'Cuanto más abajo, más aparato de Génesis Vestal y menos obra humana. El turquesa, el único color que no es carne, sangre, oro ni piedra, marca todo lo que todavía es de la corporación.',
   'La ropa repite la misma regla. El pueblo lleva bata remendada y sayo; los Devotos que bajan a servir, una venda sobre los ojos. Las Vestales de Registro llevan un aparato de metal con una lente turquesa; las intérpretes, capucha y máscara de cresta de Mondador. Las Manos del Sacramento visten azul noche, capucha y muceta moradas y la máscara de pico dorada, sin ojos.',
 ];
@@ -954,7 +954,7 @@ export const MANOS: readonly LinajeMundo[] = [
   {
     nombre: 'La Mano Mayor',
     texto:
-      'Cuando el padre faltó, el gremio le asignó la formación que quedaba. No es de su sangre: es su maestra de oficio. Algunos suturadores sospechan que es Anatomista.',
+      'Cuando el padre faltó, el gremio le asignó la formación que quedaba. No es de su sangre, pero le enseñó el oficio. Algunos suturadores sospechan que es Anatomista.',
   },
   {
     nombre: 'Manos N.º 7 · III',

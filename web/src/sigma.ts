@@ -50,8 +50,8 @@ export const AVISOS_SIGMA: readonly AvisoSigma[] = [
     cuerpo: `
       <p>La Nave del Libro tiene un guardián. No recibe visitas ni responde a preguntas. Su oficio
       es el diezmo, y su báculo se apoya en el suelo antes de llamar al orden.</p>
-      <p>Los fieles que oigan el golpe del báculo se apartarán de la nave. No es una amenaza: es
-      la forma de pedir silencio.</p>`,
+      <p>Los fieles que oigan el golpe del báculo se apartarán de la nave. Es la forma que tiene de
+      pedir silencio, y se ruega no tomarla a mal.</p>`,
   },
   {
     numero: 47,
@@ -98,8 +98,7 @@ export const AVISOS_SIGMA: readonly AvisoSigma[] = [
     titulo: 'Recordatorio de la ley de la Mano que mira',
     cuerpo: `
       <p>Las Manos del Sacramento operan con el rostro cubierto y la máscara cerrada. No ven lo
-      que cortan, y así debe ser: el sacramento no se mira, se cumple. La ley es antigua y no
-      admite excepción: <b>la Mano que mira se corta</b>.</p>
+      que cortan, y así debe ser. La ley se aprende antes que el oficio y no admite excepción: <b>la Mano que mira se corta</b>.</p>
       <p>Se informa de que una Mano ha abandonado su Sala sin turno y desciende por los Pasillos.
       Si la encuentra:</p>
       <ul>
@@ -112,10 +111,10 @@ export const AVISOS_SIGMA: readonly AvisoSigma[] = [
     numero: 42,
     titulo: 'Sobre el reparto de la carne',
     cuerpo: `
-      <p>El reparto de la carne del diezmo a los pabellones se retrasa. No falta carne: falta
-      camino. Los Pasillos por los que bajaba están cerrados mientras el templo se asienta.</p>
+      <p>El reparto de la carne del diezmo a los pabellones se retrasa. Carne hay; lo que faltan son
+      Pasillos por donde bajarla, cerrados mientras el templo se asienta.</p>
       <p>Se ruega a las familias que no acudan a la Oficina del Diezmo a reclamar su parte. La
-      Oficina no reparte: registra.</p>`,
+      Oficina toma nota de cada queja y la archiva por orden de llegada.</p>`,
   },
   {
     numero: 41,

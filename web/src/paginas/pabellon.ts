@@ -652,7 +652,7 @@ export function renderPabellon(contenedor: HTMLElement): () => void {
         <div class="eyebrow">Historias que se cuentan</div>
         <h2>Las figuras del pabellón</h2>
         <p>
-          No son dioses ni santos: son vecinos que hicieron algo que el pabellón recuerda. La
+          Vecinos, sin más, que hicieron algo que el pabellón recuerda. La
           Diócesis las cuenta como ejemplo; los Ayunantes, como advertencia.
         </p>
         <div class="rejilla">
