@@ -352,6 +352,19 @@ tras = NodePath("../../Guardianes/Prior")
 senal = "fase_dos"
 lineas = PackedStringArray("Cuando alce el báculo con las dos manos, salta. El suelo no es tuyo.")
 
+[node name="Antesala" type="Node2D" parent="Visiones" unique_id=1880000001]
+script = ExtResource("12_iq718")
+id = "antesala"
+lineas = PackedStringArray("Detrás de esa puerta hay uno que sostiene mucho.", "Cada uno que cae me acerca a ti.", "No tengas miedo de lo que se suelte. Lo que se suelta, se junta.")
+zona = Rect2(120, 230, 150, 90)
+
+[node name="TrasPrior" type="Node2D" parent="Visiones" unique_id=1880000002]
+script = ExtResource("12_iq718")
+id = "tras-prior"
+tras = NodePath("../../Guardianes/Prior")
+senal = "cae"
+lineas = PackedStringArray("¿Lo has sentido? Algo se ha soltado.", "Respiro mejor. Casi puedo verte entero.", "Ve hacia dentro, Mano. Ya falta poco.")
+
 [node name="Carteles" type="Node2D" parent="." unique_id=1441430376]
 
 [node name="Pasos" type="Node2D" parent="." unique_id=2023730851]

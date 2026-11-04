@@ -27,6 +27,11 @@ const AL_LADO := 30.0
 @export_multiline var lineas: PackedStringArray = []
 ## El objetivo que deja (de los suyos).
 @export var objetivo := ""
+## O se dispara al entrar el Cirujano en esta zona (en el mundo), sin `tras`
+## (#188): las visiones repartidas por el camino.
+@export var zona := Rect2()
+## Y solo si ya consta esta marca de Progreso (vacio: siempre).
+@export var pide_marca := ""
 
 ## A quien se le aparece. Lo pone la sala, o se busca.
 var cirujano: CharacterBody2D
@@ -40,7 +45,11 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if cirujano == null:
 		cirujano = get_tree().get_first_node_in_group("cirujano")
+	set_process(false)
 	if vista():
+		return
+	if zona.has_area():
+		set_process(true)
 		return
 	var disparo := get_node_or_null(tras)
 	if disparo == null or not disparo.has_signal(senal):
@@ -51,6 +60,17 @@ func _ready() -> void:
 			# unbind(0) es un error: sin argumentos, tal cual.
 			var n: int = info["args"].size()
 			disparo.connect(senal, _tras_un_momento if n == 0 else _tras_un_momento.unbind(n))
+
+
+## Por zona: al entrar el Cirujano, una vez, si ya consta su marca.
+func _process(_delta: float) -> void:
+	if cirujano == null or not zona.has_point(cirujano.global_position):
+		return
+	var progreso := get_node_or_null("/root/Progreso")
+	if pide_marca != "" and (progreso == null or not progreso.aprendido(pide_marca)):
+		return
+	set_process(false)
+	_tras_un_momento()
 
 
 func vista() -> bool:

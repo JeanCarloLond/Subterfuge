@@ -31,6 +31,7 @@
 [ext_resource type="PackedScene" path="res://escenas/vestal.tscn" id="26_vestal"]
 [ext_resource type="Script" path="res://scripts/ambiente.gd" id="27_ambiente"]
 [ext_resource type="PackedScene" path="res://escenas/nota.tscn" id="29_47ehg"]
+[ext_resource type="Script" path="res://scripts/vision.gd" id="92_vision"]
 
 [sub_resource type="Gradient" id="Gradient_l5xs4"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -892,3 +893,12 @@ aprende = "parry"
 [node name="libro" type="Marker2D" parent="Entradas"]
 position = Vector2(196, 1008)
 metadata/mirando = 1
+
+[node name="Visiones" type="Node2D" parent="."]
+
+[node name="Atajo" type="Node2D" parent="Visiones"]
+script = ExtResource("92_vision")
+id = "atajo"
+lineas = PackedStringArray("¿Ves? Tu Atrio y la Nave del Libro ya se tocan.", "Antes había mil caminos. Ahora casi uno.", "Así es más fácil llegar a mí.")
+zona = Rect2(150, 950, 140, 70)
+pide_marca = "prior-vencido"
