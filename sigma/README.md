@@ -137,6 +137,10 @@ godot --headless --path sigma -s res://tests/ejecutar.gd
 Cada `tests/test_*.gd` extiende `tests/caso.gd`, y cada función `test_*` es un test. El
 CI los pasa en cada push y cada PR.
 
+La **prueba de humo** (`npm run sigma:humo`, #249) abre de verdad la portada, la intro y
+cada sala, las deja correr tres segundos sin nadie a los mandos y falla ante cualquier
+error. El CI la pasa con los tests, y el despliegue, contra lo exportado.
+
 ## En la web
 
 Cada push a `main` lo publica en GitHub Pages (#233): `deploy.yml` pasa los tests, lo

@@ -6,6 +6,7 @@
  *   npm run sigma -- atrio                jugar, directo a una escena de sigma/escenas
  *   npm run sigma:editor                  abrir el proyecto en el editor de Godot
  *   npm run sigma:tests                   importar y pasar los tests
+ *   npm run sigma:humo                    abrir cada escena y jugarla unos segundos
  *
  * Busca Godot 4.7 en este orden: la variable GODOT, `godot` o `godot4` en el
  * PATH, la instalacion de winget en Windows y la app en macOS. Si no lo
@@ -73,6 +74,10 @@ if (modo === '--editor') {
 } else if (modo === '--tests') {
   codigo = correr(godot, ['--headless', '--import']);
   if (codigo === 0) codigo = correr(godot, ['--headless', '-s', 'res://tests/ejecutar.gd']);
+} else if (modo === '--humo') {
+  // La prueba de humo (#249): cada escena, de verdad, unos segundos.
+  codigo = correr(godot, ['--headless', '--import']);
+  if (codigo === 0) codigo = correr(godot, ['--headless', '-s', 'res://tests/humo.gd']);
 } else {
   // Tras un pull con arte, audio o fuentes nuevos, Godot tiene que importarlos
   // antes de poder jugar; si no, la escena arranca llena de errores. Se importa

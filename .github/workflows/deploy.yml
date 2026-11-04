@@ -95,6 +95,10 @@ jobs:
       - name: Comprobar lo exportado
         run: ~/godot/godot --headless --main-pack dist/sigma/juego/index.pck -s "$GITHUB_WORKSPACE/sigma/herramientas/comprobar_exportacion.gd"
 
+      # Y lo exportado, jugado (#249): cada escena del paquete, unos segundos.
+      - name: Prueba de humo de lo exportado
+        run: ~/godot/godot --headless --main-pack dist/sigma/juego/index.pck -s "$GITHUB_WORKSPACE/sigma/tests/humo.gd"
+
       # `enablement` da de alta el sitio de Pages la primera vez, usando el
       # propio token del workflow. Sin esto, el despliegue falla con
       # "Get Pages site failed ... Not Found" en cada ejecución, que es lo que

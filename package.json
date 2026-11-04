@@ -25,6 +25,7 @@
     "sigma": "node scripts/sigma.mjs",
     "sigma:editor": "node scripts/sigma.mjs --editor",
     "sigma:tests": "node scripts/sigma.mjs --tests",
+    "sigma:humo": "node scripts/sigma.mjs --humo",
     "sigma:arte": "node scripts/arte-sigma.mjs",
     "sigma:cirujano": "node scripts/cirujano-sigma.mjs",
     "sigma:devoto": "node scripts/devoto-sigma.mjs",
