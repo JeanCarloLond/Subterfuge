@@ -73,9 +73,11 @@ const COLOR_CHISPA := Color(1.0, 0.93, 0.7)
 const DESTELLO_PX := 13.0
 ## El ojo rojo (#243): donde esta en la cara, mirando a la derecha, su color y
 ## cuanto brilla quieto y mirando.
-const OJO := Vector2(3.0, -40.0)
+## El origen de los fotogramas, para poner el ojo donde cae en cada uno.
+const ORIGEN := Vector2i(21, 57)
+const MARCA_OJO := preload("res://arte/cirujano/ojo-marca.png")
 const COLOR_OJO := Color(1.0, 0.25, 0.12)
-const OJO_QUIETO := 0.5
+const OJO_QUIETO := 0.2
 const OJO_MIRANDO := 1.1
 const DESTELLO_DURA := 0.16
 ## El impacto de un golpe que entra (#235): un destello mas pequeno y breve.
@@ -150,6 +152,8 @@ var _signo_carrera := 0.0
 var _proximo_polvo_pared := -INF
 var _zona_antes := false
 var _ojo: PointLight2D
+## El ojo rojo y su sangre, en la cara: se ve siempre, a oscuras o no.
+var _marca: Sprite2D
 ## Brasas que suben mientras carga el golpe con Fervor.
 var _brasas: CPUParticles2D
 var _cargado_avisado := false
@@ -166,6 +170,16 @@ func _ready() -> void:
 	combate = Combate.new()
 	injertadora = Injertadora.new()
 	_ojo = _luz_del_ojo()
+	_marca = Sprite2D.new()
+	_marca.name = "MarcaOjo"
+	_marca.texture = MARCA_OJO
+	_marca.centered = false
+	_marca.offset = Vector2(-1, 0)
+	var sin_luces := CanvasItemMaterial.new()
+	sin_luces.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	_marca.material = sin_luces
+	_marca.visible = false
+	_figura.add_child(_marca)
 	_aplicar_reliquias()
 	_brasas = CPUParticles2D.new()
 	_brasas.emitting = false
@@ -350,6 +364,7 @@ func _aplicar_reliquias(recien := "") -> void:
 	movimiento.puede_dash = tiene.call("tendon")
 	tiene_ojo = tiene.call("ojo")
 	_ojo.visible = tiene_ojo
+	_marca.visible = tiene_ojo
 
 
 ## Un golpe de un enemigo desde `origen_x`. Si la ventana del parry esta
@@ -844,6 +859,7 @@ func _morir() -> void:
 	_voz("muerte")
 	combate.cancelar()
 	_soltar_victima()
+	_marca.visible = false
 	# Muerto no se pinta: sin esto se quedaba inclinado como lo pillo el golpe.
 	_figura.rotation = 0.0
 	_figura.scale = Vector2(movimiento.mirando, 1.0)
@@ -867,6 +883,7 @@ func _revivir() -> void:
 	vitalidad_cambio.emit(vitalidad, Sacramento.VITALIDAD["maxima"])
 	_figura.scale = Vector2(movimiento.mirando, 1.0)
 	_figura.modulate = Color.WHITE
+	_marca.visible = tiene_ojo
 	_volver()
 
 
@@ -950,7 +967,7 @@ func _pintar(delta: float) -> void:
 	var alfa := 0.5 if movimiento.invulnerable and not ejecutando else 1.0
 	_figura.modulate = Color(1, 1, 1, alfa)
 	_pintar_carga()
-	_pintar_ojo()
+	_pintar_ojo(cuadro[0], cuadro[1])
 
 
 ## El ojo rojo en la cara (#243): un brillo que se ve en lo oscuro, y que se
@@ -976,10 +993,13 @@ func _luz_del_ojo() -> PointLight2D:
 	return luz
 
 
-func _pintar_ojo() -> void:
+func _pintar_ojo(animacion: String, indice: int) -> void:
 	if not tiene_ojo:
 		return
-	_ojo.position = Vector2(OJO.x * movimiento.mirando, OJO.y)
+	var ojos: Array = Animaciones.OJOS[animacion]
+	var sitio := Vector2(ojos[clampi(indice, 0, ojos.size() - 1)] - ORIGEN)
+	_marca.position = sitio
+	_ojo.position = Vector2(sitio.x * movimiento.mirando, sitio.y)
 	_ojo.energy = OJO_MIRANDO if mirando else OJO_QUIETO
 
 

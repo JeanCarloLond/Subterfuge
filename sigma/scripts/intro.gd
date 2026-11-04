@@ -124,8 +124,8 @@ func _sala_siete() -> void:
 	_luz(Vector2(425, 220), Color(1, 0.7, 0.4), 1.1)
 	var cirujano := _sprite("res://arte/cirujano/alza-1.png", Vector2(194, 152), Vector2(2, 2))
 	# Las Manos operan con la mascara ciega puesta (#246): aqui aun la lleva.
-	var borde := _ovalo(Vector2(21.6, 17.2), Vector2(3.6, 4.2), Color(0.08, 0.05, 0.05))
-	var mascara := _ovalo(Vector2(21.6, 17.2), Vector2(2.9, 3.5), Color(0.86, 0.82, 0.74))
+	var borde := _ovalo(Vector2(19.4, 16.4), Vector2(5.2, 5.6), Color(0.08, 0.05, 0.05))
+	var mascara := _ovalo(Vector2(19.4, 16.4), Vector2(4.5, 4.9), Color(0.86, 0.82, 0.74))
 	cirujano.add_child(borde)
 	cirujano.add_child(mascara)
 	await _abrir()

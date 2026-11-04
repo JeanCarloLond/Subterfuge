@@ -65,7 +65,10 @@ const PALETA = {
   guante: trio('#4a2e22', '#6a4432', '#2a1812'),
   acero: trio('#c9ced4', '#f2f4f6', '#7f8690'),
   smear: trio('#f2e6d0', '#fffaf0', '#d9cbb0'),
-  piel: trio('#6a4430', '#8a5c40', '#43291c'),
+  piel: trio('#7c5038', '#a06e50', '#4e2e20'),
+  // Las lineas de los pliegues del velo y de la esclavina: planas, sin luz.
+  pliegue: trio('#7c7268', '#7c7268', '#7c7268'),
+  ceja: trio('#1e120c', '#1e120c', '#1e120c'),
   venda: trio('#d9cbb0', '#efe5d2', '#a8987c'),
   sangre: trio('#8e2a24', '#a8382f', '#5e1a16'),
   vidrio: trio('#9fb3b8', '#d8e6e8', '#5f7378'),
@@ -141,6 +144,20 @@ export function arco(c, rIn, rOut, t0, t1, porArriba) {
 
 // -- La figura ----------------------------------------------------------------
 
+/** El ojo cercano, en la cabeza: el que Mariana pinta rojo y sangrando. */
+const OJO_CERCA = [0.8, -1];
+
+/** Donde cae el ojo rojo en una pose, en pixeles del fotograma. */
+export function ojoDe(p) {
+  const cadera = p.cadera ?? CADERA;
+  const lean = p.lean ?? 0;
+  const pecho = mas(mas(cadera, rot([0, -13], lean)), [0, p.bob ?? 0]);
+  const cuello = mas(pecho, rot([0, -3], lean));
+  const a = lean + (p.cabeceo ?? 0);
+  const cabeza = mas(cuello, rot([1, -4], a));
+  return mas(cabeza, rot(OJO_CERCA, a)).map(Math.floor);
+}
+
 /** Las piezas de una pose, de atras adelante: [forma, material]. */
 function piezas(p) {
   const cadera = p.cadera ?? CADERA;
@@ -149,8 +166,8 @@ function piezas(p) {
   const cuello = mas(pecho, rot([0, -3], lean));
   const cabeza = mas(cuello, rot([1, -4], lean + (p.cabeceo ?? 0)));
   const cabezaLean = lean + (p.cabeceo ?? 0);
-  const hombroCerca = mas(pecho, [-2, 1]);
-  const hombroLejos = mas(pecho, [3, 0]);
+  const hombroCerca = mas(pecho, [-3, 1]);
+  const hombroLejos = mas(pecho, [4, 0]);
   const sway = p.sway ?? 0;
   const vuelo = p.vuelo ?? 0;
   const bajo = Math.min(SUELO - 4, cadera[1] + 13);
@@ -188,10 +205,10 @@ function piezas(p) {
   // El habito: hombros, caida y un bajo que se abre.
   out.push([
     poligono([
-      mas(hombroCerca, [-2.5, 0.5]),
+      mas(hombroCerca, [-2, 0.5]),
       mas(cuello, [-2, 1]),
       mas(cuello, [2.5, 1]),
-      mas(hombroLejos, [2.5, 1]),
+      mas(hombroLejos, [2, 1]),
       [cadera[0] + 6 + sway * 0.5, cadera[1] + 2],
       [cadera[0] + 9 + sway + vuelo, bajo],
       [cadera[0] + 4 + sway, bajo + 1],
@@ -226,53 +243,110 @@ function piezas(p) {
     out.push([arco(hombroCerca, rIn, rOut, t0, t1, porArriba), 'smear']);
   }
 
-  // La cabeza: el velo que baja de la mitra a la nuca y la cara en tres
-  // cuartos, descubierta.
-  out.push([capsula(mas(cabeza, [-2.5, 0]), mas(cuello, [-3, 2.5]), 2.6, 2.2), 'capucha']);
-  out.push([elipse(mas(cabeza, [-0.5, 0]), 4.3, 4.6), 'capucha']);
-  const cara = [
-    [0, -3],
-    [3.6, -2.6],
-    [4.4, -0.6],
-    [5.4, 0.6],
-    [4.4, 1.4],
-    [4.6, 3.4],
-    [2.6, 4.6],
-    [0, 4],
+  // La esclavina: el cuello blanco por capas, en pico, que deja ver la garganta
+  // y debajo el rojo (el retrato de Mariana).
+  const esclavina = [
+    mas(pecho, [-7.5, 3.5]),
+    mas(cuello, [-4, 0.5]),
+    mas(cuello, [5.5, 0.5]),
+    mas(pecho, [8, 3]),
+    mas(pecho, [5.5, 5.5]),
+    mas(pecho, [1.5, 6.5]),
+    mas(pecho, [-3, 6]),
   ];
+  out.push([poligono(esclavina), 'capucha']);
+  out.push([capsula(mas(pecho, [-6, 3.2]), mas(pecho, [-1.5, 4.4]), 0.4), 'pliegue']);
+  out.push([capsula(mas(pecho, [3.6, 4.2]), mas(pecho, [6.6, 2.8]), 0.4), 'pliegue']);
+  out.push([
+    poligono([mas(cuello, [-1.5, -1]), mas(cuello, [4.2, -1]), mas(cuello, [1.8, 5])]),
+    'piel',
+  ]);
+
+  // El velo: cae de debajo de la mitra hasta los hombros en dos alas, ancha la
+  // de atras y estrecha la de delante, porque la cara va en tres cuartos.
+  const veloAtras = [
+    en(cabeza, [-2.5, -4.5]),
+    en(cabeza, [-6, -1]),
+    mas(cuello, [-8, 3.5]),
+    mas(cuello, [-9, 8]),
+    mas(cuello, [-3, 6]),
+    mas(cuello, [-1.5, 1]),
+    en(cabeza, [-1, -1]),
+  ];
+  out.push([poligono(veloAtras), 'mitra']);
+  out.push([capsula(mas(cuello, [-7, 4.4]), mas(cuello, [-3.4, 3.6]), 0.4), 'pliegue']);
+  out.push([capsula(mas(cuello, [-8, 6.6]), mas(cuello, [-3.4, 5.4]), 0.4), 'pliegue']);
+  const veloDelante = [
+    en(cabeza, [4.8, -2.5]),
+    en(cabeza, [6.4, 2]),
+    mas(cuello, [8.5, 5.5]),
+    mas(cuello, [4.4, 5]),
+    en(cabeza, [3.8, 3.4]),
+  ];
+  out.push([poligono(veloDelante), 'mitra']);
+
+  // La cara ancha, en tres cuartos, con la oreja hacia atras.
+  const cara = [
+    [-3, -4.2],
+    [3.8, -4.2],
+    [4.4, -1],
+    [5.4, 0.6],
+    [4.5, 1.5],
+    [4.6, 3.4],
+    [2.6, 5.2],
+    [-0.8, 4.8],
+    [-3, 2.2],
+  ];
+  out.push([elipse(en(cabeza, [-3.3, -0.2]), 1.1, 1.5), 'piel']);
   out.push([poligono(cara.map((v) => en(cabeza, v))), 'piel']);
-  // La barba de días, por la mandíbula, y el ojo. El rojo del ojo de los Mil
-  // no está aquí: lo pone el juego, con su luz, desde el laboratorio (#243).
+  // La barba de dias, por la mandibula.
   const barba = [
-    [0.6, 2.2],
-    [4.6, 2],
-    [4.4, 3.6],
-    [2.6, 4.6],
-    [0.4, 4],
+    [-2.6, 2.8],
+    [-0.6, 3.6],
+    [1.6, 3],
+    [4.6, 3],
+    [4.5, 3.6],
+    [2.6, 5.2],
+    [-0.8, 4.8],
   ];
   out.push([poligono(barba.map((v) => en(cabeza, v))), 'barba']);
-  out.push([elipse(en(cabeza, [3, -1]), 0.7, 0.6), 'ojo']);
-  // La mitra, con su banda.
+  // Las cejas pesadas y los ojos. El rojo del ojo de los Mil no esta aqui: el
+  // juego lo pone encima (`OJOS`), desde el laboratorio (#243).
+  out.push([
+    capsula(
+      en(
+        cabeza,
+        OJO_CERCA.map((v, i) => v + [-1.6, -1.2][i]),
+      ),
+      en(cabeza, [4.2, -2.4]),
+      0.45,
+    ),
+    'ceja',
+  ]);
+  out.push([elipse(en(cabeza, OJO_CERCA), 0.8, 0.5), 'ojo']);
+  out.push([elipse(en(cabeza, [3.6, -1]), 0.6, 0.5), 'ojo']);
+
+  // La mitra: ancha, en alas, mas que la cara; el filo de oro en V desde la
+  // frente, la banda y la gema redonda en su engaste.
   const mitraLean = cabezaLean * 0.6;
   const mitra = [
-    [-4.5, -3],
-    [3.8, -3],
-    [3.2, -8],
-    [1.2, -15.5],
-    [-2.6, -9],
+    [-4.6, -4],
+    [5, -4],
+    [7.8, -9],
+    [6.6, -13.2],
+    [3.4, -15.4],
+    [0.4, -15.9],
+    [-2.6, -15.4],
+    [-5.8, -13.2],
+    [-7.2, -9],
   ];
   out.push([poligono(mitra.map((v) => en(cabeza, v, mitraLean))), 'mitra']);
-  out.push([
-    capsula(en(cabeza, [0, -3.5], mitraLean), en(cabeza, [1, -14], mitraLean), 0.55),
-    'oro',
-  ]);
-  // La gema roja al frente, en su engaste de oro.
-  out.push([elipse(en(cabeza, [0.5, -7.5], mitraLean), 1.3, 1.5), 'oro']);
-  out.push([elipse(en(cabeza, [0.5, -7.5], mitraLean), 0.7, 0.9), 'gema']);
-  out.push([
-    capsula(en(cabeza, [-4, -3.4], mitraLean), en(cabeza, [3.6, -3.4], mitraLean), 0.6),
-    'oro',
-  ]);
+  const enMitra = (v) => en(cabeza, v, mitraLean);
+  out.push([capsula(enMitra([-0.4, -4.6]), enMitra([-5.6, -13.2]), 0.45), 'oro']);
+  out.push([capsula(enMitra([1.2, -4.6]), enMitra([6.2, -13.2]), 0.45), 'oro']);
+  out.push([capsula(enMitra([-4.4, -4.2]), enMitra([4.8, -4.2]), 0.55), 'oro']);
+  out.push([elipse(enMitra([0.4, -11]), 1.7, 2), 'oro']);
+  out.push([elipse(enMitra([0.4, -11]), 0.9, 1.1), 'gema']);
 
   // Brazo cercano, con el bisturi o el frasco.
   const [c1, c2] = p.cerca ?? [0.25, 0.55];
@@ -1008,6 +1082,14 @@ if (esPrincipal) {
     });
   }
   const lineas = Object.entries(recuento).map(([n, c]) => `\t"${n}": ${c},`);
+  // Donde pintar el ojo rojo en cada fotograma, respecto a la cadera.
+  const ojos = Object.entries(ANIMACIONES).map(([n, poses]) => {
+    const lista = poses.map((pose) => {
+      const [x, y] = ojoDe(pose);
+      return `Vector2i(${x}, ${y})`;
+    });
+    return `\t"${n}": [${lista.join(', ')}],`;
+  });
   writeFileSync(
     join(destino, 'animaciones.gd'),
     [
@@ -1019,9 +1101,30 @@ if (esPrincipal) {
       ...lineas,
       '}',
       '',
+      '## Donde cae el ojo rojo en cada fotograma, en pixeles del fotograma.',
+      'const OJOS := {',
+      ...ojos,
+      '}',
+      '',
     ].join('\n'),
   );
   writeFileSync(join(destino, 'hoja.png'), png(hoja(cuadros)));
+  // El ojo de los Mil y la sangre que le baja, encima de cualquier fotograma.
+  const R = [224, 40, 20, 255];
+  const B = [255, 110, 50, 255];
+  const S = [150, 22, 18, 255];
+  const O = [96, 14, 12, 255];
+  const _ = [0, 0, 0, 0];
+  writeFileSync(
+    join(destino, 'ojo-marca.png'),
+    png([
+      [R, B, R],
+      [_, S, _],
+      [_, S, S],
+      [_, O, S],
+      [_, O, _],
+    ]),
+  );
   const reliquias = join(raiz, 'sigma/arte/reliquias');
   mkdirSync(reliquias, { recursive: true });
   for (const [nombre, lista] of Object.entries(RELIQUIAS)) {
