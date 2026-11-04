@@ -30,6 +30,10 @@ const MEDALLON_OJO := preload("res://arte/hud/medallon-ojo.png")
 const VOZ_CADA := 2
 const FRASCO_LLENO := preload("res://arte/hud/frasco-lleno.png")
 const FRASCO_VACIO := preload("res://arte/hud/frasco-vacio.png")
+## La caja de dialogos y lecturas, y la placa de nombres y avisos (#253).
+const CAJA := preload("res://arte/hud/caja.png")
+const PLACA := preload("res://arte/hud/placa.png")
+const FILO_GUARDIAN := preload("res://arte/hud/filo-guardian.png")
 const INJERTO_LLENO := preload("res://arte/provisional/hud-injerto.png")
 const INJERTO_VACIO := preload("res://arte/provisional/hud-injerto-vacio.png")
 const ICONO_INJERTADORA := preload("res://arte/provisional/hud-injertadora.png")
@@ -296,18 +300,21 @@ func guardian(nombre: String, actual: int, maxima: int) -> void:
 		barra.add_child(titulo)
 		var fondo := ColorRect.new()
 		fondo.color = Color(0.08, 0.04, 0.04, 0.9)
-		fondo.size = Vector2(400, 6)
+		fondo.size = Vector2(400, 8)
 		barra.add_child(fondo)
 		var lleno := ColorRect.new()
 		lleno.name = "Lleno"
 		lleno.color = Color(0.62, 0.1, 0.09)
-		lleno.size = Vector2(400, 6)
+		lleno.size = Vector2(400, 8)
 		barra.add_child(lleno)
-		var filo := ReferenceRect.new()
-		filo.border_color = ORO.darkened(0.3)
-		filo.editor_only = false
-		filo.position = Vector2(-1, -1)
-		filo.size = Vector2(402, 8)
+		var filo := NinePatchRect.new()
+		filo.texture = FILO_GUARDIAN
+		filo.patch_margin_left = 6
+		filo.patch_margin_right = 6
+		filo.patch_margin_top = 4
+		filo.patch_margin_bottom = 4
+		filo.position = Vector2(-5, -3)
+		filo.size = Vector2(410, 14)
 		barra.add_child(filo)
 		add_child(barra)
 		move_child(barra, _caja.get_index())
@@ -388,37 +395,37 @@ func _preparar_caja() -> void:
 	_caja.name = "Dialogo"
 	_caja.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_caja.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var texto := _panel(Rect2(16, 222, 472, 128))
-	var retrato := _panel(Rect2(496, 222, 128, 128))
+	var texto := _panel(Rect2(16, 222, 448, 128))
+	var retrato := _panel(Rect2(472, 222, 152, 128))
 	_caja_texto_panel = texto
 	_caja_retrato_panel = retrato
 	_caja_texto = Label.new()
 	_caja_texto.position = Vector2(14, 10)
-	_caja_texto.size = Vector2(444, 108)
+	_caja_texto.size = Vector2(420, 108)
 	_caja_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_caja_texto.add_theme_font_size_override("font_size", 20)
 	texto.add_child(_caja_texto)
 	_caja_flecha = Polygon2D.new()
 	_caja_flecha.polygon = PackedVector2Array([Vector2(-5, 0), Vector2(5, 0), Vector2(0, 6)])
 	_caja_flecha.color = ORO
-	_caja_flecha.position = Vector2(456, 112)
+	_caja_flecha.position = Vector2(432, 112)
 	_caja_flecha.set_meta("y", 112.0)
 	texto.add_child(_caja_flecha)
 	_caja_retrato = TextureRect.new()
-	_caja_retrato.position = Vector2(16, 6)
+	_caja_retrato.position = Vector2(28, 6)
 	_caja_retrato.size = Vector2(96, 96)
 	_caja_retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_caja_retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_caja_retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	retrato.add_child(_caja_retrato)
-	var placa := ColorRect.new()
-	placa.color = Color(0.16, 0.1, 0.07)
+	var placa := Panel.new()
+	placa.add_theme_stylebox_override("panel", _estilo(PLACA, 6.0))
 	placa.position = Vector2(6, 104)
-	placa.size = Vector2(116, 18)
+	placa.size = Vector2(140, 18)
 	retrato.add_child(placa)
 	_caja_nombre = Label.new()
 	_caja_nombre.position = Vector2(0, -2)
-	_caja_nombre.size = Vector2(116, 20)
+	_caja_nombre.size = Vector2(140, 20)
 	_caja_nombre.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_caja_nombre.add_theme_color_override("font_color", ORO)
 	placa.add_child(_caja_nombre)
@@ -433,27 +440,21 @@ func _preparar_caja() -> void:
 	_voces = [Sonidos.voz(330.0), Sonidos.voz(370.0)]
 
 
-## Un panel de la caja: fondo casi negro, doble filete de oro.
+## Un panel de la caja: fondo casi negro, doble filete y esquinas con su rombo.
 func _panel(rect: Rect2) -> Panel:
 	var panel := Panel.new()
 	panel.position = rect.position
 	panel.size = rect.size
-	var estilo := StyleBoxFlat.new()
-	estilo.bg_color = Color(0.06, 0.04, 0.045, 0.96)
-	estilo.border_color = ORO.darkened(0.25)
-	estilo.set_border_width_all(2)
-	estilo.shadow_color = Color(0, 0, 0, 0.5)
-	estilo.shadow_size = 4
-	panel.add_theme_stylebox_override("panel", estilo)
-	# El filete de dentro: oxido, a dos pixeles del de fuera.
-	var filete := ReferenceRect.new()
-	filete.border_color = Color(0.48, 0.23, 0.12)
-	filete.editor_only = false
-	filete.position = Vector2(4, 4)
-	filete.size = rect.size - Vector2(8, 8)
-	filete.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(filete)
+	panel.add_theme_stylebox_override("panel", _estilo(CAJA, 10.0))
 	return panel
+
+
+## Un fondo de la interfaz: una textura con sus bordes, que no se estiran.
+func _estilo(textura: Texture2D, borde: float) -> StyleBoxTexture:
+	var estilo := StyleBoxTexture.new()
+	estilo.texture = textura
+	estilo.set_texture_margin_all(borde)
+	return estilo
 
 
 func _pintar_ayuda() -> void:
@@ -673,6 +674,13 @@ func marcar_tope(tope: int) -> void:
 
 
 func avisar(texto: String) -> void:
+	if not _aviso.has_theme_stylebox_override("normal"):
+		var fondo := _estilo(PLACA, 6.0)
+		fondo.set_content_margin(SIDE_LEFT, 14.0)
+		fondo.set_content_margin(SIDE_RIGHT, 14.0)
+		fondo.set_content_margin(SIDE_TOP, 1.0)
+		fondo.set_content_margin(SIDE_BOTTOM, 1.0)
+		_aviso.add_theme_stylebox_override("normal", fondo)
 	_aviso.text = texto
 	_aviso.visible = true
 	get_tree().create_timer(AVISO_S).timeout.connect(func() -> void:
@@ -818,10 +826,7 @@ func leer(titulo: String, texto: String) -> void:
 func _preparar_lectura() -> void:
 	_lectura = PanelContainer.new()
 	_lectura.name = "Lectura"
-	var fondo := StyleBoxFlat.new()
-	fondo.bg_color = Color(0.06, 0.04, 0.045, 0.94)
-	fondo.border_color = Color(0.55, 0.4, 0.2)
-	fondo.set_border_width_all(1)
+	var fondo := _estilo(CAJA, 10.0)
 	fondo.set_content_margin_all(14)
 	_lectura.add_theme_stylebox_override("panel", fondo)
 	_lectura.set_anchors_preset(Control.PRESET_CENTER)
