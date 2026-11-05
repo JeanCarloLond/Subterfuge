@@ -3,6 +3,7 @@
 extends "res://tests/caso.gd"
 
 const QUIENES := ["res://scripts/devoto.gd", "res://scripts/vestal.gd"]
+const Asistente := preload("res://scripts/asistente.gd")
 const PROHIBIDAS := ["checkpoint", "hp", "boss", "mana", "npc", "stamina"]
 
 
@@ -14,6 +15,14 @@ func test_las_frases_caben_y_hablan_como_el_mundo() -> void:
 			afirmar(frase.length() <= 28, "«%s» no cabe sobre la cabeza" % frase)
 			for palabra in PROHIBIDAS:
 				afirmar(not (" %s " % frase.to_lower()).contains(" %s " % palabra), "«%s» usa «%s»" % [frase, palabra])
+
+
+func test_el_asistente_cabe_y_habla_como_el_mundo() -> void:
+	afirmar(Asistente.FRASES_ASISTENTE.size() >= 3, "tiene con qué variar")
+	for frase: String in Asistente.FRASES_ASISTENTE:
+		afirmar(frase.length() <= 28, "«%s» no cabe sobre la cabeza" % frase)
+		for palabra in PROHIBIDAS:
+			afirmar(not (" %s " % frase.to_lower()).contains(" %s " % palabra), "«%s» usa «%s»" % [frase, palabra])
 
 
 ## Las figuras del decorado que hablan al pasar (#239): lo mismo que los

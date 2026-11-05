@@ -460,6 +460,11 @@ func _golpear_enemigos() -> void:
 	for enemigo in get_tree().get_nodes_in_group("enemigos"):
 		if not enemigo.vivo() or not zona.intersects(enemigo.caja()):
 			continue
+		if enemigo.has_method("cubre") and enemigo.cubre(position.x):
+			if combate.registrar_tope(enemigo.get_instance_id()):
+				enemigo.topar(position.x)
+				_destello(zona.intersection(enemigo.caja()).get_center(), IMPACTO_PX * 0.6, IMPACTO_DURA)
+			continue
 		var dano := combate.registrar_golpe(enemigo.get_instance_id())
 		if dano == 0:
 			continue

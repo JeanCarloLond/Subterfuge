@@ -222,6 +222,20 @@ const SIERRA := {
 	"giro": 2.5,
 }
 
+## El Remedo de las Salas de Sacramento (#254): instrumental que salta de su
+## bandeja cuando se pasa cerca. Tiembla antes: el aviso es para quien lo oye.
+const REMEDO := {
+	"rango_x": 84.0,
+	"rango_y": 48.0,
+	"aviso_ms": 420.0,
+	"recarga_ms": 2800.0,
+	## Lo que tarda en llegar a donde estaba el Cirujano al saltar: si te mueves,
+	## falla.
+	"vuelo_s": 0.55,
+	"gravedad": 620.0,
+	"dano": 1,
+}
+
 ## El rayo de Genesis Vestal: avisa con un hilo que tiembla, quema y se apaga.
 ## El aviso es largo a proposito: se cruza leyendo el ritmo, no con reflejos.
 const RAYO := {

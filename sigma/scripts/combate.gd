@@ -183,6 +183,15 @@ func registrar_golpe(enemigo: Variant) -> int:
 	return _perfil()["dano"]
 
 
+## El golpe ha dado en algo que lo para (la bandeja del Asistente): cuenta como
+## dado, pero no paga Fervor. Devuelve si es la primera vez en este golpe.
+func registrar_tope(enemigo: Variant) -> bool:
+	if _golpeados.has(enemigo):
+		return false
+	_golpeados[enemigo] = true
+	return true
+
+
 ## Tras un golpe hacia abajo que conecta: cierra el golpe y deja un
 ## enfriamiento minimo, para encadenar rebotes. El impulso lo pone el movimiento.
 func rebotar() -> void:

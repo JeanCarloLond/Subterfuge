@@ -107,6 +107,24 @@ function piedraTibia() {
   return rasterizar(piezas, 40, 32, PALETA);
 }
 
+/** El relicario quirurgico del Pulmon Vacio (#254): un arco de laton, abierto. */
+function relicario() {
+  return rasterizar(
+    [
+      [capsula([4, 36], [4, 9], 1.2), 'oro'],
+      [capsula([28, 36], [28, 9], 1.2), 'oro'],
+      [capsula([4, 9], [16, 2], 1.2), 'oro'],
+      [capsula([28, 9], [16, 2], 1.2), 'oro'],
+      [elipse([16, 2.5], 2, 2), 'carne'],
+      [capsula([1, 38], [31, 38], 1.6), 'hierro'],
+      [capsula([9, 35], [23, 35], 1.2), 'hierro'],
+    ],
+    32,
+    40,
+    PALETA,
+  );
+}
+
 /** Un candelabro de hierro con tres velas. */
 function candelabro() {
   const piezas = [
@@ -185,6 +203,7 @@ if (esPrincipal) {
     candelabro,
     hongos,
     deuda,
+    relicario,
   };
   for (const [nombre, hacer] of Object.entries(piezas)) {
     writeFileSync(join(destino, `${nombre}.png`), png(hacer()));

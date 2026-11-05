@@ -41,7 +41,7 @@ const COLOR_ATURDIDO := Color(0.91, 0.851, 0.627)
 ## variantes, como en el original: al de un sitio le pusieron un aparato de
 ## metal y al del otro un brazo de carne injertada.
 const ARTE := "res://arte/devoto/%s-%s-%d.png"
-const ARTE_DE := {"devoto": "aparato", "devoto-b": "carne"}
+const ARTE_DE := {"devoto": "aparato", "devoto-b": "carne", "asistente": "asistente"}
 const CUADROS := {"andar": 4, "aviso": 2, "golpe": 2, "aturdido": 1, "ejecutado": 1}
 ## El brazo se queda abajo un poco despues del golpe: da tiempo a ver con que.
 const POSE_GOLPE_MS := 160.0
@@ -96,7 +96,7 @@ var _marca: Sprite2D
 func _ready() -> void:
 	Herida.preparar($Figura/Sprite)
 	add_to_group("enemigos")
-	_figura_de = variante(position)
+	_figura_de = _variante_de()
 	for nombre in CUADROS:
 		var lista: Array[Texture2D] = []
 		for i in CUADROS[nombre]:
@@ -108,6 +108,16 @@ func _ready() -> void:
 	_marca.rotation = PI / 2.0 # de punta, hacia la cabeza
 	_marca.visible = false
 	add_child(_marca)
+
+
+## Lo que grita al verlo. Otro que herede de el dice lo suyo.
+func _frases() -> Array:
+	return FRASES
+
+
+## La figura que lleva. Otro que herede de el lleva la suya.
+func _variante_de() -> String:
+	return variante(position)
 
 
 ## Que variante le toca por su sitio en el nivel, no al azar: el mismo Devoto
@@ -271,7 +281,7 @@ func _al_verlo() -> void:
 	if ahora < _proxima_frase:
 		return
 	_proxima_frase = ahora + PAUSA_FRASES_MS
-	Bocadillo.decir(self, FRASES.pick_random())
+	Bocadillo.decir(self, _frases().pick_random())
 
 
 func _perseguir(hacia: Vector2) -> void:

@@ -10,6 +10,9 @@
  * venda en los ojos. Dos variantes, como en el original: a uno le pusieron un
  * APARATO (brazo y pierna de metal) y al otro un brazo de CARNE injertada.
  *
+ * El ASISTENTE de las Salas de Sacramento (#254) es el mismo titere: bata blanca
+ * manchada, mandil y la bandeja de laton con la que reparte y con la que pega.
+ *
  * Sale a `sigma/arte/devoto/<variante>-<animacion>-<n>.png` y `hoja.png`.
  *
  * Uso:  npm run sigma:devoto
@@ -58,6 +61,9 @@ const PALETA = {
   carne: trio('#a8382f', '#c85a4a', '#6e1e18'),
   smearAcero: trio('#d6e6e6', '#f4fbfb', '#a8c0c0'),
   smearCarne: trio('#e8b0a4', '#fbe0d8', '#c8806e'),
+  bata: trio('#c8c0b0', '#e6dfd2', '#8e8678'),
+  mandilManchado: trio('#7a3a30', '#96504a', '#4e201a'),
+  laton: trio('#b89a4a', '#ecd68a', '#6e5a24'),
 };
 
 /** Las piezas de una pose del Devoto, de atras adelante. */
@@ -73,6 +79,7 @@ function piezas(p, variante) {
   const bajo = Math.min(SUELO - 7, cadera[1] + 7);
   const en = (v) => mas(cabeza, rot(v, cabeceo));
   const out = [];
+  const tela = variante === 'asistente' ? 'bata' : 'sayo';
 
   // Brazo lejano.
   const [l1, l2] = p.lejos ?? [0.2, 0.4];
@@ -117,7 +124,7 @@ function piezas(p, variante) {
       [cadera[0] - 7 + sway, bajo],
       [cadera[0] - 6 + sway * 0.4, cadera[1]],
     ]),
-    'sayo',
+    tela,
   ]);
   out.push([
     poligono([
@@ -126,7 +133,7 @@ function piezas(p, variante) {
       [cadera[0] + 7 + sway * 0.8, bajo - 0.5],
       [cadera[0] + 0.5 + sway * 0.8, bajo - 0.5],
     ]),
-    'cuero',
+    variante === 'asistente' ? 'mandilManchado' : 'cuero',
   ]);
   out.push([capsula(mas(cadera, [-6, -1.5]), mas(cadera, [6.5, -2]), 0.7), 'oro']);
 
@@ -141,7 +148,7 @@ function piezas(p, variante) {
     const [t0, t1, rIn, rOut] = p.smear;
     out.push([
       arco(hombroCerca, rIn, rOut, t0, t1, true),
-      variante === 'aparato' ? 'smearAcero' : 'smearCarne',
+      variante === 'carne' ? 'smearCarne' : 'smearAcero',
     ]);
   }
 
@@ -149,7 +156,14 @@ function piezas(p, variante) {
   const [c1, c2] = p.cerca ?? [0.3, 0.5];
   const codo = mas(hombroCerca, hacia(c1, 5));
   const ang = c1 + c2;
-  if (variante === 'aparato') {
+  if (variante === 'asistente') {
+    // La bandeja, de canto, al final del brazo: para el golpe de frente.
+    const fin = mas(codo, hacia(ang, 6));
+    const canto = hacia(ang + Math.PI / 2, 6);
+    out.push([capsula(hombroCerca, codo, 2.2), 'bata']);
+    out.push([capsula(codo, fin, 2, 1.7), 'piel']);
+    out.push([capsula(mas(fin, canto), mas(fin, [-canto[0], -canto[1]]), 1.2), 'laton']);
+  } else if (variante === 'aparato') {
     const fin = mas(codo, hacia(ang, 7));
     out.push([capsula(hombroCerca, codo, 2.2), 'sayo']);
     out.push([capsula(codo, fin, 2.2, 1.8), 'acero']);
@@ -250,7 +264,7 @@ const ejecutado = [
 ];
 
 export const ANIMACIONES = { andar, aviso, golpe, aturdido, ejecutado };
-export const VARIANTES = ['aparato', 'carne'];
+export const VARIANTES = ['aparato', 'carne', 'asistente'];
 
 export function dibujar(pose, variante, opciones) {
   return rasterizar(piezas(pose, variante), ANCHO, ALTO, PALETA, opciones);

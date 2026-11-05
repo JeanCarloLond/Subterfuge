@@ -33,6 +33,7 @@ const ULTIMAS := {
 	"devoto": ["¿Quién la agarra ahora?", "Se me va… la bóveda…", "Yo la tenía, yo la tenía."],
 	"vestal": ["Nadie me relevó…", "Avisa al turno…", "Ya baja. Ya baja todo."],
 	"prior": ["¿Quién… apunta ahora?"],
+	"asistente": ["¿Quién lleva esto ahora?", "Se me cae la bandeja…", "Que no toquen la N.º 5…"],
 }
 
 ## El enemigo que sostiene, que tipo es y a donde esta atado (en el mundo).
@@ -69,6 +70,8 @@ static func tipo_de(enemigo: Node) -> String:
 		return "vestal"
 	if ruta.ends_with("prior.gd"):
 		return "prior"
+	if ruta.ends_with("asistente.gd"):
+		return "asistente"
 	return "devoto"
 
 
@@ -80,7 +83,7 @@ static func buscar_anclas(capas: Array[TileMapLayer], pies: Vector2, de: String)
 	var izquierda = _lado(capas, pecho, -1)
 	var derecha = _lado(capas, pecho, 1)
 	match de:
-		"devoto":
+		"devoto", "asistente":
 			if arriba != null:
 				halladas.append(arriba)
 		"vestal":

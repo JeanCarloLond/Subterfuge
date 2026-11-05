@@ -11,6 +11,7 @@ const LUCES := {
 	"hongos": [Color(0.4, 0.9, 0.8), 0.55, 3.0, false],
 	"piedra-tibia": [Color(1.0, 0.55, 0.25), 0.9, 2.0, true],
 	"muro-dientes": [null, 0.0, 0.0, false],
+	"relicario": [Color(0.95, 0.6, 0.5), 0.4, 2.0, false],
 }
 
 ## [pieza, x, y]: x en el centro, y en el suelo donde se apoya.

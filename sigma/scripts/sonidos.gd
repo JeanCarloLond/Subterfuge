@@ -35,6 +35,30 @@ static func crujido() -> AudioStreamWAV:
 	return _wav(muestras)
 
 
+## Una bandeja que para un golpe: chapa de laton, con parciales que no casan.
+static func chapa() -> AudioStreamWAV:
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * 0.32))
+	for parcial in [[612.0, 0.5], [1137.0, 0.32], [1871.0, 0.2], [2930.0, 0.12]]:
+		_golpe(muestras, 0.0, 0.32, parcial[0], parcial[1])
+	return _wav(muestras)
+
+
+## Instrumental temblando en su bandeja: tic-tic-tic, cada vez mas seguido.
+static func traqueteo() -> AudioStreamWAV:
+	var duracion := 0.42
+	var muestras := PackedFloat32Array()
+	muestras.resize(int(MEZCLA * duracion))
+	var t := 0.0
+	var paso := 0.09
+	while t < duracion - 0.03:
+		_golpe(muestras, t, 0.03, 2600.0, 0.3)
+		_golpe(muestras, t, 0.025, 3900.0, 0.18)
+		t += paso
+		paso = maxf(0.03, paso * 0.8)
+	return _wav(muestras)
+
+
 ## El retumbo de un temblor: lo mas grave posible, que crece, se sostiene y se
 ## apaga, con piedrecitas que caen. Se oye mas con el cuerpo que con el oido.
 static func retumbo() -> AudioStreamWAV:
