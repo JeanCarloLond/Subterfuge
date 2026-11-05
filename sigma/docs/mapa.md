@@ -228,7 +228,7 @@ II, III y IV, ver arriba). La regla para cada una:
 2. **El Nivel I de bajada**, con el Atrio de hoy como su sala 3, y el Cegado.
 3. **Los Pasillos (#190)**, Génesis y el Prior del Diezmo.
 4. Los niveles III a VI, cuando el arranque se sienta bien. El III, propuesto en
-   [nivel3.md](nivel3.md), ya decidido (#250).
+   [nivel3.md](nivel3.md), decidido (#250) y construido hasta la antesala de la N.º 7 (#255).
 
 [meowdb]: https://meowdb.com/db/blasphemous/zones
 [plat]: https://platprices.com/ie/game/6701-blasphemous

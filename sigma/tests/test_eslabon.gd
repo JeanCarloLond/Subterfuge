@@ -8,8 +8,8 @@ const PROHIBIDAS := ["checkpoint", "hp", "boss", "mana", "npc", "stamina"]
 
 
 func test_cada_eslabon_de_los_niveles_esta_atado() -> void:
-	var vistos := {"devoto": 0, "vestal": 0, "prior": 0}
-	for carpeta in ["res://escenas/nivel1", "res://escenas/nivel2"]:
+	var vistos := {"devoto": 0, "vestal": 0, "prior": 0, "asistente": 0}
+	for carpeta in ["res://escenas/nivel1", "res://escenas/nivel2", "res://escenas/nivel3"]:
 		for archivo in DirAccess.get_files_at(carpeta):
 			if not archivo.ends_with(".tscn"):
 				continue

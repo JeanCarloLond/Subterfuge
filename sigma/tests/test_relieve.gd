@@ -24,7 +24,7 @@ func test_la_nave_tiene_su_vacio_y_sus_bajadas() -> void:
 
 
 func test_cada_bajada_acaba_en_suelo_y_no_en_el_vacio() -> void:
-	for carpeta in ["res://escenas/nivel1", "res://escenas/nivel2"]:
+	for carpeta in ["res://escenas/nivel1", "res://escenas/nivel2", "res://escenas/nivel3"]:
 		for archivo in DirAccess.get_files_at(carpeta):
 			if not archivo.ends_with(".tscn"):
 				continue

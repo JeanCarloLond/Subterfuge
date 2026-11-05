@@ -13,7 +13,7 @@ extends SceneTree
 ## Lo que corre cada escena, en fotogramas (a 60 por segundo).
 const FOTOGRAMAS := 180
 const FIJAS := ["res://escenas/principal.tscn", "res://escenas/intro.tscn", "res://escenas/atrio.tscn"]
-const CARPETAS := ["res://escenas/nivel1", "res://escenas/nivel2"]
+const CARPETAS := ["res://escenas/nivel1", "res://escenas/nivel2", "res://escenas/nivel3"]
 
 
 class Escucha:

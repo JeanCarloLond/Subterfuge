@@ -64,10 +64,6 @@ colors = PackedColorArray(0.79, 0.71, 0.54, 0, 0.79, 0.71, 0.54, 0.35, 0.79, 0.7
 
 [node name="NaveLibro" type="Node2D" unique_id=469606538]
 script = ExtResource("1_swiff")
-fin = "Más abajo, las Salas de Sacramento.
-Hasta aquí está hecho.
-
-Esc para volver a la portada"
 musica = "catedral-bosque"
 metadata/tamano = Vector2i(64, 23)
 
@@ -392,6 +388,8 @@ pide_marca = "prior-vencido"
 position = Vector2(896, 256)
 script = ExtResource("13_5giu1")
 zona = Vector2(32, 48)
+destino = "res://escenas/nivel3/bajada.tscn"
+entrada = "arriba"
 con_e = true
 pide_marca = "prior-vencido"
 negado_texto = "Mientras el Prior cobre, esto no se abre"
@@ -401,6 +399,10 @@ negado_texto = "Mientras el Prior cobre, esto no se abre"
 [node name="oeste" type="Marker2D" parent="Entradas" unique_id=101606000]
 position = Vector2(88, 304)
 metadata/mirando = 1
+
+[node name="abajo" type="Marker2D" parent="Entradas" unique_id=511835690]
+position = Vector2(888, 304)
+metadata/mirando = -1
 
 [node name="atajo" type="Marker2D" parent="Entradas" unique_id=511835689]
 position = Vector2(952, 304)

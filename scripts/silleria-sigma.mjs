@@ -12,7 +12,8 @@
  * son el templo.
  *
  * Sale a `sigma/arte/silleria/sigma.png` (256x64) y reescribe `vientre.tres` (el
- * TileSet de todas las salas, con su colision) para que apunte a ella. Uso:
+ * TileSet de todas las salas, con su colision) para que apunte a ella. Tambien la
+ * piedra blanca de las Salas de Sacramento (#255): `salas.png` y `salas.tres`. Uso:
  * npm run sigma:silleria
  */
 
@@ -44,6 +45,19 @@ const C = {
   canto: hx('#5a4a46'),
   carne: hx('#6e2420'),
   carneLuz: hx('#9a3a30'),
+};
+/** Las Salas de Sacramento: azulejo blanco, manchado; las juntas, sucias. */
+const BLANCO = {
+  junta: hx('#5e564e'),
+  sombra: hx('#7c7468'),
+  base: hx('#a89e90'),
+  medio: hx('#bcb2a4'),
+  luz: hx('#d0c8ba'),
+  cara: hx('#ece6da'),
+  brillo: hx('#faf6ec'),
+  canto: hx('#b4aa9c'),
+  carne: hx('#7a2a24'),
+  carneLuz: hx('#a8382f'),
 };
 const BAYER = [
   [0, 8, 2, 10],
@@ -202,15 +216,18 @@ function tileset(textura) {
 
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (esPrincipal) {
-  const img = Array.from({ length: T * VARIANTES }, () => new Array(T * 16).fill([0, 0, 0, 0]));
-  for (let v = 0; v < VARIANTES; v += 1) {
-    for (let m = 0; m < 16; m += 1) {
-      const b = baldosa(m, v);
-      for (let y = 0; y < T; y += 1)
-        for (let x = 0; x < T; x += 1) img[v * T + y][m * T + x] = b[y][x];
+  const atlas = () => {
+    const img = Array.from({ length: T * VARIANTES }, () => new Array(T * 16).fill([0, 0, 0, 0]));
+    for (let v = 0; v < VARIANTES; v += 1) {
+      for (let m = 0; m < 16; m += 1) {
+        const b = baldosa(m, v);
+        for (let y = 0; y < T; y += 1)
+          for (let x = 0; x < T; x += 1) img[v * T + y][m * T + x] = b[y][x];
+      }
     }
-  }
-  writeFileSync(join(destino, 'sigma.png'), png(img));
+    return img;
+  };
+  writeFileSync(join(destino, 'sigma.png'), png(atlas()));
   const normal = Array.from({ length: T * VARIANTES }, () =>
     new Array(T * 16).fill([128, 128, 255, 255]),
   );
@@ -223,5 +240,9 @@ if (esPrincipal) {
   }
   writeFileSync(join(destino, 'sigma_n.png'), png(normal));
   writeFileSync(join(destino, 'vientre.tres'), tileset('res://arte/silleria/sigma.png'));
+  Object.assign(C, BLANCO);
+  writeFileSync(join(destino, 'salas.png'), png(atlas()));
+  writeFileSync(join(destino, 'salas_n.png'), png(normal));
+  writeFileSync(join(destino, 'salas.tres'), tileset('res://arte/silleria/salas.png'));
   console.log(`${16 * VARIANTES} baldosas -> sigma/arte/silleria/sigma.png y vientre.tres`);
 }

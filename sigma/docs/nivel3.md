@@ -1,6 +1,7 @@
 # Nivel III · Las Salas de Sacramento
 
-> #250. Decidido por Jean el 4 de noviembre de 2026. Falta construirlo.
+> #250. Decidido por Jean el 4 de noviembre de 2026. Hechas las piezas (#254) y las salas
+> hasta la antesala (#255); falta el guardián y la compactación (#256).
 
 ## Qué es
 

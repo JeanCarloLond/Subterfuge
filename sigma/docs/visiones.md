@@ -29,6 +29,17 @@ vez por partida; las de zona, al entrar en ella (`vision.gd`).
 |                                             | «Había que dar muchas vueltas. Mil. Yo las conté.»                                               | Una niña que exagera.                                    | Los Mil, contados.                                                                   |
 |                                             | «Cada vez quedan menos. Un día quedará una, y es cortita.»                                       | Ahora es más fácil volver.                               | Los Mil se están volviendo uno, y ella es lo pequeño que queda.                      |
 
+## Nivel III
+
+| Dónde                                  | Lo que dice                                                                   | Primera lectura                      | Al releerla                                             |
+| -------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------- |
+| **La Sala N.º 5**, al tomar el Pulmón  | «Ese también era de alguien. Respira despacio, que no te asustes.»            | Lo cuida.                            | Otro pedazo de los Mil, y ahora le respira dentro.      |
+|                                        | «Salta. Y en el aire, otra vez. ¿Ves? No te dejan caer.»                      | Le enseña a usarlo.                  | «Te dejan»: quienes lo sostienen son ellos.             |
+|                                        | «Tampoco me dejaban a mí.»                                                    | Una niña que también sufrió.         | Le estaban guardando el sitio.                          |
+| **La antesala de la N.º 7**, al entrar | «Aquí es. Todavía huele igual.»                                               | Ella conoce el sitio, y es raro.     | Estuvo allí.                                            |
+|                                        | «Aquel día hacía frío, ¿te acuerdas? La sábana pesaba muy poco.»              | Una imagen sin sentido, inquietante. | Ella estaba debajo de la sábana el día que él miró.     |
+|                                        | «El de dentro te enseñó a coser. Te va a decir que lo dejes. Tú no lo dejes.» | Lo anima a no rendirse.              | Lo aleja del Decano, el que sabe por qué existe la ley. |
+
 ## Fuera de las visiones
 
 Mirando con el ojo, ella espera de pie donde quiere que vaya (en el laboratorio, en la

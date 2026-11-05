@@ -36,6 +36,11 @@ const CATALOGO := {
 		"texto": "Pasa al señor del palo",
 		"de_la_nina": true,
 	},
+	## La antesala de la N.º 7 (#255): vuelve a su Sala.
+	"sala7": {
+		"texto": "Entra en tu Sala",
+		"de_la_nina": true,
+	},
 }
 
 const COLOR := Color(0.89, 0.663, 0.251)

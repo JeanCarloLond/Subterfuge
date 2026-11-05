@@ -29,7 +29,7 @@ func test_el_asistente_cabe_y_habla_como_el_mundo() -> void:
 ## enemigos, que quepan y hablen como el mundo. Y que ninguna se quede muda.
 func test_las_figuras_que_hablan_caben_y_hablan_como_el_mundo() -> void:
 	var vistas := 0
-	for carpeta in ["res://escenas/nivel1", "res://escenas/nivel2"]:
+	for carpeta in ["res://escenas/nivel1", "res://escenas/nivel2", "res://escenas/nivel3"]:
 		for archivo in DirAccess.get_files_at(carpeta):
 			if not archivo.ends_with(".tscn"):
 				continue
@@ -51,7 +51,7 @@ func test_las_figuras_que_hablan_caben_y_hablan_como_el_mundo() -> void:
 ## ni «no X: Y», en lo que se dice en las salas.
 func test_nadie_habla_con_antitesis() -> void:
 	var antitesis := RegEx.create_from_string("(?i)\\bno (es|son|falta) [^.:;,«»\"]{1,40}[:;,] *(es |son |falta )")
-	for carpeta in ["res://escenas", "res://escenas/nivel1", "res://escenas/nivel2"]:
+	for carpeta in ["res://escenas", "res://escenas/nivel1", "res://escenas/nivel2", "res://escenas/nivel3"]:
 		for archivo in DirAccess.get_files_at(carpeta):
 			if not archivo.ends_with(".tscn"):
 				continue

@@ -10,6 +10,8 @@ const SALAS := [
 	"nivel1/muro", "nivel1/escalera", "nivel1/umbral",
 	"nivel2/registro", "nivel2/escribania", "nivel2/sorteos", "nivel2/archivo",
 	"nivel2/pasillo", "nivel2/ala", "nivel2/laboratorio", "nivel2/nave_libro",
+	"nivel3/bajada", "nivel3/sala_1", "nivel3/lavatorio", "nivel3/sala_3", "nivel3/sala_5",
+	"nivel3/sala_6", "nivel3/antesala",
 ]
 
 
@@ -74,7 +76,7 @@ func test_cada_entrada_cae_a_piedra_y_no_esta_en_su_paso() -> void:
 		sala.free()
 
 
-func test_empieza_en_el_pabellon_y_lo_hecho_acaba_tras_el_laboratorio() -> void:
+func test_empieza_en_el_pabellon_y_lo_hecho_acaba_en_la_puerta_de_la_7() -> void:
 	var intro: GDScript = load("res://scripts/intro.gd")
 	afirmar_igual(intro.SIGUIENTE, DIR + "nivel1/pabellon.tscn", "la intro lleva al Pabellón")
 	var finales := 0
@@ -83,10 +85,14 @@ func test_empieza_en_el_pabellon_y_lo_hecho_acaba_tras_el_laboratorio() -> void:
 		for paso in sala.get_node("Pasos").get_children():
 			if paso.destino == "":
 				finales += 1
-				afirmar_igual(nombre, "nivel2/nave_libro", "el final está tras el Prior")
-				afirmar_igual(paso.pide_marca, "prior-vencido", "y pide haberlo vencido")
+				afirmar_igual(nombre, "nivel3/antesala", "el final está en la puerta de la N.º 7")
 		sala.free()
 	afirmar_igual(finales, 1, "un solo final")
+	var nave_libro: Node = load(DIR + "nivel2/nave_libro.tscn").instantiate()
+	var adelante: Node = nave_libro.get_node("Pasos/Adelante")
+	afirmar_igual(adelante.destino, DIR + "nivel3/bajada.tscn", "tras el Prior se baja a las Salas")
+	afirmar_igual(adelante.pide_marca, "prior-vencido", "y pide haberlo vencido")
+	nave_libro.free()
 	var ala: Node = load(DIR + "nivel2/ala.tscn").instantiate()
 	afirmar_igual(ala.get_node("Pasos/Laboratorio").pide_objetivo, "registros", "la puerta del laboratorio pide los registros")
 	ala.free()
