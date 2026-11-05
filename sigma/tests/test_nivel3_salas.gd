@@ -52,7 +52,7 @@ func test_la_6_pide_los_dos_puentes_de_carne() -> void:
 func test_hay_asistentes_y_remedos_por_el_camino() -> void:
 	var asistentes := 0
 	var remedos := 0
-	for nombre in ["bajada", "sala_1", "lavatorio", "sala_3", "sala_5", "sala_6", "antesala"]:
+	for nombre in ["bajada", "sala_1", "lavatorio", "sala_3", "sala_5", "sala_6", "antesala", "sala_7"]:
 		var sala := _sala(nombre)
 		for hijo in sala.get_node("Devotos").get_children():
 			if hijo.get_script().resource_path.ends_with("asistente.gd"):
@@ -65,13 +65,30 @@ func test_hay_asistentes_y_remedos_por_el_camino() -> void:
 	afirmar(remedos >= 5, "Remedos: %d" % remedos)
 
 
-func test_la_antesala_es_el_final_y_deja_su_objetivo() -> void:
+func test_la_antesala_lleva_a_la_7_y_deja_su_objetivo() -> void:
 	var sala := _sala("antesala")
-	afirmar_igual(sala.get_node("Pasos/Adelante").destino, "", "por ahora, aquí acaba lo hecho")
+	afirmar_igual(sala.get_node("Pasos/Adelante").destino, DIR + "sala_7.tscn", "a la N.º 7")
 	var vision: Node = sala.get_node("Visiones/Antesala")
 	afirmar_igual(vision.objetivo, "sala7", "el objetivo es suyo")
 	afirmar(Objetivos.de_la_nina("sala7"), "y va en su color")
 	sala.free()
+
+
+func test_la_7_se_funde_con_el_pabellon_al_caer_el_decano() -> void:
+	var sala := _sala("sala_7")
+	afirmar(sala.has_node("Guardianes/Decano"), "el Decano espera")
+	afirmar(sala.has_node("Decorado"), "vestida")
+	var pabellon: Node = sala.get_node("Pasos/Pabellon")
+	afirmar_igual(pabellon.destino, "res://escenas/nivel1/pabellon.tscn", "lleva al Pabellón")
+	afirmar_igual(pabellon.pide_marca, "decano-vencido", "cuando cae el Decano")
+	var vision: Node = sala.get_node("Visiones/TrasDecano")
+	afirmar_igual(vision.senal, "cae", "ella habla al caer")
+	sala.free()
+	var casa: Node = load("res://escenas/nivel1/pabellon.tscn").instantiate()
+	afirmar_igual(casa.get_node("Pasos/Sala7").destino, DIR + "sala_7.tscn", "y del Pabellón se vuelve")
+	afirmar_igual(casa.get_node("Pasos/Sala7").pide_marca, "decano-vencido", "cerrado hasta entonces")
+	afirmar_igual(casa.get_node("Visiones/Sala7").pide_marca, "decano-vencido", "ella solo habla después")
+	casa.free()
 
 
 func test_las_hojas_del_codice_esperan_al_doble_salto() -> void:

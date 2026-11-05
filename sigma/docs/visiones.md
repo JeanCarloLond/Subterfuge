@@ -40,6 +40,13 @@ vez por partida; las de zona, al entrar en ella (`vision.gd`).
 |                                        | «Aquel día hacía frío, ¿te acuerdas? La sábana pesaba muy poco.»              | Una imagen sin sentido, inquietante. | Ella estaba debajo de la sábana el día que él miró.     |
 |                                        | «El de dentro te enseñó a coser. Te va a decir que lo dejes. Tú no lo dejes.» | Lo anima a no rendirse.              | Lo aleja del Decano, el que sabe por qué existe la ley. |
 
+| **La Sala N.º 7**, al caer el Decano | «No te preocupes, no oía tanto como decía.» | Lo tranquiliza. | Le quita peso a lo último que le dijo el Decano sobre la venda. |
+| | «¿Notas la pared? Detrás está tu cama.» | Rara, como siempre. | El templo se ha compactado: su Sala y su Pabellón se tocan. |
+| | «Te lo dije. Cada vez hay menos vueltas.» | Un atajo más. | Los Mil, cada vez más juntos. |
+| **El Pabellón**, al volver por la nueva puerta | «Mira, tu Sala y tu cama. Antes tardabas un turno entero en bajar.» | El mapa se abre. | Donde empezó y donde miró son ya lo mismo. |
+| | «Ahora se tocan. Puedes ir descalzo.» | Un chiste. | Ya no queda camino que lo proteja. |
+| | «Ya casi no queda abajo. Queda un poco, y luego estoy yo.» | Falta poco para encontrarla. | Falta poco para que nazca. |
+
 ## Fuera de las visiones
 
 Mirando con el ojo, ella espera de pie donde quiere que vaya (en el laboratorio, en la

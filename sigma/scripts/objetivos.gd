@@ -41,6 +41,11 @@ const CATALOGO := {
 		"texto": "Entra en tu Sala",
 		"de_la_nina": true,
 	},
+	## Tras el Decano (#256): sigue bajando.
+	"criptas": {
+		"texto": "Baja un poco más, que ya me ves",
+		"de_la_nina": true,
+	},
 }
 
 const COLOR := Color(0.89, 0.663, 0.251)

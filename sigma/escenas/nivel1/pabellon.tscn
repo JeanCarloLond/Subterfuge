@@ -26,6 +26,8 @@
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="15_aveuk"]
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="15_iismc"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="16_ygkyn"]
+[ext_resource type="Script" path="res://scripts/vision.gd" id="22_knlv3"]
+[ext_resource type="Texture2D" path="res://arte/provisional/umbral.png" id="28_rvg48"]
 
 [sub_resource type="Gradient" id="Gradient_py6a8"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -342,6 +344,14 @@ Anoche la pared del fondo se movió un palmo. Lo medí dos veces, porque no me l
 
 [node name="Visiones" type="Node2D" parent="." unique_id=1074122237]
 
+[node name="Sala7" type="Node2D" parent="Visiones" unique_id=1150877015]
+script = ExtResource("22_knlv3")
+id = "pabellon-sala-7"
+lineas = PackedStringArray("Mira, tu Sala y tu cama. Antes tardabas un turno entero en bajar.", "Ahora se tocan. Puedes ir descalzo.", "Ya casi no queda abajo. Queda un poco, y luego estoy yo.")
+objetivo = "criptas"
+zona = Rect2(384, 224, 96, 96)
+pide_marca = "decano-vencido"
+
 [node name="Carteles" type="Node2D" parent="." unique_id=2109552950]
 
 [node name="Moverse" type="Node2D" parent="Carteles" unique_id=1333976790]
@@ -368,10 +378,25 @@ zona = Vector2(32, 48)
 destino = "res://escenas/nivel1/claustro.tscn"
 entrada = "oeste"
 
+[node name="Sala7" type="Node2D" parent="Pasos" unique_id=1046993393]
+position = Vector2(464, 256)
+script = ExtResource("13_knlv3")
+zona = Vector2(32, 48)
+destino = "res://escenas/nivel3/sala_7.tscn"
+entrada = "pabellon"
+con_e = true
+aviso = "E  a tu Sala"
+pide_marca = "decano-vencido"
+negado_texto = "La piedra no cede"
+
 [node name="Entradas" type="Node2D" parent="." unique_id=545077266]
 
 [node name="este" type="Marker2D" parent="Entradas" unique_id=1061531022]
 position = Vector2(568, 304)
+metadata/mirando = -1
+
+[node name="sala7" type="Marker2D" parent="Entradas" unique_id=1856186553]
+position = Vector2(488, 304)
 metadata/mirando = -1
 
 [node name="Cirujano" parent="." unique_id=471331097 instance=ExtResource("14_rvg48")]
@@ -422,3 +447,10 @@ gravity = Vector2(0, 0)
 initial_velocity_min = 2.0
 initial_velocity_max = 9.0
 color_ramp = SubResource("Gradient_vfnc2")
+
+[node name="PuertaSala7" type="Sprite2D" parent="." unique_id=247418153]
+z_index = -1
+position = Vector2(488, 304)
+texture = ExtResource("28_rvg48")
+centered = false
+offset = Vector2(-10, -34)

@@ -12,7 +12,8 @@ extends "res://herramientas/crear_nivel_1.gd"
 
 const DIR_3 := "res://escenas/nivel3/"
 const NAVE_LIBRO := "res://escenas/nivel2/nave_libro.tscn"
-const FIN_ANTESALA := "Detrás de esa puerta, tu Sala.
+const SALA_PABELLON := "res://escenas/nivel1/pabellon.tscn"
+const FIN_SALA_7 := "Más abajo, las Criptas de Espera.
 Hasta aquí está hecho.
 
 Esc para volver a la portada"
@@ -25,7 +26,7 @@ func _initialize() -> void:
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
 	var errores := 0
-	for crear in [_bajada, _sala_1, _lavatorio, _sala_3, _sala_5, _sala_6, _antesala]:
+	for crear in [_bajada, _sala_1, _lavatorio, _sala_3, _sala_5, _sala_6, _antesala, _sala_7]:
 		errores += _guardar(crear.call())
 	quit(errores)
 
@@ -194,11 +195,10 @@ Debajo, con otra letra, de trazo muy seguro: «Las máscaras no aprietan.»")
 
 
 ## 7 · La antesala de la N.º 7: fuente con santo y una vision. La puerta, por
-## fin, a pie llano. Por ahora, aqui acaba lo hecho (#256).
+## fin, a pie llano.
 func _antesala() -> Dictionary:
 	_empezar("Antesala", 36, 18)
 	_nivel_3()
-	_raiz.set("fin", FIN_ANTESALA)
 	_piedra([[0, 0, 36, 2], [0, 0, 2, 10], [34, 0, 2, 18], [0, 14, 36, 4]])
 	_altar("Antesala", 8, 14)
 	_cirujano(4, 14)
@@ -214,15 +214,78 @@ func _antesala() -> Dictionary:
 		"Tú no lo dejes.",
 	]))
 	_poner(vision, "Visiones", "Antesala")
-	var adelante := _paso("Adelante", 28, 11, 2, 3, "", "", true, "E  entrar")
-	adelante.set("aviso", "E  entrar")
+	_paso("Adelante", 28, 11, 2, 3, "sala_7", "oeste", true, "E  entrar")
 	_puerta(29, 14)
 	_rotulo(29, 14, "N.º 7")
 	_paso("Oeste", 0, 10, 2, 4, "sala_6", "este")
 	_entrada("oeste", 3, 14, 1)
+	_entrada("sala7", 26, 14, -1)
 	_atrezo([["candelabro", 90, 224], ["candelabro", 400, 224], ["candelabro", 540, 224]])
 	_ambiente([], [[32, 224, 512]])
 	return {"nombre": "antesala", "ancho": 36, "alto": 18}
+
+
+## 8 · La Sala N.º 7 (#256): donde miro. La camilla, en medio. Una antesala de
+## techo bajo; la puerta que cae al entrar; el Decano. Tras el muro del fondo, la
+## puerta del Pabellon N.º 7, que se abre al caer, y el camino adelante.
+func _sala_7() -> Dictionary:
+	_empezar("Sala7", 48, 20)
+	_raiz.set_script(load("res://scripts/sala_siete.gd"))
+	_nivel_3()
+	_raiz.set("fin", FIN_SALA_7)
+	_piedra([[0, 0, 8, 10], [8, 0, 2, 1], [10, 0, 38, 2], [0, 0, 2, 20], [46, 0, 2, 20], [0, 16, 48, 4]])
+	_cirujano(4, 16)
+	var puerta := AnimatableBody2D.new()
+	puerta.set_script(load("res://scripts/muro.gd"))
+	puerta.position = Vector2(8 * 16, 1 * 16)
+	puerta.set("tiles", Vector2i(2, 9))
+	puerta.set("direccion", Vector2(0, 1))
+	puerta.set("recorrido", 96.0)
+	puerta.set("ciclico", false)
+	puerta.set("blanca", true)
+	_poner(puerta, "Muros", "Puerta")
+	var compactacion := Node2D.new()
+	_poner(compactacion, "", "Compactacion")
+	var fondo := AnimatableBody2D.new()
+	fondo.set_script(load("res://scripts/muro.gd"))
+	fondo.position = Vector2(38 * 16, 2 * 16)
+	fondo.set("tiles", Vector2i(3, 14))
+	fondo.set("direccion", Vector2.LEFT)
+	fondo.set("recorrido", 0.0)
+	fondo.set("ciclico", false)
+	fondo.set("blanca", true)
+	_poner(fondo, "Compactacion", "Fondo")
+	var guardianes := Node2D.new()
+	_poner(guardianes, "", "Guardianes")
+	var decano: Node2D = load("res://escenas/decano.tscn").instantiate(PackedScene.GEN_EDIT_STATE_INSTANCE)
+	decano.position = _pie(30, 16)
+	_poner(decano, "Guardianes", "Decano")
+	var vision := Node2D.new()
+	vision.set_script(load("res://scripts/vision.gd"))
+	vision.set("id", "tras-decano")
+	vision.set("tras", NodePath("../../Guardianes/Decano"))
+	vision.set("senal", "cae")
+	vision.set("objetivo", "criptas")
+	vision.set("lineas", PackedStringArray([
+		"No te preocupes, no oía tanto como decía.",
+		"¿Notas la pared? Detrás está tu cama.",
+		"Te lo dije. Cada vez hay menos vueltas.",
+	]))
+	_poner(vision, "Visiones", "TrasDecano")
+	_paso("Oeste", 2, 13, 2, 3, "antesala", "sala7", true, "E  volver")
+	_puerta(3, 16)
+	var pabellon := _paso("Pabellon", 41, 13, 2, 3, SALA_PABELLON, "sala7", true, "E  a tu Pabellón")
+	pabellon.set("pide_marca", "decano-vencido")
+	_puerta(42, 16)
+	var abajo := _paso("Abajo", 44, 13, 2, 3, "", "", true, "E  descender")
+	abajo.set("pide_marca", "decano-vencido")
+	abajo.set("negado_texto", "No hasta que caiga el Decano")
+	_puerta(45, 16)
+	_entrada("oeste", 5, 16, 1)
+	_entrada("pabellon", 42, 16, -1)
+	_atrezo([["candelabro", 56, 256], ["candelabro", 300, 256], ["candelabro", 520, 256]])
+	_ambiente([[400, 32, 110]], [[176, 256, 416]])
+	return {"nombre": "sala_7", "ancho": 48, "alto": 20}
 
 
 # --- Las piezas del Nivel III -------------------------------------------------

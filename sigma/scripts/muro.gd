@@ -15,6 +15,8 @@ const Compactacion := preload("res://scripts/compactacion.gd")
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Sonidos := preload("res://scripts/sonidos.gd")
 const SILLERIA := preload("res://arte/silleria/vientre.tres")
+## De que piedra es, en las salas que no son de la de siempre.
+const BLANCA := preload("res://arte/silleria/salas.tres")
 const Silleria := preload("res://scripts/silleria.gd")
 
 ## La piedra viva tira a carne: se distingue de la quieta.
@@ -30,6 +32,7 @@ const AVISO_VUELTA_MS := 700.0
 const CADA_CRUJIDO_MS := 420.0
 
 ## Su tamano, en tiles de 16 px.
+@export var blanca := false
 @export var tiles := Vector2i(3, 16)
 ## Hacia donde avanza: (1, 0), (-1, 0), (0, 1) o (0, -1).
 @export var direccion := Vector2.LEFT
@@ -67,7 +70,7 @@ func _ready() -> void:
 	add_child(caja)
 
 	_figura = TileMapLayer.new()
-	_figura.tile_set = SILLERIA
+	_figura.tile_set = (BLANCA if blanca else SILLERIA)
 	_figura.collision_enabled = false
 	_figura.modulate = TINTE
 	for x in tiles.x:

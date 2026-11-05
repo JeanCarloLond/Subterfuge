@@ -48,47 +48,47 @@ shader_parameter/fuerza = null
 offsets = PackedFloat32Array(0, 0.5, 1)
 colors = PackedColorArray(0.79, 0.71, 0.54, 0, 0.79, 0.71, 0.54, 0.35, 0.79, 0.71, 0.54, 0)
 
-[node name="Bajada" type="Node2D" unique_id=2042947962]
+[node name="Bajada" type="Node2D" unique_id=2065109055]
 script = ExtResource("1_bpdrs")
 limite_caida = 536.0
 musica = "catedral-bosque"
 metadata/tamano = Vector2i(44, 26)
 
-[node name="Telon" type="CanvasLayer" parent="." unique_id=1330503301]
+[node name="Telon" type="CanvasLayer" parent="." unique_id=1399626067]
 script = ExtResource("2_w2p1l")
 
-[node name="Nave" type="Node2D" parent="." unique_id=1322954937]
+[node name="Nave" type="Node2D" parent="." unique_id=706325267]
 script = ExtResource("3_3bake")
 
-[node name="Lejos" type="Parallax2D" parent="." unique_id=1950572905]
+[node name="Lejos" type="Parallax2D" parent="." unique_id=1415993649]
 z_index = -8
 scroll_scale = Vector2(0.6, 0.6)
 
-[node name="Ventana0" type="Sprite2D" parent="Lejos" unique_id=1802827383]
+[node name="Ventana0" type="Sprite2D" parent="Lejos" unique_id=1401578112]
 modulate = Color(0.48, 0.41, 0.47, 0.8)
 position = Vector2(111, 272)
 texture = ExtResource("4_c245k")
 centered = false
 offset = Vector2(-7, -33)
 
-[node name="Ventana1" type="Sprite2D" parent="Lejos" unique_id=1325953129]
+[node name="Ventana1" type="Sprite2D" parent="Lejos" unique_id=413327482]
 modulate = Color(0.48, 0.41, 0.47, 0.8)
 position = Vector2(354, 244)
 texture = ExtResource("4_c245k")
 centered = false
 offset = Vector2(-7, -33)
 
-[node name="Columna2" type="Sprite2D" parent="Lejos" unique_id=222553387]
+[node name="Columna2" type="Sprite2D" parent="Lejos" unique_id=952480190]
 modulate = Color(0.48, 0.41, 0.47, 0.8)
 position = Vector2(600, 224)
 texture = ExtResource("5_5wd0j")
 centered = false
 offset = Vector2(-6, -41)
 
-[node name="Decorado" type="Node2D" parent="." unique_id=1016975106]
+[node name="Decorado" type="Node2D" parent="." unique_id=1920627276]
 z_index = -5
 
-[node name="Vela0" type="Sprite2D" parent="Decorado" unique_id=2080466764]
+[node name="Vela0" type="Sprite2D" parent="Decorado" unique_id=1653909589]
 position = Vector2(120, 160)
 texture = ExtResource("6_lrrny")
 centered = false
@@ -96,35 +96,35 @@ offset = Vector2(-3, -10)
 script = ExtResource("7_235oj")
 vida = 1
 
-[node name="Luz" type="PointLight2D" parent="Decorado/Vela0" unique_id=2041652304]
+[node name="Luz" type="PointLight2D" parent="Decorado/Vela0" unique_id=1791036646]
 position = Vector2(0, -8)
 color = Color(1, 0.7, 0.38, 1)
 energy = 0.7
 texture = SubResource("GradientTexture2D_53dgd")
 texture_scale = 0.55
 
-[node name="Charco1" type="Sprite2D" parent="Decorado" unique_id=860464183]
+[node name="Charco1" type="Sprite2D" parent="Decorado" unique_id=1671596885]
 position = Vector2(300, 256)
 texture = ExtResource("8_qitgd")
 centered = false
 offset = Vector2(-9, -5)
 script = ExtResource("7_235oj")
 
-[node name="Camilla2" type="Sprite2D" parent="Decorado" unique_id=951321564]
+[node name="Camilla2" type="Sprite2D" parent="Decorado" unique_id=156695472]
 position = Vector2(460, 368)
 texture = ExtResource("9_7qjnf")
 centered = false
 offset = Vector2(-16, -12)
 script = ExtResource("7_235oj")
 
-[node name="Bandeja3" type="Sprite2D" parent="Decorado" unique_id=707191037]
+[node name="Bandeja3" type="Sprite2D" parent="Decorado" unique_id=569336962]
 position = Vector2(560, 368)
 texture = ExtResource("10_aenfr")
 centered = false
 offset = Vector2(-8, -9)
 script = ExtResource("7_235oj")
 
-[node name="Exvoto4" type="Sprite2D" parent="Decorado" unique_id=1186900107]
+[node name="Exvoto4" type="Sprite2D" parent="Decorado" unique_id=1433051853]
 position = Vector2(250, 32)
 texture = ExtResource("11_gyg5t")
 centered = false
@@ -132,7 +132,7 @@ offset = Vector2(-5, 0)
 script = ExtResource("7_235oj")
 vida = 2
 
-[node name="Exvoto5" type="Sprite2D" parent="Decorado" unique_id=1162725670]
+[node name="Exvoto5" type="Sprite2D" parent="Decorado" unique_id=1084299196]
 position = Vector2(500, 32)
 texture = ExtResource("11_gyg5t")
 centered = false
@@ -140,14 +140,14 @@ offset = Vector2(-5, 0)
 script = ExtResource("7_235oj")
 vida = 2
 
-[node name="Charco6" type="Sprite2D" parent="Decorado" unique_id=337461210]
+[node name="Charco6" type="Sprite2D" parent="Decorado" unique_id=1014341754]
 position = Vector2(640, 368)
 texture = ExtResource("8_qitgd")
 centered = false
 offset = Vector2(-9, -5)
 script = ExtResource("7_235oj")
 
-[node name="Columna900" type="Sprite2D" parent="Decorado" unique_id=134749812]
+[node name="Columna900" type="Sprite2D" parent="Decorado" unique_id=2082914885]
 modulate = Color(0.85, 0.82, 0.82, 0.9)
 position = Vector2(680, 368)
 scale = Vector2(1, 1.5609756)
@@ -155,7 +155,7 @@ texture = ExtResource("5_5wd0j")
 centered = false
 offset = Vector2(-6, -41)
 
-[node name="Columna901" type="Sprite2D" parent="Decorado" unique_id=847992769]
+[node name="Columna901" type="Sprite2D" parent="Decorado" unique_id=715621369]
 modulate = Color(0.85, 0.82, 0.82, 0.9)
 position = Vector2(696, 368)
 scale = Vector2(1, 1.5609756)
@@ -163,162 +163,162 @@ texture = ExtResource("5_5wd0j")
 centered = false
 offset = Vector2(-6, -41)
 
-[node name="Silleria" type="TileMapLayer" parent="." unique_id=1665631546]
+[node name="Silleria" type="TileMapLayer" parent="." unique_id=73698667]
 tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAAAAAAAAAAAAAABAAEAAAAAAAAAAAACAAAAAAAAAAAAAAACAAEAAAAAAAAAAAADAAAAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAAAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAAAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAAAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAAAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAAAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAAAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAAAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAAAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAAAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAAAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAAAAAAAAAAAAAAPAAEAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAEAAAAAAAAAAAARAAAAAAAAAAAAAAARAAEAAAAAAAAAAAASAAAAAAAAAAAAAAASAAEAAAAAAAAAAAATAAAAAAAAAAAAAAATAAEAAAAAAAAAAAAUAAAAAAAAAAAAAAAUAAEAAAAAAAAAAAAVAAAAAAAAAAAAAAAVAAEAAAAAAAAAAAAWAAAAAAAAAAAAAAAWAAEAAAAAAAAAAAAXAAAAAAAAAAAAAAAXAAEAAAAAAAAAAAAYAAAAAAAAAAAAAAAYAAEAAAAAAAAAAAAZAAAAAAAAAAAAAAAZAAEAAAAAAAAAAAAaAAAAAAAAAAAAAAAaAAEAAAAAAAAAAAAbAAAAAAAAAAAAAAAbAAEAAAAAAAAAAAAcAAAAAAAAAAAAAAAcAAEAAAAAAAAAAAAdAAAAAAAAAAAAAAAdAAEAAAAAAAAAAAAeAAAAAAAAAAAAAAAeAAEAAAAAAAAAAAAfAAAAAAAAAAAAAAAfAAEAAAAAAAAAAAAgAAAAAAAAAAAAAAAgAAEAAAAAAAAAAAAhAAAAAAAAAAAAAAAhAAEAAAAAAAAAAAAiAAAAAAAAAAAAAAAiAAEAAAAAAAAAAAAjAAAAAAAAAAAAAAAjAAEAAAAAAAAAAAAkAAAAAAAAAAAAAAAkAAEAAAAAAAAAAAAlAAAAAAAAAAAAAAAlAAEAAAAAAAAAAAAmAAAAAAAAAAAAAAAmAAEAAAAAAAAAAAAnAAAAAAAAAAAAAAAnAAEAAAAAAAAAAAAoAAAAAAAAAAAAAAAoAAEAAAAAAAAAAAApAAAAAAAAAAAAAAApAAEAAAAAAAAAAAAqAAAAAAAAAAAAAAAqAAEAAAAAAAAAAAArAAAAAAAAAAAAAAArAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA8AAAAAAAAAAAAAABAAAAAAAAAAAAAAABEAAAAAAAAAAAAAABIAAAAAAAAAAAAAABMAAAAAAAAAAAAAABQAAAAAAAAAAAAAABUAAAAAAAAAAAAAABYAAAAAAAAAAAAAABcAAAAAAAAAAAAAABgAAAAAAAAAAAAAABkAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAABAAQAAAAAAAAAAAABAAUAAAAAAAAAAAABAAYAAAAAAAAAAAABAAcAAAAAAAAAAAABAAgAAAAAAAAAAAABAAkAAAAAAAAAAAABAAoAAAAAAAAAAAABAAsAAAAAAAAAAAABAAwAAAAAAAAAAAABAA0AAAAAAAAAAAABAA4AAAAAAAAAAAABAA8AAAAAAAAAAAABABAAAAAAAAAAAAABABEAAAAAAAAAAAABABIAAAAAAAAAAAABABMAAAAAAAAAAAABABQAAAAAAAAAAAABABUAAAAAAAAAAAABABYAAAAAAAAAAAABABcAAAAAAAAAAAABABgAAAAAAAAAAAABABkAAAAAAAAAAAAqAAIAAAAAAAAAAAAqAAMAAAAAAAAAAAAqAAQAAAAAAAAAAAAqAAUAAAAAAAAAAAAqAAYAAAAAAAAAAAAqAAcAAAAAAAAAAAAqAAgAAAAAAAAAAAAqAAkAAAAAAAAAAAAqAAoAAAAAAAAAAAAqAAsAAAAAAAAAAAAqAAwAAAAAAAAAAAAqAA0AAAAAAAAAAAAqAA4AAAAAAAAAAAAqAA8AAAAAAAAAAAAqABAAAAAAAAAAAAAqABEAAAAAAAAAAAAqABIAAAAAAAAAAAArAAIAAAAAAAAAAAArAAMAAAAAAAAAAAArAAQAAAAAAAAAAAArAAUAAAAAAAAAAAArAAYAAAAAAAAAAAArAAcAAAAAAAAAAAArAAgAAAAAAAAAAAArAAkAAAAAAAAAAAArAAoAAAAAAAAAAAArAAsAAAAAAAAAAAArAAwAAAAAAAAAAAArAA0AAAAAAAAAAAArAA4AAAAAAAAAAAArAA8AAAAAAAAAAAArABAAAAAAAAAAAAArABEAAAAAAAAAAAArABIAAAAAAAAAAAAqABcAAAAAAAAAAAAqABgAAAAAAAAAAAAqABkAAAAAAAAAAAArABcAAAAAAAAAAAArABgAAAAAAAAAAAArABkAAAAAAAAAAAACAAoAAAAAAAAAAAACAAsAAAAAAAAAAAACAAwAAAAAAAAAAAACAA0AAAAAAAAAAAACAA4AAAAAAAAAAAACAA8AAAAAAAAAAAACABAAAAAAAAAAAAACABEAAAAAAAAAAAACABIAAAAAAAAAAAACABMAAAAAAAAAAAACABQAAAAAAAAAAAACABUAAAAAAAAAAAACABYAAAAAAAAAAAACABcAAAAAAAAAAAACABgAAAAAAAAAAAACABkAAAAAAAAAAAADAAoAAAAAAAAAAAADAAsAAAAAAAAAAAADAAwAAAAAAAAAAAADAA0AAAAAAAAAAAADAA4AAAAAAAAAAAADAA8AAAAAAAAAAAADABAAAAAAAAAAAAADABEAAAAAAAAAAAADABIAAAAAAAAAAAADABMAAAAAAAAAAAADABQAAAAAAAAAAAADABUAAAAAAAAAAAADABYAAAAAAAAAAAADABcAAAAAAAAAAAADABgAAAAAAAAAAAADABkAAAAAAAAAAAAEAAoAAAAAAAAAAAAEAAsAAAAAAAAAAAAEAAwAAAAAAAAAAAAEAA0AAAAAAAAAAAAEAA4AAAAAAAAAAAAEAA8AAAAAAAAAAAAEABAAAAAAAAAAAAAEABEAAAAAAAAAAAAEABIAAAAAAAAAAAAEABMAAAAAAAAAAAAEABQAAAAAAAAAAAAEABUAAAAAAAAAAAAEABYAAAAAAAAAAAAEABcAAAAAAAAAAAAEABgAAAAAAAAAAAAEABkAAAAAAAAAAAAFAAoAAAAAAAAAAAAFAAsAAAAAAAAAAAAFAAwAAAAAAAAAAAAFAA0AAAAAAAAAAAAFAA4AAAAAAAAAAAAFAA8AAAAAAAAAAAAFABAAAAAAAAAAAAAFABEAAAAAAAAAAAAFABIAAAAAAAAAAAAFABMAAAAAAAAAAAAFABQAAAAAAAAAAAAFABUAAAAAAAAAAAAFABYAAAAAAAAAAAAFABcAAAAAAAAAAAAFABgAAAAAAAAAAAAFABkAAAAAAAAAAAAGAAoAAAAAAAAAAAAGAAsAAAAAAAAAAAAGAAwAAAAAAAAAAAAGAA0AAAAAAAAAAAAGAA4AAAAAAAAAAAAGAA8AAAAAAAAAAAAGABAAAAAAAAAAAAAGABEAAAAAAAAAAAAGABIAAAAAAAAAAAAGABMAAAAAAAAAAAAGABQAAAAAAAAAAAAGABUAAAAAAAAAAAAGABYAAAAAAAAAAAAGABcAAAAAAAAAAAAGABgAAAAAAAAAAAAGABkAAAAAAAAAAAAHAAoAAAAAAAAAAAAHAAsAAAAAAAAAAAAHAAwAAAAAAAAAAAAHAA0AAAAAAAAAAAAHAA4AAAAAAAAAAAAHAA8AAAAAAAAAAAAHABAAAAAAAAAAAAAHABEAAAAAAAAAAAAHABIAAAAAAAAAAAAHABMAAAAAAAAAAAAHABQAAAAAAAAAAAAHABUAAAAAAAAAAAAHABYAAAAAAAAAAAAHABcAAAAAAAAAAAAHABgAAAAAAAAAAAAHABkAAAAAAAAAAAAIAAoAAAAAAAAAAAAIAAsAAAAAAAAAAAAIAAwAAAAAAAAAAAAIAA0AAAAAAAAAAAAIAA4AAAAAAAAAAAAIAA8AAAAAAAAAAAAIABAAAAAAAAAAAAAIABEAAAAAAAAAAAAIABIAAAAAAAAAAAAIABMAAAAAAAAAAAAIABQAAAAAAAAAAAAIABUAAAAAAAAAAAAIABYAAAAAAAAAAAAIABcAAAAAAAAAAAAIABgAAAAAAAAAAAAIABkAAAAAAAAAAAAJAAoAAAAAAAAAAAAJAAsAAAAAAAAAAAAJAAwAAAAAAAAAAAAJAA0AAAAAAAAAAAAJAA4AAAAAAAAAAAAJAA8AAAAAAAAAAAAJABAAAAAAAAAAAAAJABEAAAAAAAAAAAAJABIAAAAAAAAAAAAJABMAAAAAAAAAAAAJABQAAAAAAAAAAAAJABUAAAAAAAAAAAAJABYAAAAAAAAAAAAJABcAAAAAAAAAAAAJABgAAAAAAAAAAAAJABkAAAAAAAAAAAAKAAoAAAAAAAAAAAAKAAsAAAAAAAAAAAAKAAwAAAAAAAAAAAAKAA0AAAAAAAAAAAAKAA4AAAAAAAAAAAAKAA8AAAAAAAAAAAAKABAAAAAAAAAAAAAKABEAAAAAAAAAAAAKABIAAAAAAAAAAAAKABMAAAAAAAAAAAAKABQAAAAAAAAAAAAKABUAAAAAAAAAAAAKABYAAAAAAAAAAAAKABcAAAAAAAAAAAAKABgAAAAAAAAAAAAKABkAAAAAAAAAAAALAAoAAAAAAAAAAAALAAsAAAAAAAAAAAALAAwAAAAAAAAAAAALAA0AAAAAAAAAAAALAA4AAAAAAAAAAAALAA8AAAAAAAAAAAALABAAAAAAAAAAAAALABEAAAAAAAAAAAALABIAAAAAAAAAAAALABMAAAAAAAAAAAALABQAAAAAAAAAAAALABUAAAAAAAAAAAALABYAAAAAAAAAAAALABcAAAAAAAAAAAALABgAAAAAAAAAAAALABkAAAAAAAAAAAAMAAoAAAAAAAAAAAAMAAsAAAAAAAAAAAAMAAwAAAAAAAAAAAAMAA0AAAAAAAAAAAAMAA4AAAAAAAAAAAAMAA8AAAAAAAAAAAAMABAAAAAAAAAAAAAMABEAAAAAAAAAAAAMABIAAAAAAAAAAAAMABMAAAAAAAAAAAAMABQAAAAAAAAAAAAMABUAAAAAAAAAAAAMABYAAAAAAAAAAAAMABcAAAAAAAAAAAAMABgAAAAAAAAAAAAMABkAAAAAAAAAAAANAAoAAAAAAAAAAAANAAsAAAAAAAAAAAANAAwAAAAAAAAAAAANAA0AAAAAAAAAAAANAA4AAAAAAAAAAAANAA8AAAAAAAAAAAANABAAAAAAAAAAAAANABEAAAAAAAAAAAANABIAAAAAAAAAAAANABMAAAAAAAAAAAANABQAAAAAAAAAAAANABUAAAAAAAAAAAANABYAAAAAAAAAAAANABcAAAAAAAAAAAANABgAAAAAAAAAAAANABkAAAAAAAAAAAAOAA0AAAAAAAAAAAAOAA4AAAAAAAAAAAAOAA8AAAAAAAAAAAAOABAAAAAAAAAAAAAOABEAAAAAAAAAAAAOABIAAAAAAAAAAAAOABMAAAAAAAAAAAAOABQAAAAAAAAAAAAOABUAAAAAAAAAAAAOABYAAAAAAAAAAAAOABcAAAAAAAAAAAAOABgAAAAAAAAAAAAOABkAAAAAAAAAAAAPAA0AAAAAAAAAAAAPAA4AAAAAAAAAAAAPAA8AAAAAAAAAAAAPABAAAAAAAAAAAAAPABEAAAAAAAAAAAAPABIAAAAAAAAAAAAPABMAAAAAAAAAAAAPABQAAAAAAAAAAAAPABUAAAAAAAAAAAAPABYAAAAAAAAAAAAPABcAAAAAAAAAAAAPABgAAAAAAAAAAAAPABkAAAAAAAAAAAAQAA0AAAAAAAAAAAAQAA4AAAAAAAAAAAAQAA8AAAAAAAAAAAAQABAAAAAAAAAAAAAQABEAAAAAAAAAAAAQABIAAAAAAAAAAAAQABMAAAAAAAAAAAAQABQAAAAAAAAAAAAQABUAAAAAAAAAAAAQABYAAAAAAAAAAAAQABcAAAAAAAAAAAAQABgAAAAAAAAAAAAQABkAAAAAAAAAAAARAA0AAAAAAAAAAAARAA4AAAAAAAAAAAARAA8AAAAAAAAAAAARABAAAAAAAAAAAAARABEAAAAAAAAAAAARABIAAAAAAAAAAAARABMAAAAAAAAAAAARABQAAAAAAAAAAAARABUAAAAAAAAAAAARABYAAAAAAAAAAAARABcAAAAAAAAAAAARABgAAAAAAAAAAAARABkAAAAAAAAAAAASABAAAAAAAAAAAAASABEAAAAAAAAAAAASABIAAAAAAAAAAAASABMAAAAAAAAAAAASABQAAAAAAAAAAAASABUAAAAAAAAAAAASABYAAAAAAAAAAAASABcAAAAAAAAAAAASABgAAAAAAAAAAAASABkAAAAAAAAAAAATABAAAAAAAAAAAAATABEAAAAAAAAAAAATABIAAAAAAAAAAAATABMAAAAAAAAAAAATABQAAAAAAAAAAAATABUAAAAAAAAAAAATABYAAAAAAAAAAAATABcAAAAAAAAAAAATABgAAAAAAAAAAAATABkAAAAAAAAAAAAUABAAAAAAAAAAAAAUABEAAAAAAAAAAAAUABIAAAAAAAAAAAAUABMAAAAAAAAAAAAUABQAAAAAAAAAAAAUABUAAAAAAAAAAAAUABYAAAAAAAAAAAAUABcAAAAAAAAAAAAUABgAAAAAAAAAAAAUABkAAAAAAAAAAAAVABAAAAAAAAAAAAAVABEAAAAAAAAAAAAVABIAAAAAAAAAAAAVABMAAAAAAAAAAAAVABQAAAAAAAAAAAAVABUAAAAAAAAAAAAVABYAAAAAAAAAAAAVABcAAAAAAAAAAAAVABgAAAAAAAAAAAAVABkAAAAAAAAAAAAWABMAAAAAAAAAAAAWABQAAAAAAAAAAAAWABUAAAAAAAAAAAAWABYAAAAAAAAAAAAWABcAAAAAAAAAAAAWABgAAAAAAAAAAAAWABkAAAAAAAAAAAAXABMAAAAAAAAAAAAXABQAAAAAAAAAAAAXABUAAAAAAAAAAAAXABYAAAAAAAAAAAAXABcAAAAAAAAAAAAXABgAAAAAAAAAAAAXABkAAAAAAAAAAAAYABMAAAAAAAAAAAAYABQAAAAAAAAAAAAYABUAAAAAAAAAAAAYABYAAAAAAAAAAAAYABcAAAAAAAAAAAAYABgAAAAAAAAAAAAYABkAAAAAAAAAAAAZABMAAAAAAAAAAAAZABQAAAAAAAAAAAAZABUAAAAAAAAAAAAZABYAAAAAAAAAAAAZABcAAAAAAAAAAAAZABgAAAAAAAAAAAAZABkAAAAAAAAAAAAaABcAAAAAAAAAAAAaABgAAAAAAAAAAAAaABkAAAAAAAAAAAAbABcAAAAAAAAAAAAbABgAAAAAAAAAAAAbABkAAAAAAAAAAAAcABcAAAAAAAAAAAAcABgAAAAAAAAAAAAcABkAAAAAAAAAAAAdABcAAAAAAAAAAAAdABgAAAAAAAAAAAAdABkAAAAAAAAAAAAeABcAAAAAAAAAAAAeABgAAAAAAAAAAAAeABkAAAAAAAAAAAAfABcAAAAAAAAAAAAfABgAAAAAAAAAAAAfABkAAAAAAAAAAAAgABcAAAAAAAAAAAAgABgAAAAAAAAAAAAgABkAAAAAAAAAAAAhABcAAAAAAAAAAAAhABgAAAAAAAAAAAAhABkAAAAAAAAAAAAiABcAAAAAAAAAAAAiABgAAAAAAAAAAAAiABkAAAAAAAAAAAAjABcAAAAAAAAAAAAjABgAAAAAAAAAAAAjABkAAAAAAAAAAAAkABcAAAAAAAAAAAAkABgAAAAAAAAAAAAkABkAAAAAAAAAAAAlABcAAAAAAAAAAAAlABgAAAAAAAAAAAAlABkAAAAAAAAAAAAmABcAAAAAAAAAAAAmABgAAAAAAAAAAAAmABkAAAAAAAAAAAAnABcAAAAAAAAAAAAnABgAAAAAAAAAAAAnABkAAAAAAAAAAAAoABcAAAAAAAAAAAAoABgAAAAAAAAAAAAoABkAAAAAAAAAAAApABcAAAAAAAAAAAApABgAAAAAAAAAAAApABkAAAAAAAAAAAAhAAgAAAAAAAAAAAAiAAgAAAAAAAAAAAAjAAgAAAAAAAAAAAAkAAgAAAAAAAAAAAAlAAgAAAAAAAAAAAAmAAgAAAAAAAAAAAAnAAgAAAAAAAAAAAAoAAgAAAAAAAAAAAApAAgAAAAAAAAAAAA=")
 tile_set = ExtResource("4_bkdyw")
 script = ExtResource("5_3hqmx")
 
-[node name="Ruina" type="Node2D" parent="." unique_id=116623640]
+[node name="Ruina" type="Node2D" parent="." unique_id=671486287]
 
-[node name="@Sprite2D@2" type="Sprite2D" parent="Ruina" unique_id=6101731]
+[node name="@Sprite2D@2" type="Sprite2D" parent="Ruina" unique_id=2143895148]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(24, 344)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(64, 16, 16, 16)
 
-[node name="@Sprite2D@3" type="Sprite2D" parent="Ruina" unique_id=473467950]
+[node name="@Sprite2D@3" type="Sprite2D" parent="Ruina" unique_id=1265092913]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(680, 392)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(80, 0, 16, 16)
 
-[node name="@Sprite2D@4" type="Sprite2D" parent="Ruina" unique_id=963253272]
+[node name="@Sprite2D@4" type="Sprite2D" parent="Ruina" unique_id=1248775145]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(88, 392)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 16)
 
-[node name="@Sprite2D@5" type="Sprite2D" parent="Ruina" unique_id=1505685272]
+[node name="@Sprite2D@5" type="Sprite2D" parent="Ruina" unique_id=1473490315]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(120, 248)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(32, 0, 16, 16)
 
-[node name="@Sprite2D@6" type="Sprite2D" parent="Ruina" unique_id=1046004877]
+[node name="@Sprite2D@6" type="Sprite2D" parent="Ruina" unique_id=1977864155]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(152, 360)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(112, 16, 16, 16)
 
-[node name="@Sprite2D@7" type="Sprite2D" parent="Ruina" unique_id=1309269140]
+[node name="@Sprite2D@7" type="Sprite2D" parent="Ruina" unique_id=724888783]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(168, 296)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(32, 16, 16, 16)
 
-[node name="@Sprite2D@8" type="Sprite2D" parent="Ruina" unique_id=1067792491]
+[node name="@Sprite2D@8" type="Sprite2D" parent="Ruina" unique_id=144670060]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(200, 200)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(0, 16, 16, 16)
 
-[node name="@Sprite2D@9" type="Sprite2D" parent="Ruina" unique_id=76617508]
+[node name="@Sprite2D@9" type="Sprite2D" parent="Ruina" unique_id=164210406]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(200, 344)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(80, 16, 16, 16)
 
-[node name="@Sprite2D@10" type="Sprite2D" parent="Ruina" unique_id=1196206212]
+[node name="@Sprite2D@10" type="Sprite2D" parent="Ruina" unique_id=2139229603]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(216, 264)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(48, 16, 16, 16)
 
-[node name="@Sprite2D@11" type="Sprite2D" parent="Ruina" unique_id=1129892780]
+[node name="@Sprite2D@11" type="Sprite2D" parent="Ruina" unique_id=118588519]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(248, 312)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(80, 16, 16, 16)
 
-[node name="@Sprite2D@12" type="Sprite2D" parent="Ruina" unique_id=1478315784]
+[node name="@Sprite2D@12" type="Sprite2D" parent="Ruina" unique_id=1111927603]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(296, 280)
 texture = ExtResource("14_fwxde")
 region_enabled = true
 region_rect = Rect2(48, 16, 16, 16)
 
-[node name="@Sprite2D@13" type="Sprite2D" parent="Ruina" unique_id=1566650069]
+[node name="@Sprite2D@13" type="Sprite2D" parent="Ruina" unique_id=81010181]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(200, 0)
 texture = ExtResource("15_708eg")
 region_enabled = true
 region_rect = Rect2(120, 0, 24, 24)
 
-[node name="@Sprite2D@14" type="Sprite2D" parent="Ruina" unique_id=1262567578]
+[node name="@Sprite2D@14" type="Sprite2D" parent="Ruina" unique_id=489244729]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(88, 160)
 texture = ExtResource("15_708eg")
 region_enabled = true
 region_rect = Rect2(120, 0, 24, 24)
 
-[node name="@Sprite2D@15" type="Sprite2D" parent="Ruina" unique_id=1523609198]
+[node name="@Sprite2D@15" type="Sprite2D" parent="Ruina" unique_id=1274748105]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(392, 304)
 texture = ExtResource("15_708eg")
 region_enabled = true
 region_rect = Rect2(120, 24, 24, 24)
 
-[node name="@Sprite2D@16" type="Sprite2D" parent="Ruina" unique_id=96560462]
+[node name="@Sprite2D@16" type="Sprite2D" parent="Ruina" unique_id=1379606645]
 modulate = Color(0.9098039, 0.89411765, 0.8784314, 1)
 position = Vector2(584, 368)
 texture = ExtResource("15_708eg")
 region_enabled = true
 region_rect = Rect2(120, 0, 24, 24)
 
-[node name="Membranas" type="TileMapLayer" parent="." unique_id=43369823 groups=["clavable"]]
+[node name="Membranas" type="TileMapLayer" parent="." unique_id=212035567 groups=["clavable"]]
 tile_set = ExtResource("6_v0ub8")
 
-[node name="Atrezo" type="Node2D" parent="." unique_id=804083165]
+[node name="Atrezo" type="Node2D" parent="." unique_id=1798763153]
 script = ExtResource("7_hcy7i")
 piezas = [["candelabro", 180, 160], ["candelabro", 340, 256], ["candelabro", 620, 368]]
 
-[node name="Ambiente" type="Node2D" parent="." unique_id=590628308]
+[node name="Ambiente" type="Node2D" parent="." unique_id=1198468179]
 script = ExtResource("8_0ih1c")
 silleria = NodePath("../Silleria")
 cadenas = [[250, 32, 100], [500, 32, 200]]
 nieblas = [[416, 368, 256]]
 
-[node name="Temblor" type="Node2D" parent="." unique_id=1817916067]
+[node name="Temblor" type="Node2D" parent="." unique_id=275463992]
 script = ExtResource("9_4a0o0")
 
-[node name="Devotos" type="Node2D" parent="." unique_id=971220870]
+[node name="Devotos" type="Node2D" parent="." unique_id=622533964]
 
-[node name="Devoto" parent="Devotos" unique_id=964449253 instance=ExtResource("10_s5oyn")]
+[node name="Devoto" parent="Devotos" unique_id=967213802 instance=ExtResource("10_s5oyn")]
 position = Vector2(552, 368)
 ronda_izquierda = 470.0
 ronda_derecha = 640.0
 
-[node name="Vestales" type="Node2D" parent="." unique_id=1145300630]
+[node name="Vestales" type="Node2D" parent="." unique_id=1985721453]
 
-[node name="Altares" type="Node2D" parent="." unique_id=1949326942]
+[node name="Altares" type="Node2D" parent="." unique_id=390692780]
 
-[node name="Muros" type="Node2D" parent="." unique_id=1930634234]
+[node name="Muros" type="Node2D" parent="." unique_id=824770438]
 
-[node name="Peligros" type="Node2D" parent="." unique_id=1566168339]
+[node name="Peligros" type="Node2D" parent="." unique_id=1563038174]
 
-[node name="Notas" type="Node2D" parent="." unique_id=1183551317]
+[node name="Notas" type="Node2D" parent="." unique_id=1406938039]
 
-[node name="Charlas" type="Node2D" parent="." unique_id=488018004]
+[node name="Charlas" type="Node2D" parent="." unique_id=1466455583]
 
-[node name="Reliquias" type="Node2D" parent="." unique_id=719921018]
+[node name="Reliquias" type="Node2D" parent="." unique_id=947422925]
 
-[node name="Visiones" type="Node2D" parent="." unique_id=687019517]
+[node name="Visiones" type="Node2D" parent="." unique_id=233390387]
 
-[node name="Carteles" type="Node2D" parent="." unique_id=682951403]
+[node name="Carteles" type="Node2D" parent="." unique_id=577919212]
 
-[node name="Pasos" type="Node2D" parent="." unique_id=2067912426]
+[node name="Pasos" type="Node2D" parent="." unique_id=1304076724]
 
-[node name="Arriba" type="Node2D" parent="Pasos" unique_id=307525211]
+[node name="Arriba" type="Node2D" parent="Pasos" unique_id=125897257]
 position = Vector2(48, 112)
 script = ExtResource("11_c245k")
 zona = Vector2(32, 48)
@@ -327,31 +327,31 @@ entrada = "abajo"
 con_e = true
 aviso = "E  subir"
 
-[node name="Este" type="Node2D" parent="Pasos" unique_id=256450610]
+[node name="Este" type="Node2D" parent="Pasos" unique_id=1117108041]
 position = Vector2(672, 304)
 script = ExtResource("11_c245k")
 zona = Vector2(32, 64)
 destino = "res://escenas/nivel3/sala_1.tscn"
 entrada = "oeste"
 
-[node name="Entradas" type="Node2D" parent="." unique_id=437734286]
+[node name="Entradas" type="Node2D" parent="." unique_id=1060613585]
 
-[node name="arriba" type="Marker2D" parent="Entradas" unique_id=262683294]
+[node name="arriba" type="Marker2D" parent="Entradas" unique_id=1585823857]
 position = Vector2(104, 160)
 metadata/mirando = 1
 
-[node name="este" type="Marker2D" parent="Entradas" unique_id=535243908]
+[node name="este" type="Marker2D" parent="Entradas" unique_id=1521181535]
 position = Vector2(632, 368)
 metadata/mirando = -1
 
-[node name="Puerta" type="Sprite2D" parent="." unique_id=595088061]
+[node name="Puerta" type="Sprite2D" parent="." unique_id=1837285891]
 z_index = -1
 position = Vector2(600, 128)
 texture = ExtResource("12_5wd0j")
 centered = false
 offset = Vector2(-10, -34)
 
-[node name="Rotulo" type="Label" parent="." unique_id=994855557]
+[node name="Rotulo" type="Label" parent="." unique_id=857872554]
 z_index = -1
 offset_left = 580.0
 offset_top = 76.0
@@ -361,10 +361,10 @@ theme_override_colors/font_color = Color(0.85, 0.62, 0.25, 1)
 text = "N.º 7"
 horizontal_alignment = 1
 
-[node name="Cirujano" parent="." unique_id=655079279 instance=ExtResource("13_lrrny")]
+[node name="Cirujano" parent="." unique_id=372372033 instance=ExtResource("13_lrrny")]
 position = Vector2(104, 160)
 
-[node name="Camara" type="Camera2D" parent="Cirujano" unique_id=1696483457]
+[node name="Camara" type="Camera2D" parent="Cirujano" unique_id=1954499139]
 limit_left = 0
 limit_top = 0
 limit_right = 704
@@ -378,31 +378,31 @@ drag_top_margin = 0.125
 drag_right_margin = 0.125
 drag_bottom_margin = 0.125
 
-[node name="Puerta2" type="Sprite2D" parent="." unique_id=1407635707]
+[node name="Puerta2" type="Sprite2D" parent="." unique_id=167515140]
 z_index = -1
 position = Vector2(72, 160)
 texture = ExtResource("12_5wd0j")
 centered = false
 offset = Vector2(-10, -34)
 
-[node name="Vineta" type="CanvasLayer" parent="." unique_id=1949025898]
+[node name="Vineta" type="CanvasLayer" parent="." unique_id=781625787]
 
-[node name="Velo" type="ColorRect" parent="Vineta" unique_id=705517079]
+[node name="Velo" type="ColorRect" parent="Vineta" unique_id=1843986819]
 material = SubResource("ShaderMaterial_7qjnf")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Interfaz" parent="." unique_id=1540789501 instance=ExtResource("15_qitgd")]
+[node name="Interfaz" parent="." unique_id=2108180568 instance=ExtResource("15_qitgd")]
 
-[node name="Penumbra" type="CanvasModulate" parent="." unique_id=1327043189]
+[node name="Penumbra" type="CanvasModulate" parent="." unique_id=1567011737]
 color = Color(0.78, 0.76, 0.74, 1)
 
-[node name="Polvo" type="CanvasLayer" parent="." unique_id=1090349565]
+[node name="Polvo" type="CanvasLayer" parent="." unique_id=836993548]
 layer = -1
 
-[node name="Motas" type="CPUParticles2D" parent="Polvo" unique_id=2146935063]
+[node name="Motas" type="CPUParticles2D" parent="Polvo" unique_id=212291713]
 position = Vector2(320, 180)
 amount = 34
 lifetime = 9.0

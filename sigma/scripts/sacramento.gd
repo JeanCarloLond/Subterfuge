@@ -300,6 +300,28 @@ const PRIOR := {
 	"contacto": 1,
 }
 
+## El Decano de las Manos (#256): pelea de espejo. Para de frente y responde; es
+## ciego y oye, asi que quien mira un rato lo trae corriendo.
+const DECANO := {
+	"vida": 70,
+	"fase_dos": 0.5,
+	"velocidad": 42.0,
+	"velocidad_acude": 240.0,
+	"acude_tras_ms": 800.0,
+	"acude_max_ms": 1200.0,
+	## Lo que se queda el aviso del tajo cuando acude: menos tiempo para pararlo.
+	"aviso_al_acudir": 0.6,
+	"tajo": {"anticipacion_ms": 480.0, "anticipacion_segundo_ms": 300.0, "dano": 2, "alcance": 40.0},
+	## Solo avisa con el hilo que ve el ojo; sin mirar, un traqueteo.
+	"estocada": {"anticipacion_ms": 620.0, "dano": 2, "alcance": 96.0},
+	## Lo que tarda en responder cuando le paran un golpe.
+	"contra_ms": 260.0,
+	"recuperacion_ms": 480.0,
+	"enfriamiento_ms": 800.0,
+	"enfriamiento_fase_dos_ms": 520.0,
+	"aturdimiento_ms": 1000.0,
+}
+
 ## La Injertadora (#191): el arma a distancia, con los numeros del original
 ## (src/config/Sacramento.ts). Tres injertos; pega casi como el cargado, no da
 ## Fervor y se recarga con los injertos que sueltan los fieles. Se gana al

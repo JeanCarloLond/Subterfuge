@@ -65,6 +65,13 @@ const SALAS_3 := {
 			[230, 224, "auxiliar", ["El Decano ha preguntado.", "Por usted. Hace años."]],
 		],
 	},
+	"sala_7": {
+		"penumbra": Color(0.7, 0.66, 0.66),
+		"decorado": [
+			[380, 256, "camilla"], [420, 256, "bandeja"], [340, 256, "charco"], [640, 256, "charco"],
+			[300, 32, "exvoto"], [460, 32, "exvoto"], [720, 256, "vela"],
+		],
+	},
 }
 
 

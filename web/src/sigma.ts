@@ -297,7 +297,13 @@ export const NOMBRES_SIGMA: readonly NombreSigma[] = [
     nombre: 'El Pulmón Vacío',
     oficio: 'Reliquia del Nivel III',
     estado: 'consta',
-    nota: 'La reliquia del doble salto, el Impulso cárnico. En la campaña queda para el Nivel III; en el Atrio de demostración sigue disponible.',
+    nota: 'La reliquia del doble salto, el Impulso cárnico. Se guarda en un relicario de la Sala N.º 5, por orden del Decano.',
+  },
+  {
+    nombre: 'El Decano de las Manos',
+    oficio: 'Maestro de las Manos del Sacramento',
+    estado: 'consta',
+    nota: 'Formó a todas las Manos que hoy operan. Sigue en la Sala N.º 7. No ha faltado a un turno.',
   },
   {
     nombre: 'La Injertadora',

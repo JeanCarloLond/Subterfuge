@@ -51,7 +51,7 @@ const trio = (base, luz, sombra) => [hx(base), hx(luz), hx(sombra)];
  * de piel oscura y barba de días. Ya no lleva máscara: la Mano que mira se la
  * quitó. Base, luz y sombra de cada material.
  */
-const PALETA = {
+export const PALETA = {
   contorno: hx('#140c0b'),
   habito: trio('#e2dcd2', '#f6f2ec', '#aaa198'),
   interior: trio('#3a2420', '#5a3830', '#140c0b'),
@@ -68,6 +68,7 @@ const PALETA = {
   piel: trio('#7c5038', '#a06e50', '#4e2e20'),
   // Las lineas de los pliegues del velo y de la esclavina: planas, sin luz.
   pliegue: trio('#7c7268', '#7c7268', '#7c7268'),
+  mascara: trio('#d9cfbc', '#efe6d4', '#a89e8a'),
   ceja: trio('#1e120c', '#1e120c', '#1e120c'),
   venda: trio('#d9cbb0', '#efe5d2', '#a8987c'),
   sangre: trio('#8e2a24', '#a8382f', '#5e1a16'),
@@ -326,6 +327,9 @@ function piezas(p) {
   out.push([elipse(en(cabeza, OJO_CERCA), 0.8, 0.5), 'ojo']);
   out.push([elipse(en(cabeza, [3.6, -1]), 0.6, 0.5), 'ojo']);
 
+  // La mascara ciega de las Manos: lo que el Cirujano se quito. La lleva el Decano.
+  if (p.mascara) out.push([elipse(en(cabeza, [1.2, 0.3]), 4.8, 5.2), 'mascara']);
+
   // La mitra: ancha, en alas, mas que la cara; el filo de oro en V desde la
   // frente, la banda y la gema redonda en su engaste.
   const mitraLean = cabezaLean * 0.6;
@@ -374,8 +378,8 @@ function piezas(p) {
 }
 
 /** Una pose a pixeles: matriz de [r, g, b, a]. */
-export function dibujar(pose, opciones) {
-  return rasterizar(piezas(pose), ANCHO, ALTO, PALETA, opciones);
+export function dibujar(pose, { paleta = PALETA, ...opciones } = {}) {
+  return rasterizar(piezas(pose), ANCHO, ALTO, paleta, opciones);
 }
 
 /** Un color mas oscuro: el contorno selectivo de cada material. */
