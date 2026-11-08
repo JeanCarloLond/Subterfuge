@@ -10,6 +10,9 @@ Qué hay en esta carpeta y para quién es.
 - **[DESARROLLO.md](DESARROLLO.md)**: cómo está hecho el juego y el portal. La
   estructura, el flujo de escenas, el combate, los tests, cada sistema y por qué
   se decidió así. Es lo primero que hay que leer antes de tocar código.
+- **[PORTAL-WEB.md](PORTAL-WEB.md)**: recorrido por el Portal de la Diócesis, qué
+  representa cada sección en el universo y qué material de la biblia y de Sigma
+  se publicó en la última revisión.
 - **[CONTRIBUTING](../CONTRIBUTING.md)**: el flujo de trabajo, los tests que se
   piden a cada PR y las reglas de arte, textos y canon.
 - **[qa/](qa/)**: la guía para la prueba con jugadores y en móviles reales.
