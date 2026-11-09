@@ -25,7 +25,9 @@ func _initialize() -> void:
 	paso.set("con_e", true)
 	paso.set("aviso", "E  a tu Sala")
 	paso.set("pide_marca", "decano-vencido")
-	paso.set("negado_texto", "La piedra no cede")
+	# Cerrada, ni se ve: se tomaba por la salida del Pabellon.
+	paso.set("escondido_hasta_abrir", true)
+	paso.set("puerta", NodePath("../../PuertaSala7"))
 	escena.get_node("Pasos").add_child(paso)
 	paso.owner = escena
 	var entrada := Marker2D.new()

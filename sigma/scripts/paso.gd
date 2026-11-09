@@ -33,6 +33,12 @@ signal negado(texto: String)
 @export var negado_texto := ""
 ## La marca que deja al cruzarlo (vacio: ninguna).
 @export var abre := ""
+## Mientras no se abre, no existe: ni se ve su puerta ni pide E. Para las que
+## abre algo que pasa mucho despues, en salas por donde se pasa antes: en el
+## Pabellon, la puerta de la N.º 7 se tomaba por la salida y no dejaba avanzar.
+@export var escondido_hasta_abrir := false
+## Lo que se esconde con el (el umbral pintado).
+@export var puerta: NodePath
 
 ## Quien cruza: el Cirujano. Lo pone la sala.
 var cirujano: CharacterBody2D
@@ -42,6 +48,12 @@ var _cartel: Label
 
 
 func _ready() -> void:
+	if escondido_hasta_abrir and not _se_abre():
+		var umbral := get_node_or_null(puerta)
+		if umbral:
+			umbral.visible = false
+		set_physics_process(false)
+		return
 	if con_e:
 		_cartel = Label.new()
 		_cartel.text = aviso

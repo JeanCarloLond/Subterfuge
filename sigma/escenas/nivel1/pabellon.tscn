@@ -387,7 +387,8 @@ entrada = "pabellon"
 con_e = true
 aviso = "E  a tu Sala"
 pide_marca = "decano-vencido"
-negado_texto = "La piedra no cede"
+escondido_hasta_abrir = true
+puerta = NodePath("../../PuertaSala7")
 
 [node name="Entradas" type="Node2D" parent="." unique_id=545077266]
 

@@ -87,6 +87,8 @@ func test_la_7_se_funde_con_el_pabellon_al_caer_el_decano() -> void:
 	var casa: Node = load("res://escenas/nivel1/pabellon.tscn").instantiate()
 	afirmar_igual(casa.get_node("Pasos/Sala7").destino, DIR + "sala_7.tscn", "y del Pabellón se vuelve")
 	afirmar_igual(casa.get_node("Pasos/Sala7").pide_marca, "decano-vencido", "cerrado hasta entonces")
+	afirmar(casa.get_node("Pasos/Sala7").escondido_hasta_abrir, "y escondido: no se toma por la salida")
+	afirmar(casa.get_node("Pasos/Sala7").get_node_or_null(casa.get_node("Pasos/Sala7").puerta) != null, "con su umbral")
 	afirmar_igual(casa.get_node("Visiones/Sala7").pide_marca, "decano-vencido", "ella solo habla después")
 	casa.free()
 
