@@ -8,6 +8,13 @@
 extends Node2D
 
 const SIGUIENTE := "res://escenas/nivel1/pabellon.tscn"
+## La entrada del Cirujano en la N.º 7: de donde a donde anda, y a que paso
+## (en pixeles de pantalla; el sprite va a x2). Un fotograma cada 5 px del
+## cuerpo: el paso de andar es mas corto que el de correr (7 en el juego).
+const ENTRA_X := 40.0
+const LLEGA_X := 194.0
+const ANDAR_PX_S := 70.0
+const PX_POR_CUADRO := 5.0
 const Sonidos := preload("res://scripts/sonidos.gd")
 const FONDO := Color(0.04, 0.03, 0.04)
 const TEXTO := Color(0.85, 0.8, 0.72)
@@ -122,13 +129,20 @@ func _sala_siete() -> void:
 	_plano.add_child(sabana)
 	_sprite("res://arte/provisional/vela.png", Vector2(420, 218), Vector2(2, 2))
 	_luz(Vector2(425, 220), Color(1, 0.7, 0.4), 1.1)
-	var cirujano := _sprite("res://arte/cirujano/alza-1.png", Vector2(194, 152), Vector2(2, 2))
-	# Las Manos operan con la mascara ciega puesta (#246): aqui aun la lleva.
-	var borde := _ovalo(Vector2(19.4, 16.4), Vector2(5.2, 5.6), Color(0.08, 0.05, 0.05))
-	var mascara := _ovalo(Vector2(19.4, 16.4), Vector2(4.5, 4.9), Color(0.86, 0.82, 0.74))
-	cirujano.add_child(borde)
-	cirujano.add_child(mascara)
+	# Las Manos operan con la mascara ciega puesta (#246): aqui aun la lleva. Los
+	# fotogramas `intro-*` la llevan dibujada (scripts/cirujano-sigma.mjs).
+	var cirujano := _sprite("res://arte/cirujano/intro-andar-0.png", Vector2(ENTRA_X, 152), Vector2(2, 2))
 	await _abrir()
+	# Entra andando hasta la camilla, sin prisa: es su oficio de cada dia.
+	await _andar(cirujano, ENTRA_X, LLEGA_X)
+	var respira := _ciclo(cirujano, "intro-reposo", 4, 0.22)
+	# Mientras habla, respira y luego alza el bisturi sobre la sabana; ahi se queda.
+	var alzar := create_tween()
+	alzar.tween_interval(1.6)
+	alzar.tween_callback(respira.kill)
+	for i in 2:
+		alzar.tween_callback(func() -> void: cirujano.texture = load("res://arte/cirujano/intro-alza-%d.png" % i))
+		alzar.tween_interval(0.35)
 	await _decir("Las Manos operamos a ciegas, con la máscara puesta. En la N.º 7 como en todas.")
 	await _cerrar()
 	camilla.queue_free()
@@ -250,15 +264,27 @@ func _sprite(ruta: String, sitio: Vector2, escala: Vector2, tinte := Color.WHITE
 ## despacio `deriva` px en `segundos`, empezando en el lado contrario. Se panea,
 ## no se hace zoom: un zoom que no sea entero deforma los pixeles.
 ## Un ovalo de `radios` en `centro` (en pixeles de la figura que lo lleva).
-func _ovalo(centro: Vector2, radios: Vector2, color: Color) -> Polygon2D:
-	var puntos := PackedVector2Array()
-	for i in 16:
-		var a := TAU * i / 16.0
-		puntos.append(centro + Vector2(cos(a) * radios.x, sin(a) * radios.y))
-	var ovalo := Polygon2D.new()
-	ovalo.polygon = puntos
-	ovalo.color = color
-	return ovalo
+## Anda de `desde` a `hasta`: el ciclo de paso avanza con lo recorrido, como en
+## el juego (un fotograma cada PX_POR_CUADRO px del cuerpo), para que los pies
+## no patinen.
+func _andar(sprite: Sprite2D, desde: float, hasta: float) -> void:
+	var cambiar := func(x: float) -> void:
+		sprite.position.x = round(x)
+		var cuadro := int(absf(x - desde) / (PX_POR_CUADRO * sprite.scale.x)) % 8
+		sprite.texture = load("res://arte/cirujano/intro-andar-%d.png" % cuadro)
+	var paso := create_tween()
+	paso.tween_method(cambiar, desde, hasta, absf(hasta - desde) / ANDAR_PX_S)
+	await paso.finished
+
+
+## Repite los `cuantos` fotogramas de `animacion` cada `segundos`, hasta que se
+## mate el tween que devuelve.
+func _ciclo(sprite: Sprite2D, animacion: String, cuantos: int, segundos: float) -> Tween:
+	var ciclo := create_tween().set_loops()
+	for i in cuantos:
+		ciclo.tween_callback(func() -> void: sprite.texture = load("res://arte/cirujano/%s-%d.png" % [animacion, i]))
+		ciclo.tween_interval(segundos)
+	return ciclo
 
 
 func _ilustracion(ruta: String, deriva: Vector2, segundos: float) -> Sprite2D:
