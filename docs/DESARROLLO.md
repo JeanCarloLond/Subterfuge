@@ -738,13 +738,13 @@ iglesia; los Sacramentos ya no.
 | ------------ | ----------- | -------------------------------------------------------------------------------------------- |
 | Portada      | 0           | La fachada institucional: horarios, trámites, tu expediente.                                 |
 | Pabellón 9   | 0           | El Atrio por dentro: un pabellón, su Libro de Diezmos y una jornada (#79).                   |
-| Doctrina     | 1           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.                            |
-| Registro     | 2           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.                    |
-| El Vientre   | 3           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.                           |
-| Cripta       | 3           | La Cripta de Lectura: 17 libros en cinco estantes, con lámpara y estante reservado.          |
-| Linaje       | 4           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).                  |
-| Sacramentos  | 5           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64.                 |
-| Asentamiento | 6           | El expediente de Sigma (#236): los avisos, el plano que se cierra y los nombres que constan. |
+| Cripta       | 1           | La Cripta de Lectura: 17 libros en cinco estantes, con vela y estante reservado.             |
+| Doctrina     | 2           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.                            |
+| Registro     | 3           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.                    |
+| El Vientre   | 4           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.                           |
+| Linaje       | 5           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).                  |
+| Sacramentos  | 6           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64.                 |
+| Asentamiento | 7           | El expediente de Sigma (#236): los avisos, el plano que se cierra y los nombres que constan. |
 
 **El expediente del asentamiento (#236).** `#/avisos` dejó de ser una lista de comunicados y
 pasó a ser la puerta de Sigma en el Portal: el parte oficial, un plano de las seis capas que se
@@ -755,7 +755,7 @@ pierden capas y que lo publicado no adelanta el giro.
 
 **La Cripta de Lectura.** El material de la biblia que no es juego se guarda en una
 biblioteca de las Criptas de Espera: 17 libros en cinco estantes. Los libros visibles se abren
-de uno en uno; la lámpara de aceite enciende el estante reservado (los otros relatos, el
+de uno en uno; la vela de cera humana enciende el estante reservado (los otros relatos, el
 aparato de Génesis y la cronología). Las páginas del Portal enlazan a la Cripta en vez de
 volcar la explicación al pie de la actividad. Los datos viven en `web/src/mundo.ts`, la
 agrupación en libros y estantes en `web/src/biblioteca.ts`, y la página en

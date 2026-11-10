@@ -38,14 +38,14 @@ datos están separados para que los dos mundos no se pisen:
   `prefers-reduced-motion` desactiva el polvo, la vela que sigue al puntero y las
   transiciones.
 - **Dos menús, las mismas paradas.** El menú superior y el riel lateral comparten Portal,
-  Pabellón y las capas I–VI:
+  Pabellón y las capas I–VII:
 
-  `⌂ Portal · 0 Pabellón · I Doctrina · II Registro · III El Vientre · ▤ Cripta · IV Linaje ·
-V Sacramentos · VI Asentamiento`
+  `⌂ Portal · 0 Pabellón · I Cripta · II Doctrina · III Registro · IV El Vientre · V Linaje ·
+VI Sacramentos · VII Asentamiento`
 
 - **El Portal es la entrada.** Lleva el símbolo `⌂`; el `0` es el Pabellón, la primera
-  parada de la superficie. La Cripta de Lectura es una parada de la capa III, con el símbolo
-  `▤`. El Asentamiento es la capa VI.
+  parada de la superficie. La Cripta de Lectura es la parada I, en las Criptas de Espera. El
+  Asentamiento es la capa VII.
 - **La sección activa se marca por ruta.** Portal y Pabellón comparten cota (0 m), pero cada
   uno tiene su parada. Los trámites `#/examen` y `#/sacramento` marcan Sacramentos.
 
@@ -79,7 +79,24 @@ pellizca y en una Cena de la Ausencia.
 cierre del juego, la deuda queda saldada; con el hito `nina`, el Colegio suspende el saldo y
 el pabellón entero vuelve a figurar como no cubierto.
 
-### 3. Doctrina · `#/doctrina`
+### 3. La Cripta de Lectura · `#/cripta`
+
+**Qué se ve.** Una sala detrás de las camillas de espera: cinco estantes y diecisiete libros
+que se abren de uno en uno. La vela de cera humana enciende el estante reservado. Los libros
+visibles guardan la doctrina, la lengua, la ley, el calendario, los oficios, las clases, las
+artes, las leyendas, el parentesco, la Intemperie, las herencias, la Capucha, las Manos y
+las escuelas. El estante reservado guarda los otros relatos, el aparato de Génesis y la
+cronología.
+
+**Qué representa.** La biblioteca que la Diócesis no cuelga en el Atrio. El conocimiento se
+guarda en libros, no en explicaciones al pie de la página: hay que abrirlos. La vela es
+el permiso de leer lo que no se presta; apagarla devuelve el estante reservado a la sombra.
+
+**Cómo se lee.** Un libro se abre en el atril y se cierra con su botón o con Escape. La
+vela es un interruptor: con el estante reservado a oscuras, sus libros no existen para el
+visitante. No se prestan.
+
+### 4. Doctrina · `#/doctrina`
 
 **Qué se ve.** El Códice como libro que se hojea: diez hojas, versículos, márgenes y el
 manual técnico que se trasluce al apagar la vela de la Vigilia. Los tres Libros, los otros
@@ -89,7 +106,7 @@ relatos y la lengua están en la Cripta de Lectura.
 incidentes reescrito como escritura sagrada: el Don, los Mil, el Diezmo y el Sacramento son
 un protocolo de contención convertido en liturgia.
 
-### 4. Registro · `#/registro`
+### 5. Registro · `#/registro`
 
 **Qué se ve.** Las fichas del juego y del Portal con su lámina: fieles, oficio, fauna, flora
 y aparato. Lo que el visitante no ha visto sale como silueta y sin texto. El inventario
@@ -98,7 +115,7 @@ completo del aparato de Génesis está en la Cripta de Lectura.
 **Qué representa.** La manía de catalogar del poder. El Registro sabe que algo existe, pero
 solo lo muestra a quien ya lo ha visto. Los dioses no ven; la institución sí, y anota.
 
-### 5. El Vientre · `#/vientre`
+### 6. El Vientre · `#/vientre`
 
 **Qué se ve.** El plano de catorce salas y veinte pasos, con sus atajos, capas y salas
 selladas. Se puede pulsar cada sala y seguir sus salidas. La Intemperie y su naturaleza se
@@ -107,23 +124,6 @@ consultan en la Cripta de Lectura.
 **Qué representa.** Un solo edificio cerrado, construido hacia abajo, donde el mundo entero
 cabe. Los atajos son tubería de Génesis que nadie ha cerrado y que salta el trámite. Bajar
 es deshumanizar; el mapa lo dice antes que cualquier texto.
-
-### 6. La Cripta de Lectura · `#/cripta`
-
-**Qué se ve.** Una sala detrás de las camillas de espera: cinco estantes y diecisiete libros
-que se abren de uno en uno. La lámpara de aceite enciende el estante reservado. Los libros
-visibles guardan la doctrina, la lengua, la ley, el calendario, los oficios, las clases, las
-artes, las leyendas, el parentesco, la Intemperie, las herencias, la Capucha, las Manos y
-las escuelas. El estante reservado guarda los otros relatos, el aparato de Génesis y la
-cronología.
-
-**Qué representa.** La biblioteca que la Diócesis no cuelga en el Atrio. El conocimiento se
-guarda en libros, no en explicaciones al pie de la página: hay que abrirlos. La lámpara es
-el permiso de leer lo que no se presta; apagarla devuelve el estante reservado a la sombra.
-
-**Cómo se lee.** Un libro se abre en el atril y se cierra con su botón o con Escape. La
-lámpara es un interruptor: con el estante reservado a oscuras, sus libros no existen para el
-visitante. No se prestan.
 
 ### 7. Linaje · `#/linaje`
 
@@ -174,15 +174,15 @@ expediente.
 
 | Sección      | Lo que ya estaba                                  | Lo que se añadió                                                                 |
 | ------------ | ------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Portada      | Atrio, tarjetas, trámites, expediente, comunicado | Enlace al expediente, tarjeta de Sigma con el Cirujano de Mariana, capa VI.      |
+| Portada      | Atrio, tarjetas, trámites, expediente, comunicado | Enlace al expediente, tarjeta de Sigma con el Cirujano de Mariana, capa VII.     |
 | Pabellón 9   | Libro de casas, jornada, capilla, Oficina         | Enlace a la Cripta; el Libro de costumbres vive allí.                            |
+| Cripta       | —                                                 | 17 libros en cinco estantes, vela y estante reservado.                           |
 | Doctrina     | 10 hojas, márgenes, manual, Vigilia               | Enlace a la Cripta; los Libros, relatos y lengua viven allí.                     |
 | Registro     | 31 fichas, siluetas, familias                     | Enlace a la Cripta; el aparato de Génesis vive allí.                             |
 | El Vientre   | 14 salas, 20 pasos, capas, atajos                 | Enlace a la Cripta; la Intemperie vive allí.                                     |
 | Linaje       | Organigrama, facciones, oficios, ofrenda          | Enlace a la Cripta; herencias, Capucha, Manos, escuelas y cronología viven allí. |
-| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, nombres, capa VI y avisos nuevos.        |
-| Cripta       | —                                                 | 17 libros en cinco estantes, lámpara y estante reservado.                        |
-| Navegación   | Menú superior y riel con paradas distintas        | Portal, Pabellón y Cripta en ambos; Portal `⌂`, Pabellón `0`, Cripta `▤`.        |
+| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, nombres, capa VII y avisos nuevos.       |
+| Navegación   | Menú superior y riel con paradas distintas        | Portal, Pabellón y Cripta en ambos; Portal `⌂`, Pabellón `0`, Cripta `I`.        |
 
 Lo que ya existía —las diez hojas del Códice, las 31 fichas, el plano del Vientre, los
 Sacramentos, la Vigilia, el Pabellón— se dejó como estaba y se completó con el material de
@@ -194,10 +194,10 @@ la biblia que faltaba.
 | ------------ | ------------------------- | ------------------------------------------------------ | ----------------------------------------------------------- |
 | Portada      | La Diócesis en su fachada | Orden, trámites, horarios, «su diezmo en buenas manos» | Que el diezmo es cuerpo y que la Sala 7 se vació.           |
 | Pabellón 9   | La casa y el pabellón     | La vida diaria, la deuda compartida, la capilla        | Que la niña se ofreció sola y qué pasa con su casa.         |
+| Cripta       | El archivo                | Libros, relatos, lengua, ley, naturaleza y linajes     | El estante reservado sin vela; el giro de Sigma.            |
 | Doctrina     | El Códice y el Colegio    | El mito, la Regla, los márgenes, la Vigilia            | El manual técnico, los otros relatos, la verdad.            |
 | Registro     | La Oficina del Registro   | Fichas, láminas, especies, aparato                     | Lo que el visitante no ha visto; el uso real.               |
 | El Vientre   | El edificio               | Capas, salas, atajos                                   | Qué hay en las capas selladas y por qué se mueven.          |
-| Cripta       | El archivo                | Libros, relatos, lengua, ley, naturaleza y linajes     | El estante reservado sin lámpara; el giro de Sigma.         |
 | Linaje       | El poder                  | Dioses, clero, oficios, herejías                       | La manipulación de los Cerebrales, el papel de la niña.     |
 | Sacramentos  | La liturgia               | El Examen y la práctica del Sacramento                 | Que el Sacramento nunca completa a nadie.                   |
 | Asentamiento | Sigma                     | El asentamiento, las juntas, los nombres, los avisos   | El giro: la niña, el Cirujano, la causa de la compactación. |

@@ -6,8 +6,8 @@
  * abren de uno en uno. La página de la Cripta solo sabe dibujar estantes y
  * libros; el contenido sigue en `mundo.ts`.
  *
- * El estante reservado no se ve hasta encender la lámpara: son los otros
- * relatos, el aparato de Génesis y la cronología del clero. La lámpara no
+ * El estante reservado no se ve hasta encender la vela: son los otros
+ * relatos, el aparato de Génesis y la cronología del clero. La vela no
  * desbloquea nada para siempre: si se apaga, el estante vuelve a la sombra.
  */
 
@@ -58,7 +58,7 @@ export interface LibroBiblioteca {
   resumen: string;
   /** Estante al que pertenece. */
   estante: string;
-  /** Solo se ve con la lámpara encendida. */
+  /** Solo se ve con la vela encendida. */
   reservado?: boolean;
   secciones: readonly SeccionBiblioteca[];
 }
@@ -365,7 +365,7 @@ export const ESTANTES_CRIPTA: readonly EstanteBiblioteca[] = [
   {
     id: 'reservado',
     titulo: 'Estante V · Lo reservado',
-    nota: 'Libros que no se prestan. La lámpara los saca de la sombra.',
+    nota: 'Libros que no se prestan.',
     reservado: true,
     libros: ['otros-relatos', 'aparato', 'cronologia'],
   },

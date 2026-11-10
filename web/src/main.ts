@@ -41,19 +41,18 @@ const RUTAS: Readonly<Record<string, Ruta>> = {
   // El Atrio por dentro: un pabellón y su Libro (#79). Está a la altura de la
   // portada, en la superficie, porque ahí vive la gente.
   pabellon: { pagina: renderPabellon, profundidad: 0, titulo: 'Pabellón 9', ancha: true },
-  // El expediente de Sigma (#236), como lo cuenta la Diócesis: la capa VI,
+  // El expediente de Sigma (#236), como lo cuenta la Diócesis: la capa VII,
   // después de los Sacramentos. La antigua página de avisos reúne ahora el
   // parte, el plano que se cierra y los nombres.
-  avisos: { pagina: renderAvisos, profundidad: 6, titulo: 'El Asentamiento' },
-  doctrina: { pagina: renderDoctrina, profundidad: 1, titulo: 'Doctrina' },
-  registro: { pagina: renderRegistro, profundidad: 2, titulo: 'Registro', ancha: true },
-  vientre: { pagina: renderVientre, profundidad: 3, titulo: 'El Vientre', ancha: true },
-  // La biblioteca de las Criptas: la misma capa, otra parada.
-  cripta: { pagina: renderCripta, profundidad: 3, titulo: 'La Cripta de Lectura', ancha: true },
-  linaje: { pagina: renderLinaje, profundidad: 4, titulo: 'Linaje', ancha: true },
-  sacramentos: { pagina: renderSacramentos, profundidad: 5, titulo: 'Sacramentos' },
-  examen: { pagina: renderExamen, profundidad: 5, titulo: 'Examen de Pureza' },
-  sacramento: { pagina: renderSacramento, profundidad: 5, titulo: 'El Sacramento' },
+  avisos: { pagina: renderAvisos, profundidad: 7, titulo: 'El Asentamiento' },
+  cripta: { pagina: renderCripta, profundidad: 1, titulo: 'La Cripta de Lectura', ancha: true },
+  doctrina: { pagina: renderDoctrina, profundidad: 2, titulo: 'Doctrina' },
+  registro: { pagina: renderRegistro, profundidad: 3, titulo: 'Registro', ancha: true },
+  vientre: { pagina: renderVientre, profundidad: 4, titulo: 'El Vientre', ancha: true },
+  linaje: { pagina: renderLinaje, profundidad: 5, titulo: 'Linaje', ancha: true },
+  sacramentos: { pagina: renderSacramentos, profundidad: 6, titulo: 'Sacramentos' },
+  examen: { pagina: renderExamen, profundidad: 6, titulo: 'Examen de Pureza' },
+  sacramento: { pagina: renderSacramento, profundidad: 6, titulo: 'El Sacramento' },
 };
 
 let limpieza: Limpieza;
