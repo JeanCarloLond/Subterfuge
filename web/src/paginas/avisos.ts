@@ -2,10 +2,10 @@
  * El expediente del asentamiento (#236): lo que pasa en Subterfuge Sigma,
  * contado como lo contaría la Diócesis.
  *
- * La página reúne tres cosas que antes estaban sueltas: el parte oficial de
- * los avisos, el plano de las seis capas que se juntan y los nombres que
- * constan en el Registro. El templo se compacta y la Diócesis lo llama
- * «asentamiento»; la carne no llega y ella dice que «falta camino».
+ * La página reúne dos cosas que antes estaban sueltas: el parte oficial de los
+ * avisos y el plano de las seis capas que se juntan. El templo se compacta y la
+ * Diócesis lo llama «asentamiento»; la carne no llega y ella dice que «falta
+ * camino».
  *
  * Sigue la regla de la issue: pistas, no el giro. Ni la niña ni el papel real
  * del Cirujano se cuentan aquí. El lore propio de Sigma vive en `sigma.ts` y
@@ -13,20 +13,7 @@
  */
 
 import { elemento, html } from '../texto';
-import {
-  avisosOrdenados,
-  fusionar,
-  JUNTAS_SIGMA,
-  NIVELES_SIGMA,
-  NOMBRES_SIGMA,
-  type NombreSigma,
-} from '../sigma';
-
-const ESTADOS: Readonly<Record<NombreSigma['estado'], string>> = {
-  consta: 'Consta en el Registro',
-  rumor: 'Se rumorea en los Pasillos',
-  sellado: 'Expediente sellado',
-};
+import { avisosOrdenados, fusionar, JUNTAS_SIGMA, NIVELES_SIGMA } from '../sigma';
 
 const QUIETO =
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -41,8 +28,8 @@ export function renderAvisos(contenedor: HTMLElement): void {
       <p class="lede">
         Los muros del Vientre se desplazan y la carne no llega a los pabellones. La Diócesis
         informa a los fieles de lo que deben hacer mientras el templo se asienta. Este expediente
-        reúne el parte de los avisos, el plano de las seis capas y los nombres que constan en el
-        Registro. Lo que no consta aquí está en otras manos.
+        reúne el parte de los avisos y el plano de las seis capas. Lo que no consta aquí está en
+        otras manos.
       </p>
       <div class="escena-acciones">
         <a class="boton boton-lleno" href="${import.meta.env.BASE_URL}sigma/">Jugar la demo de Sigma</a>
@@ -67,13 +54,8 @@ export function renderAvisos(contenedor: HTMLElement): void {
             <span class="indice-nombre">El plano que se cierra</span>
             <span class="indice-cita">seis capas y sus juntas</span>
           </button></li>
-          <li><button type="button" data-ir-a="los-nombres">
-            <span class="indice-num">III</span>
-            <span class="indice-nombre">Los nombres que constan</span>
-            <span class="indice-cita">lo que se publica y lo que se sella</span>
-          </button></li>
           <li><button type="button" data-ir-a="avisos">
-            <span class="indice-num">IV</span>
+            <span class="indice-num">III</span>
             <span class="indice-nombre">Avisos a los fieles</span>
             <span class="indice-cita">del más reciente al más antiguo</span>
           </button></li>
@@ -161,26 +143,6 @@ export function renderAvisos(contenedor: HTMLElement): void {
             <span class="plano-mensaje"></span>
             <button type="button" class="boton plano-reiniciar">Reiniciar el plano</button>
           </div>
-        </div>
-      </section>
-
-      <section class="seccion" id="los-nombres" tabindex="-1">
-        <div class="eyebrow">El Registro del asentamiento</div>
-        <h2>Los nombres que constan</h2>
-        <p>
-          El Registro cataloga lo que existe, no lo que cada uno ha visto. Estos nombres constan en
-          el expediente; unos se publican enteros y otros se sellan hasta nuevo aviso.
-        </p>
-        <div class="nombres-sigma">
-          ${NOMBRES_SIGMA.map(
-            (nombre) => `
-            <article class="documento nombre-sigma estado-${nombre.estado}">
-              <div class="eyebrow">${html(ESTADOS[nombre.estado])}</div>
-              <h3>${html(nombre.nombre)}</h3>
-              <div class="rango-texto">${html(nombre.oficio)}</div>
-              <p>${html(nombre.nota)}</p>
-            </article>`,
-          ).join('')}
         </div>
       </section>
 

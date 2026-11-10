@@ -606,8 +606,8 @@ button:disabled {
 /* -- El Asentamiento: el expediente de Sigma en el Portal (#236) ----------------
  *
  * La página de avisos era una lista de comunicados. Ahora abre el expediente
- * entero: el parte, el plano de las seis capas que se juntan y los nombres
- * que constan. El plano se toca: cada junta que se abre acerca dos capas,
+ * entero: el parte y el plano de las seis capas que se juntan. El plano se
+ * toca: cada junta que se abre acerca dos capas,
  * que es lo que hace el templo en Sigma, contado sin decir quién lo provoca.
  */
 .asentamiento-nota {
@@ -831,36 +831,6 @@ details.ficha-mundo[open] summary {
   margin-left: auto;
   padding: 5px 10px;
   font-size: 10px;
-}
-
-/* Los nombres del expediente. */
-.nombres-sigma {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
-  margin-top: 18px;
-}
-.nombre-sigma {
-  padding: 16px 18px;
-  border-left: 3px solid var(--oro);
-}
-.nombre-sigma.estado-rumor {
-  border-left-color: var(--sangre);
-}
-.nombre-sigma.estado-sellado {
-  border-left-style: dashed;
-}
-.nombre-sigma h3 {
-  margin: 2px 0 2px;
-  font-size: 20px;
-}
-.nombre-sigma .rango-texto {
-  margin-bottom: 8px;
-}
-.nombre-sigma p {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.45;
 }
 
 @media (max-width: 620px) {

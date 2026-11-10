@@ -734,24 +734,23 @@ descenso**: cada sección tiene una profundidad (`data-profundidad` en `<body>`)
 y el sitio se oscurece y se desordena al bajar. La portada parece la web de una
 iglesia; los Sacramentos ya no.
 
-| Sección      | Profundidad | Qué enseña                                                                                   |
-| ------------ | ----------- | -------------------------------------------------------------------------------------------- |
-| Portada      | 0           | La fachada institucional: horarios, trámites, tu expediente.                                 |
-| Pabellón 9   | 0           | El Atrio por dentro: un pabellón, su Libro de Diezmos y una jornada (#79).                   |
-| Cripta       | 1           | La Cripta de Lectura: 17 libros en cinco estantes, con vela y estante reservado.             |
-| Doctrina     | 2           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.                            |
-| Registro     | 3           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.                    |
-| El Vientre   | 4           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.                           |
-| Linaje       | 5           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).                  |
-| Sacramentos  | 6           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64.                 |
-| Asentamiento | 7           | El expediente de Sigma (#236): los avisos, el plano que se cierra y los nombres que constan. |
+| Sección      | Profundidad | Qué enseña                                                                       |
+| ------------ | ----------- | -------------------------------------------------------------------------------- |
+| Portada      | 0           | La fachada institucional: horarios, trámites, tu expediente.                     |
+| Pabellón 9   | 0           | El Atrio por dentro: un pabellón, su Libro de Diezmos y una jornada (#79).       |
+| Cripta       | 1           | La Cripta de Lectura: 17 libros en cinco estantes, con vela y estante reservado. |
+| Doctrina     | 2           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.                |
+| Registro     | 3           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.        |
+| El Vientre   | 4           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.               |
+| Linaje       | 5           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).      |
+| Sacramentos  | 6           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64.     |
+| Asentamiento | 7           | El expediente de Sigma (#236): los avisos y el plano que se cierra.              |
 
 **El expediente del asentamiento (#236).** `#/avisos` dejó de ser una lista de comunicados y
-pasó a ser la puerta de Sigma en el Portal: el parte oficial, un plano de las seis capas que se
-juntan al tocarlas y los nombres que constan en el Registro (el Cegado, el Prior del Diezmo, el
-Primer Ojo, Génesis Vestal…). Los datos viven en `web/src/sigma.ts`, separados de `src/lore`
-para no mezclar el canon del teaser con el del remake, y un test comprueba que las juntas no
-pierden capas y que lo publicado no adelanta el giro.
+pasó a ser la puerta de Sigma en el Portal: el parte oficial y un plano de las seis capas que
+se juntan al tocarlas. Los datos viven en `web/src/sigma.ts`, separados de `src/lore` para no
+mezclar el canon del teaser con el del remake, y un test comprueba que las juntas no pierden
+capas y que lo publicado no adelanta el giro.
 
 **La Cripta de Lectura.** El material de la biblia que no es juego se guarda en una
 biblioteca de las Criptas de Espera: 17 libros en cinco estantes. Los libros visibles se abren
