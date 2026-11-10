@@ -91,6 +91,9 @@ var _ensenanza: PanelContainer
 var _ensenanza_texto: Label
 ## La accion que, pulsada, da por aprendida la ensenanza de ahora.
 var _ensenanza_accion := ""
+## Lo que dice la ensenanza, con sus {acciones}: se rellena otra vez si se
+## cambia de mando.
+var _ensenanza_plantilla := ""
 ## Cuantas ensenanzas han salido: el reloj de una no cierra la siguiente.
 var _ensenanzas := 0
 
@@ -115,6 +118,9 @@ func _ready() -> void:
 	var progreso := _progreso()
 	if progreso:
 		progreso.objetivo_cambio.connect(mostrar_objetivo)
+	var controles := get_node_or_null("/root/Controles")
+	if controles:
+		controles.dispositivo_cambio.connect(_al_cambiar_de_mando)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
@@ -339,6 +345,16 @@ func guardian_fuera() -> void:
 		vete.tween_callback(func() -> void: barra.visible = false)
 
 
+## Se paso del teclado al mando o al reves: la ayuda y la ensenanza que este a
+## la vista ensenan los botones del que se usa ahora.
+func _al_cambiar_de_mando() -> void:
+	_pintar_ayuda()
+	if _ensenanza.visible:
+		_ensenanza_texto.text = Controles.rellenar(_ensenanza_plantilla)
+		_ensenanza.reset_size()
+		_ensenanza.position.x = (get_viewport().get_visible_rect().size.x - _ensenanza.size.x) / 2.0
+
+
 ## Ensena una mecanica en su momento, arriba en el centro, una sola vez por
 ## partida. Se va al pulsar `accion` o al rato.
 func ensenar(id: String, texto: String, accion := "") -> void:
@@ -346,6 +362,7 @@ func ensenar(id: String, texto: String, accion := "") -> void:
 	if progreso == null or progreso.aprendido(id) or _ensenanza.visible:
 		return
 	progreso.aprender(id)
+	_ensenanza_plantilla = texto
 	_ensenanza_texto.text = Controles.rellenar(texto)
 	_ensenanza_accion = accion
 	_ensenanzas += 1

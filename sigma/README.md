@@ -317,6 +317,27 @@ polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivo
   interfaz y los velos van anclados a la pantalla, no a medidas fijas.
 - **Controles**: los mismos del original, registrados en `scripts/controles.gd`, con
   teclado, ratón y mando.
+- **El mando**: cualquiera que Godot reconozca (Xbox, PlayStation 4 y 5, Switch Pro), en
+  escritorio y en la web. Los carteles, la ayuda y el mapa enseñan los botones del que se
+  usa: con uno de PlayStation, ✕ ○ □ △, L1, L2, Options y Create; con el teclado, las
+  teclas. Cambian en cuanto se toca el otro. El mando vibra al recibir un golpe, en el
+  parry, en la ejecución, al morir y con los temblores del templo. En la web, el
+  navegador no da el mando hasta que se pulsa un botón con la página delante.
+
+  | Acción             | PlayStation  | Xbox  |
+  | ------------------ | ------------ | ----- |
+  | Moverse            | stick / cruz | ídem  |
+  | Saltar             | ✕            | A     |
+  | Dash               | ○            | B     |
+  | Golpear            | □            | X     |
+  | Interactuar        | △            | Y     |
+  | Parry (y clavarse) | L1           | LB    |
+  | Injertadora        | R1           | RB    |
+  | Poción             | L2           | LT    |
+  | Mirar con el ojo   | R3           | R3    |
+  | Mapa               | Create       | Back  |
+  | Pausa              | Options      | Start |
+
 - **Los números** del Cirujano (salto, dash, agarre…) vienen de `src/config/Sacramento.ts`
   y no se cambian sin motivo: la sensación del juego está ajustada con ellos.
 - **El movimiento** está en `scripts/movimiento.gd`, aparte del nodo: recibe lo que se

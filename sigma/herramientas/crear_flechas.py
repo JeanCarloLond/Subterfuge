@@ -1,4 +1,5 @@
-"""Las flechas de las teclas (#237): una fuente de reserva con solo ← ↑ → ↓.
+"""Las flechas de las teclas (#237): una fuente de reserva con ← ↑ → ↓, y los
+botones de un mando de PlayStation: ✕ ○ □ △.
 
 VT323 no las tiene. En escritorio Godot las sacaba de las fuentes del sistema;
 en la web no hay sistema y salian cajas con el codigo del caracter. Esta fuente
@@ -43,6 +44,59 @@ IZQUIERDA = [fila[::-1] for fila in DERECHA]
 ARRIBA = girar(DERECHA)
 ABAJO = ARRIBA[::-1]
 
+# Los botones de PlayStation, con trazo de dos pixeles como el astil de las
+# flechas, y de la altura de una mayuscula: mas pequenos se perdian.
+EQUIS = [
+    "##.......##",
+    "###.....###",
+    ".###...###.",
+    "..###.###..",
+    "...#####...",
+    "....###....",
+    "...#####...",
+    "..###.###..",
+    ".###...###.",
+    "###.....###",
+    "##.......##",
+]
+CIRCULO = [
+    "...#####...",
+    ".#########.",
+    ".###...###.",
+    "###.....###",
+    "##.......##",
+    "##.......##",
+    "##.......##",
+    "###.....###",
+    ".###...###.",
+    ".#########.",
+    "...#####...",
+]
+CUADRADO = [
+    "##########",
+    "##########",
+    "##......##",
+    "##......##",
+    "##......##",
+    "##......##",
+    "##......##",
+    "##......##",
+    "##########",
+    "##########",
+]
+TRIANGULO = [
+    ".....#.....",
+    "....###....",
+    "....###....",
+    "...##.##...",
+    "...##.##...",
+    "..##...##..",
+    "..##...##..",
+    ".##.....##.",
+    ".#########.",
+    "###########",
+]
+
 # Caracter -> (dibujo, pixel de abajo sobre la linea base). Las horizontales,
 # con el astil donde el guion (pixeles 6 y 7); las verticales, de pie en la base.
 FLECHAS = {
@@ -50,13 +104,22 @@ FLECHAS = {
     "→": (DERECHA, 3),
     "↑": (ARRIBA, 1),
     "↓": (ABAJO, 1),
+    "✕": (EQUIS, 1),
+    "○": (CIRCULO, 1),
+    "□": (CUADRADO, 1),
+    "△": (TRIANGULO, 1),
 }
+
+
+def avance(filas):
+    """Lo que avanza el glifo: el de VT323, o mas si el dibujo no cabe."""
+    return max(ANCHO, (len(filas[0]) + 2) * PIXEL)
 
 
 def glifo(filas, base):
     pluma = TTGlyphPen(None)
     alto = len(filas)
-    margen = (ANCHO // PIXEL - len(filas[0])) // 2
+    margen = (avance(filas) // PIXEL - len(filas[0])) // 2
     for f, fila in enumerate(filas):
         for c, letra in enumerate(fila):
             if letra != "#":
@@ -80,7 +143,10 @@ def main():
     for c, (filas, base) in FLECHAS.items():
         glifos[f"uni{ord(c):04X}"] = glifo(filas, base)
     fb.setupGlyf(glifos)
-    fb.setupHorizontalMetrics({n: (ANCHO, 0) for n in nombres})
+    metricas = {".notdef": (ANCHO, 0), "space": (ANCHO, 0)}
+    for c, (filas, _) in FLECHAS.items():
+        metricas[f"uni{ord(c):04X}"] = (avance(filas), 0)
+    fb.setupHorizontalMetrics(metricas)
     fb.setupHorizontalHeader(ascent=800, descent=-200)
     fb.setupNameTable({"familyName": "Flechas Sigma", "styleName": "Regular"})
     fb.setupOS2(sTypoAscender=800, sTypoDescender=-200, usWinAscent=800, usWinDescent=200)

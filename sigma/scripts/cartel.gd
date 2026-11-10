@@ -47,6 +47,13 @@ func _ready() -> void:
 	letra.text = Controles.rellenar(texto)
 	letra.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_panel.add_child(letra)
+	# Si se cambia de teclado a mando (o al reves), el cartel cambia de tecla.
+	var controles := get_node_or_null("/root/Controles")
+	if controles:
+		controles.dispositivo_cambio.connect(func() -> void:
+			letra.text = Controles.rellenar(texto)
+			_panel.reset_size()
+		)
 	_panel.z_index = 30
 	_panel.modulate.a = 0.0
 	add_child(_panel)
