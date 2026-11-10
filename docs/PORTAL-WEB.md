@@ -27,7 +27,7 @@ datos están separados para que los dos mundos no se pisen:
 | ------------------ | --------------------------------------------------------------------- |
 | `src/lore/`        | El lore jugable del teaser: Códice, Registro, Vientre, Linaje, voces. |
 | `web/src/mundo.ts` | El material de la biblia que el Portal publica fuera de Sigma.        |
-| `web/src/sigma.ts` | El lore propio de Sigma: capas, juntas, nombres y avisos.             |
+| `web/src/sigma.ts` | El lore propio de Sigma: capas, juntas y avisos.                      |
 
 ## Cómo se navega
 
@@ -149,8 +149,7 @@ Reformado.
 ### 9. El Asentamiento · `#/avisos`
 
 **Qué se ve.** El expediente de Sigma contado por la Diócesis: el parte oficial, el plano de
-las seis capas que se juntan al pulsar sus juntas, los nombres que constan y los avisos a
-los fieles.
+las seis capas que se juntan al pulsar sus juntas y los avisos a los fieles.
 
 **Qué representa.** La compactación del templo, llamada «asentamiento» por la institución.
 Los Mil son el templo; las paredes se mueven; la carne no llega y la Diócesis dice que
@@ -180,7 +179,7 @@ expediente.
 | Registro     | 31 fichas, siluetas, familias                     | Enlace a la Cripta; el aparato de Génesis vive allí.                             |
 | El Vientre   | 14 salas, 20 pasos, capas, atajos                 | Enlace a la Cripta; la Intemperie vive allí.                                     |
 | Linaje       | Organigrama, facciones, oficios, ofrenda          | Enlace a la Cripta; herencias, Capucha, Manos, escuelas y cronología viven allí. |
-| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, nombres, capa VII y avisos nuevos.       |
+| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, capa VII y avisos nuevos.                |
 | Navegación   | Menú superior y riel con paradas distintas        | Portal, Pabellón y Cripta en ambos; Portal `⌂`, Pabellón `0`, Cripta `I`.        |
 
 Lo que ya existía —las diez hojas del Códice, las 31 fichas, el plano del Vientre, los
@@ -199,7 +198,7 @@ la biblia que faltaba.
 | El Vientre   | El edificio               | Capas, salas, atajos                                   | Qué hay en las capas selladas y por qué se mueven.          |
 | Linaje       | El poder                  | Dioses, clero, oficios, herejías                       | La manipulación de los Cerebrales, el papel de la niña.     |
 | Sacramentos  | La liturgia               | El Examen y la práctica del Sacramento                 | Que el Sacramento nunca completa a nadie.                   |
-| Asentamiento | Sigma                     | El asentamiento, las juntas, los nombres, los avisos   | El giro: la niña, el Cirujano, la causa de la compactación. |
+| Asentamiento | Sigma                     | El asentamiento, las juntas y los avisos               | El giro: la niña, el Cirujano, la causa de la compactación. |
 
 ## Lo que se publica y lo que se guarda
 
@@ -217,7 +216,7 @@ la biblia que faltaba.
   leyes, calendario, oficios, clases, artes, tecnología, leyendas, escuelas, linajes,
   parentesco y cronología.
 - `web/src/biblioteca.ts` agrupa ese material en libros y estantes para la Cripta.
-- `web/src/sigma.ts` reúne el material de Sigma: capas, juntas, nombres y avisos.
+- `web/src/sigma.ts` reúne el material de Sigma: capas, juntas y avisos.
 - Las páginas de `web/src/paginas/` solo renderizan. Si cambia el canon, se cambia el dato,
   no el marcado.
 - `tests/mundo-web.test.ts`, `tests/biblioteca-web.test.ts` y `tests/sigma-web.test.ts`
