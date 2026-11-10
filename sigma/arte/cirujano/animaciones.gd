@@ -5,6 +5,7 @@ extends RefCounted
 const RECUENTO := {
 	"reposo": 4,
 	"correr": 8,
+	"andar": 8,
 	"salto": 1,
 	"caida": 2,
 	"aterrizaje": 1,
@@ -23,12 +24,16 @@ const RECUENTO := {
 	"alza": 2,
 	"tajo": 3,
 	"muerte": 4,
+	"intro-andar": 8,
+	"intro-reposo": 4,
+	"intro-alza": 2,
 }
 
 ## Donde cae el ojo rojo en cada fotograma, en pixeles del fotograma.
 const OJOS := {
 	"reposo": [Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 19), Vector2i(23, 19)],
-	"correr": [Vector2i(26, 18), Vector2i(26, 19), Vector2i(26, 19), Vector2i(26, 19), Vector2i(26, 18), Vector2i(26, 19), Vector2i(26, 19), Vector2i(26, 19)],
+	"correr": [Vector2i(25, 20), Vector2i(25, 21), Vector2i(25, 18), Vector2i(25, 17), Vector2i(25, 20), Vector2i(25, 21), Vector2i(25, 18), Vector2i(25, 17)],
+	"andar": [Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18)],
 	"salto": [Vector2i(23, 16)],
 	"caida": [Vector2i(22, 18), Vector2i(21, 17)],
 	"aterrizaje": [Vector2i(25, 22)],
@@ -47,4 +52,7 @@ const OJOS := {
 	"alza": [Vector2i(20, 16), Vector2i(19, 15)],
 	"tajo": [Vector2i(27, 20), Vector2i(32, 24), Vector2i(32, 24)],
 	"muerte": [Vector2i(12, 20), Vector2i(26, 24), Vector2i(32, 30), Vector2i(37, 37)],
+	"intro-andar": [Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18)],
+	"intro-reposo": [Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 19), Vector2i(23, 19)],
+	"intro-alza": [Vector2i(20, 16), Vector2i(19, 15)],
 }

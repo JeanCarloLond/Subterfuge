@@ -183,14 +183,23 @@ function piezas(p) {
   out.push([capsula(codoL, manoL, 2, 2.4), 'interior']);
   out.push([elipse(manoL, 1.3, 1.3), 'guante']);
 
-  // Piernas y botas, asomando bajo el habito.
+  // Piernas y botas, asomando bajo el habito. Con rodilla: muslo y espinilla,
+  // y la rodilla se adelanta al levantar el pie (en el paso, la que avanza).
+  const zCerca = p.zancadaCerca ?? -1;
+  const zLejos = p.zancadaLejos ?? 2;
   const piernas = [
-    [3, p.zancadaLejos ?? 2, p.alzaLejos ?? 0, 'interior'],
-    [-3, p.zancadaCerca ?? -1, p.alzaCerca ?? 0, 'guante'],
+    [3, zLejos, p.alzaLejos ?? 0, 'interior'],
+    [-3, zCerca, p.alzaCerca ?? 0, 'guante'],
   ];
   for (const [lado, zancada, alza, material] of piernas) {
     const pie = [cadera[0] + lado + zancada, Math.min(SUELO - 1.5, cadera[1] + 15.5) - alza];
-    out.push([capsula([cadera[0] + lado * 0.6, cadera[1] + 6], pie, 1.6), 'interior']);
+    const muslo = [cadera[0] + lado * 0.6, cadera[1] + 6];
+    const rodilla = [
+      (muslo[0] + pie[0]) / 2 + 1 + alza * 0.7,
+      (muslo[1] + pie[1]) / 2 - alza * 0.3,
+    ];
+    out.push([capsula(muslo, rodilla, 1.8, 1.6), 'interior']);
+    out.push([capsula(rodilla, pie, 1.6, 1.4), 'interior']);
     out.push([
       poligono([
         [pie[0] - 2.2, pie[1] - 1.8],
@@ -203,7 +212,12 @@ function piezas(p) {
     ]);
   }
 
-  // El habito: hombros, caida y un bajo que se abre.
+  // El habito: hombros, caida y un bajo que se abre. En la zancada el bajo se
+  // estira entre los pies y se levanta delante, sobre la pierna que avanza: se
+  // ve el paso. Lo de atras arrastra (sway).
+  const delante = Math.max(zCerca, zLejos, 0);
+  const detras = Math.min(zCerca, zLejos, 0);
+  const alzaBajo = Math.min(2.5, delante * 0.4);
   out.push([
     poligono([
       mas(hombroCerca, [-2, 0.5]),
@@ -211,10 +225,10 @@ function piezas(p) {
       mas(cuello, [2.5, 1]),
       mas(hombroLejos, [2, 1]),
       [cadera[0] + 6 + sway * 0.5, cadera[1] + 2],
-      [cadera[0] + 9 + sway + vuelo, bajo],
-      [cadera[0] + 4 + sway, bajo + 1],
-      [cadera[0] - 4 + sway, bajo + 1],
-      [cadera[0] - 8 + sway - vuelo, bajo],
+      [cadera[0] + 9 + sway + vuelo + delante * 0.6, bajo - alzaBajo],
+      [cadera[0] + 4 + sway + delante * 0.4, bajo + 1 - alzaBajo * 0.5],
+      [cadera[0] - 4 + sway + detras * 0.4, bajo + 1],
+      [cadera[0] - 8 + sway - vuelo + detras * 0.6, bajo],
       [cadera[0] - 5 + sway * 0.5, cadera[1] + 2],
     ]),
     'habito',
@@ -224,8 +238,8 @@ function piezas(p) {
   out.push([
     poligono([
       [cadera[0] + 3, cadera[1] + 1],
-      [cadera[0] + 7.5 + sway + vuelo, bajo],
-      [cadera[0] + 2 + sway, bajo + 1],
+      [cadera[0] + 7.5 + sway + vuelo + delante * 0.6, bajo - alzaBajo],
+      [cadera[0] + 2 + sway + delante * 0.3, bajo + 1 - alzaBajo * 0.5],
     ]),
     'interior',
   ]);
@@ -265,18 +279,27 @@ function piezas(p) {
 
   // El velo: cae de debajo de la mitra hasta los hombros en dos alas, ancha la
   // de atras y estrecha la de delante, porque la cara va en tres cuartos.
+  // Con inercia (`velo`): las puntas se quedan atras al avanzar y se adelantan
+  // al frenar. Lo que pesa llega tarde.
+  const velo = p.velo ?? 0;
   const veloAtras = [
     en(cabeza, [-2.5, -4.5]),
     en(cabeza, [-6, -1]),
-    mas(cuello, [-8, 3.5]),
-    mas(cuello, [-9, 8]),
-    mas(cuello, [-3, 6]),
+    mas(cuello, [-8 + velo * 0.6, 3.5 - Math.abs(velo) * 0.3]),
+    mas(cuello, [-9 + velo, 8 - Math.abs(velo) * 0.6]),
+    mas(cuello, [-3 + velo * 0.5, 6]),
     mas(cuello, [-1.5, 1]),
     en(cabeza, [-1, -1]),
   ];
   out.push([poligono(veloAtras), 'mitra']);
-  out.push([capsula(mas(cuello, [-7, 4.4]), mas(cuello, [-3.4, 3.6]), 0.4), 'pliegue']);
-  out.push([capsula(mas(cuello, [-8, 6.6]), mas(cuello, [-3.4, 5.4]), 0.4), 'pliegue']);
+  out.push([
+    capsula(mas(cuello, [-7 + velo * 0.5, 4.4]), mas(cuello, [-3.4, 3.6]), 0.4),
+    'pliegue',
+  ]);
+  out.push([
+    capsula(mas(cuello, [-8 + velo * 0.8, 6.6]), mas(cuello, [-3.4, 5.4]), 0.4),
+    'pliegue',
+  ]);
   const veloDelante = [
     en(cabeza, [4.8, -2.5]),
     en(cabeza, [6.4, 2]),
@@ -328,11 +351,20 @@ function piezas(p) {
   out.push([elipse(en(cabeza, [3.6, -1]), 0.6, 0.5), 'ojo']);
 
   // La mascara ciega de las Manos: lo que el Cirujano se quito. La lleva el Decano.
-  if (p.mascara) out.push([elipse(en(cabeza, [1.2, 0.3]), 4.8, 5.2), 'mascara']);
+  if (p.mascara) {
+    out.push([capsula(en(cabeza, [-3.6, -1.2]), en(cabeza, [-1, -0.6]), 0.6), 'pliegue']);
+    // El borde oscuro: sin el, la mascara blanca se pierde contra el velo.
+    out.push([elipse(en(cabeza, [1.4, 0.3]), 5, 5.8), 'barba']);
+    out.push([elipse(en(cabeza, [1.4, 0.3]), 4.4, 5.2), 'mascara']);
+    // Ciega: sin ojos. Solo la costura del centro y un relieve de nariz.
+    out.push([capsula(en(cabeza, [2.6, -4]), en(cabeza, [2.8, 4.6]), 0.35), 'pliegue']);
+    out.push([elipse(en(cabeza, [5.2, 0.8]), 0.8, 1.4), 'mascara']);
+  }
 
   // La mitra: ancha, en alas, mas que la cara; el filo de oro en V desde la
   // frente, la banda y la gema redonda en su engaste.
-  const mitraLean = cabezaLean * 0.6;
+  // La mitra tambien llega tarde (`mitra`, en radianes).
+  const mitraLean = cabezaLean * 0.6 + (p.mitra ?? 0);
   const mitra = [
     [-4.6, -4],
     [5, -4],
@@ -498,25 +530,72 @@ const reposo = [0, 0, 1, 1].map((b) => ({
   lejos: [0.15, 0.45],
 }));
 
-// Ocho fotogramas: contacto, bajada, paso, subida, y lo mismo con la otra
-// pierna. Los brazos van al contrario que las piernas y el habito se queda
-// atras.
-const correr = Array.from({ length: 8 }, (_, i) => {
-  const fase = (i / 8) * 2 * Math.PI;
-  const s = Math.sin(fase);
-  const c = Math.cos(fase);
-  return {
-    cadera: baja(Math.abs(s) > 0.7 ? 1 : 0),
-    lean: 0.16,
-    zancadaCerca: Math.round(5 * s),
-    zancadaLejos: Math.round(-5 * s),
-    alzaCerca: c > 0.3 ? 2 : 0,
-    alzaLejos: c < -0.3 ? 2 : 0,
-    cerca: [0.35 - 0.5 * s, 0.7],
-    lejos: [0.15 + 0.5 * s, 0.6],
-    sway: -1.5,
-  };
+// Los ciclos de paso, en sus cuatro tiempos por pie, como se animan a mano:
+// CONTACTO (las piernas abiertas, el talon toca), BAJADA (el peso cae, el
+// cuerpo en lo mas bajo y la rodilla doblada), PASO (las piernas se cruzan, la
+// otra se levanta) y SUBIDA (empuja y el cuerpo sube). El cuerpo sube y baja,
+// los brazos van al contrario que las piernas y el velo y la mitra llegan
+// tarde: medio tiempo despues.
+function ciclo({ zancada, alza, sube, baja: hunde, lean, brazo, velo, mitra, sway }) {
+  // Por cada tiempo: [zancada de la pierna cercana, alza cercana, alza lejana, altura del cuerpo]
+  const tiempos = [
+    [1, 0, 0, hunde * 0.5], // contacto: la cercana delante
+    [0.6, 0, 0, hunde], // bajada
+    [-0.1, 0, alza, 0], // paso: la lejana se levanta
+    [-0.6, 0, alza * 0.5, -sube], // subida
+    [-1, 0, 0, hunde * 0.5], // contacto: la lejana delante
+    [-0.6, 0, 0, hunde],
+    [0.1, alza, 0, 0],
+    [0.6, alza * 0.5, 0, -sube],
+  ];
+  return tiempos.map(([z, aC, aL, y], i) => {
+    const s = Math.sin((i / 8) * 2 * Math.PI);
+    const tarde = Math.sin(((i - 1.5) / 8) * 2 * Math.PI);
+    return {
+      cadera: baja(Math.round(y)),
+      lean,
+      bob: y > 0 ? 1 : 0,
+      zancadaCerca: Math.round(zancada * z),
+      zancadaLejos: Math.round(-zancada * z),
+      alzaCerca: aC,
+      alzaLejos: aL,
+      // Adelante, el antebrazo se estira: si se dobla, parece un puñetazo.
+      cerca: [0.3 - brazo * s, 0.45 + 0.25 * s],
+      lejos: [0.15 + brazo * s, 0.45 - 0.25 * s],
+      velo: velo + tarde * 1.2,
+      mitra: mitra + tarde * 0.03,
+      sway,
+    };
+  });
+}
+
+const correr = ciclo({
+  zancada: 6,
+  alza: 3,
+  sube: 1,
+  baja: 2,
+  lean: 0.14,
+  brazo: 0.6,
+  velo: 2.5,
+  mitra: -0.05,
+  sway: -1.5,
 });
+// Andar: el paso de quien entra en su sala. Mas corto, sin prisa.
+const andar = ciclo({
+  zancada: 4,
+  alza: 2,
+  sube: 0,
+  baja: 1,
+  lean: 0.04,
+  brazo: 0.3,
+  velo: 1,
+  mitra: 0,
+  sway: -0.5,
+});
+
+// Las versiones con la mascara ciega puesta, para la intro: asi entra en la
+// N.º 7, como operan las Manos (#246).
+const conMascara = (poses) => poses.map((pose) => ({ ...pose, mascara: true }));
 
 const salto = [
   {
@@ -961,6 +1040,7 @@ const muerte = [
 export const ANIMACIONES = {
   reposo,
   correr,
+  andar,
   salto,
   caida,
   aterrizaje,
@@ -979,6 +1059,9 @@ export const ANIMACIONES = {
   alza,
   tajo,
   muerte,
+  'intro-andar': conMascara(andar),
+  'intro-reposo': conMascara(reposo),
+  'intro-alza': conMascara(alza),
 };
 
 // -- Las reliquias ------------------------------------------------------------
