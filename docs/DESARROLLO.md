@@ -755,7 +755,7 @@ pierden capas y que lo publicado no adelanta el giro.
 
 **La Cripta de Lectura.** El material de la biblia que no es juego se guarda en una
 biblioteca de las Criptas de Espera: 17 libros en cinco estantes. Los libros visibles se abren
-de uno en uno; la vela de cera humana enciende el estante reservado (los otros relatos, el
+de uno en uno; la vela de cera humana, que empieza encendida, enciende el estante reservado (los otros relatos, el
 aparato de Génesis y la cronología). Las páginas del Portal enlazan a la Cripta en vez de
 volcar la explicación al pie de la actividad. Los datos viven en `web/src/mundo.ts`, la
 agrupación en libros y estantes en `web/src/biblioteca.ts`, y la página en

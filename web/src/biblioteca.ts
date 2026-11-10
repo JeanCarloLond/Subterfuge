@@ -6,9 +6,9 @@
  * abren de uno en uno. La página de la Cripta solo sabe dibujar estantes y
  * libros; el contenido sigue en `mundo.ts`.
  *
- * El estante reservado no se ve hasta encender la vela: son los otros
- * relatos, el aparato de Génesis y la cronología del clero. La vela no
- * desbloquea nada para siempre: si se apaga, el estante vuelve a la sombra.
+ * El estante reservado se enciende con la vela: son los otros relatos, el
+ * aparato de Génesis y la cronología del clero. La vela empieza encendida;
+ * al apagarla, el estante vuelve a la sombra.
  */
 
 import {
@@ -58,7 +58,7 @@ export interface LibroBiblioteca {
   resumen: string;
   /** Estante al que pertenece. */
   estante: string;
-  /** Solo se ve con la vela encendida. */
+  /** Se ve mientras la vela esté encendida (empieza encendida). */
   reservado?: boolean;
   secciones: readonly SeccionBiblioteca[];
 }

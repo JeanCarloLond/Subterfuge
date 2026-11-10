@@ -2,9 +2,9 @@
  * La Cripta de Lectura: una biblioteca dentro de las Criptas de Espera.
  *
  * El visitante no recibe la explicación del mundo de golpe. Encuentra un
- * estante, abre un libro y lee. La vela de cera humana enciende el estante
- * reservado; sin ella, los otros relatos, el aparato y la cronología siguen
- * en la sombra.
+ * estante, abre un libro y lee. La vela de cera humana empieza encendida y
+ * enciende el estante reservado; al apagarla, los otros relatos, el aparato y
+ * la cronología vuelven a la sombra.
  */
 
 import {
@@ -62,8 +62,8 @@ function estanteHTML(id: string): string {
   if (!estante) return '';
   const libros = LIBROS_POR_ESTANTE.get(estante.id) ?? [];
   return `
-    <section class="seccion estante ${estante.reservado ? 'estante-reservado oculto' : ''}"
-      data-estante="${estante.id}" ${estante.reservado ? 'aria-hidden="true" inert' : ''}>
+    <section class="seccion estante ${estante.reservado ? 'estante-reservado' : ''}"
+      data-estante="${estante.id}">
       <div class="eyebrow">${html(estante.titulo)}</div>
       <p class="estante-nota">${html(estante.nota)}</p>
       <div class="libros">${libros.map(libroHTML).join('')}</div>
@@ -72,7 +72,7 @@ function estanteHTML(id: string): string {
 
 export function renderCripta(contenedor: HTMLElement): () => void {
   const raiz = elemento(`
-    <article class="cripta">
+    <article class="cripta iluminada">
       <div class="eyebrow">Criptas de Espera · anexo I</div>
       <h1>La Cripta de Lectura</h1>
       <p class="pabellon-lema">La Cripta no presta: deja leer.</p>
@@ -85,12 +85,12 @@ export function renderCripta(contenedor: HTMLElement): () => void {
       </p>
 
       <div class="cripta-vela">
-        <button type="button" class="vela-cripta" aria-pressed="false">
+        <button type="button" class="vela-cripta" aria-pressed="true">
           <span class="vela-icono" aria-hidden="true">
             <span class="vela-cera"></span>
             <span class="vela-llama"></span>
           </span>
-          <span class="vela-texto">Encender la vela</span>
+          <span class="vela-texto">Apagar la vela</span>
         </button>
         <p class="cripta-aviso">Una vela de cera humana. La Cripta no presta.</p>
       </div>
@@ -123,8 +123,21 @@ export function renderCripta(contenedor: HTMLElement): () => void {
   const cerrarBoton = raiz.querySelector<HTMLButtonElement>('.lectura-cerrar');
   const lomos = [...raiz.querySelectorAll<HTMLButtonElement>('.lomo')];
 
-  let encendida = false;
+  let encendida = true;
   let abierto: string | null = null;
+
+  const pintarVela = () => {
+    vela?.setAttribute('aria-pressed', String(encendida));
+    if (velaTexto) {
+      velaTexto.textContent = encendida ? 'Apagar la vela' : 'Encender la vela';
+    }
+    raiz.classList.toggle('iluminada', encendida);
+    if (reservado) {
+      reservado.classList.toggle('oculto', !encendida);
+      reservado.toggleAttribute('inert', !encendida);
+      reservado.setAttribute('aria-hidden', String(!encendida));
+    }
+  };
 
   const cerrarLibro = (devolverFoco = true) => {
     if (!lectura) return;
@@ -165,16 +178,7 @@ export function renderCripta(contenedor: HTMLElement): () => void {
   const alternarVela = () => {
     const y = window.scrollY;
     encendida = !encendida;
-    vela?.setAttribute('aria-pressed', String(encendida));
-    if (velaTexto) {
-      velaTexto.textContent = encendida ? 'Apagar la vela' : 'Encender la vela';
-    }
-    raiz.classList.toggle('iluminada', encendida);
-    if (reservado) {
-      reservado.classList.toggle('oculto', !encendida);
-      reservado.toggleAttribute('inert', !encendida);
-      reservado.setAttribute('aria-hidden', String(!encendida));
-    }
+    pintarVela();
     if (!encendida && abierto) {
       const libro = LIBRO_POR_ID.get(abierto);
       if (libro?.reservado) cerrarLibro(false);
@@ -182,6 +186,7 @@ export function renderCripta(contenedor: HTMLElement): () => void {
     window.scrollTo({ top: y, behavior: 'auto' });
   };
 
+  pintarVela();
   vela?.addEventListener('click', alternarVela);
   for (const lomo of lomos) {
     lomo.addEventListener('click', () => abrirLibro(lomo.dataset.libro ?? ''));

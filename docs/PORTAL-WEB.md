@@ -89,12 +89,11 @@ las escuelas. El estante reservado guarda los otros relatos, el aparato de Géne
 cronología.
 
 **Qué representa.** La biblioteca que la Diócesis no cuelga en el Atrio. El conocimiento se
-guarda en libros, no en explicaciones al pie de la página: hay que abrirlos. La vela es
+guarda en libros, no en explicaciones al pie de la página: hay que abrirlos. La vela empieza encendida y es
 el permiso de leer lo que no se presta; apagarla devuelve el estante reservado a la sombra.
 
-**Cómo se lee.** Un libro se abre en el atril y se cierra con su botón o con Escape. La
-vela es un interruptor: con el estante reservado a oscuras, sus libros no existen para el
-visitante. No se prestan.
+**Cómo se lee.** Un libro se abre en el atril y se cierra con su botón o con Escape. La vela empieza encendida. Al apagarla, el estante reservado se oculta; al encenderla,
+vuelve. No se prestan.
 
 ### 4. Doctrina · `#/doctrina`
 
