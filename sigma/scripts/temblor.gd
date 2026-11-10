@@ -8,6 +8,7 @@ signal temblo
 
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Sonidos := preload("res://scripts/sonidos.gd")
+const Controles := preload("res://scripts/controles.gd")
 const T := Sacramento.TEMBLOR
 const COLOR_POLVO := Color(0.7, 0.62, 0.52, 0.85)
 const COLOR_PIEDRA := Color(0.32, 0.25, 0.24)
@@ -49,6 +50,8 @@ func temblar() -> void:
 	_fin = _ahora + T["dura_s"]
 	_sonido.play()
 	temblo.emit()
+	# El templo se encoge lejos: un rumor grave en el mando, el motor grande.
+	Controles.vibrar(0.0, 0.35, T["dura_s"])
 	var camara := get_viewport().get_camera_2d()
 	var centro := camara.get_screen_center_position() if camara else Vector2(320, 180)
 	var mitad := get_viewport().get_visible_rect().size / 2.0

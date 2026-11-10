@@ -9,6 +9,7 @@ extends Node2D
 
 const SIGUIENTE := "res://escenas/nivel1/pabellon.tscn"
 const Sonidos := preload("res://scripts/sonidos.gd")
+const Controles := preload("res://scripts/controles.gd")
 const FONDO := Color(0.04, 0.03, 0.04)
 const TEXTO := Color(0.85, 0.8, 0.72)
 const TITULO := Color(0.62, 0.17, 0.15)
@@ -54,7 +55,11 @@ func _ready() -> void:
 	_texto.add_theme_constant_override("outline_size", 10)
 	capa.add_child(_texto)
 	var salto := Label.new()
-	salto.text = "Espacio: saltar"
+	# «Saltar» la intro: con la tecla de saltar, o su boton si se juega con mando.
+	salto.text = Controles.rellenar("{saltar}: saltar")
+	var controles := get_node_or_null("/root/Controles")
+	if controles:
+		controles.dispositivo_cambio.connect(func() -> void: salto.text = Controles.rellenar("{saltar}: saltar"))
 	salto.anchor_left = 1.0
 	salto.anchor_right = 1.0
 	salto.offset_left = -110.0

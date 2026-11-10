@@ -71,6 +71,7 @@ var _vista := Vector2.ZERO
 var _lienzo: Control
 var _titulo: Label
 var _nombre: Label
+var _pie: Label
 var _tiempo := 0.0
 
 
@@ -113,9 +114,8 @@ func _ready() -> void:
 	_titulo.position = Vector2(0, 14)
 	_nombre = _etiqueta(HUESO, HORIZONTAL_ALIGNMENT_LEFT)
 	_nombre.position = Vector2(26, 322)
-	var pie := _etiqueta(Color(0.6, 0.55, 0.5), HORIZONTAL_ALIGNMENT_RIGHT)
-	pie.position = Vector2(-26, 322)
-	pie.text = Controles.rellenar("{mapa} cerrar · {izquierda} {derecha} {arriba} {abajo} mover")
+	_pie = _etiqueta(Color(0.6, 0.55, 0.5), HORIZONTAL_ALIGNMENT_RIGHT)
+	_pie.position = Vector2(-26, 322)
 
 
 func _etiqueta(color: Color, alineado: HorizontalAlignment) -> Label:
@@ -145,6 +145,8 @@ func abrir() -> void:
 	var datos: Dictionary = Plano.SALAS[sala]
 	_titulo.text = NIVELES.get(datos["nivel"], "")
 	_nombre.text = nombre_de(sala)
+	# Al abrir, con los botones del mando que se este usando.
+	_pie.text = Controles.rellenar("{mapa} cerrar · {izquierda} {derecha} {arriba} {abajo} mover")
 	_lienzo.queue_redraw()
 
 

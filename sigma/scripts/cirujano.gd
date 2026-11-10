@@ -35,6 +35,7 @@ const Animaciones := preload("res://arte/cirujano/animaciones.gd")
 const Texturas := preload("res://scripts/texturas.gd")
 const Gesto := preload("res://scripts/gesto.gd")
 const Herida := preload("res://scripts/herida.gd")
+const Controles := preload("res://scripts/controles.gd")
 ## Las fases de cada golpe, como en Blasphemous: los fotogramas de aviso, el del
 ## smear (el arco del bisturi), el del impacto, que se sostiene, y los de la
 ## recuperacion, que se ven ya con el cuerpo libre.
@@ -377,6 +378,8 @@ func recibir_golpe(origen_x: float, dano: int) -> Resultado:
 		fervor_cambio.emit(combate.fervor, Sacramento.FERVOR["maximo"])
 		_parry_logrado(position + Vector2(movimiento.mirando * 8.0, -26.0))
 		_pausa_de_impacto(Sacramento.IMPACTO["parry_ms"])
+		# El parry, seco y corto: el motor pequeño.
+		Controles.vibrar(0.6, 0.2, 0.1)
 		return Resultado.PARADO
 	var retroceso := Vector2(Sacramento.VITALIDAD["retroceso_x"], Sacramento.VITALIDAD["retroceso_y"])
 	if not movimiento.herir(position.x, origen_x, retroceso):
@@ -573,6 +576,8 @@ func _rematar() -> void:
 	_sonar("golpe-fuerte")
 	_sacudir()
 	_pausa_de_impacto(Sacramento.EJECUCION["pausa_ms"])
+	# La ejecucion: el golpe mas pesado del juego, en las manos.
+	Controles.vibrar(0.7, 1.0, 0.3)
 
 
 ## Polvo al aterrizar de una caida larga, chispas al clavarse en la pared y
@@ -671,6 +676,7 @@ func _herido(origen_x: float) -> void:
 	# El giro de la herida es negativo: con -hacia, la cabeza va con el empujon.
 	_gesticular(Gesto.Tipo.HERIDA, 1.0, -hacia)
 	Herida.salpicar(get_parent(), position + Vector2(0, -24), hacia, 10)
+	Controles.vibrar(0.5, 0.7, 0.22)
 
 
 ## Empieza un gesto del cuerpo (gesto.gd). `lado` decide hacia donde se
@@ -862,6 +868,7 @@ func _morir() -> void:
 		return
 	muerto = true
 	_voz("muerte")
+	Controles.vibrar(0.8, 1.0, 0.6)
 	combate.cancelar()
 	_soltar_victima()
 	_marca.visible = false

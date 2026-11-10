@@ -4,7 +4,24 @@
 ## Se registran en codigo y no en project.godot: asi se leen de un vistazo, se
 ## prueban (tests/test_controles.gd) y no hace falta abrir el editor para
 ## cambiar una tecla.
+##
+## El mando: cualquiera que Godot reconozca (Xbox, PlayStation 4 y 5, Switch
+## Pro...), en escritorio y en la web. Los carteles ensenan los botones del que
+## se esta usando: con un mando de PlayStation, ✕ ○ □ △; con el teclado, las
+## teclas. Cambian en cuanto se toca el otro. Y el mando vibra (`vibrar`).
 extends Node
+
+## Se paso del teclado al mando o al reves, o de un mando a otro: los carteles
+## se vuelven a escribir.
+signal dispositivo_cambio
+
+const XBOX := "xbox"
+const PLAYSTATION := "playstation"
+## Lo que delata un mando de Sony en su nombre: en escritorio, el de SDL
+## («PS5 Controller», «DualSense Wireless Controller», «Sony Interactive
+## Entertainment Wireless Controller»); en la web, el del navegador, que lleva
+## el fabricante («Vendor: 054c»).
+const PISTAS_PLAYSTATION := ["ps5", "ps4", "ps3", "dualsense", "dualshock", "playstation", "sony", "054c"]
 
 ## Accion -> teclas, botones del raton y del mando.
 const ACCIONES := {
@@ -43,17 +60,37 @@ const NOMBRES_MANDO := {
 	JOY_BUTTON_START: "Start", JOY_BUTTON_BACK: "Back", JOY_BUTTON_RIGHT_STICK: "R3",
 	JOY_BUTTON_LEFT_STICK: "L3",
 }
+## Los mismos, en un mando de PlayStation. Los simbolos los dibuja la fuente
+## de reserva (herramientas/crear_flechas.py), como las flechas.
+const NOMBRES_PLAYSTATION := {
+	JOY_BUTTON_A: "✕", JOY_BUTTON_B: "○", JOY_BUTTON_X: "□", JOY_BUTTON_Y: "△",
+	JOY_BUTTON_LEFT_SHOULDER: "L1", JOY_BUTTON_RIGHT_SHOULDER: "R1",
+	JOY_BUTTON_DPAD_LEFT: "←", JOY_BUTTON_DPAD_RIGHT: "→", JOY_BUTTON_DPAD_UP: "↑", JOY_BUTTON_DPAD_DOWN: "↓",
+	JOY_BUTTON_START: "Options", JOY_BUTTON_BACK: "Create", JOY_BUTTON_RIGHT_STICK: "R3",
+	JOY_BUTTON_LEFT_STICK: "L3",
+}
+## Lo que hay que mover un eje para que cuente como usar el mando: el stick
+## en reposo tiembla un poco y no debe quitarle el cartel al teclado.
+const EJE_CUENTA := 0.5
+
+## Lo ultimo que se toco: mando o teclado (y raton).
+static var _usa_mando := false
+## Si ya se toco algo: hasta entonces, con un mando enchufado se ensena el mando.
+static var _tocado := false
+static var _familia := XBOX
+static var _dispositivo := 0
 
 
 ## El nombre de la tecla (o del boton, con mando) de `accion`, para
 ## ensenarlo. Para moverse, las flechas: se leen mejor que WASD.
-static func nombre(accion: String, con_mando := false) -> String:
+static func nombre(accion: String, con_mando := false, familia := XBOX) -> String:
 	var def: Dictionary = ACCIONES.get(accion, {})
 	if con_mando:
+		var nombres: Dictionary = NOMBRES_PLAYSTATION if familia == PLAYSTATION else NOMBRES_MANDO
 		if def.has("mando"):
-			return NOMBRES_MANDO.get(def["mando"][0], "?")
+			return nombres.get(def["mando"][0], "?")
 		if def.has("eje") and def["eje"][0] == JOY_AXIS_TRIGGER_LEFT:
-			return "LT"
+			return "L2" if familia == PLAYSTATION else "LT"
 	var teclas: Array = def.get("teclas", [])
 	if teclas.is_empty():
 		return "?"
@@ -63,12 +100,81 @@ static func nombre(accion: String, con_mando := false) -> String:
 	return NOMBRES_TECLA.get(teclas[0], OS.get_keycode_string(teclas[0]))
 
 
-## Cambia cada {accion} de `texto` por su tecla (o su boton si hay mando).
+## Cambia cada {accion} de `texto` por su tecla, o por su boton si lo ultimo
+## que se toco fue el mando.
 static func rellenar(texto: String) -> String:
-	var con_mando := not Input.get_connected_joypads().is_empty()
+	var con_mando := usa_mando()
 	for accion in ACCIONES:
-		texto = texto.replace("{%s}" % accion, nombre(accion, con_mando))
+		texto = texto.replace("{%s}" % accion, nombre(accion, con_mando, _familia))
 	return texto
+
+
+## Si se esta jugando con mando: lo ultimo que se toco. Antes de tocar nada,
+## si hay uno enchufado.
+static func usa_mando() -> bool:
+	if _tocado:
+		return _usa_mando
+	return not Input.get_connected_joypads().is_empty()
+
+
+## Que mando es, por su nombre: PlayStation o el resto (que se ensenan como
+## uno de Xbox, la disposicion que Godot usa para todos).
+static func familia_de(nombre_mando: String) -> String:
+	var bajo := nombre_mando.to_lower()
+	for pista in PISTAS_PLAYSTATION:
+		if bajo.contains(pista):
+			return PLAYSTATION
+	return XBOX
+
+
+static func familia_actual() -> String:
+	return _familia
+
+
+## Hace vibrar el mando que se esta usando: `debil` y `fuerte` son los dos
+## motores (0 a 1). Con teclado, nada.
+static func vibrar(debil: float, fuerte: float, segundos: float) -> void:
+	if usa_mando():
+		Input.start_joy_vibration(_dispositivo, debil, fuerte, segundos)
+
+
+func _ready() -> void:
+	# Tambien en pausa y en los menus: alli tambien se cambia de mando.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	Input.joy_connection_changed.connect(_al_conectar)
+	var mandos := Input.get_connected_joypads()
+	if not mandos.is_empty():
+		_dispositivo = mandos[0]
+		_familia = familia_de(Input.get_joy_name(_dispositivo))
+
+
+func _input(evento: InputEvent) -> void:
+	if evento is InputEventJoypadButton and evento.pressed:
+		_usar(true, evento.device)
+	elif evento is InputEventJoypadMotion and absf(evento.axis_value) > EJE_CUENTA:
+		_usar(true, evento.device)
+	elif (evento is InputEventKey or evento is InputEventMouseButton) and evento.pressed:
+		_usar(false, _dispositivo)
+
+
+func _usar(con_mando: bool, dispositivo: int) -> void:
+	var familia_nueva := familia_de(Input.get_joy_name(dispositivo)) if con_mando else _familia
+	var cambia := not _tocado or con_mando != _usa_mando or familia_nueva != _familia
+	_tocado = true
+	_usa_mando = con_mando
+	_familia = familia_nueva
+	if con_mando:
+		_dispositivo = dispositivo
+	if cambia:
+		dispositivo_cambio.emit()
+
+
+## Se enchufa un mando: se pasa a el. Se quita el ultimo: al teclado.
+func _al_conectar(dispositivo: int, conectado: bool) -> void:
+	if conectado:
+		_usar(true, dispositivo)
+	elif Input.get_connected_joypads().is_empty():
+		_usar(false, _dispositivo)
 
 
 ## Las flechas de las teclas (#237): ninguna fuente del juego las tiene. En
