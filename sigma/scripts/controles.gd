@@ -69,6 +69,8 @@ const NOMBRES_PLAYSTATION := {
 	JOY_BUTTON_START: "Options", JOY_BUTTON_BACK: "Create", JOY_BUTTON_RIGHT_STICK: "R3",
 	JOY_BUTTON_LEFT_STICK: "L3",
 }
+## La vibracion en la web, por la API del navegador: mando, ms, debil, fuerte.
+const VIBRAR_WEB := "(function(){var p=(navigator.getGamepads?navigator.getGamepads():[])[%d];if(p&&p.vibrationActuator){p.vibrationActuator.playEffect('dual-rumble',{duration:%d,weakMagnitude:%.2f,strongMagnitude:%.2f}).catch(function(){});}})()"
 ## Lo que hay que mover un eje para que cuente como usar el mando: el stick
 ## en reposo tiembla un poco y no debe quitarle el cartel al teclado.
 const EJE_CUENTA := 0.5
@@ -119,12 +121,27 @@ static func usa_mando() -> bool:
 
 ## Que mando es, por su nombre: PlayStation o el resto (que se ensenan como
 ## uno de Xbox, la disposicion que Godot usa para todos).
-static func familia_de(nombre_mando: String) -> String:
-	var bajo := nombre_mando.to_lower()
+static func familia_de(nombre_mando: String, info := {}) -> String:
+	# Lo mas fiable, cuando lo hay (escritorio): el fabricante. 1356 = 0x054c, Sony.
+	if str(info.get("vendor_id", "")) in ["1356", "054c"]:
+		return PLAYSTATION
+	var bajo := (nombre_mando + " " + str(info.get("raw_name", ""))).to_lower()
 	for pista in PISTAS_PLAYSTATION:
 		if bajo.contains(pista):
 			return PLAYSTATION
 	return XBOX
+
+
+## El mando que se esta usando, como lo llama el sistema: la pausa lo ensena,
+## para saber que se ha reconocido.
+static func nombre_del_mando() -> String:
+	if not usa_mando():
+		return ""
+	return Input.get_joy_name(_dispositivo)
+
+
+static func _familia_del(dispositivo: int) -> String:
+	return familia_de(Input.get_joy_name(dispositivo), Input.get_joy_info(dispositivo))
 
 
 static func familia_actual() -> String:
@@ -134,8 +151,14 @@ static func familia_actual() -> String:
 ## Hace vibrar el mando que se esta usando: `debil` y `fuerte` son los dos
 ## motores (0 a 1). Con teclado, nada.
 static func vibrar(debil: float, fuerte: float, segundos: float) -> void:
-	if usa_mando():
-		Input.start_joy_vibration(_dispositivo, debil, fuerte, segundos)
+	if not usa_mando():
+		return
+	if OS.has_feature("web"):
+		# En la web Godot no hace vibrar el mando: se le pide al navegador
+		# (Chrome y Edge lo hacen con los de PlayStation y Xbox).
+		JavaScriptBridge.eval(VIBRAR_WEB % [_dispositivo, roundi(segundos * 1000.0), debil, fuerte], false)
+		return
+	Input.start_joy_vibration(_dispositivo, debil, fuerte, segundos)
 
 
 func _ready() -> void:
@@ -145,7 +168,7 @@ func _ready() -> void:
 	var mandos := Input.get_connected_joypads()
 	if not mandos.is_empty():
 		_dispositivo = mandos[0]
-		_familia = familia_de(Input.get_joy_name(_dispositivo))
+		_familia = _familia_del(_dispositivo)
 
 
 func _input(evento: InputEvent) -> void:
@@ -158,7 +181,7 @@ func _input(evento: InputEvent) -> void:
 
 
 func _usar(con_mando: bool, dispositivo: int) -> void:
-	var familia_nueva := familia_de(Input.get_joy_name(dispositivo)) if con_mando else _familia
+	var familia_nueva := _familia_del(dispositivo) if con_mando else _familia
 	var cambia := not _tocado or con_mando != _usa_mando or familia_nueva != _familia
 	_tocado = true
 	_usa_mando = con_mando
