@@ -34,7 +34,7 @@ const QUIETO =
 export function renderAvisos(contenedor: HTMLElement): void {
   const raiz = elemento(`
     <article class="asentamiento">
-      <div class="eyebrow">Expediente del asentamiento · capa VI</div>
+      <div class="eyebrow">Expediente del asentamiento · capa VII</div>
       <h1>El Asentamiento</h1>
       <p class="pabellon-lema">El templo se mueve. La Diócesis lo llama asentarse.</p>
       <div class="filete"></div>
@@ -185,7 +185,7 @@ export function renderAvisos(contenedor: HTMLElement): void {
       </section>
 
       <section class="seccion" id="avisos" tabindex="-1">
-        <div class="eyebrow">Avisos · capa VI</div>
+        <div class="eyebrow">Avisos · capa VII</div>
         <h2>Avisos a los fieles</h2>
         <p>
           Comunicados de la Diócesis sobre el asentamiento del templo. Se publican por orden de

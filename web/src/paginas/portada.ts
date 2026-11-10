@@ -115,7 +115,7 @@ export function renderPortada(contenedor: HTMLElement): () => void {
           <!-- Sigma (#247): con el rostro del Cirujano de Mariana, a x2. -->
           <a class="tarjeta" href="${import.meta.env.BASE_URL}sigma/">
             <img class="lamina" src="${import.meta.env.BASE_URL}sigma/cirujano-cara.png" width="72" height="72" alt="" aria-hidden="true" />
-            <span class="profundidad">capa VI · el asentamiento</span>
+            <span class="profundidad">capa VII · el asentamiento</span>
             <h3>Subterfuge Sigma</h3>
             <p>Los muros se mueven y la carne no llega. Una Mano baja sin turno a ver por qué.</p>
           </a>

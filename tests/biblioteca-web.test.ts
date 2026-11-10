@@ -53,7 +53,7 @@ describe('La Cripta de Lectura', () => {
     }
   });
 
-  it('los libros reservados no se pueden leer sin lámpara', () => {
+  it('los libros reservados no se pueden leer sin vela', () => {
     // La página es la que lo impone; aquí se vigila que el dato lo declare.
     for (const id of ['otros-relatos', 'aparato', 'cronologia']) {
       expect(LIBRO_POR_ID.get(id)?.reservado).toBe(true);
