@@ -31,7 +31,7 @@ datos están separados para que los dos mundos no se pisen:
 
 ## Cómo se navega
 
-- **Rutas por hash.** `#/doctrina`, `#/registro`, `#/vientre`, `#/linaje`,
+- **Rutas por hash.** `#/doctrina`, `#/registro`, `#/vientre`, `#/cripta`, `#/linaje`,
   `#/sacramentos`, `#/avisos`. La portada es `#/`.
 - **Bajar es degradarse.** Cada sección tiene una profundidad (`data-profundidad` en el
   `<body>`). Al bajar cambian el muro, el polvo, la luz y la música; el sitio se oscurece.
@@ -40,11 +40,12 @@ datos están separados para que los dos mundos no se pisen:
 - **Dos menús, las mismas paradas.** El menú superior y el riel lateral comparten Portal,
   Pabellón y las capas I–VI:
 
-  `⌂ Portal · 0 Pabellón · I Doctrina · II Registro · III El Vientre · IV Linaje ·
+  `⌂ Portal · 0 Pabellón · I Doctrina · II Registro · III El Vientre · ▤ Cripta · IV Linaje ·
 V Sacramentos · VI Asentamiento`
 
 - **El Portal es la entrada.** Lleva el símbolo `⌂`; el `0` es el Pabellón, la primera
-  parada de la superficie. El Asentamiento es la capa VI.
+  parada de la superficie. La Cripta de Lectura es una parada de la capa III, con el símbolo
+  `▤`. El Asentamiento es la capa VI.
 - **La sección activa se marca por ruta.** Portal y Pabellón comparten cota (0 m), pero cada
   uno tiene su parada. Los trámites `#/examen` y `#/sacramento` marcan Sacramentos.
 
@@ -67,9 +68,8 @@ Sala N.º 7 se quedó vacía. La portada no lo dice: lo deja en los avisos y en 
 
 **Qué se ve.** El Libro de Diezmos de un pabellón del Atrio: cuarenta casas, una cuota, una
 camilla por casa. Se puede abrir la ficha de cada casa, leer la capilla, el Muro de los
-Dientes y la Oficina del Decano, y recorrer la jornada de Tomás el cerero. Después, el
-«Libro de costumbres»: leyes, calendario, oficios, clases, artes, leyendas, parentesco y
-cronología.
+Dientes y la Oficina del Decano, y recorrer la jornada de Tomás el cerero. El Libro de
+costumbres completo se consulta en la Cripta de Lectura.
 
 **Qué representa.** El universo desde el suelo. La unidad es la casa: la deuda se hereda y,
 si una casa falla, deben todas. El horror vive en una cuota compartida, en una vela que se
@@ -82,68 +82,61 @@ el pabellón entero vuelve a figurar como no cubierto.
 ### 3. Doctrina · `#/doctrina`
 
 **Qué se ve.** El Códice como libro que se hojea: diez hojas, versículos, márgenes y el
-manual técnico que se trasluce al apagar la vela de la Vigilia. Debajo, los tres Libros, los
-otros relatos de la misma historia y la lengua de la Diócesis.
+manual técnico que se trasluce al apagar la vela de la Vigilia. Los tres Libros, los otros
+relatos y la lengua están en la Cripta de Lectura.
 
 **Qué representa.** El mito fundacional y su tecnología. El Códice es un informe de
 incidentes reescrito como escritura sagrada: el Don, los Mil, el Diezmo y el Sacramento son
 un protocolo de contención convertido en liturgia.
 
-**Lo que añade la revisión.**
-
-- **Los tres Libros:** _El Don y el Silencio_, _La Venda de la Madre_ y _El Día de la
-  Mirada_.
-- **Otros relatos:** Anatomistas («El Protocolo»), Ayunantes («La Rehusada»), Rebaño Hueco
-  («El Lugar Vacío») y Reformados («Los Ojos Prestados»).
-- **La lengua:** los tres registros (Códice, Pabellón, Palmario), las cuatro reglas, las
-  cuatro expresiones y el glosario completo.
-
 ### 4. Registro · `#/registro`
 
 **Qué se ve.** Las fichas del juego y del Portal con su lámina: fieles, oficio, fauna, flora
-y aparato. Lo que el visitante no ha visto sale como silueta y sin texto. Al final, «El
-aparato de Génesis»: quince piezas con su origen real, su uso en la Diócesis y lo que el
-pueblo cree que son.
+y aparato. Lo que el visitante no ha visto sale como silueta y sin texto. El inventario
+completo del aparato de Génesis está en la Cripta de Lectura.
 
 **Qué representa.** La manía de catalogar del poder. El Registro sabe que algo existe, pero
 solo lo muestra a quien ya lo ha visto. Los dioses no ven; la institución sí, y anota.
 
-**La tecnología.** El Don, los ductos, las terminales, los tanques, el Palmario, los
-injertos, la Injertadora, la Poción de Carne, el Hongo de Lámpara, las velas de cera humana,
-la armería de la Cruzada y los manuales técnicos. Cada pieza tiene dos lecturas: la técnica
-y la teológica.
-
 ### 5. El Vientre · `#/vientre`
 
 **Qué se ve.** El plano de catorce salas y veinte pasos, con sus atajos, capas y salas
-selladas. Se puede pulsar cada sala y seguir sus salidas. Debajo, **La Intemperie**: la
-superficie que casi nadie conoce.
+selladas. Se puede pulsar cada sala y seguir sus salidas. La Intemperie y su naturaleza se
+consultan en la Cripta de Lectura.
 
 **Qué representa.** Un solo edificio cerrado, construido hacia abajo, donde el mundo entero
 cabe. Los atajos son tubería de Génesis que nadie ha cerrado y que salta el trámite. Bajar
 es deshumanizar; el mapa lo dice antes que cualquier texto.
 
-**Lo que añade la revisión.** La Boca, el Suelo de Arriba, la Ciudad Apagada, el Isar Seco,
-el Bosque de Ceniza, las Ermitas, el Monte Vestal, la Senda de los porteadores y la
-fauna/flora de fuera: Ciervo Velado, Alondra de Antena, Ganado Engastado, Musgo de Pantalla
-y Abeto Ceniciento.
+### 6. La Cripta de Lectura · `#/cripta`
 
-### 6. Linaje · `#/linaje`
+**Qué se ve.** Una sala detrás de las camillas de espera: cinco estantes y diecisiete libros
+que se abren de uno en uno. La lámpara de aceite enciende el estante reservado. Los libros
+visibles guardan la doctrina, la lengua, la ley, el calendario, los oficios, las clases, las
+artes, las leyendas, el parentesco, la Intemperie, las herencias, la Capucha, las Manos y
+las escuelas. El estante reservado guarda los otros relatos, el aparato de Génesis y la
+cronología.
+
+**Qué representa.** La biblioteca que la Diócesis no cuelga en el Atrio. El conocimiento se
+guarda en libros, no en explicaciones al pie de la página: hay que abrirlos. La lámpara es
+el permiso de leer lo que no se presta; apagarla devuelve el estante reservado a la sombra.
+
+**Cómo se lee.** Un libro se abre en el atril y se cierra con su botón o con Escape. La
+lámpara es un interruptor: con el estante reservado a oscuras, sus libros no existen para el
+visitante. No se prestan.
+
+### 7. Linaje · `#/linaje`
 
 **Qué se ve.** El organigrama interactivo de la Diócesis: Génesis Vestal, los Mil, las
-advocaciones, el clero, el oficio, los fieles, la ofrenda y el destino de la carne. Debajo,
-las cuatro herencias, el linaje de la Capucha, las Manos del Siete, las cuatro escuelas y la
-cronología.
+advocaciones, el clero, el oficio, los fieles, la ofrenda y el destino de la carne. Las
+herencias, la Capucha, las Manos, las escuelas y la cronología están en la Cripta de
+Lectura.
 
 **Qué representa.** Quién manda y por qué. La autoridad no sigue la antigüedad: los que
 mandan son las Vestales, que interpretan; los que cortan son las Manos, que ejecutan; los
 que sostienen el sistema son los fieles, que pagan. El cuerpo es el rango.
 
-**Lo que añade la revisión.** La Madre Escriba y las primeras Vestales, la Vestal Mayor
-Walburga, la Primera Mano, las tres Manos de la Sala 7, la Mano Mayor, las escuelas
-(Diócesis, Anatomistas, Ayunantes, Rebaño Hueco) y la cronología de la Carne.
-
-### 7. Sacramentos · `#/sacramentos`
+### 8. Sacramentos · `#/sacramentos`
 
 **Qué se ve.** El **Examen de Pureza**, que se rellena a tinta en un expediente del Registro
 y termina sellado con lacre; y **El Sacramento**, una práctica quirúrgica a pixel: cubrir el
@@ -154,7 +147,7 @@ trámite, pero está repitiendo el sacramento. El Examen mide cuánto te pareces
 Sacramento siempre termina igual: el tejido no acepta el injerto y el ofrendado queda
 Reformado.
 
-### 8. El Asentamiento · `#/avisos`
+### 9. El Asentamiento · `#/avisos`
 
 **Qué se ve.** El expediente de Sigma contado por la Diócesis: el parte oficial, el plano de
 las seis capas que se juntan al pulsar sus juntas, los nombres que constan y los avisos a
@@ -179,16 +172,17 @@ expediente.
 
 ## Qué se añadió en esta revisión
 
-| Sección      | Lo que ya estaba                                  | Lo que se añadió                                                               |
-| ------------ | ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Portada      | Atrio, tarjetas, trámites, expediente, comunicado | Enlace al expediente, tarjeta de Sigma con el Cirujano de Mariana, capa VI.    |
-| Pabellón 9   | Libro de casas, jornada, capilla, Oficina         | Leyes, calendario, oficios, clases, artes, leyendas, parentesco, arquitectura. |
-| Doctrina     | 10 hojas, márgenes, manual, Vigilia               | Tres Libros, otros relatos, lengua, reglas, expresiones y glosario.            |
-| Registro     | 31 fichas, siluetas, familias                     | El aparato de Génesis y su entrada en el índice.                               |
-| El Vientre   | 14 salas, 20 pasos, capas, atajos                 | La Intemperie y su fauna/flora.                                                |
-| Linaje       | Organigrama, facciones, oficios, ofrenda          | Cuatro herencias, Capucha, Manos del Siete, escuelas y cronología.             |
-| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, nombres, capa VI y avisos nuevos.      |
-| Navegación   | Menú superior y riel con paradas distintas        | Portal y Pabellón en ambos; Portal con `⌂`, Pabellón con `0`, Asentamiento VI. |
+| Sección      | Lo que ya estaba                                  | Lo que se añadió                                                                 |
+| ------------ | ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Portada      | Atrio, tarjetas, trámites, expediente, comunicado | Enlace al expediente, tarjeta de Sigma con el Cirujano de Mariana, capa VI.      |
+| Pabellón 9   | Libro de casas, jornada, capilla, Oficina         | Enlace a la Cripta; el Libro de costumbres vive allí.                            |
+| Doctrina     | 10 hojas, márgenes, manual, Vigilia               | Enlace a la Cripta; los Libros, relatos y lengua viven allí.                     |
+| Registro     | 31 fichas, siluetas, familias                     | Enlace a la Cripta; el aparato de Génesis vive allí.                             |
+| El Vientre   | 14 salas, 20 pasos, capas, atajos                 | Enlace a la Cripta; la Intemperie vive allí.                                     |
+| Linaje       | Organigrama, facciones, oficios, ofrenda          | Enlace a la Cripta; herencias, Capucha, Manos, escuelas y cronología viven allí. |
+| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, nombres, capa VI y avisos nuevos.        |
+| Cripta       | —                                                 | 17 libros en cinco estantes, lámpara y estante reservado.                        |
+| Navegación   | Menú superior y riel con paradas distintas        | Portal, Pabellón y Cripta en ambos; Portal `⌂`, Pabellón `0`, Cripta `▤`.        |
 
 Lo que ya existía —las diez hojas del Códice, las 31 fichas, el plano del Vientre, los
 Sacramentos, la Vigilia, el Pabellón— se dejó como estaba y se completó con el material de
@@ -202,8 +196,9 @@ la biblia que faltaba.
 | Pabellón 9   | La casa y el pabellón     | La vida diaria, la deuda compartida, la capilla        | Que la niña se ofreció sola y qué pasa con su casa.         |
 | Doctrina     | El Códice y el Colegio    | El mito, la Regla, los márgenes, la Vigilia            | El manual técnico, los otros relatos, la verdad.            |
 | Registro     | La Oficina del Registro   | Fichas, láminas, especies, aparato                     | Lo que el visitante no ha visto; el uso real.               |
-| El Vientre   | El edificio               | Capas, salas, atajos, la Intemperie                    | Qué hay en las capas selladas y por qué se mueven.          |
-| Linaje       | El poder                  | Dioses, clero, oficios, herejías, cronología           | La manipulación de los Cerebrales, el papel de la niña.     |
+| El Vientre   | El edificio               | Capas, salas, atajos                                   | Qué hay en las capas selladas y por qué se mueven.          |
+| Cripta       | El archivo                | Libros, relatos, lengua, ley, naturaleza y linajes     | El estante reservado sin lámpara; el giro de Sigma.         |
+| Linaje       | El poder                  | Dioses, clero, oficios, herejías                       | La manipulación de los Cerebrales, el papel de la niña.     |
 | Sacramentos  | La liturgia               | El Examen y la práctica del Sacramento                 | Que el Sacramento nunca completa a nadie.                   |
 | Asentamiento | Sigma                     | El asentamiento, las juntas, los nombres, los avisos   | El giro: la niña, el Cirujano, la causa de la compactación. |
 
@@ -222,12 +217,13 @@ la biblia que faltaba.
 - `web/src/mundo.ts` reúne el material de la biblia: Intemperie, Libros, relatos, lengua,
   leyes, calendario, oficios, clases, artes, tecnología, leyendas, escuelas, linajes,
   parentesco y cronología.
+- `web/src/biblioteca.ts` agrupa ese material en libros y estantes para la Cripta.
 - `web/src/sigma.ts` reúne el material de Sigma: capas, juntas, nombres y avisos.
 - Las páginas de `web/src/paginas/` solo renderizan. Si cambia el canon, se cambia el dato,
   no el marcado.
-- `tests/mundo-web.test.ts` y `tests/sigma-web.test.ts` comprueban que no se pierdan
-  capítulos, fichas ni términos, que las juntas no pierdan capas y que el contenido de Sigma
-  no adelante el giro.
+- `tests/mundo-web.test.ts`, `tests/biblioteca-web.test.ts` y `tests/sigma-web.test.ts`
+  comprueban que no se pierdan capítulos, fichas, libros ni términos, que las juntas no
+  pierdan capas y que el contenido de Sigma no adelante el giro.
 - Antes de tocar la web: `npm run verificar`. Incluye formato, lint, tipos, tests,
   verificaciones del juego y build.
 
@@ -238,6 +234,7 @@ npm run dev
 ```
 
 - Portal: `http://localhost:5173/web/`
+- Cripta de Lectura: `http://localhost:5173/web/#/cripta`
 - Asentamiento: `http://localhost:5173/web/#/avisos`
 - Entrada de Sigma: `http://localhost:5173/sigma/index.html`
 - Juego: `http://localhost:5173/`

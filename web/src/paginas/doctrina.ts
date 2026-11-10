@@ -12,7 +12,6 @@
  */
 
 import { CODICE, ROMANOS, numeroEnLetras } from '../../../src/lore/Codice';
-import { LIBROS, LENGUA, OTROS_RELATOS } from '../mundo';
 import { type Folio, irAFolio, montarLibro } from '../libro';
 import { fragmentoAbierto } from '../memoria';
 import { acentuar, elemento, html, parrafos } from '../texto';
@@ -121,94 +120,13 @@ export function renderDoctrina(contenedor: HTMLElement): () => void {
 
       <div id="libro"></div>
 
-      <section class="seccion" id="libros">
-        <div class="eyebrow">Los tres Libros</div>
-        <h2>Lo que cuenta el Códice</h2>
-        <p>
-          La Regla manda y se cita por capítulos; los Libros cuentan. Son tres, y cada uno
-          responde a una pregunta distinta: de dónde venimos, por qué no miramos y qué pasará el
-          día en que alguien mire por nosotros.
-        </p>
-        <div class="rejilla">
-          ${LIBROS.map(
-            (libro) => `
-            <article class="documento ficha-mundo">
-              <div class="eyebrow">${html(libro.nombre.split(' · ')[0])}</div>
-              <h3>${html(libro.nombre.split(' · ')[1])}</h3>
-              <p class="cita-mundo">«${html(libro.cita)}»</p>
-              <p>${html(libro.texto)}</p>
-            </article>`,
-          ).join('')}
-        </div>
-      </section>
+      <aside class="nota-archivo">
+        <div class="eyebrow">Cripta de Lectura</div>
+        <p>Los tres Libros, los otros relatos y la lengua se guardan en la Cripta de Lectura. <a href="#/cripta">Consultar en la Cripta</a>.</p>
+      </aside>
 
-      <section class="seccion" id="otros-relatos">
-        <div class="eyebrow">Otros relatos</div>
-        <h2>La misma historia, contada de otra manera</h2>
-        <p>
-          El Códice no es el único texto que circula. Cada disidencia guarda su versión del Don,
-          y ninguna se puede comprobar sin bajar a los márgenes.
-        </p>
-        <div class="rejilla">
-          ${OTROS_RELATOS.map(
-            (relato) => `
-            <article class="documento ficha-mundo">
-              <h3>${html(relato.nombre)}</h3>
-              <p>${html(relato.texto)}</p>
-            </article>`,
-          ).join('')}
-        </div>
-      </section>
 
-      <section class="seccion" id="lengua">
-        <div class="eyebrow">La lengua de la Diócesis</div>
-        <h2>Lo que se puede decir y lo que no</h2>
-        <p>
-          La lengua se construyó por capas: primero quién habla y cómo suena, después sus reglas,
-          y al final el vocabulario que sale de la cultura. No hay una palabra para negarse, y eso
-          también es doctrina.
-        </p>
-        <div class="rejilla">
-          <article class="documento ficha-mundo">
-            <h3>Los tres registros</h3>
-            <ul class="lista-mundo">
-              ${LENGUA.registros
-                .map((r) => `<li><b>${html(r.nombre)}.</b> ${html(r.texto)}</li>`)
-                .join('')}
-            </ul>
-          </article>
-          <article class="documento ficha-mundo">
-            <h3>Cuatro reglas que ordenan el idioma</h3>
-            <ul class="lista-mundo">
-              ${LENGUA.reglas
-                .map((r) => `<li><b>${html(r.nombre)}.</b> ${html(r.texto)}</li>`)
-                .join('')}
-            </ul>
-          </article>
-          <article class="documento ficha-mundo">
-            <h3>Cuatro expresiones que mueven el mundo</h3>
-            <ul class="lista-mundo">
-              ${LENGUA.expresiones
-                .map((e) => `<li><b>${html(e.frase)}</b> ${html(e.texto)}</li>`)
-                .join('')}
-            </ul>
-          </article>
-        </div>
-        <details class="documento ficha-mundo glosario-mundo">
-          <summary>Glosario de la Diócesis · ${LENGUA.glosario.length} términos</summary>
-          <div class="tabla-scroll">
-            <table class="tabla">
-              <tr><th>Término</th><th>Registro</th><th>Qué significa</th></tr>
-              ${LENGUA.glosario
-                .map(
-                  (t) =>
-                    `<tr><td><b>${html(t.termino)}</b></td><td>${html(t.registro)}</td><td>${html(t.texto)}</td></tr>`,
-                )
-                .join('')}
-            </table>
-          </div>
-        </details>
-      </section>
+
     </article>
   `);
 

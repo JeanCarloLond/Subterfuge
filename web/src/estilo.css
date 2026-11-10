@@ -3283,3 +3283,227 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
     animation: none;
   }
 }
+
+/* -- La Cripta de Lectura: los libros que no se cuelgan en el Atrio ------------ */
+
+.cripta {
+  position: relative;
+}
+.cripta-lampara {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin: 26px 0 38px;
+  padding: 14px 16px;
+  border: 1px solid rgba(209, 173, 88, 0.35);
+  background: rgba(10, 7, 9, 0.62);
+}
+.lampara {
+  --bisel: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-family: var(--f-pixel);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  border-color: rgba(209, 173, 88, 0.6);
+}
+.lampara-llama {
+  width: 12px;
+  height: 18px;
+  flex: none;
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 50% 70%, #fff3c4, #e8a03a 55%, transparent 76%);
+  opacity: 0.35;
+  transition:
+    opacity 0.25s,
+    box-shadow 0.25s;
+}
+.lampara[aria-pressed='true'] {
+  color: var(--oro);
+  border-color: var(--oro);
+}
+.lampara[aria-pressed='true'] .lampara-llama {
+  opacity: 1;
+  box-shadow:
+    0 0 10px rgba(232, 160, 58, 0.8),
+    0 -4px 18px rgba(232, 160, 58, 0.45);
+}
+.cripta-aviso {
+  flex: 1 1 260px;
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+.estante {
+  margin-bottom: 38px;
+}
+.estante-nota {
+  margin: 0 0 14px;
+  font-size: 16px;
+  color: var(--tinta-2);
+}
+.estante-reservado {
+  border-left: 3px solid var(--sangre);
+  padding-left: 18px;
+}
+.estante-reservado[hidden],
+.lectura[hidden] {
+  display: none;
+}
+.cripta.iluminada .estante-reservado {
+  box-shadow: -10px 0 28px -18px rgba(232, 160, 58, 0.9);
+}
+.libros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 14px;
+}
+.lomo {
+  --bisel: 0px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 108px;
+  padding: 14px 14px 12px 20px;
+  text-align: left;
+  font-family: var(--f-texto);
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--tinta);
+  background:
+    linear-gradient(90deg, rgba(209, 173, 88, 0.14), transparent 16%),
+    linear-gradient(135deg, #2a1b20, #170f13 70%);
+  border: 1px solid rgba(179, 165, 150, 0.28);
+  border-left: 4px solid var(--oro);
+  clip-path: none;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 255, 255, 0.04),
+    0 8px 18px -14px #000;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    background-color 0.2s;
+}
+.lomo:hover {
+  transform: translateY(-3px);
+  border-color: var(--oro);
+  color: var(--tinta);
+}
+.lomo[aria-expanded='true'] {
+  border-color: var(--oro-2);
+  background:
+    linear-gradient(90deg, rgba(209, 173, 88, 0.2), transparent 20%),
+    linear-gradient(135deg, #3a2429, #1d1217 70%);
+  box-shadow:
+    0 0 0 1px rgba(209, 173, 88, 0.5),
+    0 12px 26px -16px #000;
+}
+.lomo-cinta {
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: rgba(209, 173, 88, 0.35);
+}
+.lomo-titulo {
+  font-family: var(--f-titulo);
+  font-size: 19px;
+  line-height: 1.15;
+}
+.lomo-sub {
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--tinta-2);
+}
+.lectura {
+  scroll-margin-top: 96px;
+  padding: 22px 24px;
+}
+.lectura-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin-bottom: 10px;
+}
+.lectura-estante {
+  flex-basis: 100%;
+  margin: 0;
+}
+.lectura-titulo {
+  flex: 1 1 260px;
+  margin: 0;
+  font-size: clamp(26px, 3.6vw, 38px);
+}
+.lectura-cerrar {
+  padding: 6px 10px;
+  font-size: 10px;
+}
+.libro-seccion {
+  margin-top: 24px;
+}
+.libro-seccion h4 {
+  margin: 0 0 8px;
+  font-family: var(--f-titulo);
+  font-size: 21px;
+  letter-spacing: 0.02em;
+}
+.libro-seccion p {
+  font-size: 17px;
+  line-height: 1.5;
+}
+.libro-seccion .tabla-scroll .tabla {
+  min-width: 620px;
+}
+.nota-archivo {
+  margin: 30px 0 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--oro);
+  background: rgba(10, 7, 9, 0.5);
+}
+.nota-archivo .eyebrow {
+  margin-bottom: 4px;
+}
+.nota-archivo p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.nota-archivo a {
+  color: var(--oro);
+}
+.nota-archivo a:hover {
+  color: #fff;
+}
+
+@media (max-width: 620px) {
+  .cripta-lampara {
+    padding: 12px;
+  }
+  .lampara {
+    width: 100%;
+    justify-content: center;
+  }
+  .libros {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .lomo {
+    min-height: 96px;
+    padding: 12px 10px 10px 16px;
+  }
+  .lomo-titulo {
+    font-size: 17px;
+  }
+  .lectura {
+    padding: 16px;
+  }
+}

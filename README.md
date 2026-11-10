@@ -21,7 +21,8 @@ el portal oficial de una Diócesis que no debería existir. Lo que el jugador
 descubre bajando en el juego se abre también en la web, si juega en el mismo
 navegador; y hay claves escondidas donde el bible dice que deben estar. El
 **expediente del asentamiento** reúne lo que el Portal puede contar de
-Subterfuge Sigma sin adelantar el giro.
+Subterfuge Sigma sin adelantar el giro, y la **Cripta de Lectura** guarda en
+libros la doctrina, la lengua, la ley, la naturaleza y los linajes.
 
 ### [Subterfuge Sigma](https://jeancarlolond.github.io/Subterfuge/sigma/)
 
