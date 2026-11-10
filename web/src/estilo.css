@@ -3375,9 +3375,12 @@ body[data-profundidad='7'] .cabecera .marca-nombre {
   padding-left: 18px;
 }
 .estante-reservado[hidden],
-.estante-reservado.oculto,
 .lectura[hidden] {
   display: none !important;
+}
+.estante-reservado.oculto {
+  visibility: hidden;
+  pointer-events: none;
 }
 .cripta.iluminada .estante-reservado {
   box-shadow: -10px 0 28px -18px rgba(232, 160, 58, 0.9);

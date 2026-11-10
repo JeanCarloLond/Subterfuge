@@ -63,7 +63,7 @@ function estanteHTML(id: string): string {
   const libros = LIBROS_POR_ESTANTE.get(estante.id) ?? [];
   return `
     <section class="seccion estante ${estante.reservado ? 'estante-reservado oculto' : ''}"
-      data-estante="${estante.id}" ${estante.reservado ? 'hidden aria-hidden="true"' : ''}>
+      data-estante="${estante.id}" ${estante.reservado ? 'aria-hidden="true" inert' : ''}>
       <div class="eyebrow">${html(estante.titulo)}</div>
       <p class="estante-nota">${html(estante.nota)}</p>
       <div class="libros">${libros.map(libroHTML).join('')}</div>
@@ -163,6 +163,7 @@ export function renderCripta(contenedor: HTMLElement): () => void {
   };
 
   const alternarVela = () => {
+    const y = window.scrollY;
     encendida = !encendida;
     vela?.setAttribute('aria-pressed', String(encendida));
     if (velaTexto) {
@@ -170,14 +171,15 @@ export function renderCripta(contenedor: HTMLElement): () => void {
     }
     raiz.classList.toggle('iluminada', encendida);
     if (reservado) {
-      reservado.hidden = !encendida;
       reservado.classList.toggle('oculto', !encendida);
+      reservado.toggleAttribute('inert', !encendida);
       reservado.setAttribute('aria-hidden', String(!encendida));
     }
     if (!encendida && abierto) {
       const libro = LIBRO_POR_ID.get(abierto);
-      if (libro?.reservado) cerrarLibro();
+      if (libro?.reservado) cerrarLibro(false);
     }
+    window.scrollTo({ top: y, behavior: 'auto' });
   };
 
   vela?.addEventListener('click', alternarVela);
