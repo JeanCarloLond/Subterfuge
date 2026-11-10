@@ -41,6 +41,8 @@ const ICONO_INJERTADORA := preload("res://arte/provisional/hud-injertadora.png")
 const AVISO_S := 2.5
 ## Lo que se ve con la ayuda plegada.
 const AYUDA_PLEGADA := "H  controles y objetivo"
+## Con mando no hay H: los controles estan en la pausa.
+const AYUDA_PLEGADA_MANDO := "{pausa}  pausa y controles"
 ## Lo que se queda en pantalla un objetivo nuevo, entre entrar y salir.
 const OBJETIVO_S := 4.5
 ## El aviso de la muerte, a lo Dark Souls pero con el mundo: en la Diocesis el
@@ -348,7 +350,12 @@ func guardian_fuera() -> void:
 ## Se paso del teclado al mando o al reves: la ayuda y la ensenanza que este a
 ## la vista ensenan los botones del que se usa ahora.
 func _al_cambiar_de_mando() -> void:
+	# Con mando, la ayuda abierta se pliega: no hay tecla para cerrarla.
+	if Controles.usa_mando():
+		_ayuda_abierta = false
 	_pintar_ayuda()
+	if _pausa and _pausa.visible:
+		_pintar_pausa()
 	if _ensenanza.visible:
 		_ensenanza_texto.text = Controles.rellenar(_ensenanza_plantilla)
 		_ensenanza.reset_size()
@@ -476,7 +483,7 @@ func _estilo(textura: Texture2D, borde: float) -> StyleBoxTexture:
 
 func _pintar_ayuda() -> void:
 	if not _ayuda_abierta:
-		_ayuda.text = AYUDA_PLEGADA
+		_ayuda.text = Controles.rellenar(AYUDA_PLEGADA_MANDO) if Controles.usa_mando() else AYUDA_PLEGADA
 		return
 	var progreso := _progreso()
 	var objetivo: String = progreso.texto_objetivo() if progreso else ""
@@ -568,6 +575,12 @@ func _pintar_pausa() -> void:
 	if _pausa_controles:
 		lineas.append("")
 		lineas.append(controles())
+		# Que mando se ha reconocido: si los botones no cuadran, se sabe por que.
+		var mando := Controles.nombre_del_mando()
+		if mando != "":
+			var familia := "PlayStation" if Controles.familia_actual() == Controles.PLAYSTATION else "Xbox"
+			lineas.append("")
+			lineas.append("Mando: %s (botones de %s)" % [mando, familia])
 	_pausa_texto.text = "
 ".join(lineas)
 	_pausa.reset_size()

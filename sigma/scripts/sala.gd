@@ -14,6 +14,7 @@ const Sacramento := preload("res://scripts/sacramento.gd")
 const Relieve := preload("res://scripts/relieve.gd")
 const Eslabon := preload("res://scripts/eslabon.gd")
 const Mapa := preload("res://scripts/mapa.gd")
+const AvisoEjecucion := preload("res://scripts/aviso_ejecucion.gd")
 ## Lo que tarda en aparecer el primer objetivo de una partida nueva.
 const PRIMER_OBJETIVO_S := 2.0
 ## Lo que tarda la pantalla en abrirse al entrar por un paso.
@@ -96,6 +97,11 @@ func _ready() -> void:
 func _preparar_mapa(progreso: Node) -> void:
 	if progreso:
 		progreso.visitar(scene_file_path)
+	# El boton de la ejecucion sobre el aturdido, tras un parry.
+	var aviso := AvisoEjecucion.new()
+	aviso.name = "AvisoEjecucion"
+	aviso.cirujano = _cirujano
+	add_child(aviso)
 	var mapa := Mapa.new()
 	mapa.name = "Mapa"
 	mapa.cirujano = _cirujano

@@ -80,7 +80,8 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
 - **Lo de _Blasphemous_**: tras un parry, J en los 400 ms siguientes saca el
   **contragolpe** (se adelanta y pega como el cargado, sin gastar Fervor). El parado
   queda aturdido con un bisturí encima: con E se le **ejecuta** (alza el bisturí, la
-  cámara se acerca, tajo y sangre), muere sea cual sea su vida y da 25 de Fervor.
+  cámara se acerca, tajo y sangre), muere sea cual sea su vida y da 25 de Fervor. Sobre el aturdido aparece el botón (E, o △ con mando de
+  PlayStation): encendido si está al alcance, tenue si aún no.
 - **Las reliquias**: el doble salto y el dash ya no vienen de serie. Son restos que los
   Primigenios dejan al compactarse, órganos sueltos que aún funcionan: **el Pulmón
   Vacío** (doble salto), a media bajada del Atrio, y **el Tendón del Mil** (dash), en el
