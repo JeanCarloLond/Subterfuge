@@ -14,6 +14,7 @@ import { renderPortada } from './paginas/portada';
 import { renderDoctrina } from './paginas/doctrina';
 import { renderRegistro } from './paginas/registro';
 import { renderVientre } from './paginas/vientre';
+import { renderCripta } from './paginas/cripta';
 import { renderLinaje } from './paginas/linaje';
 import { renderSacramentos } from './paginas/sacramentos';
 import { renderExamen } from './paginas/examen';
@@ -47,6 +48,8 @@ const RUTAS: Readonly<Record<string, Ruta>> = {
   doctrina: { pagina: renderDoctrina, profundidad: 1, titulo: 'Doctrina' },
   registro: { pagina: renderRegistro, profundidad: 2, titulo: 'Registro', ancha: true },
   vientre: { pagina: renderVientre, profundidad: 3, titulo: 'El Vientre', ancha: true },
+  // La biblioteca de las Criptas: la misma capa, otra parada.
+  cripta: { pagina: renderCripta, profundidad: 3, titulo: 'La Cripta de Lectura', ancha: true },
   linaje: { pagina: renderLinaje, profundidad: 4, titulo: 'Linaje', ancha: true },
   sacramentos: { pagina: renderSacramentos, profundidad: 5, titulo: 'Sacramentos' },
   examen: { pagina: renderExamen, profundidad: 5, titulo: 'Examen de Pureza' },

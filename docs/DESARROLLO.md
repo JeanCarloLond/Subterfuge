@@ -741,6 +741,7 @@ iglesia; los Sacramentos ya no.
 | Doctrina     | 1           | El Códice como libro que se hojea (`libro.ts`), y la **Vigilia**.                            |
 | Registro     | 2           | Las fichas del juego con su lámina: el sprite real, pintado en un canvas.                    |
 | El Vientre   | 3           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.                           |
+| Cripta       | 3           | La Cripta de Lectura: 17 libros en cinco estantes, con lámpara y estante reservado.          |
 | Linaje       | 4           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).                  |
 | Sacramentos  | 5           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64.                 |
 | Asentamiento | 6           | El expediente de Sigma (#236): los avisos, el plano que se cierra y los nombres que constan. |
@@ -748,16 +749,17 @@ iglesia; los Sacramentos ya no.
 **El expediente del asentamiento (#236).** `#/avisos` dejó de ser una lista de comunicados y
 pasó a ser la puerta de Sigma en el Portal: el parte oficial, un plano de las seis capas que se
 juntan al tocarlas y los nombres que constan en el Registro (el Cegado, el Prior del Diezmo, el
-Pulmón Vacío, Génesis Vestal…). Los datos viven en `web/src/sigma.ts`, separados de `src/lore`
+Primer Ojo, Génesis Vestal…). Los datos viven en `web/src/sigma.ts`, separados de `src/lore`
 para no mezclar el canon del teaser con el del remake, y un test comprueba que las juntas no
 pierden capas y que lo publicado no adelanta el giro.
 
-**El mundo fuera del juego.** El Portal no se queda en el Códice y el plano: de la biblia se
-recuperaron la Intemperie (en El Vientre), los tres Libros, los otros relatos y la lengua (en
-Doctrina), las leyes, el calendario, los oficios, las clases, el arte y las leyendas (en el
-Pabellón), el aparato de Génesis (en el Registro) y la cronología, las escuelas y los linajes
-(en Linaje). Los datos viven en `web/src/mundo.ts`, separados del lore jugable, para que el
-Portal pueda publicar el mundo sin tocar `src/lore`.
+**La Cripta de Lectura.** El material de la biblia que no es juego se guarda en una
+biblioteca de las Criptas de Espera: 17 libros en cinco estantes. Los libros visibles se abren
+de uno en uno; la lámpara de aceite enciende el estante reservado (los otros relatos, el
+aparato de Génesis y la cronología). Las páginas del Portal enlazan a la Cripta en vez de
+volcar la explicación al pie de la actividad. Los datos viven en `web/src/mundo.ts`, la
+agrupación en libros y estantes en `web/src/biblioteca.ts`, y la página en
+`web/src/paginas/cripta.ts`.
 
 **Lo que se gana bajando.** El juego apunta en `localStorage` (clave
 `diocesis.memoria`, ver `src/systems/Memoria.ts`) lo que el jugador ha

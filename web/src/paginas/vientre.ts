@@ -30,7 +30,6 @@
  */
 
 import { VIENTRE } from '../../../src/lore/Vientre';
-import { INTEMPERIE } from '../mundo';
 import { capaPisada, descensoAbierto, hitoAbierto } from '../memoria';
 import { elemento, html } from '../texto';
 
@@ -564,48 +563,11 @@ export function renderVientre(contenedor: HTMLElement): void {
         ${hitoAbierto('nina') ? '<span class="l-huida">el rastro de la Sala N.º 7</span>' : ''}
       </div>
 
-      <section class="seccion" id="intemperie">
-        <div class="eyebrow">Fuera del Vientre · la Intemperie</div>
-        <h2>La superficie que casi nadie conoce</h2>
-        <p>
-          Para quien vive dentro, el Vientre es el mundo entero. Fuera queda la
-          Intemperie, la Baviera apagada desde el Silencio. Solo la conocen las Ermitas, los
-          porteadores y quien se atreve a salir de la Boca.
-        </p>
-        <div class="rejilla">
-          ${INTEMPERIE.lugares
-            .map(
-              (lugar) => `
-              <article class="documento ficha-mundo">
-                <h3>${html(lugar.nombre)}</h3>
-                <p>${html(lugar.texto)}</p>
-              </article>`,
-            )
-            .join('')}
-        </div>
-        <h3>Cómo se viaja</h3>
-        <ul class="lista-mundo">
-          ${INTEMPERIE.viaje.map((linea) => `<li>${html(linea)}</li>`).join('')}
-        </ul>
-        <div class="rejilla">
-          <article class="documento ficha-mundo">
-            <h3>Fauna de la Intemperie</h3>
-            <ul class="lista-mundo">
-              ${INTEMPERIE.fauna
-                .map((especie) => `<li><b>${html(especie.nombre)}.</b> ${html(especie.texto)}</li>`)
-                .join('')}
-            </ul>
-          </article>
-          <article class="documento ficha-mundo">
-            <h3>Flora de la Intemperie</h3>
-            <ul class="lista-mundo">
-              ${INTEMPERIE.flora
-                .map((especie) => `<li><b>${html(especie.nombre)}.</b> ${html(especie.texto)}</li>`)
-                .join('')}
-            </ul>
-          </article>
-        </div>
-      </section>
+      <aside class="nota-archivo">
+        <div class="eyebrow">Cripta de Lectura</div>
+        <p>La Intemperie, sus lugares y su naturaleza se consultan en la Cripta de Lectura. <a href="#/cripta">Consultar en la Cripta</a>.</p>
+      </aside>
+
     </article>
   `);
 

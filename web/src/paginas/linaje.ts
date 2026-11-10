@@ -14,7 +14,6 @@
  * gane bajando o presente una clave.
  */
 
-import { CAPUCHA, CRONOLOGIA, ESCUELAS, HERENCIAS, MANOS } from '../mundo';
 import { descensoAbierto, fichaAbierta, hitoAbierto } from '../memoria';
 import { elemento, html } from '../texto';
 
@@ -383,76 +382,14 @@ export function renderLinaje(contenedor: HTMLElement): void {
         <span class="l-cerrado">expediente cerrado</span>
       </div>
 
-      <section class="seccion" id="herencias">
-        <div class="eyebrow">Las cuatro herencias</div>
-        <h2>Lo que se hereda en la Diócesis</h2>
-        <div class="rejilla">
-          ${HERENCIAS.map(
-            (herencia) => `
-            <article class="documento ficha-mundo">
-              <h3>${html(herencia.nombre)}</h3>
-              <p>${html(herencia.texto)}</p>
-            </article>`,
-          ).join('')}
-        </div>
-      </section>
 
-      <section class="seccion" id="linajes">
-        <div class="eyebrow">Los linajes del oficio</div>
-        <h2>La Capucha y las Manos del Siete</h2>
-        <div class="rejilla">
-          <article class="documento ficha-mundo">
-            <h3>El linaje de la Capucha</h3>
-            <p>El Colegio de las Vestales no se hereda por sangre: cada Vestal elige a su sucesora y le entrega su capucha.</p>
-            <ul class="lista-mundo">
-              ${CAPUCHA.map((n) => `<li><b>${html(n.nombre)}.</b> ${html(n.texto)}</li>`).join('')}
-            </ul>
-          </article>
-          <article class="documento ficha-mundo">
-            <h3>Las Manos del Siete</h3>
-            <p>El gremio de los Cirujanos-Sacerdotes y el linaje de la Sala de Sacramento N.º 7.</p>
-            <ul class="lista-mundo">
-              ${MANOS.map((n) => `<li><b>${html(n.nombre)}.</b> ${html(n.texto)}</li>`).join('')}
-            </ul>
-          </article>
-        </div>
-      </section>
 
-      <section class="seccion" id="cronologia">
-        <div class="eyebrow">Cronología de la Carne</div>
-        <h2>Del complejo al sacramento de hoy</h2>
-        <p>
-          La Diócesis cuenta los años desde la Escritura del Códice (A.E.); el pueblo los cuenta en
-          Hambres y generaciones. Arriba, lo que ocurrió; al lado, lo que dice el Códice.
-        </p>
-        <div class="tabla-scroll">
-          <table class="tabla">
-            <tr><th>Fecha</th><th>Lo que ocurrió</th><th>Lo que dice el Códice</th></tr>
-            ${CRONOLOGIA.map(
-              (hito) =>
-                `<tr><td><b>${html(hito.fecha)}</b></td><td>${html(hito.ocurrio)}</td><td>${html(hito.codice)}</td></tr>`,
-            ).join('')}
-          </table>
-        </div>
-      </section>
 
-      <section class="seccion" id="escuelas">
-        <div class="eyebrow">Las escuelas en disputa</div>
-        <h2>Cuatro maneras de responder a la misma pregunta</h2>
-        <p>
-          La pregunta que cruza las cuatro escuelas es la misma que abre el universo: ¿un cuerpo
-          alterado sigue siendo una persona?
-        </p>
-        <div class="tabla-scroll">
-        <table class="tabla">
-          <tr><th>Escuela</th><th>Qué es real</th><th>Cómo se conoce</th><th>Qué es el cuerpo</th></tr>
-          ${ESCUELAS.map(
-            (escuela) =>
-              `<tr><td><b>${html(escuela.escuela)}</b></td><td>${html(escuela.real)}</td><td>${html(escuela.conoce)}</td><td>${html(escuela.cuerpo)}</td></tr>`,
-          ).join('')}
-        </table>
-        </div>
-      </section>
+      <aside class="nota-archivo">
+        <div class="eyebrow">Cripta de Lectura</div>
+        <p>Las herencias, la Capucha, las Manos, las escuelas y la cronología se consultan en la Cripta de Lectura. <a href="#/cripta">Consultar en la Cripta</a>.</p>
+      </aside>
+
     </article>
   `);
 
