@@ -42,6 +42,8 @@ var objetivo := ""
 var _cuentas := {}
 ## Los carteles de controles ya aprendidos (#221): no vuelven a salir.
 var _aprendido := {}
+## Las salas que se han pisado: las que se ven en el mapa.
+var _visitadas := {}
 
 
 func _ready() -> void:
@@ -131,6 +133,19 @@ func aprendido(id: String) -> bool:
 	return _aprendido.has(id)
 
 
+func visitada(escena: String) -> bool:
+	return _visitadas.has(escena)
+
+
+## Se pisa una sala por primera vez: aparece en el mapa, y se guarda ya, como
+## en Blasphemous: lo explorado no se pierde.
+func visitar(escena: String) -> void:
+	if visitada(escena):
+		return
+	_visitadas[escena] = true
+	guardar()
+
+
 func aprender(id: String) -> void:
 	if aprendido(id):
 		return
@@ -165,6 +180,7 @@ func nueva() -> void:
 	objetivo = ""
 	_cuentas.clear()
 	_aprendido.clear()
+	_visitadas.clear()
 	if FileAccess.file_exists(ruta):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(ruta))
 
@@ -179,6 +195,7 @@ func guardar() -> void:
 	partida.set_value("partida", "objetivo", objetivo)
 	partida.set_value("partida", "cuentas", _cuentas)
 	partida.set_value("partida", "aprendido", _aprendido.keys())
+	partida.set_value("partida", "visitadas", _visitadas.keys())
 	partida.save(ruta)
 
 
@@ -191,6 +208,7 @@ func cargar() -> void:
 	objetivo = ""
 	_cuentas.clear()
 	_aprendido.clear()
+	_visitadas.clear()
 	var partida := ConfigFile.new()
 	if partida.load(ruta) != OK:
 		return
@@ -205,3 +223,5 @@ func cargar() -> void:
 	_cuentas = partida.get_value("partida", "cuentas", {})
 	for id in partida.get_value("partida", "aprendido", []):
 		_aprendido[id] = true
+	for escena in partida.get_value("partida", "visitadas", []):
+		_visitadas[escena] = true

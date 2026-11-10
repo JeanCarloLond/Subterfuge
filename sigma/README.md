@@ -100,6 +100,14 @@ ruta en la variable `GODOT`. En el juego, Esc vuelve a la portada.
   escribe en `user://partida.cfg` las reliquias y el último Altar al tomar una reliquia y
   al rezar; en la portada, «Continuar» vuelve a ese Altar y «Empezar» abre una partida
   nueva (borra la guardada).
+- **El mapa**: N (Back, con mando) lo abre a pantalla completa, con el juego parado,
+  como en _Blasphemous_. Cada sala aparece la primera vez que se pisa y se guarda al
+  momento: lo explorado no se pierde. Marca al Cirujano (un ojo con el iris rojo), los
+  Altares, la carne que quedó al morir y las salidas que aún no se han cruzado; la puerta
+  escondida de la N.º 7 no se delata. Con las flechas se recorre. El plano sale de las
+  salas mismas (`scripts/plano.gd`): tras mover un paso o hacer una sala, se regenera con
+  `godot --headless --path sigma -s res://herramientas/crear_plano.gd`, y un test avisa si
+  se olvida. El nombre del objeto en el mundo, si lo tiene, está por decidir.
 - **Trepar**: no es automático, y no en cualquier pared. En el aire, pegado a una
   **membrana** (tejido vivo sobre la piedra, se ve distinta), K clava el bisturí y el
   Cirujano queda colgado; en la piedra no entra, y K sigue siendo el parry. En el Atrio,

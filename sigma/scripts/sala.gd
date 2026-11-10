@@ -13,6 +13,7 @@ const PORTADA := "res://escenas/principal.tscn"
 const Sacramento := preload("res://scripts/sacramento.gd")
 const Relieve := preload("res://scripts/relieve.gd")
 const Eslabon := preload("res://scripts/eslabon.gd")
+const Mapa := preload("res://scripts/mapa.gd")
 ## Lo que tarda en aparecer el primer objetivo de una partida nueva.
 const PRIMER_OBJETIVO_S := 2.0
 ## Lo que tarda la pantalla en abrirse al entrar por un paso.
@@ -78,6 +79,7 @@ func _ready() -> void:
 	_cirujano.restaurar_cuerpo(_cuerpo_al_entrar)
 	_primer_objetivo()
 	var progreso := get_node_or_null("/root/Progreso")
+	_preparar_mapa(progreso)
 	if progreso and marca_al_entrar != "":
 		progreso.aprender(marca_al_entrar)
 	if progreso and rescata_deuda_de != "" and progreso.deuda.get("sala", "") == rescata_deuda_de and has_node("Entradas/oeste"):
@@ -87,6 +89,18 @@ func _ready() -> void:
 	var pista := get_node_or_null("/root/Musica")
 	if pista and musica != "":
 		pista.poner(musica, fundido_musica)
+
+
+## El mapa (N): esta sala aparece en el al pisarla. Va el ultimo, para oir la
+## tecla antes que la interfaz y la pausa.
+func _preparar_mapa(progreso: Node) -> void:
+	if progreso:
+		progreso.visitar(scene_file_path)
+	var mapa := Mapa.new()
+	mapa.name = "Mapa"
+	mapa.cirujano = _cirujano
+	mapa.sala = scene_file_path
+	add_child(mapa)
 
 
 func _conectar(grupo: String, pieza: Node) -> void:

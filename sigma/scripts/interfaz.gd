@@ -481,7 +481,7 @@ func controles() -> String:
 	lineas.append("{parry} parry, luego {golpear}: contragolpe · {parry} en la membrana: clavarse")
 	if _cirujano and _cirujano.tiene_ojo:
 		lineas.append("mantén {mirar}: mirar con el ojo lo que ellos no ven")
-	var ultima := "{interactuar} rezar, hablar, leer o ejecutar · {pocion} poción"
+	var ultima := "{interactuar} rezar, hablar, leer o ejecutar · {pocion} poción · {mapa} mapa"
 	if _cirujano and _cirujano.tiene_injertadora:
 		ultima += " · {injertadora} Injertadora"
 	lineas.append(ultima)

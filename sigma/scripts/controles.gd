@@ -19,7 +19,9 @@ const ACCIONES := {
 	"injertadora": {"teclas": [KEY_F, KEY_R], "mando": [JOY_BUTTON_RIGHT_SHOULDER]},
 	"pocion": {"teclas": [KEY_Q], "eje": [JOY_AXIS_TRIGGER_LEFT, 1.0]},
 	"interactuar": {"teclas": [KEY_E], "mando": [JOY_BUTTON_Y]},
-	"codice": {"teclas": [KEY_L], "mando": [JOY_BUTTON_BACK]},
+	"codice": {"teclas": [KEY_L], "mando": [JOY_BUTTON_LEFT_STICK]},
+	# El mapa: con Back, como en Blasphemous. N, porque la M ya silencia.
+	"mapa": {"teclas": [KEY_N], "mando": [JOY_BUTTON_BACK]},
 	"pausa": {"teclas": [KEY_ESCAPE, KEY_P], "mando": [JOY_BUTTON_START]},
 	"ayuda": {"teclas": [KEY_H, KEY_TAB]},
 	# Mirar con el ojo de los Mil (#243): se mantiene. O de ojo.
@@ -39,6 +41,7 @@ const NOMBRES_MANDO := {
 	JOY_BUTTON_LEFT_SHOULDER: "LB", JOY_BUTTON_RIGHT_SHOULDER: "RB",
 	JOY_BUTTON_DPAD_LEFT: "←", JOY_BUTTON_DPAD_RIGHT: "→", JOY_BUTTON_DPAD_UP: "↑", JOY_BUTTON_DPAD_DOWN: "↓",
 	JOY_BUTTON_START: "Start", JOY_BUTTON_BACK: "Back", JOY_BUTTON_RIGHT_STICK: "R3",
+	JOY_BUTTON_LEFT_STICK: "L3",
 }
 
 
