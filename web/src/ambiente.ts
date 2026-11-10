@@ -39,28 +39,38 @@ interface Capa {
   musica: string;
 }
 
-/** Una entrada por profundidad, de la portada (0) al Asentamiento (6). */
+/** Una entrada por profundidad, de la portada (0) al Asentamiento (7). */
 const CAPAS: readonly Capa[] = [
   { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
-  { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
-  {
-    muro: ['muro-pasillos-a', 'muro-pasillos-b'],
-    polvo: '184, 170, 150',
-    musica: 'pasillos-pulso',
-  },
+  // I · La Cripta de Lectura vive en las Criptas de Espera.
   {
     muro: ['muro-criptas-a', 'muro-criptas-b'],
     polvo: '150, 150, 160',
     musica: 'criptas-redoble-ominoso',
   },
+  // II · Doctrina, la superficie.
+  { muro: 'silleria', polvo: '201, 180, 138', musica: 'atrio-redoble' },
+  // III · Registro, los Pasillos.
+  {
+    muro: ['muro-pasillos-a', 'muro-pasillos-b'],
+    polvo: '184, 170, 150',
+    musica: 'pasillos-pulso',
+  },
+  // IV · El Vientre, las Criptas.
+  {
+    muro: ['muro-criptas-a', 'muro-criptas-b'],
+    polvo: '150, 150, 160',
+    musica: 'criptas-redoble-ominoso',
+  },
+  // V · Linaje, las Salas.
   { muro: ['muro-salas-a', 'muro-salas-b'], polvo: '168, 122, 122', musica: 'salas-urgencia' },
+  // VI · Sacramentos.
   {
     muro: ['muro-salas-b', 'muro-salas-a'],
     polvo: '178, 108, 104',
     musica: 'jefe-tambores',
   },
-  // La capa VI, el expediente del asentamiento de Sigma (#236). Se abre
-  // después de los Sacramentos y oscurece un paso más el mismo muro.
+  // VII · El Asentamiento de Sigma (#236), un paso más oscuro.
   {
     muro: ['muro-salas-b', 'muro-salas-a'],
     polvo: '170, 104, 100',
@@ -370,13 +380,13 @@ function prepararRiel(): void {
     // superficie. Comparten cota (0 m), pero no parada: cada uno tiene la suya.
     ['', 'Portal', '⌂', 0],
     ['pabellon', 'Pabellón', '0', 0],
-    ['doctrina', 'Doctrina', 'I', 1],
-    ['registro', 'Registro', 'II', 2],
-    ['vientre', 'El Vientre', 'III', 3],
-    ['cripta', 'Cripta', '▤', 3],
-    ['linaje', 'Linaje', 'IV', 4],
-    ['sacramentos', 'Sacramentos', 'V', 5],
-    ['avisos', 'El Asentamiento', 'VI', 6],
+    ['cripta', 'Cripta', 'I', 1],
+    ['doctrina', 'Doctrina', 'II', 2],
+    ['registro', 'Registro', 'III', 3],
+    ['vientre', 'El Vientre', 'IV', 4],
+    ['linaje', 'Linaje', 'V', 5],
+    ['sacramentos', 'Sacramentos', 'VI', 6],
+    ['avisos', 'El Asentamiento', 'VII', 7],
   ];
   riel.innerHTML = `
     <span class="riel-cadena" aria-hidden="true"></span>

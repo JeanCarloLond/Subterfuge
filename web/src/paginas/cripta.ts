@@ -2,9 +2,9 @@
  * La Cripta de Lectura: una biblioteca dentro de las Criptas de Espera.
  *
  * El visitante no recibe la explicación del mundo de golpe. Encuentra un
- * estante, abre un libro y lee. La lámpara de aceite enciende el estante
- * reservado; sin ella, los otros relatos, el aparato y la cronología siguen
- * en la sombra.
+ * estante, abre un libro y lee. La vela de cera humana empieza encendida y
+ * enciende el estante reservado; al apagarla, los otros relatos, el aparato y
+ * la cronología vuelven a la sombra.
  */
 
 import {
@@ -63,7 +63,7 @@ function estanteHTML(id: string): string {
   const libros = LIBROS_POR_ESTANTE.get(estante.id) ?? [];
   return `
     <section class="seccion estante ${estante.reservado ? 'estante-reservado' : ''}"
-      data-estante="${estante.id}" ${estante.reservado ? 'hidden' : ''}>
+      data-estante="${estante.id}">
       <div class="eyebrow">${html(estante.titulo)}</div>
       <p class="estante-nota">${html(estante.nota)}</p>
       <div class="libros">${libros.map(libroHTML).join('')}</div>
@@ -72,26 +72,27 @@ function estanteHTML(id: string): string {
 
 export function renderCripta(contenedor: HTMLElement): () => void {
   const raiz = elemento(`
-    <article class="cripta">
-      <div class="eyebrow">Criptas de Espera · capa III</div>
+    <article class="cripta iluminada">
+      <div class="eyebrow">Criptas de Espera · anexo I</div>
       <h1>La Cripta de Lectura</h1>
       <p class="pabellon-lema">La Cripta no presta: deja leer.</p>
       <div class="filete"></div>
       <p class="lede">
         Detrás de las camillas de espera hay una sala que el Registro no numera. Aquí se guardan
         los libros que la Diócesis no cuelga en el Atrio: la doctrina, la lengua, la ley, el
-        calendario, los oficios, la Intemperie y los linajes. Se leen de pie, con la lámpara
-        encendida, y se devuelven a su estante.
+        calendario, los oficios, la Intemperie y los linajes. Se leen de pie, con una vela
+        de cera humana, y se devuelven a su estante.
       </p>
 
-      <div class="cripta-lampara">
-        <button type="button" class="lampara" aria-pressed="false">
-          <span class="lampara-llama" aria-hidden="true"></span>
-          <span class="lampara-texto">Encender la lámpara</span>
+      <div class="cripta-vela">
+        <button type="button" class="vela-cripta" aria-pressed="true">
+          <span class="vela-icono" aria-hidden="true">
+            <span class="vela-cera"></span>
+            <span class="vela-llama"></span>
+          </span>
+          <span class="vela-texto">Apagar la vela</span>
         </button>
-        <p class="cripta-aviso">
-          La lámpara ilumina el estante reservado. Lo que no se enciende, no se ve.
-        </p>
+        <p class="cripta-aviso">Una vela de cera humana. La Cripta no presta.</p>
       </div>
 
       <div class="estantes">
@@ -112,8 +113,8 @@ export function renderCripta(contenedor: HTMLElement): () => void {
     </article>
   `);
 
-  const lampara = raiz.querySelector<HTMLButtonElement>('.lampara');
-  const lamparaTexto = raiz.querySelector<HTMLElement>('.lampara-texto');
+  const vela = raiz.querySelector<HTMLButtonElement>('.vela-cripta');
+  const velaTexto = raiz.querySelector<HTMLElement>('.vela-texto');
   const reservado = raiz.querySelector<HTMLElement>('[data-estante="reservado"]');
   const lectura = raiz.querySelector<HTMLElement>('#lectura');
   const lecturaEstante = raiz.querySelector<HTMLElement>('.lectura-estante');
@@ -122,8 +123,21 @@ export function renderCripta(contenedor: HTMLElement): () => void {
   const cerrarBoton = raiz.querySelector<HTMLButtonElement>('.lectura-cerrar');
   const lomos = [...raiz.querySelectorAll<HTMLButtonElement>('.lomo')];
 
-  let encendida = false;
+  let encendida = true;
   let abierto: string | null = null;
+
+  const pintarVela = () => {
+    vela?.setAttribute('aria-pressed', String(encendida));
+    if (velaTexto) {
+      velaTexto.textContent = encendida ? 'Apagar la vela' : 'Encender la vela';
+    }
+    raiz.classList.toggle('iluminada', encendida);
+    if (reservado) {
+      reservado.classList.toggle('oculto', !encendida);
+      reservado.toggleAttribute('inert', !encendida);
+      reservado.setAttribute('aria-hidden', String(!encendida));
+    }
+  };
 
   const cerrarLibro = (devolverFoco = true) => {
     if (!lectura) return;
@@ -161,21 +175,19 @@ export function renderCripta(contenedor: HTMLElement): () => void {
     lectura.focus({ preventScroll: true });
   };
 
-  const alternarLampara = () => {
+  const alternarVela = () => {
+    const y = window.scrollY;
     encendida = !encendida;
-    lampara?.setAttribute('aria-pressed', String(encendida));
-    if (lamparaTexto) {
-      lamparaTexto.textContent = encendida ? 'Apagar la lámpara' : 'Encender la lámpara';
-    }
-    raiz.classList.toggle('iluminada', encendida);
-    if (reservado) reservado.hidden = !encendida;
+    pintarVela();
     if (!encendida && abierto) {
       const libro = LIBRO_POR_ID.get(abierto);
-      if (libro?.reservado) cerrarLibro();
+      if (libro?.reservado) cerrarLibro(false);
     }
+    window.scrollTo({ top: y, behavior: 'auto' });
   };
 
-  lampara?.addEventListener('click', alternarLampara);
+  pintarVela();
+  vela?.addEventListener('click', alternarVela);
   for (const lomo of lomos) {
     lomo.addEventListener('click', () => abrirLibro(lomo.dataset.libro ?? ''));
   }

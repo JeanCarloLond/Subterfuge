@@ -88,6 +88,10 @@ body[data-profundidad='6'] {
   --muro-oscuro: 0.86;
   --sangre: #e06a62;
 }
+body[data-profundidad='7'] {
+  --muro-oscuro: 0.9;
+  --sangre: #e46e66;
+}
 
 /* Dentro de un documento, la tinta es tinta. */
 .documento,
@@ -2615,13 +2619,13 @@ details.ficha-mundo[open] summary {
 }
 
 /* Degradación al bajar: los títulos pierden la compostura. */
-body[data-profundidad='4'] h1,
 body[data-profundidad='5'] h1,
-body[data-profundidad='6'] h1 {
+body[data-profundidad='6'] h1,
+body[data-profundidad='7'] h1 {
   animation: temblor 6s infinite steps(2);
 }
-body[data-profundidad='5'] .cabecera .marca-nombre,
-body[data-profundidad='6'] .cabecera .marca-nombre {
+body[data-profundidad='6'] .cabecera .marca-nombre,
+body[data-profundidad='7'] .cabecera .marca-nombre {
   animation: temblor 3s infinite steps(2);
 }
 @keyframes temblor {
@@ -3289,7 +3293,7 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
 .cripta {
   position: relative;
 }
-.cripta-lampara {
+.cripta-vela {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3299,7 +3303,7 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
   border: 1px solid rgba(209, 173, 88, 0.35);
   background: rgba(10, 7, 9, 0.62);
 }
-.lampara {
+.vela-cripta {
   --bisel: 3px;
   display: inline-flex;
   align-items: center;
@@ -3312,22 +3316,40 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
   color: var(--tinta);
   border-color: rgba(209, 173, 88, 0.6);
 }
-.lampara-llama {
-  width: 12px;
-  height: 18px;
+.vela-icono {
+  position: relative;
+  width: 16px;
+  height: 24px;
   flex: none;
+}
+.vela-cera {
+  position: absolute;
+  left: 4px;
+  bottom: 0;
+  width: 8px;
+  height: 15px;
+  background: linear-gradient(90deg, #b9a878, #efe6cf 42%, #d8cdbe 68%, #b9a878);
+  border-radius: 1px 1px 0 0;
+  box-shadow: inset -1px 0 0 rgba(74, 64, 56, 0.55);
+}
+.vela-llama {
+  position: absolute;
+  left: 4px;
+  bottom: 15px;
+  width: 8px;
+  height: 11px;
   border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
   background: radial-gradient(circle at 50% 70%, #fff3c4, #e8a03a 55%, transparent 76%);
-  opacity: 0.35;
+  opacity: 0.25;
   transition:
     opacity 0.25s,
     box-shadow 0.25s;
 }
-.lampara[aria-pressed='true'] {
+.vela-cripta[aria-pressed='true'] {
   color: var(--oro);
   border-color: var(--oro);
 }
-.lampara[aria-pressed='true'] .lampara-llama {
+.vela-cripta[aria-pressed='true'] .vela-llama {
   opacity: 1;
   box-shadow:
     0 0 10px rgba(232, 160, 58, 0.8),
@@ -3354,7 +3376,11 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
 }
 .estante-reservado[hidden],
 .lectura[hidden] {
-  display: none;
+  display: none !important;
+}
+.estante-reservado.oculto {
+  visibility: hidden;
+  pointer-events: none;
 }
 .cripta.iluminada .estante-reservado {
   box-shadow: -10px 0 28px -18px rgba(232, 160, 58, 0.9);
@@ -3486,10 +3512,10 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
 }
 
 @media (max-width: 620px) {
-  .cripta-lampara {
+  .cripta-vela {
     padding: 12px;
   }
-  .lampara {
+  .vela-cripta {
     width: 100%;
     justify-content: center;
   }
@@ -3506,4 +3532,9 @@ body[data-profundidad='6'] .cabecera .marca-nombre {
   .lectura {
     padding: 16px;
   }
+}
+
+/* El atributo hidden manda sobre cualquier display de una sección. */
+[hidden] {
+  display: none !important;
 }
