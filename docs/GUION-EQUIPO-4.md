@@ -13,12 +13,12 @@ los recortes están marcados con ✂.
 
 ## Reparto (quién es quién)
 
-| Ponente             | Rol en la charla                    | Se hace cargo de                                        |
-| ------------------- | ----------------------------------- | ------------------------------------------------------- |
-| **P1 — Agustín**    | Apertura y tesis. Conduce el juego. | El encuadre (libro de arte jugable), arranque técnico.  |
-| **P2 — Alejandro**  | Mythos y narrativa.                 | El Códice, la voz del Cirujano, el jefe, el final.      |
-| **P3 — Mariana**    | Arte, ethos y topos. Público.       | Estética, paleta, jerarquía de cuerpos, el Vientre.     |
-| **P4 — Jean Carlo** | Sistemas, ingeniería y cierre.      | Combate, CI, web del universo, conclusión y venta.      |
+| Ponente             | Rol en la charla                    | Se hace cargo de                                       |
+| ------------------- | ----------------------------------- | ------------------------------------------------------ |
+| **P1 — Agustín**    | Apertura y tesis. Conduce el juego. | El encuadre (libro de arte jugable), arranque técnico. |
+| **P2 — Alejandro**  | Mythos y narrativa.                 | El Códice, la voz del Cirujano, el jefe, el final.     |
+| **P3 — Mariana**    | Arte, ethos y topos. Público.       | Estética, paleta, jerarquía de cuerpos, el Vientre.    |
+| **P4 — Jean Carlo** | Sistemas, ingeniería y cierre.      | Combate, CI, web del universo, conclusión y venta.     |
 
 **Regla de oro:** solo habla quien no está jugando en ese momento. P1 juega
 durante la apertura y el combate; P4 toma el teclado para la demostración
@@ -110,8 +110,7 @@ primer fragmento y abrir el libro con `L`.
 
 **P2 dice (sobre el jefe, sin llegar aún):**
 
-> Y el mito culmina en el jefe: el Reformado son las Manos anteriores de la Sala
-> 7. El padre del Cirujano, que el bible deja "muerto, o reformado, en un
+> Y el mito culmina en el jefe: el Reformado son las Manos anteriores de la Sala 7. El padre del Cirujano, que el bible deja "muerto, o reformado, en un
 > sacramento fallido". El jugador pelea contra el resultado de su propio oficio.
 > Y la regla que atraviesa el mundo: los dioses son ciegos. Por eso en el juego
 > no aparece ni un solo dios, y eso no es una limitación: es el mundo
@@ -252,17 +251,17 @@ recuento del libro.
 
 ## Reparto de preguntas (para que nadie improvise)
 
-| Pregunta probable                                    | Responde                                             |
-| ---------------------------------------------------- | ---------------------------------------------------- |
-| ¿Por qué un juego y no el libro?                     | P1                                                   |
-| ¿Es Blasphemous / qué es original?                    | P2 (tono) + P3 (diseño propio)                       |
-| ¿Dónde está lo futurista, si todo parece medieval?   | P3 (el turquesa)                                     |
-| ¿Usaron IA para el arte?                             | P3 (no, píxel a píxel; IA solo para referencias)     |
-| ¿Cómo está hecho técnicamente?                       | P4 (Phaser, TS, Vite, CI)                            |
-| ¿Cómo se repartió el trabajo entre los cuatro?       | P4 (ver abajo)                                       |
-| ¿Qué sigue / qué falta?                              | P2 (las dos capas cerradas) + P4 (la web como obra madre) |
-| ¿Cuánto dura?                                        | P1 (15 a 30 min según cuánto se lea)                 |
-| ¿Cómo evitan que un nivel quede injugable?           | P4 (`verificar-rutas` y el caso real del Atrio)      |
+| Pregunta probable                                  | Responde                                                  |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| ¿Por qué un juego y no el libro?                   | P1                                                        |
+| ¿Es Blasphemous / qué es original?                 | P2 (tono) + P3 (diseño propio)                            |
+| ¿Dónde está lo futurista, si todo parece medieval? | P3 (el turquesa)                                          |
+| ¿Usaron IA para el arte?                           | P3 (no, píxel a píxel; IA solo para referencias)          |
+| ¿Cómo está hecho técnicamente?                     | P4 (Phaser, TS, Vite, CI)                                 |
+| ¿Cómo se repartió el trabajo entre los cuatro?     | P4 (ver abajo)                                            |
+| ¿Qué sigue / qué falta?                            | P2 (las dos capas cerradas) + P4 (la web como obra madre) |
+| ¿Cuánto dura?                                      | P1 (15 a 30 min según cuánto se lea)                      |
+| ¿Cómo evitan que un nivel quede injugable?         | P4 (`verificar-rutas` y el caso real del Atrio)           |
 
 ---
 

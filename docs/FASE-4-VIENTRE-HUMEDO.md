@@ -38,7 +38,7 @@ NIVEL 3 — El Vientre Profundo · El templo (no se construye en esta fase)
 
 ## 2. Cómo usar este documento
 
-- **Para publicar en GitHub:** cada bloque empieza con `---` y trae `title` y `labels`. Se puede copiar el cuerpo a *New issue* o publicar con `gh issue create --title "..." --body-file ... --label ...`.
+- **Para publicar en GitHub:** cada bloque empieza con `---` y trae `title` y `labels`. Se puede copiar el cuerpo a _New issue_ o publicar con `gh issue create --title "..." --body-file ... --label ...`.
 - **Para trabajar:** respetar el orden de dependencias de la tabla. Los issues marcados como `bloqueante` impiden empezar el resto.
 - **Para revisar:** los criterios de aceptación son verificables. Si un issue no los cumple, no está cerrado.
 - **Para el equipo narrativo:** el issue `F4-01` es el acta de canon. Cualquier texto o mecánica nueva debe poder rastrearse hasta él y hasta la biblia.
@@ -87,49 +87,49 @@ F4-01 Canon de los dos niveles
 
 ## 4. Índice de issues
 
-| Código | GitHub | Título | Etiquetas principales | Prioridad |
-| --- | --- | --- | --- | --- |
-| F4-01 | #126 | Canon de la Fase 4: dos niveles y la escapatoria | narrativa, zona-vientre-humedo | alta |
-| F4-02 | #127 | Dos nuevas hojas del Códice (IX y X) y recuento por nivel | narrativa, gameplay, web | alta |
-| F4-03 | #87 | Voces, pensamientos y fichas de los habitantes | narrativa, gameplay | media |
-| F4-04 | #88 | Bestiario del Vientre Húmedo en el Registro | narrativa, web | alta |
-| F4-05 | #128 | Geometría, rutas y secretos de la huida | gameplay, zona-vientre-humedo | alta |
-| F4-06 | #90 | Sistema de criaturas y peligros del Nivel 2 | tecnico, gameplay | bloqueante |
-| F4-07 | #91 | Mareas del Hambre y Latido | gameplay, tecnico | alta |
-| F4-08 | #129 | Estructura de dos niveles: la decisión y la huida | tecnico, gameplay | bloqueante |
-| F4-09 | #130 | Mapas del juego y del portal: Nivel 1, Nivel 2 y templo | gameplay, web | alta |
-| F4-10 | #94 | Contadores y memoria por nivel | tecnico, web | media |
-| F4-11 | #95 | Puentes de tejido y la Injertadora | gameplay, tecnico | media |
-| F4-12 | #96 | Hongo de Lámpara, Lluvia Tibia y luz | gameplay, arte | media |
-| F4-13 | #97 | Remedo: el instrumento tibio | gameplay, zona-vientre-humedo | media |
-| F4-14 | #98 | Serpiente de Tejido: mini-jefe de los ductos | gameplay, zona-vientre-humedo | alta |
-| F4-15 | #99 | Mondador: el limpiador sagrado | gameplay, narrativa | alta |
-| F4-16 | #100 | Buitre ritual y Cerdo de Protocolo | gameplay, narrativa | media |
-| F4-17 | #101 | Cuervo de Ermita y Vena Trepadora | gameplay, zona-vientre-humedo | media |
-| F4-18 | #102 | Zarza Cosedora: barrera viva | gameplay, zona-vientre-humedo | media |
-| F4-19 | #103 | Alfombra Devota: la trampa litúrgica | gameplay, accesibilidad | alta |
-| F4-20 | #104 | Mata de Retazos: cosecha con riesgo | gameplay, narrativa | media |
-| F4-21 | #105 | Tileset y decals del Vientre Húmedo | arte | alta |
-| F4-22 | #106 | Sprites de fauna del Vientre Húmedo | arte | alta |
-| F4-23 | #107 | Sprites de flora y peligros | arte | media |
-| F4-24 | #108 | SFX y música del Vientre Húmedo | audio | media |
-| F4-25 | #109 | Registro web: familias fauna y flora | web, narrativa | alta |
-| F4-26 | #110 | Linaje web: la frontera porosa | web, narrativa | media |
-| F4-27 | #111 | Portada y navegación del portal: dos niveles | web | media |
-| F4-28 | #112 | Doctrina web: diez folios e índices | web, narrativa | alta |
-| F4-29 | #113 | Minijuegos: Remedo y nuevas preguntas | web, gameplay | media |
-| F4-30 | #114 | Índice funcional del Códice y del Registro en la web | web, indice | alta |
-| F4-31 | #115 | Exportar las nuevas figuras a la web | web, arte | media |
-| F4-32 | #116 | Índice funcional de la biblia del mundo (Drive) | documentacion, indice | alta |
-| F4-35 | #119 | Actualizar README y DESARROLLO a la fase 4 | documentacion | media |
-| F4-36 | #120 | `verificar-rutas`, `verificar-arte` y build | qa, tecnico | bloqueante |
-| F4-37 | #121 | Playtest y balance del Nivel 2 | qa, gameplay | alta |
-| F4-38 | #122 | Revisión de canon, tono y accesibilidad | qa, narrativa, accesibilidad | alta |
-| F4-39 | #131 | Inscripciones y placas del Nivel 2 | narrativa, gameplay | media |
-| F4-40 | #132 | Cierre del Nivel 2: la Puerta del Cuerpo | narrativa, gameplay | alta |
-| F4-41 | #125 | Flor de Hueso y objetos culturales | narrativa, gameplay, web | media |
-| F4-42 | #133 | Continuidad entre niveles: progreso, desbloqueo y selección | gameplay, tecnico | media |
-| F4-43 | #134 | La decisión del Cirujano y la niña como compañera | narrativa, gameplay | alta |
+| Código | GitHub | Título                                                      | Etiquetas principales          | Prioridad  |
+| ------ | ------ | ----------------------------------------------------------- | ------------------------------ | ---------- |
+| F4-01  | #126   | Canon de la Fase 4: dos niveles y la escapatoria            | narrativa, zona-vientre-humedo | alta       |
+| F4-02  | #127   | Dos nuevas hojas del Códice (IX y X) y recuento por nivel   | narrativa, gameplay, web       | alta       |
+| F4-03  | #87    | Voces, pensamientos y fichas de los habitantes              | narrativa, gameplay            | media      |
+| F4-04  | #88    | Bestiario del Vientre Húmedo en el Registro                 | narrativa, web                 | alta       |
+| F4-05  | #128   | Geometría, rutas y secretos de la huida                     | gameplay, zona-vientre-humedo  | alta       |
+| F4-06  | #90    | Sistema de criaturas y peligros del Nivel 2                 | tecnico, gameplay              | bloqueante |
+| F4-07  | #91    | Mareas del Hambre y Latido                                  | gameplay, tecnico              | alta       |
+| F4-08  | #129   | Estructura de dos niveles: la decisión y la huida           | tecnico, gameplay              | bloqueante |
+| F4-09  | #130   | Mapas del juego y del portal: Nivel 1, Nivel 2 y templo     | gameplay, web                  | alta       |
+| F4-10  | #94    | Contadores y memoria por nivel                              | tecnico, web                   | media      |
+| F4-11  | #95    | Puentes de tejido y la Injertadora                          | gameplay, tecnico              | media      |
+| F4-12  | #96    | Hongo de Lámpara, Lluvia Tibia y luz                        | gameplay, arte                 | media      |
+| F4-13  | #97    | Remedo: el instrumento tibio                                | gameplay, zona-vientre-humedo  | media      |
+| F4-14  | #98    | Serpiente de Tejido: mini-jefe de los ductos                | gameplay, zona-vientre-humedo  | alta       |
+| F4-15  | #99    | Mondador: el limpiador sagrado                              | gameplay, narrativa            | alta       |
+| F4-16  | #100   | Buitre ritual y Cerdo de Protocolo                          | gameplay, narrativa            | media      |
+| F4-17  | #101   | Cuervo de Ermita y Vena Trepadora                           | gameplay, zona-vientre-humedo  | media      |
+| F4-18  | #102   | Zarza Cosedora: barrera viva                                | gameplay, zona-vientre-humedo  | media      |
+| F4-19  | #103   | Alfombra Devota: la trampa litúrgica                        | gameplay, accesibilidad        | alta       |
+| F4-20  | #104   | Mata de Retazos: cosecha con riesgo                         | gameplay, narrativa            | media      |
+| F4-21  | #105   | Tileset y decals del Vientre Húmedo                         | arte                           | alta       |
+| F4-22  | #106   | Sprites de fauna del Vientre Húmedo                         | arte                           | alta       |
+| F4-23  | #107   | Sprites de flora y peligros                                 | arte                           | media      |
+| F4-24  | #108   | SFX y música del Vientre Húmedo                             | audio                          | media      |
+| F4-25  | #109   | Registro web: familias fauna y flora                        | web, narrativa                 | alta       |
+| F4-26  | #110   | Linaje web: la frontera porosa                              | web, narrativa                 | media      |
+| F4-27  | #111   | Portada y navegación del portal: dos niveles                | web                            | media      |
+| F4-28  | #112   | Doctrina web: diez folios e índices                         | web, narrativa                 | alta       |
+| F4-29  | #113   | Minijuegos: Remedo y nuevas preguntas                       | web, gameplay                  | media      |
+| F4-30  | #114   | Índice funcional del Códice y del Registro en la web        | web, indice                    | alta       |
+| F4-31  | #115   | Exportar las nuevas figuras a la web                        | web, arte                      | media      |
+| F4-32  | #116   | Índice funcional de la biblia del mundo (Drive)             | documentacion, indice          | alta       |
+| F4-35  | #119   | Actualizar README y DESARROLLO a la fase 4                  | documentacion                  | media      |
+| F4-36  | #120   | `verificar-rutas`, `verificar-arte` y build                 | qa, tecnico                    | bloqueante |
+| F4-37  | #121   | Playtest y balance del Nivel 2                              | qa, gameplay                   | alta       |
+| F4-38  | #122   | Revisión de canon, tono y accesibilidad                     | qa, narrativa, accesibilidad   | alta       |
+| F4-39  | #131   | Inscripciones y placas del Nivel 2                          | narrativa, gameplay            | media      |
+| F4-40  | #132   | Cierre del Nivel 2: la Puerta del Cuerpo                    | narrativa, gameplay            | alta       |
+| F4-41  | #125   | Flor de Hueso y objetos culturales                          | narrativa, gameplay, web       | media      |
+| F4-42  | #133   | Continuidad entre niveles: progreso, desbloqueo y selección | gameplay, tecnico              | media      |
+| F4-43  | #134   | La decisión del Cirujano y la niña como compañera           | narrativa, gameplay            | alta       |
 
 > **Nota:** los códigos `F4-33` y `F4-34` se retiraron. La biblia del mundo canónica y actualizada vive en el **Drive del equipo**; no se mantiene una copia canónica en el repositorio ni se hará un índice de materias separado. El único encargo de índice es `F4-32` (#116).
 
@@ -138,7 +138,9 @@ F4-01 Canon de los dos niveles
 ## 5. Issues
 
 <!-- ==================== F4-01 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Canon de la Fase 4: dos niveles y la escapatoria"
 labels: fase-4, zona-vientre-humedo, narrativa, prioridad-alta
 depende: —
@@ -157,11 +159,11 @@ La biblia sostiene esta lectura: el Nivel 1 cubre las capas I-IV; la capa V son 
 
 Un **acta de canon** breve en `docs/canon/nivel-2-vientre-humedo.md` o como sección nueva de `docs/DESARROLLO.md`, que fije:
 
-| Nivel | Nombre | Qué cubre | Estado |
-| --- | --- | --- | --- |
-| **Nivel 1** | El Sacramento | Atrio → Pasillos → Criptas → Salas → cierre | Existente; jugabilidad intacta |
-| **Nivel 2** | El Vientre Húmedo · La escapatoria | Capa V: desagüe de la Sala 7 → ecosistema → Puerta del Cuerpo | Nuevo; esta fase |
-| **Nivel 3** | El Vientre Profundo · El templo | Capa VI: el santuario | No se construye; solo se ve la puerta |
+| Nivel       | Nombre                             | Qué cubre                                                     | Estado                                |
+| ----------- | ---------------------------------- | ------------------------------------------------------------- | ------------------------------------- |
+| **Nivel 1** | El Sacramento                      | Atrio → Pasillos → Criptas → Salas → cierre                   | Existente; jugabilidad intacta        |
+| **Nivel 2** | El Vientre Húmedo · La escapatoria | Capa V: desagüe de la Sala 7 → ecosistema → Puerta del Cuerpo | Nuevo; esta fase                      |
+| **Nivel 3** | El Vientre Profundo · El templo    | Capa VI: el santuario                                         | No se construye; solo se ve la puerta |
 
 ### 1. Nivel 1: jugabilidad intacta, cierre con decisión
 
@@ -225,7 +227,9 @@ Altar, sacramento, diezmo, Registro, Reformado, Fervor, Poción de Carne, Injert
 - `src/scenes/SalasScene.ts`, `src/scenes/FinalScene.ts`, `src/lore/Pensamientos.ts`, `src/lore/Vientre.ts`.
 
 <!-- ==================== F4-02 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Dos nuevas hojas del Códice (IX y X) y recuento por nivel"
 labels: fase-4, zona-vientre-humedo, narrativa, gameplay, web, prioridad-alta
 depende: F4-01
@@ -338,7 +342,9 @@ Propuesta de manuales:
 - Biblia: **Cronología** (año 62 A.E.), **Fauna** (Mondador), **Niveles Reformados**.
 
 <!-- ==================== F4-03 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Voces, pensamientos y fichas de los habitantes del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, narrativa, gameplay, web, prioridad-media
 depende: F4-01
@@ -464,7 +470,9 @@ Añadir dos fichas en la familia `fieles`, con la voz del Registro:
 - `F4-43` (la decisión y la niña).
 
 <!-- ==================== F4-04 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Bestiario del Vientre Húmedo: fichas de fauna y flora en el Registro"
 labels: fase-4, zona-vientre-humedo, narrativa, web, prioridad-alta
 depende: F4-01
@@ -485,19 +493,19 @@ Extender `src/lore/Registro.ts`:
 2. Ampliar `FAMILIAS` con `FAUNA: 'LA FAUNA'` y `FLORA: 'LA FLORA'`.
 3. Añadir las fichas de la tabla. Los textos son propuesta; el equipo narrativo puede reescribirlos, pero deben conservar la voz del Registro: una institución que cataloga, no un narrador que se horroriza.
 
-| id | familia | nombre | hallazgo | claves de la ficha |
-| --- | --- | --- | --- | --- |
-| `mondador` | fauna | Mondador | visto en el Vientre Húmedo | Come lo que el sacramento rechaza; caparazón dorado; las Vestales lo cazan para máscaras; casi extinto; el último del Atrio nació en el 62. |
-| `remedo` | fauna | Remedo | visto entre el instrumental | Bicho blando que imita instrumentos; la imitación no da calor; «un bisturí tibio es un Remedo»; muerde si se agarra. |
-| `serpiente` | fauna | Serpiente de Tejido | vista en los ductos | Sin esqueleto; abre la boca rompiéndose; depredador de los ductos; emblema del Rebaño Hueco. |
-| `buitre` | fauna | Buitre ritual | visto en el altar | Músculo expuesto y ornamento de catedral; si se posa en el altar-camilla, la ofrenda sale Reformada; heraldo de la Quietud. |
-| `cerdo` | fauna | Cerdo de Protocolo | visto en los corrales | Descendiente de los cerdos del primer diezmo; vive con tubos e injertos; carne de los linajes injertados. |
-| `cuervo` | fauna | Cuervo de Ermita | visto en las bóvedas | Alas de carne y plumas trenzadas con cable; mensajero; el pueblo lo cree heraldo del culto. |
-| `zarza` | flora | Zarza Cosedora | vista en el zarzal | Púas ganchudas; clava y seca; muralla de las Vestales; sus púas son agujas de sutura; refugio de Remedos. |
-| `mata` | flora | Mata de Retazos | vista en los desagües | Frutos que son partes humanas; raíces junto al tejido rechazado; alimento de pobres y «diezmo vegetal». |
-| `alfombra` | flora | Alfombra Devota | vista en los pasillos | Filamentos que imitan la alfombra litúrgica; trampa de emboscada; prohibido pisar alfombra; oficio de tanteador. |
-| `vena` | flora | Vena Trepadora | vista en los muros | Enredadera de carne que late con el Latido; las Vestales leen su pulso para anunciar un Hambre. |
-| `hongo` | flora | Hongo de Lámpara | visto en la oscuridad | Hongo bioluminiscente; luz y reloj; lo cultivan los hongueros; crece sobre lo que nadie barrió. |
+| id          | familia | nombre              | hallazgo                    | claves de la ficha                                                                                                                          |
+| ----------- | ------- | ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mondador`  | fauna   | Mondador            | visto en el Vientre Húmedo  | Come lo que el sacramento rechaza; caparazón dorado; las Vestales lo cazan para máscaras; casi extinto; el último del Atrio nació en el 62. |
+| `remedo`    | fauna   | Remedo              | visto entre el instrumental | Bicho blando que imita instrumentos; la imitación no da calor; «un bisturí tibio es un Remedo»; muerde si se agarra.                        |
+| `serpiente` | fauna   | Serpiente de Tejido | vista en los ductos         | Sin esqueleto; abre la boca rompiéndose; depredador de los ductos; emblema del Rebaño Hueco.                                                |
+| `buitre`    | fauna   | Buitre ritual       | visto en el altar           | Músculo expuesto y ornamento de catedral; si se posa en el altar-camilla, la ofrenda sale Reformada; heraldo de la Quietud.                 |
+| `cerdo`     | fauna   | Cerdo de Protocolo  | visto en los corrales       | Descendiente de los cerdos del primer diezmo; vive con tubos e injertos; carne de los linajes injertados.                                   |
+| `cuervo`    | fauna   | Cuervo de Ermita    | visto en las bóvedas        | Alas de carne y plumas trenzadas con cable; mensajero; el pueblo lo cree heraldo del culto.                                                 |
+| `zarza`     | flora   | Zarza Cosedora      | vista en el zarzal          | Púas ganchudas; clava y seca; muralla de las Vestales; sus púas son agujas de sutura; refugio de Remedos.                                   |
+| `mata`      | flora   | Mata de Retazos     | vista en los desagües       | Frutos que son partes humanas; raíces junto al tejido rechazado; alimento de pobres y «diezmo vegetal».                                     |
+| `alfombra`  | flora   | Alfombra Devota     | vista en los pasillos       | Filamentos que imitan la alfombra litúrgica; trampa de emboscada; prohibido pisar alfombra; oficio de tanteador.                            |
+| `vena`      | flora   | Vena Trepadora      | vista en los muros          | Enredadera de carne que late con el Latido; las Vestales leen su pulso para anunciar un Hambre.                                             |
+| `hongo`     | flora   | Hongo de Lámpara    | visto en la oscuridad       | Hongo bioluminiscente; luz y reloj; lo cultivan los hongueros; crece sobre lo que nadie barrió.                                             |
 
 ### Textos propuestos
 
@@ -674,7 +682,9 @@ Los siguientes textos respetan el formato de 4 líneas y la voz del Registro. Se
 - `src/lore/Registro.ts`, `src/ui/CodiceScene.ts`, `web/src/paginas/registro.ts`.
 
 <!-- ==================== F4-05 ==================== -->
+
 ---
+
 title: "[NIVEL] Geometría, rutas y secretos de la huida"
 labels: fase-4, zona-vientre-humedo, gameplay, prioridad-alta, bloqueante
 depende: F4-01, F4-06, F4-43
@@ -693,17 +703,17 @@ Crear `src/scenes/VientreHumedoScene.ts` extendiendo `EscenaNivel`, con `definir
 
 ### Recorrido propuesto
 
-| Sala | Función | Contenido obligatorio |
-| --- | --- | --- |
-| **El desagüe de la Sala 7** | Entrada de la huida | El Cirujano y la niña; Primer Altar; Lluvia Tibia; inscripción del desagüe; salida a la galería. |
-| **Galería de limpieza** | Centro del nivel | Mondador en ruta; pilas de carne rechazada; Hongo de Lámpara; Buitre sobre un altar-camilla; una Vestal cazadora opcional en una repisa. |
-| **El zarzal** | Barrera y desvío | Zarza Cosedora que bloquea un paso; Remedos escondidos; púas de sutura; puente de tejido opcional (`F4-11`). |
-| **La mata** | Riesgo/recompensa | Mata de Retazos; cosecha con `E`; un fragmento escondido entre las raíces; Remedo entre los frutos. |
-| **Corral de Protocolo** | Respiro y clase social | Cerdos de Protocolo; Cuervo de Ermita; inscripción de propiedad; salida al nido. |
-| **El nido** | Arena de la Serpiente | Serpiente de Tejido; Marea del Hambre; repisas altas; segundo Altar antes de la arena. |
-| **Pozo de las Mareas** | Plataformas y secreto | Subida vertical; Vena Trepadora que abre un paso durante el Latido; reliquia escondida. |
-| **Ducto de subida** | Salida | Pasillo final; inscripción de la Puerta del Cuerpo; umbral a `FinalNivel2`. |
-| **La Puerta del Cuerpo** | Umbral del templo | Puerta sellada; no se cruza; el `FinalNivel2` muestra el templo al otro lado, con la niña junto al Cirujano. |
+| Sala                        | Función                | Contenido obligatorio                                                                                                                    |
+| --------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **El desagüe de la Sala 7** | Entrada de la huida    | El Cirujano y la niña; Primer Altar; Lluvia Tibia; inscripción del desagüe; salida a la galería.                                         |
+| **Galería de limpieza**     | Centro del nivel       | Mondador en ruta; pilas de carne rechazada; Hongo de Lámpara; Buitre sobre un altar-camilla; una Vestal cazadora opcional en una repisa. |
+| **El zarzal**               | Barrera y desvío       | Zarza Cosedora que bloquea un paso; Remedos escondidos; púas de sutura; puente de tejido opcional (`F4-11`).                             |
+| **La mata**                 | Riesgo/recompensa      | Mata de Retazos; cosecha con `E`; un fragmento escondido entre las raíces; Remedo entre los frutos.                                      |
+| **Corral de Protocolo**     | Respiro y clase social | Cerdos de Protocolo; Cuervo de Ermita; inscripción de propiedad; salida al nido.                                                         |
+| **El nido**                 | Arena de la Serpiente  | Serpiente de Tejido; Marea del Hambre; repisas altas; segundo Altar antes de la arena.                                                   |
+| **Pozo de las Mareas**      | Plataformas y secreto  | Subida vertical; Vena Trepadora que abre un paso durante el Latido; reliquia escondida.                                                  |
+| **Ducto de subida**         | Salida                 | Pasillo final; inscripción de la Puerta del Cuerpo; umbral a `FinalNivel2`.                                                              |
+| **La Puerta del Cuerpo**    | Umbral del templo      | Puerta sellada; no se cruza; el `FinalNivel2` muestra el templo al otro lado, con la niña junto al Cirujano.                             |
 
 ### La niña en el nivel
 
@@ -770,7 +780,9 @@ Crear `src/scenes/VientreHumedoScene.ts` extendiendo `EscenaNivel`, con `definir
 - Biblia: **Capítulo VI, Naturaleza → Condiciones físicas** (Lluvia Tibia, Latido, Mareas del Hambre, gradiente de calor).
 
 <!-- ==================== F4-06 ==================== -->
+
 ---
+
 title: "[TÉCNICO] Sistema de criaturas y peligros del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, tecnico, gameplay, bloqueante
 depende: F4-01
@@ -828,8 +840,10 @@ En `EscenaNivel.poblarNivel()`:
 ```ts
 for (const def of this.definicion.criaturas ?? []) {
   switch (def.tipo) {
-    case 'remedo': /* new Remedo(...) */ break;
-    case 'serpiente': /* new SerpienteDeTejido(...) */ break;
+    case 'remedo':
+      /* new Remedo(...) */ break;
+    case 'serpiente':
+      /* new SerpienteDeTejido(...) */ break;
     // ...
   }
 }
@@ -876,7 +890,9 @@ Ampliar `ClaseEnemigo` en `src/systems/Sonido.ts` con `'remedo' | 'serpiente' | 
 - `src/systems/Sonido.ts` (`ClaseEnemigo`).
 
 <!-- ==================== F4-07 ==================== -->
+
 ---
+
 title: "[TÉCNICO] Mareas del Hambre y Latido como peligro temporal"
 labels: fase-4, zona-vientre-humedo, gameplay, tecnico, prioridad-alta
 depende: F4-05, F4-06
@@ -948,7 +964,9 @@ export const MAREAS = {
 - `src/systems/Sonido.ts`, `src/systems/Musica.ts`.
 
 <!-- ==================== F4-08 ==================== -->
+
 ---
+
 title: "[TÉCNICO] Estructura de dos niveles: la decisión y la huida"
 labels: fase-4, zona-vientre-humedo, tecnico, gameplay, bloqueante
 depende: F4-01, F4-03, F4-05, F4-43
@@ -1004,7 +1022,9 @@ El Nivel 1 termina con la decisión del Cirujano: baja el bisturí y no entrega 
 - `F4-02`, `F4-03`, `F4-40`, `F4-42`, `F4-43`.
 
 <!-- ==================== F4-09 ==================== -->
+
 ---
+
 title: "[MAPA] Mapas del juego y del portal: Nivel 1, Nivel 2 y templo"
 labels: fase-4, zona-vientre-humedo, gameplay, web, prioridad-alta
 depende: F4-01, F4-05
@@ -1099,7 +1119,9 @@ Añadir `nivel: 1 | 2` a `ZONAS_MAPA`:
 - Biblia: **Mapas → Los seis niveles**, **Niveles Reformados**, **El Vientre Profundo**.
 
 <!-- ==================== F4-10 ==================== -->
+
 ---
+
 title: "[TÉCNICO] Contadores dinámicos y memoria del Nivel 2"
 labels: fase-4, zona-vientre-humedo, tecnico, web, prioridad-media
 depende: F4-02, F4-04, F4-05
@@ -1184,7 +1206,9 @@ El hito `'nivel-2'` se registra al entrar o al terminar el Nivel 2 (`F4-42`). La
 - `README.md`, `docs/DESARROLLO.md`.
 
 <!-- ==================== F4-11 ==================== -->
+
 ---
+
 title: "[TÉCNICO] Puentes de tejido: la Injertadora como llave del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, gameplay, tecnico, prioridad-media
 depende: F4-05, F4-06
@@ -1225,7 +1249,9 @@ La biblia dice que en el Vientre Húmedo la frontera entre especies es porosa: e
 - `src/entities/Injerto.ts`, `src/config/Sacramento.ts` (`INJERTADORA`), `src/systems/Progreso.ts`.
 
 <!-- ==================== F4-12 ==================== -->
+
 ---
+
 title: "[TÉCNICO] Hongo de Lámpara, Lluvia Tibia y luz del nivel"
 labels: fase-4, zona-vientre-humedo, gameplay, arte, prioridad-media
 depende: F4-05
@@ -1280,7 +1306,9 @@ El Vientre Húmedo no tiene sol. La luz viene de hongos bioluminiscentes, velas 
 - `docs/issues/03-guia-estilo-paleta.md`.
 
 <!-- ==================== F4-13 ==================== -->
+
 ---
+
 title: "[ENEMIGO] Remedo: el instrumento tibio"
 labels: fase-4, zona-vientre-humedo, gameplay, prioridad-media
 depende: F4-06, F4-04
@@ -1322,7 +1350,9 @@ Una clase `Remedo` en `src/entities/Remedo.ts` que implemente `Enemigo`:
 - `src/entities/Devoto.ts` (patrón de enemigo), `src/entities/Enemigo.ts`.
 
 <!-- ==================== F4-14 ==================== -->
+
 ---
+
 title: "[ENEMIGO] Serpiente de Tejido: mini-jefe de los ductos"
 labels: fase-4, zona-vientre-humedo, gameplay, prioridad-alta
 depende: F4-05, F4-06, F4-07
@@ -1381,7 +1411,9 @@ Una clase `SerpienteDeTejido` en `src/entities/SerpienteDeTejido.ts` que impleme
 - `F4-07` (Mareas).
 
 <!-- ==================== F4-15 ==================== -->
+
 ---
+
 title: "[CRIATURA] Mondador: el limpiador sagrado"
 labels: fase-4, zona-vientre-humedo, gameplay, narrativa, prioridad-alta
 depende: F4-05, F4-06, F4-04
@@ -1428,7 +1460,9 @@ Una clase `Mondador` en `src/entities/Mondador.ts`:
 - `src/entities/Devoto.ts` (patrón de movimiento), `src/entities/Enemigo.ts`.
 
 <!-- ==================== F4-16 ==================== -->
+
 ---
+
 title: "[CRIATURA] Buitre ritual y Cerdo de Protocolo"
 labels: fase-4, zona-vientre-humedo, gameplay, narrativa, prioridad-media
 depende: F4-05, F4-06
@@ -1476,7 +1510,9 @@ El Buitre de la Quietud es el heraldo del sacramento: si se posa sobre el altar-
 - `src/scenes/EscenaNivel.ts` (Altares, `Ofrenda`).
 
 <!-- ==================== F4-17 ==================== -->
+
 ---
+
 title: "[CRIATURA] Cuervo de Ermita y Vena Trepadora"
 labels: fase-4, zona-vientre-humedo, gameplay, prioridad-media
 depende: F4-05, F4-06, F4-07
@@ -1525,7 +1561,9 @@ El Cuervo de Ermita es mensajero y guía; la Vena Trepadora late con el Latido y
 - `src/scenes/EscenaNivel.ts` (`crearAtrezoLejano`, luces, decorado).
 
 <!-- ==================== F4-18 ==================== -->
+
 ---
+
 title: "[PELIGRO] Zarza Cosedora: barrera viva y púas de sutura"
 labels: fase-4, zona-vientre-humedo, gameplay, prioridad-media
 depende: F4-05, F4-06
@@ -1565,7 +1603,9 @@ La Zarza Cosedora es una trepadora de púas ganchudas que clava a lo que la roza
 - `src/scenes/EscenaNivel.ts` (geometría, decorado), `src/entities/Enemigo.ts`.
 
 <!-- ==================== F4-19 ==================== -->
+
 ---
+
 title: "[PELIGRO] Alfombra Devota: la trampa que parece liturgia"
 labels: fase-4, zona-vientre-humedo, gameplay, accesibilidad, prioridad-alta
 depende: F4-05, F4-06
@@ -1610,7 +1650,9 @@ La Alfombra Devota es un tapiz vegetal de filamentos cortos y suaves, del color 
 - `docs/issues/03-guia-estilo-paleta.md` (contraste y paleta).
 
 <!-- ==================== F4-20 ==================== -->
+
 ---
+
 title: "[CRIATURA] Mata de Retazos: cosecha con riesgo"
 labels: fase-4, zona-vientre-humedo, gameplay, narrativa, prioridad-media
 depende: F4-05, F4-06, F4-04
@@ -1652,7 +1694,9 @@ La Mata de Retazos es un arbusto bajo de ramas carnosas y frutos que son partes 
 - `src/objetos/Ofrenda.ts` (curación), `src/scenes/EscenaNivel.ts` (interacción `E`).
 
 <!-- ==================== F4-21 ==================== -->
+
 ---
+
 title: "[ARTE] Tileset y decals del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, arte, prioridad-alta
 depende: F4-01, F4-05
@@ -1684,15 +1728,15 @@ Un set de tiles y decals para construir la geometría y el ambiente del Vientre 
 
 ## Especificaciones técnicas
 
-| Parámetro | Valor |
-| --- | --- |
-| Tamaño de tile | **16 × 16 px** |
-| Formato fuente | `.aseprite` con capas separadas |
-| Formato entrega | `.png` con alfa, PNG-8 o PNG-24 |
-| Organización | Rejilla sin padding ni spacing |
-| Paleta | Coherente con `docs/arte/piezas/` y la guía de estilo; máximo 32 colores por set |
-| Destino | `docs/arte/piezas/` para el origen y `public/assets/tilesets/` para el juego |
-| Nombres | `vientre-humedo.png`, `vientre-humedo-grietas.png`, `vientre-humedo-musgo.png`, `vientre-humedo-venas.png` |
+| Parámetro       | Valor                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| Tamaño de tile  | **16 × 16 px**                                                                                             |
+| Formato fuente  | `.aseprite` con capas separadas                                                                            |
+| Formato entrega | `.png` con alfa, PNG-8 o PNG-24                                                                            |
+| Organización    | Rejilla sin padding ni spacing                                                                             |
+| Paleta          | Coherente con `docs/arte/piezas/` y la guía de estilo; máximo 32 colores por set                           |
+| Destino         | `docs/arte/piezas/` para el origen y `public/assets/tilesets/` para el juego                               |
+| Nombres         | `vientre-humedo.png`, `vientre-humedo-grietas.png`, `vientre-humedo-musgo.png`, `vientre-humedo-venas.png` |
 
 **Importante:** las grietas, el musgo, las venas y las membranas van en hojas aparte, no horneadas en el tile que se repite; si no, reaparecen cada 16 px y la pared se lee como papel pintado. La siembra debe ser reproducible por hash, como en las otras zonas.
 
@@ -1713,7 +1757,9 @@ Un set de tiles y decals para construir la geometría y el ambiente del Vientre 
 - Biblia: **Condiciones físicas**, **Flora**, **Otras especies**.
 
 <!-- ==================== F4-22 ==================== -->
+
 ---
+
 title: "[ARTE] Sprites de fauna del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, arte, prioridad-alta
 depende: F4-04, F4-13, F4-14, F4-15, F4-16, F4-17
@@ -1728,14 +1774,14 @@ Las seis especies de fauna necesitan sprites legibles a 480×320 y animaciones q
 
 ## Qué se necesita
 
-| Especie | Tamaño sugerido | Animaciones mínimas | Notas de diseño |
-| --- | --- | --- | --- |
-| **Mondador** | 32×24 | idle, caminar, comer, huir | Felino dorado y escaso; huesos en la espalda; dientes finos; sagrado, no monstruoso. |
-| **Remedo** | 10×10 | oculto (objeto), temblor, morder, huir | Bicho blando; piel de pigmentos cambiantes; no dibujar 20 imitaciones: una base + tinte/overlay. |
-| **Serpiente de Tejido** | 48×24 (cabeza 16×16) | acecho, embestida, boca abierta, aturdida, muerte | Sin esqueleto; escamas duras; boca que se abre más de lo posible; sin ojos de dios. |
-| **Buitre ritual** | 16×20 | posado, volar, clac | Músculo expuesto y ornamento de catedral; no gore gratuito. |
-| **Cerdo de Protocolo** | 20×14 | idle, caminar, comer, huir, muerte | Tubos e injertos; descendiente de los cerdos del primer diezmo. |
-| **Cuervo de Ermita** | 12×10 | posado, volar, graznar | Alas de carne y plumas trenzadas con cable; heraldo del culto. |
+| Especie                 | Tamaño sugerido      | Animaciones mínimas                               | Notas de diseño                                                                                  |
+| ----------------------- | -------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Mondador**            | 32×24                | idle, caminar, comer, huir                        | Felino dorado y escaso; huesos en la espalda; dientes finos; sagrado, no monstruoso.             |
+| **Remedo**              | 10×10                | oculto (objeto), temblor, morder, huir            | Bicho blando; piel de pigmentos cambiantes; no dibujar 20 imitaciones: una base + tinte/overlay. |
+| **Serpiente de Tejido** | 48×24 (cabeza 16×16) | acecho, embestida, boca abierta, aturdida, muerte | Sin esqueleto; escamas duras; boca que se abre más de lo posible; sin ojos de dios.              |
+| **Buitre ritual**       | 16×20                | posado, volar, clac                               | Músculo expuesto y ornamento de catedral; no gore gratuito.                                      |
+| **Cerdo de Protocolo**  | 20×14                | idle, caminar, comer, huir, muerte                | Tubos e injertos; descendiente de los cerdos del primer diezmo.                                  |
+| **Cuervo de Ermita**    | 12×10                | posado, volar, graznar                            | Alas de carne y plumas trenzadas con cable; heraldo del culto.                                   |
 
 ## Especificaciones técnicas
 
@@ -1763,7 +1809,9 @@ Las seis especies de fauna necesitan sprites legibles a 480×320 y animaciones q
 - `src/systems/ArteProvisional.ts`, `scripts/exportar-arte.mjs`.
 
 <!-- ==================== F4-23 ==================== -->
+
 ---
+
 title: "[ARTE] Sprites de flora y peligros del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, arte, prioridad-media
 depende: F4-04, F4-12, F4-18, F4-19, F4-20
@@ -1778,13 +1826,13 @@ La flora del Vientre Húmedo es el escenario que ataca. Necesita sprites tileabl
 
 ## Qué se necesita
 
-| Especie | Formato | Estados | Notas |
-| --- | --- | --- | --- |
-| **Zarza Cosedora** | Segmentos 16×16 y puntas | calmada, enganchando, cortada | Tallos oscuros, púas ganchudas; al cortar, savia. |
-| **Mata de Retazos** | 32×24 | calmada, fruto tocado, cosechada | Frutos que son manos/dedos/orejas/labios; contracción al tocar. |
-| **Alfombra Devota** | Tileable 16×16 | calmada, erizada, atrapando, cortada | Debe confundirse con una alfombra real en estado calmado. |
-| **Vena Trepadora** | Tileable vertical 16×16 | pulso bajo, pulso alto | Late con el Latido; frames sincronizados. |
-| **Hongo de Lámpara** | 16×16 y 32×16 | encendido, apagado/cosechado | Bioluminiscencia; luz que no debe nada a los dioses. |
+| Especie              | Formato                  | Estados                              | Notas                                                           |
+| -------------------- | ------------------------ | ------------------------------------ | --------------------------------------------------------------- |
+| **Zarza Cosedora**   | Segmentos 16×16 y puntas | calmada, enganchando, cortada        | Tallos oscuros, púas ganchudas; al cortar, savia.               |
+| **Mata de Retazos**  | 32×24                    | calmada, fruto tocado, cosechada     | Frutos que son manos/dedos/orejas/labios; contracción al tocar. |
+| **Alfombra Devota**  | Tileable 16×16           | calmada, erizada, atrapando, cortada | Debe confundirse con una alfombra real en estado calmado.       |
+| **Vena Trepadora**   | Tileable vertical 16×16  | pulso bajo, pulso alto               | Late con el Latido; frames sincronizados.                       |
+| **Hongo de Lámpara** | 16×16 y 32×16            | encendido, apagado/cosechado         | Bioluminiscencia; luz que no debe nada a los dioses.            |
 
 ## Especificaciones técnicas
 
@@ -1811,7 +1859,9 @@ La flora del Vientre Húmedo es el escenario que ataca. Necesita sprites tileabl
 - `docs/issues/03-guia-estilo-paleta.md`.
 
 <!-- ==================== F4-24 ==================== -->
+
 ---
+
 title: "[AUDIO] SFX y música del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, audio, prioridad-media
 depende: F4-13, F4-14, F4-15, F4-16, F4-17, F4-18, F4-19, F4-20
@@ -1871,7 +1921,9 @@ Reglas: cada clase de enemigo suena a su materia; el parry sigue siendo lo únic
 - `src/systems/Sonido.ts`, `src/systems/Musica.ts`.
 
 <!-- ==================== F4-25 ==================== -->
+
 ---
+
 title: "[WEB] Registro: familias fauna y flora del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, web, narrativa, prioridad-alta
 depende: F4-04, F4-10, F4-22, F4-23
@@ -1913,7 +1965,9 @@ El Registro web es la sección donde el visitante ve las fichas con su lámina. 
 - `docs/DESARROLLO.md` → «La web de la Diócesis».
 
 <!-- ==================== F4-26 ==================== -->
+
 ---
+
 title: "[WEB] Linaje: la frontera porosa y las especies del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, web, narrativa, prioridad-media
 depende: F4-01, F4-04
@@ -1951,7 +2005,9 @@ El Linaje cuenta de dónde viene cada cosa. La biblia dice que el vector de Gene
 - `src/lore/Linaje.ts`, `web/src/paginas/linaje.ts`, `src/ui/CodiceScene.ts`.
 
 <!-- ==================== F4-27 ==================== -->
+
 ---
+
 title: "[WEB] Portada y navegación del portal: dos niveles"
 labels: fase-4, zona-vientre-humedo, web, prioridad-media
 depende: F4-09, F4-10, F4-25
@@ -1991,7 +2047,9 @@ La portada es la fachada institucional. Debe reflejar que el juego tiene dos niv
 - `docs/DESARROLLO.md` → «La web de la Diócesis».
 
 <!-- ==================== F4-28 ==================== -->
+
 ---
+
 title: "[WEB] Doctrina: diez folios, índices y manuales nuevos"
 labels: fase-4, zona-vientre-humedo, web, narrativa, prioridad-alta
 depende: F4-02, F4-10
@@ -2030,7 +2088,9 @@ La web de Doctrina presenta el Códice como un libro que se hojea. Con 10 folios
 - `web/src/paginas/doctrina.ts`, `web/src/libro.ts`, `src/lore/Codice.ts`.
 
 <!-- ==================== F4-29 ==================== -->
+
 ---
+
 title: "[WEB] Minijuegos: el Remedo en El Sacramento y nuevas preguntas del Examen"
 labels: fase-4, zona-vientre-humedo, web, gameplay, prioridad-media
 depende: F4-04, F4-13
@@ -2079,7 +2139,9 @@ Los dos minijuegos del portal son del bible y ya existen. El Vientre Húmedo pue
 - Biblia: **Fauna → Remedo**, **El Sacramento**, **El Examen de Pureza**.
 
 <!-- ==================== F4-30 ==================== -->
+
 ---
+
 title: "[WEB] Índice funcional del Códice y del Registro en el portal"
 labels: fase-4, zona-vientre-humedo, web, indice, prioridad-alta
 depende: F4-25, F4-27, F4-28
@@ -2133,7 +2195,9 @@ La web tiene cintas de folios y una navegación por secciones, pero no un **índ
 - `F4-32` (índice equivalente en la biblia DOCX).
 
 <!-- ==================== F4-31 ==================== -->
+
 ---
+
 title: "[WEB] Exportar las nuevas figuras a la web"
 labels: fase-4, zona-vientre-humedo, web, arte, prioridad-media
 depende: F4-22, F4-23, F4-25
@@ -2173,7 +2237,9 @@ La web no dibuja sprites propios: `scripts/exportar-arte.mjs` lee las figuras de
 - `docs/DESARROLLO.md` → «Las láminas».
 
 <!-- ==================== F4-32 ==================== -->
+
 ---
+
 title: "[DOCS] Índice funcional de la biblia del mundo (Drive)"
 labels: fase-4, documentacion, indice, prioridad-alta
 depende: F4-01
@@ -2223,7 +2289,9 @@ Convertir el índice en una **tabla de contenido automática de Word**:
 - Exportación de consulta en el repositorio, si existe; no se edita.
 
 <!-- ==================== F4-35 ==================== -->
+
 ---
+
 title: "[DOCS] Actualizar README y DESARROLLO a la fase 4"
 labels: fase-4, documentacion, prioridad-media
 depende: F4-02, F4-09, F4-10, F4-32
@@ -2275,7 +2343,9 @@ bloquea: F4-36, F4-38
 - `README.md`, `docs/DESARROLLO.md`, `docs/FASE-4-VIENTRE-HUMEDO.md`.
 
 <!-- ==================== F4-36 ==================== -->
+
 ---
+
 title: "[QA] verificar-rutas, verificar-arte y build con el Nivel 2"
 labels: fase-4, zona-vientre-humedo, qa, tecnico, prioridad-alta
 depende: F4-05, F4-08, F4-21, F4-22, F4-23, F4-31, F4-35
@@ -2320,7 +2390,9 @@ El proyecto tiene verificaciones propias que ningún linter cubre: `verificar-ru
 - `.github/workflows/ci.yml`.
 
 <!-- ==================== F4-37 ==================== -->
+
 ---
+
 title: "[QA] Playtest y balance del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, qa, gameplay, prioridad-alta
 depende: F4-05, F4-07, F4-08, F4-13…F4-20, F4-24, F4-36
@@ -2375,7 +2447,9 @@ Una sesión de prueba con al menos tres personas que no hayan diseñado el nivel
 - `scripts/probar-tactil.mjs`.
 
 <!-- ==================== F4-38 ==================== -->
+
 ---
+
 title: "[QA] Revisión de canon, tono y accesibilidad del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, qa, narrativa, accesibilidad, prioridad-alta
 depende: F4-03, F4-04, F4-24, F4-25, F4-30, F4-35, F4-37
@@ -2446,7 +2520,9 @@ El universo tiene reglas duras. Un texto nuevo puede contradecir la ceguera de l
 - Biblia: **Regla de oro del tono**, **Consistencia y género**, **Filosofía**.
 
 <!-- ==================== F4-39 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Inscripciones y placas del Nivel 2"
 labels: fase-4, zona-vientre-humedo, narrativa, gameplay, prioridad-media
 depende: F4-05
@@ -2498,7 +2574,9 @@ Reglas:
 - `F4-01`, `F4-04`, `F4-07`.
 
 <!-- ==================== F4-40 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Cierre del Nivel 2: la Puerta del Cuerpo"
 labels: fase-4, zona-vientre-humedo, narrativa, gameplay, prioridad-alta
 depende: F4-01, F4-02, F4-03, F4-15, F4-39, F4-43
@@ -2554,7 +2632,9 @@ Crear `src/scenes/FinalNivel2Scene.ts`:
 - `F4-08`, `F4-09`, `F4-42`, `F4-43`.
 
 <!-- ==================== F4-41 ==================== -->
+
 ---
+
 title: "[NARRATIVA] Flor de Hueso y objetos culturales del Vientre Húmedo"
 labels: fase-4, zona-vientre-humedo, narrativa, gameplay, web, prioridad-media
 depende: F4-01, F4-04, F4-05
@@ -2601,7 +2681,9 @@ En el Vientre Húmedo, la flor puede crecer de lo que el sacramento rechaza: un 
 - `src/lore/Registro.ts`, `src/objetos/Ofrenda.ts`, `src/scenes/EscenaNivel.ts`.
 
 <!-- ==================== F4-42 ==================== -->
+
 ---
+
 title: "[NIVEL] Continuidad entre niveles: progreso, desbloqueo y selección"
 labels: fase-4, zona-vientre-humedo, gameplay, tecnico, prioridad-media
 depende: F4-08, F4-40
@@ -2666,7 +2748,9 @@ El juego pasa de tener un solo nivel a tener dos. El Nivel 1 conserva su jugabil
 - `F4-08`, `F4-40`.
 
 <!-- ==================== F4-43 ==================== -->
+
 ---
+
 title: "[NARRATIVA] La decisión del Cirujano y la niña como compañera"
 labels: fase-4, zona-vientre-humedo, narrativa, gameplay, prioridad-alta
 depende: F4-01, F4-03
@@ -2739,20 +2823,20 @@ Implementación mínima, sin escolta con fracaso:
 
 Antes de publicar, crear (o comprobar) estas etiquetas en el repositorio:
 
-| Etiqueta | Color sugerido | Uso |
-| --- | --- | --- |
-| `fase-4` | `#4a4038` | Fase actual |
-| `zona-vientre-humedo` | `#3f5a4a` | Todo lo del nivel |
-| `narrativa` | `#8a6d3b` | Textos, canon, lore |
-| `gameplay` | `#2e6b8a` | Mecánicas y balance |
-| `tecnico` | `#4a4a5a` | Arquitectura y sistemas |
-| `arte` | `#8c2f2f` | Sprites y tilesets |
-| `audio` | `#6a4a7a` | SFX y música |
-| `web` | `#2f6b6b` | Portal de la Diócesis |
-| `documentacion` | `#0075ca` | Biblia, README, guías |
-| `indice` | `#5a5a8a` | Índices y navegación |
-| `qa` | `#7a5a2a` | Pruebas y verificación |
-| `accesibilidad` | `#f143ab` | Contraste, color, táctil |
+| Etiqueta              | Color sugerido | Uso                      |
+| --------------------- | -------------- | ------------------------ |
+| `fase-4`              | `#4a4038`      | Fase actual              |
+| `zona-vientre-humedo` | `#3f5a4a`      | Todo lo del nivel        |
+| `narrativa`           | `#8a6d3b`      | Textos, canon, lore      |
+| `gameplay`            | `#2e6b8a`      | Mecánicas y balance      |
+| `tecnico`             | `#4a4a5a`      | Arquitectura y sistemas  |
+| `arte`                | `#8c2f2f`      | Sprites y tilesets       |
+| `audio`               | `#6a4a7a`      | SFX y música             |
+| `web`                 | `#2f6b6b`      | Portal de la Diócesis    |
+| `documentacion`       | `#0075ca`      | Biblia, README, guías    |
+| `indice`              | `#5a5a8a`      | Índices y navegación     |
+| `qa`                  | `#7a5a2a`      | Pruebas y verificación   |
+| `accesibilidad`       | `#f143ab`      | Contraste, color, táctil |
 
 Las etiquetas `prioridad-alta`, `prioridad-media`, `prioridad-baja` y `bloqueante` ya existen.
 
@@ -2787,49 +2871,49 @@ Los issues se crean **abiertos y sin asignar**, como los de `docs/issues/`.
 
 ## 6.4. Issues publicados
 
-| Código | GitHub | Título |
-| --- | --- | --- |
-| F4-01 | #126 | [[NARRATIVA] Canon de la Fase 4: dos niveles y la escapatoria](https://github.com/JeanCarloLond/Subterfuge/issues/126) |
-| F4-02 | #127 | [[NARRATIVA] Dos nuevas hojas del Códice (IX y X) y recuento por nivel](https://github.com/JeanCarloLond/Subterfuge/issues/127) |
-| F4-03 | #87 | [[NARRATIVA] Voces, pensamientos y fichas de los habitantes del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/87) |
-| F4-04 | #88 | [[NARRATIVA] Bestiario del Vientre Húmedo: fichas de fauna y flora en el Registro](https://github.com/JeanCarloLond/Subterfuge/issues/88) |
-| F4-05 | #128 | [[NIVEL] Geometría, rutas y secretos de la huida](https://github.com/JeanCarloLond/Subterfuge/issues/128) |
-| F4-06 | #90 | [[TÉCNICO] Sistema de criaturas y peligros del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/90) |
-| F4-07 | #91 | [[TÉCNICO] Mareas del Hambre y Latido como peligro temporal](https://github.com/JeanCarloLond/Subterfuge/issues/91) |
-| F4-08 | #129 | [[TÉCNICO] Estructura de dos niveles: la decisión y la huida](https://github.com/JeanCarloLond/Subterfuge/issues/129) |
-| F4-09 | #130 | [[MAPA] Mapas del juego y del portal: Nivel 1, Nivel 2 y templo](https://github.com/JeanCarloLond/Subterfuge/issues/130) |
-| F4-10 | #94 | [[TÉCNICO] Contadores dinámicos y memoria del Nivel 2](https://github.com/JeanCarloLond/Subterfuge/issues/94) |
-| F4-11 | #95 | [[TÉCNICO] Puentes de tejido: la Injertadora como llave del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/95) |
-| F4-12 | #96 | [[TÉCNICO] Hongo de Lámpara, Lluvia Tibia y luz del nivel](https://github.com/JeanCarloLond/Subterfuge/issues/96) |
-| F4-13 | #97 | [[ENEMIGO] Remedo: el instrumento tibio](https://github.com/JeanCarloLond/Subterfuge/issues/97) |
-| F4-14 | #98 | [[ENEMIGO] Serpiente de Tejido: mini-jefe de los ductos](https://github.com/JeanCarloLond/Subterfuge/issues/98) |
-| F4-15 | #99 | [[CRIATURA] Mondador: el limpiador sagrado](https://github.com/JeanCarloLond/Subterfuge/issues/99) |
-| F4-16 | #100 | [[CRIATURA] Buitre ritual y Cerdo de Protocolo](https://github.com/JeanCarloLond/Subterfuge/issues/100) |
-| F4-17 | #101 | [[CRIATURA] Cuervo de Ermita y Vena Trepadora](https://github.com/JeanCarloLond/Subterfuge/issues/101) |
-| F4-18 | #102 | [[PELIGRO] Zarza Cosedora: barrera viva y púas de sutura](https://github.com/JeanCarloLond/Subterfuge/issues/102) |
-| F4-19 | #103 | [[PELIGRO] Alfombra Devota: la trampa que parece liturgia](https://github.com/JeanCarloLond/Subterfuge/issues/103) |
-| F4-20 | #104 | [[CRIATURA] Mata de Retazos: cosecha con riesgo](https://github.com/JeanCarloLond/Subterfuge/issues/104) |
-| F4-21 | #105 | [[ARTE] Tileset y decals del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/105) |
-| F4-22 | #106 | [[ARTE] Sprites de fauna del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/106) |
-| F4-23 | #107 | [[ARTE] Sprites de flora y peligros del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/107) |
-| F4-24 | #108 | [[AUDIO] SFX y música del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/108) |
-| F4-25 | #109 | [[WEB] Registro: familias fauna y flora del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/109) |
-| F4-26 | #110 | [[WEB] Linaje: la frontera porosa y las especies del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/110) |
-| F4-27 | #111 | [[WEB] Portada y navegación del portal: dos niveles](https://github.com/JeanCarloLond/Subterfuge/issues/111) |
-| F4-28 | #112 | [[WEB] Doctrina: diez folios, índices y manuales nuevos](https://github.com/JeanCarloLond/Subterfuge/issues/112) |
-| F4-29 | #113 | [[WEB] Minijuegos: el Remedo en El Sacramento y nuevas preguntas del Examen](https://github.com/JeanCarloLond/Subterfuge/issues/113) |
-| F4-30 | #114 | [[WEB] Índice funcional del Códice y del Registro en el portal](https://github.com/JeanCarloLond/Subterfuge/issues/114) |
-| F4-31 | #115 | [[WEB] Exportar las nuevas figuras a la web](https://github.com/JeanCarloLond/Subterfuge/issues/115) |
-| F4-32 | #116 | [[DOCS] Índice funcional de la biblia del mundo (Drive)](https://github.com/JeanCarloLond/Subterfuge/issues/116) |
-| F4-35 | #119 | [[DOCS] Actualizar README y DESARROLLO a la fase 4](https://github.com/JeanCarloLond/Subterfuge/issues/119) |
-| F4-36 | #120 | [[QA] verificar-rutas, verificar-arte y build con el Nivel 2](https://github.com/JeanCarloLond/Subterfuge/issues/120) |
-| F4-37 | #121 | [[QA] Playtest y balance del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/121) |
-| F4-38 | #122 | [[QA] Revisión de canon, tono y accesibilidad del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/122) |
-| F4-39 | #131 | [[NARRATIVA] Inscripciones y placas del Nivel 2](https://github.com/JeanCarloLond/Subterfuge/issues/131) |
-| F4-40 | #132 | [[NARRATIVA] Cierre del Nivel 2: la Puerta del Cuerpo](https://github.com/JeanCarloLond/Subterfuge/issues/132) |
-| F4-41 | #125 | [[NARRATIVA] Flor de Hueso y objetos culturales del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/125) |
-| F4-42 | #133 | [[NIVEL] Continuidad entre niveles: progreso, desbloqueo y selección](https://github.com/JeanCarloLond/Subterfuge/issues/133) |
-| F4-43 | #134 | [[NARRATIVA] La decisión del Cirujano y la niña como compañera](https://github.com/JeanCarloLond/Subterfuge/issues/134) |
+| Código | GitHub | Título                                                                                                                                    |
+| ------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| F4-01  | #126   | [[NARRATIVA] Canon de la Fase 4: dos niveles y la escapatoria](https://github.com/JeanCarloLond/Subterfuge/issues/126)                    |
+| F4-02  | #127   | [[NARRATIVA] Dos nuevas hojas del Códice (IX y X) y recuento por nivel](https://github.com/JeanCarloLond/Subterfuge/issues/127)           |
+| F4-03  | #87    | [[NARRATIVA] Voces, pensamientos y fichas de los habitantes del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/87)    |
+| F4-04  | #88    | [[NARRATIVA] Bestiario del Vientre Húmedo: fichas de fauna y flora en el Registro](https://github.com/JeanCarloLond/Subterfuge/issues/88) |
+| F4-05  | #128   | [[NIVEL] Geometría, rutas y secretos de la huida](https://github.com/JeanCarloLond/Subterfuge/issues/128)                                 |
+| F4-06  | #90    | [[TÉCNICO] Sistema de criaturas y peligros del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/90)                     |
+| F4-07  | #91    | [[TÉCNICO] Mareas del Hambre y Latido como peligro temporal](https://github.com/JeanCarloLond/Subterfuge/issues/91)                       |
+| F4-08  | #129   | [[TÉCNICO] Estructura de dos niveles: la decisión y la huida](https://github.com/JeanCarloLond/Subterfuge/issues/129)                     |
+| F4-09  | #130   | [[MAPA] Mapas del juego y del portal: Nivel 1, Nivel 2 y templo](https://github.com/JeanCarloLond/Subterfuge/issues/130)                  |
+| F4-10  | #94    | [[TÉCNICO] Contadores dinámicos y memoria del Nivel 2](https://github.com/JeanCarloLond/Subterfuge/issues/94)                             |
+| F4-11  | #95    | [[TÉCNICO] Puentes de tejido: la Injertadora como llave del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/95)        |
+| F4-12  | #96    | [[TÉCNICO] Hongo de Lámpara, Lluvia Tibia y luz del nivel](https://github.com/JeanCarloLond/Subterfuge/issues/96)                         |
+| F4-13  | #97    | [[ENEMIGO] Remedo: el instrumento tibio](https://github.com/JeanCarloLond/Subterfuge/issues/97)                                           |
+| F4-14  | #98    | [[ENEMIGO] Serpiente de Tejido: mini-jefe de los ductos](https://github.com/JeanCarloLond/Subterfuge/issues/98)                           |
+| F4-15  | #99    | [[CRIATURA] Mondador: el limpiador sagrado](https://github.com/JeanCarloLond/Subterfuge/issues/99)                                        |
+| F4-16  | #100   | [[CRIATURA] Buitre ritual y Cerdo de Protocolo](https://github.com/JeanCarloLond/Subterfuge/issues/100)                                   |
+| F4-17  | #101   | [[CRIATURA] Cuervo de Ermita y Vena Trepadora](https://github.com/JeanCarloLond/Subterfuge/issues/101)                                    |
+| F4-18  | #102   | [[PELIGRO] Zarza Cosedora: barrera viva y púas de sutura](https://github.com/JeanCarloLond/Subterfuge/issues/102)                         |
+| F4-19  | #103   | [[PELIGRO] Alfombra Devota: la trampa que parece liturgia](https://github.com/JeanCarloLond/Subterfuge/issues/103)                        |
+| F4-20  | #104   | [[CRIATURA] Mata de Retazos: cosecha con riesgo](https://github.com/JeanCarloLond/Subterfuge/issues/104)                                  |
+| F4-21  | #105   | [[ARTE] Tileset y decals del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/105)                                      |
+| F4-22  | #106   | [[ARTE] Sprites de fauna del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/106)                                      |
+| F4-23  | #107   | [[ARTE] Sprites de flora y peligros del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/107)                           |
+| F4-24  | #108   | [[AUDIO] SFX y música del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/108)                                         |
+| F4-25  | #109   | [[WEB] Registro: familias fauna y flora del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/109)                       |
+| F4-26  | #110   | [[WEB] Linaje: la frontera porosa y las especies del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/110)              |
+| F4-27  | #111   | [[WEB] Portada y navegación del portal: dos niveles](https://github.com/JeanCarloLond/Subterfuge/issues/111)                              |
+| F4-28  | #112   | [[WEB] Doctrina: diez folios, índices y manuales nuevos](https://github.com/JeanCarloLond/Subterfuge/issues/112)                          |
+| F4-29  | #113   | [[WEB] Minijuegos: el Remedo en El Sacramento y nuevas preguntas del Examen](https://github.com/JeanCarloLond/Subterfuge/issues/113)      |
+| F4-30  | #114   | [[WEB] Índice funcional del Códice y del Registro en el portal](https://github.com/JeanCarloLond/Subterfuge/issues/114)                   |
+| F4-31  | #115   | [[WEB] Exportar las nuevas figuras a la web](https://github.com/JeanCarloLond/Subterfuge/issues/115)                                      |
+| F4-32  | #116   | [[DOCS] Índice funcional de la biblia del mundo (Drive)](https://github.com/JeanCarloLond/Subterfuge/issues/116)                          |
+| F4-35  | #119   | [[DOCS] Actualizar README y DESARROLLO a la fase 4](https://github.com/JeanCarloLond/Subterfuge/issues/119)                               |
+| F4-36  | #120   | [[QA] verificar-rutas, verificar-arte y build con el Nivel 2](https://github.com/JeanCarloLond/Subterfuge/issues/120)                     |
+| F4-37  | #121   | [[QA] Playtest y balance del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/121)                                      |
+| F4-38  | #122   | [[QA] Revisión de canon, tono y accesibilidad del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/122)                 |
+| F4-39  | #131   | [[NARRATIVA] Inscripciones y placas del Nivel 2](https://github.com/JeanCarloLond/Subterfuge/issues/131)                                  |
+| F4-40  | #132   | [[NARRATIVA] Cierre del Nivel 2: la Puerta del Cuerpo](https://github.com/JeanCarloLond/Subterfuge/issues/132)                            |
+| F4-41  | #125   | [[NARRATIVA] Flor de Hueso y objetos culturales del Vientre Húmedo](https://github.com/JeanCarloLond/Subterfuge/issues/125)               |
+| F4-42  | #133   | [[NIVEL] Continuidad entre niveles: progreso, desbloqueo y selección](https://github.com/JeanCarloLond/Subterfuge/issues/133)             |
+| F4-43  | #134   | [[NARRATIVA] La decisión del Cirujano y la niña como compañera](https://github.com/JeanCarloLond/Subterfuge/issues/134)                   |
 
 ## 7. Lo que esta fase no incluye
 
@@ -2845,4 +2929,4 @@ Para no confundir el alcance:
 
 ---
 
-*Documento de planificación de la fase 4. Todos los textos de lore son propuestas sujetas a la aprobación del equipo narrativo y a la biblia del mundo.*
+_Documento de planificación de la fase 4. Todos los textos de lore son propuestas sujetas a la aprobación del equipo narrativo y a la biblia del mundo._
