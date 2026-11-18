@@ -19,7 +19,7 @@ var _avisos := {}
 
 
 func _ready() -> void:
-	z_index = 30
+	z_index = 60
 	var controles := get_node_or_null("/root/Controles")
 	if controles:
 		controles.dispositivo_cambio.connect(_reescribir)

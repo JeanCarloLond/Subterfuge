@@ -776,7 +776,7 @@ offset = Vector2(-10, -34)
 
 [node name="Aviso" type="Label" parent="Umbral" unique_id=1919604291]
 visible = false
-z_index = 20
+z_index = 60
 offset_left = -56.0
 offset_top = -70.0
 offset_right = 56.0

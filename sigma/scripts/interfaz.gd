@@ -3,8 +3,8 @@
 ## del Cirujano, la vida en seis segmentos de sangre, el Fervor en ambar y los
 ## frascos de Pocion. Los avisos, en el centro; la ayuda de los controles,
 ## abajo, plegada: con H se abre y se cierra (el texto fijo en pantalla
-## estorbaba y no se leia), y con ella el objetivo. El objetivo nuevo entra
-## arriba a la derecha, se queda un momento y se va (#215). Los dialogos, a lo
+## estorbaba y no se leia), y con ella el objetivo. El objetivo esta siempre
+## arriba a la derecha, para orientarse; el nuevo entra con una campana (#215). Los dialogos, a lo
 ## Stardew Valley (#216): una caja abajo con el retrato y el nombre de quien
 ## habla, y el texto que se escribe letra a letra. Todo en la letra legible del tema (arte/tema.tres).
 ## Cada sala la conecta a su Cirujano; la ayuda sale de lo que este ya tiene.
@@ -43,8 +43,10 @@ const AVISO_S := 2.5
 const AYUDA_PLEGADA := "H  controles y objetivo"
 ## Con mando no hay H: los controles estan en la pausa.
 const AYUDA_PLEGADA_MANDO := "{pausa}  pausa y controles"
-## Lo que se queda en pantalla un objetivo nuevo, entre entrar y salir.
+## Lo que brilla un objetivo nuevo antes de quedarse, mas tenue, en su sitio.
 const OBJETIVO_S := 4.5
+## Lo que se ve el objetivo cuando ya no es nuevo: leible, sin gritar.
+const OBJETIVO_ALFA := 0.85
 ## El aviso de la muerte, a lo Dark Souls pero con el mundo: en la Diocesis el
 ## diezmo es la carne que se cobra a cada casa, y morir es pagar el tuyo.
 const TEXTO_MUERTE := "Diezmado"
@@ -65,6 +67,8 @@ var _muerte: Label
 var _lectura: PanelContainer
 var _lectura_titulo: Label
 var _lectura_texto: Label
+## El titulo de la nota abierta si es la primera vez que se lee; si no, vacio.
+var _lectura_nueva := ""
 var _objetivo: VBoxContainer
 var _objetivo_texto: Label
 var _objetivo_tween: Tween
@@ -114,6 +118,7 @@ func _ready() -> void:
 	_preparar_muerte()
 	_preparar_lectura()
 	_preparar_objetivo()
+	_fijar_objetivo.call_deferred()
 	_preparar_caja()
 	_preparar_vision()
 	_preparar_ensenanza()
@@ -139,6 +144,12 @@ func _unhandled_input(evento: InputEvent) -> void:
 			_lectura.visible = false
 			get_tree().paused = false
 			_soltar_e()
+			if _lectura_nueva != "":
+				avisar("Nota recogida: «%s»" % _lectura_nueva)
+				var efectos := get_node_or_null("/root/Efectos")
+				if efectos:
+					efectos.sonar("campana", -6.0)
+				_lectura_nueva = ""
 			get_viewport().set_input_as_handled()
 		return
 	if _pausa and _pausa.visible:
@@ -268,16 +279,12 @@ func _recien_cerrado() -> bool:
 	return _cerrado_en == Engine.get_process_frames()
 
 
-## La caja va abajo, salvo que el Cirujano este en la mitad de abajo de la
-## pantalla: entonces arriba, para que se vea quien habla con quien.
+## La caja va siempre abajo, como en Stardew Valley: subirla cuando el
+## Cirujano estaba abajo la hacia saltar de sitio, y al profe le gustaba mas
+## abajo (feedback de Jean, Inventiva).
 func _colocar_caja() -> void:
-	var y := 222.0
-	if _cirujano and _cirujano.is_inside_tree():
-		var en_pantalla := _cirujano.get_global_transform_with_canvas().origin
-		if en_pantalla.y > get_viewport().get_visible_rect().size.y * 0.55:
-			y = 12.0
-	_caja_texto_panel.position.y = y
-	_caja_retrato_panel.position.y = y
+	_caja_texto_panel.position.y = 222.0
+	_caja_retrato_panel.position.y = 222.0
 
 
 func _pintar_dialogo() -> void:
@@ -607,8 +614,9 @@ func _progreso() -> Node:
 
 
 ## El objetivo `id` (nuevo, o su cuenta que avanza): entra arriba a la
-## derecha con una campana, se queda y se va. En su color: el de la nina es
-## otro.
+## derecha con una campana, brilla un momento y se queda (feedback de Jean:
+## siempre a la vista, para que el jugador sepa que hacer). En su color: el de
+## la nina es otro.
 func mostrar_objetivo(id: String) -> void:
 	var progreso := _progreso()
 	if progreso == null or progreso.objetivo != id:
@@ -631,8 +639,21 @@ func mostrar_objetivo(id: String) -> void:
 	_objetivo_tween.tween_property(_objetivo, "modulate:a", 1.0, 0.5)
 	_objetivo_tween.parallel().tween_property(_objetivo, "position:x", _objetivo_x(), 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	_objetivo_tween.tween_interval(OBJETIVO_S)
-	_objetivo_tween.tween_property(_objetivo, "modulate:a", 0.0, 0.9)
-	_objetivo_tween.tween_callback(func() -> void: _objetivo.visible = false)
+	_objetivo_tween.tween_property(_objetivo, "modulate:a", OBJETIVO_ALFA, 0.9)
+
+
+## El objetivo de ahora, quieto en su sitio y sin campana: al entrar en cada sala.
+func _fijar_objetivo() -> void:
+	var progreso := _progreso()
+	var texto: String = progreso.texto_objetivo() if progreso else ""
+	if texto == "":
+		return
+	_objetivo_texto.text = texto
+	_objetivo_texto.add_theme_color_override("font_color", Objetivos.color(progreso.objetivo))
+	_objetivo.reset_size()
+	_objetivo.visible = true
+	_objetivo.modulate.a = OBJETIVO_ALFA
+	_objetivo.position.x = _objetivo_x()
 
 
 ## Donde se queda el aviso del objetivo: pegado al borde derecho.
@@ -843,10 +864,11 @@ func _preparar_muerte() -> void:
 
 
 ## Una nota abierta: su titulo y su texto en un panel, con el juego parado
-## hasta cerrarla con E.
-func leer(titulo: String, texto: String) -> void:
+## hasta cerrarla con E. Si es `nueva`, al cerrarla se dice que se ha recogido.
+func leer(titulo: String, texto: String, nueva := false) -> void:
 	if _recien_cerrado():
 		return
+	_lectura_nueva = titulo if nueva else ""
 	_lectura_titulo.text = titulo
 	_lectura_texto.text = texto
 	_lectura.visible = true

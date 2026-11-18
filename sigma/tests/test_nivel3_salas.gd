@@ -95,10 +95,21 @@ func test_la_7_se_funde_con_el_pabellon_al_caer_el_decano() -> void:
 
 func test_las_hojas_del_codice_esperan_al_doble_salto() -> void:
 	var impulso: float = Sacramento.altura_de_salto(Sacramento.MOVIMIENTO["impulso_salto"])
-	for dato in [["res://escenas/nivel2/registro.tscn", "Notas/HojaCodiceRegistro", 24], ["res://escenas/nivel2/archivo.tscn", "Notas/HojaCodiceArchivo", 35]]:
+	# Solo la del Registro: la del Archivo se ve desde el suelo antes de tener el
+	# doble salto y parecia inalcanzable (feedback de Jean, Inventiva); ahora
+	# se llega con uno.
+	for dato in [["res://escenas/nivel2/registro.tscn", "Notas/HojaCodiceRegistro", 24]]:
 		var sala: Node = load(dato[0]).instantiate()
 		var nota: Node2D = sala.get_node(dato[1])
 		var alto: float = dato[2] * TILE - nota.position.y
 		afirmar(alto > impulso, "%s: con un salto no se llega (%d px)" % [dato[1], alto])
 		afirmar(alto <= 150.0, "%s: con dos, sí (%d px)" % [dato[1], alto])
 		sala.free()
+
+
+func test_la_hoja_del_archivo_se_alcanza_con_un_salto() -> void:
+	var impulso: float = Sacramento.altura_de_salto(Sacramento.MOVIMIENTO["impulso_salto"])
+	var sala: Node = load("res://escenas/nivel2/archivo.tscn").instantiate()
+	var alto: float = 35 * TILE - sala.get_node("Notas/HojaCodiceArchivo").position.y
+	afirmar(alto < impulso - 8.0, "con un salto se llega, con margen (%d px de %d)" % [alto, impulso])
+	sala.free()

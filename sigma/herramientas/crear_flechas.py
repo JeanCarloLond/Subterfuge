@@ -3,7 +3,7 @@ botones de un mando de PlayStation: ✕ ○ □ △.
 
 VT323 no las tiene. En escritorio Godot las sacaba de las fuentes del sistema;
 en la web no hay sistema y salian cajas con el codigo del caracter. Esta fuente
-las dibuja en la cuadricula de VT323 (pixeles de 40 unidades, mayusculas de 14)
+las dibuja pixel a pixel: un pixel del dibujo, uno de pantalla con la letra a 16,
 y controles.gd la pone de reserva de las fuentes del juego.
 
 Se corrio UNA vez; vuelve a correrse si se cambian los dibujos:
@@ -16,21 +16,25 @@ from pathlib import Path
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 
-PIXEL = 40
-ANCHO = 400  # el avance de VT323: 10 pixeles
+# Un pixel del dibujo es un pixel de pantalla con la letra a 16, el tamano del
+# juego: 16 * 64 / 1024 = 1. Con pixeles de 40 sobre 1000 (los de VT323) cada
+# uno medía 0,64 de pantalla, y al redondear la flecha se leia como una cruz
+# (feedback de Jean, Inventiva).
+EM = 1024
+PIXEL = 64
+ANCHO = 640  # el avance de un caracter de VT323 a 16: 10 pixeles
 SALIDA = Path(__file__).resolve().parent.parent / "arte" / "fuentes" / "FlechasSigma.ttf"
 
-# La flecha a la derecha, de arriba abajo. El astil, de dos pixeles como el
-# guion de VT323 y a su altura.
+# La flecha a la derecha, de arriba abajo, con el astil de dos pixeles.
 DERECHA = [
-    "....#....",
-    "....##...",
-    "....###..",
+    ".....#...",
+    ".....##..",
+    ".....###.",
     "#########",
     "#########",
-    "....###..",
-    "....##...",
-    "....#....",
+    ".....###.",
+    ".....##..",
+    ".....#...",
 ]
 
 
@@ -97,11 +101,11 @@ TRIANGULO = [
     "###########",
 ]
 
-# Caracter -> (dibujo, pixel de abajo sobre la linea base). Las horizontales,
-# con el astil donde el guion (pixeles 6 y 7); las verticales, de pie en la base.
+# Caracter -> (dibujo, pixel de abajo sobre la linea base). Todas de pie en la
+# base, como una mayuscula.
 FLECHAS = {
-    "←": (IZQUIERDA, 3),
-    "→": (DERECHA, 3),
+    "←": (IZQUIERDA, 1),
+    "→": (DERECHA, 1),
     "↑": (ARRIBA, 1),
     "↓": (ABAJO, 1),
     "✕": (EQUIS, 1),
@@ -136,7 +140,7 @@ def glifo(filas, base):
 
 def main():
     nombres = [".notdef", "space"] + [f"uni{ord(c):04X}" for c in FLECHAS]
-    fb = FontBuilder(1000, isTTF=True)
+    fb = FontBuilder(EM, isTTF=True)
     fb.setupGlyphOrder(nombres)
     fb.setupCharacterMap({32: "space", **{ord(c): f"uni{ord(c):04X}" for c in FLECHAS}})
     glifos = {".notdef": TTGlyphPen(None).glyph(), "space": TTGlyphPen(None).glyph()}
@@ -147,9 +151,9 @@ def main():
     for c, (filas, _) in FLECHAS.items():
         metricas[f"uni{ord(c):04X}"] = (avance(filas), 0)
     fb.setupHorizontalMetrics(metricas)
-    fb.setupHorizontalHeader(ascent=800, descent=-200)
+    fb.setupHorizontalHeader(ascent=EM * 4 // 5, descent=-EM // 5)
     fb.setupNameTable({"familyName": "Flechas Sigma", "styleName": "Regular"})
-    fb.setupOS2(sTypoAscender=800, sTypoDescender=-200, usWinAscent=800, usWinDescent=200)
+    fb.setupOS2(sTypoAscender=EM * 4 // 5, sTypoDescender=-EM // 5, usWinAscent=EM * 4 // 5, usWinDescent=EM // 5)
     fb.setupPost()
     fb.save(SALIDA)
     print(f"{SALIDA.name}: {', '.join(FLECHAS)}")

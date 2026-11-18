@@ -112,7 +112,7 @@ z_index = -5
 position = Vector2(90, 384)
 texture = ExtResource("nico_encapuchada_1")
 centered = false
-offset = Vector2(-13, -62)
+offset = Vector2(-11, -50)
 script = ExtResource("90_figura")
 lineas = PackedStringArray("¿Turno? ¿Casa? ¿Número?", "Entonces usted no consta.")
 
@@ -120,7 +120,7 @@ lineas = PackedStringArray("¿Turno? ¿Casa? ¿Número?", "Entonces usted no con
 position = Vector2(760, 384)
 texture = ExtResource("nico_encapuchada_2")
 centered = false
-offset = Vector2(-13, -62)
+offset = Vector2(-11, -50)
 script = ExtResource("90_figura")
 lineas = PackedStringArray("Cuarenta y uno, cuarenta y…", "Ya me ha hecho perder.")
 

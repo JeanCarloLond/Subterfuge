@@ -163,7 +163,7 @@ offset = Vector2(-6, -41)
 position = Vector2(230, 224)
 texture = ExtResource("nico_encapuchada_2")
 centered = false
-offset = Vector2(-13, -62)
+offset = Vector2(-11, -50)
 script = ExtResource("13_34fcj")
 lineas = PackedStringArray("El Decano ha preguntado.", "Por usted. Hace años.")
 

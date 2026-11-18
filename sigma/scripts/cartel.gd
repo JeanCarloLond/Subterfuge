@@ -54,7 +54,8 @@ func _ready() -> void:
 			letra.text = Controles.rellenar(texto)
 			_panel.reset_size()
 		)
-	_panel.z_index = 30
+	# Por encima del primer plano de la nave (z 40): si no, una columna lo tapa.
+	_panel.z_index = 60
 	_panel.modulate.a = 0.0
 	add_child(_panel)
 

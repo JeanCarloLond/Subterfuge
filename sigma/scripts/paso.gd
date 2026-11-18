@@ -57,7 +57,7 @@ func _ready() -> void:
 	if con_e:
 		_cartel = Label.new()
 		_cartel.text = aviso
-		_cartel.z_index = 20
+		_cartel.z_index = 60
 		_cartel.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_cartel.position = Vector2(zona.x / 2.0 - 48.0, -22.0)
 		_cartel.size = Vector2(96, 16)

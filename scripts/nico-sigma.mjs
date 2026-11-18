@@ -9,7 +9,7 @@
  * Prior, el Cegado, la niña, los fieles y sus retratos.
  *
  * Nico dibuja mirando a la izquierda; el juego, a la derecha: se voltea.
- * Nada se reescala: un pixel de Nico es un pixel del juego.
+ * Nada se suaviza: el Prior va a su tamaño y el resto se reduce (ver ESCALA).
  *
  * Uso:  npm run sigma:nico
  */
@@ -24,6 +24,13 @@ const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
 const fuente = join(raiz, 'docs/arte/nico/1x');
 const arte = join(raiz, 'sigma/arte');
 const VACIO = [0, 0, 0, 0];
+/**
+ * A cuánto se reducen el Cirujano, la niña, los fieles y Ulpiano. Nico los
+ * dibuja a unos 64 px de alto, y al lado de los enemigos (de 38 a 55 px) el
+ * Cirujano se veía enorme (feedback de Jean). Al 80 % mide 52, como antes. El
+ * Prior se queda a su tamaño: es el jefe, y que sea más alto le sienta bien.
+ */
+const ESCALA = 0.8;
 
 /** Lee un PNG RGBA de 8 bits, sin entrelazar. */
 function leer(ruta) {
@@ -70,6 +77,34 @@ function leer(ruta) {
 const lienzo = (ancho, alto) =>
   Array.from({ length: alto }, () => Array.from({ length: ancho }, () => VACIO));
 const espejo = (img) => img.map((fila) => [...fila].reverse());
+
+/**
+ * Reduce un dibujo sin suavizar: cada pixel nuevo toma el color que más área
+ * cubre en el original. Así no aparecen colores que Nico no puso, y las piezas
+ * de más de un pixel (el ribete, la gema, el filo) sobreviven.
+ */
+function reducir(img, f) {
+  if (f === 1) return img;
+  const [alto, ancho] = [img.length, img[0].length];
+  const [w, h] = [Math.round(ancho * f), Math.round(alto * f)];
+  return Array.from({ length: h }, (_, y) =>
+    Array.from({ length: w }, (_, x) => {
+      const [x0, x1, y0, y1] = [x / f, (x + 1) / f, y / f, (y + 1) / f];
+      const areas = new Map();
+      for (let sy = Math.floor(y0); sy < Math.min(alto, Math.ceil(y1)); sy += 1) {
+        for (let sx = Math.floor(x0); sx < Math.min(ancho, Math.ceil(x1)); sx += 1) {
+          const a =
+            (Math.min(x1, sx + 1) - Math.max(x0, sx)) * (Math.min(y1, sy + 1) - Math.max(y0, sy));
+          const clave = img[sy][sx].join(',');
+          areas.set(clave, (areas.get(clave) ?? 0) + a);
+        }
+      }
+      let [mejor, mayor] = ['0,0,0,0', -1];
+      for (const [clave, a] of areas) if (a > mayor) [mejor, mayor] = [clave, a];
+      return mejor.split(',').map(Number);
+    }),
+  );
+}
 
 /** La caja de lo pintado: [x0, y0, x1, y1), con x1 e y1 fuera. */
 function caja(img) {
@@ -139,9 +174,9 @@ function cara(img) {
   let pelo = 0;
   for (let y = 0; y < 30; y += 1) {
     if (img[y].some(esPelo)) pelo = y;
-    else if (pelo && img[y].some(esPiel)) return [y, y + 7];
+    else if (pelo && img[y].some(esPiel)) return [y, y + Math.round(7 * ESCALA)];
   }
-  return [16, 23];
+  return [13, 19];
 }
 
 /** Donde cae el ojo rojo: dos filas bajo el pelo, en el borde de la cara que mira. */
@@ -219,7 +254,10 @@ function cirujano() {
   const destino = join(arte, 'cirujano');
   const nico = {};
   for (const archivo of readdirSync(join(fuente, 'cirujano'))) {
-    nico[archivo.replace('.png', '')] = espejo(leer(join(fuente, 'cirujano', archivo)));
+    nico[archivo.replace('.png', '')] = reducir(
+      espejo(leer(join(fuente, 'cirujano', archivo))),
+      ESCALA,
+    );
   }
   const muestra = nico['correr-0'];
   const ancho = muestra[0].length;
@@ -336,7 +374,7 @@ function sueltos() {
     'fieles/encapuchada-2.png': 'encapuchada-2',
   };
   for (const [destino, nombre] of Object.entries(figuras)) {
-    const img = recortar(leer(join(fuente, `${nombre}.png`)));
+    const img = recortar(reducir(leer(join(fuente, `${nombre}.png`)), ESCALA));
     guardar(join(arte, destino), img);
     console.log(`${destino}: ${img[0].length}x${img.length}`);
   }

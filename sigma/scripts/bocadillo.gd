@@ -18,7 +18,8 @@ static func decir(quien: Node2D, texto: String, altura := ALTURA) -> void:
 		return
 	var frase := Label.new()
 	frase.text = texto
-	frase.z_index = 20
+	# Por encima del primer plano de la nave (z 40): si no, una columna la tapa.
+	frase.z_index = 60
 	frase.add_theme_color_override("font_color", COLOR)
 	frase.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	frase.size = Vector2(200.0, 18.0)

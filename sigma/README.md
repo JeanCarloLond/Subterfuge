@@ -176,18 +176,22 @@ npx vite preview                                  # Sigma queda en /sigma/
 **El arte de Nico.** Nico Echeverri pinta a mano los personajes: el Cirujano (seis
 animaciones: correr, saltar, golpe, parada, herido y rezar), el Prior, Ulpiano, la niña,
 los fieles y sus retratos. Los entrega a 10x sobre fondo claro; `docs/arte/nico/originales/`
-guarda la entrega tal cual y `docs/arte/nico/1x/` lo mismo a su tamaño real, sin fondo. Un
-píxel de Nico es un píxel del juego: no se reescala.
+guarda la entrega tal cual y `docs/arte/nico/1x/` lo mismo a su tamaño real, sin fondo.
 
 ```bash
 npm run sigma:nico   # vuelve a sacar sus figuras de docs/arte/nico/1x/ a sigma/arte/
 ```
 
+Nico dibuja a unos 64 px de alto; al lado de los enemigos el Cirujano se veía enorme, así
+que el Cirujano, la niña, los fieles y Ulpiano se reducen al 80 % (el Cirujano mide 52 px,
+en un lienzo de 51×54 con el pie en (25, 54)). Se reducen sin suavizar: cada píxel nuevo
+toma el color que más área cubre. El Prior se queda a su tamaño, porque es el jefe.
+
 El script voltea las figuras (Nico dibuja mirando a la izquierda; el juego, a la derecha),
 pone los pies del Cirujano en la misma fila, reparte sus fotogramas entre las 24
 animaciones del juego (las que no dibujó salen de su gesto más cercano), le pone la máscara
 para la intro y escribe `arte/cirujano/animaciones.gd` con el pie y el sitio del ojo rojo de
-cada fotograma. El lienzo del Cirujano es de 64×67, con el pie en (31, 67). Para añadir una
+cada fotograma. Para añadir una
 animación suya: su PNG en `1x/cirujano/` y su nombre en `ANIMACIONES` de
 `scripts/nico-sigma.mjs`.
 

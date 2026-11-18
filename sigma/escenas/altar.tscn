@@ -31,7 +31,7 @@ texture = SubResource("GradientTexture2D_luz")
 
 [node name="Aviso" type="Label" parent="."]
 visible = false
-z_index = 20
+z_index = 60
 offset_left = -48.0
 offset_top = -84.0
 offset_right = 48.0

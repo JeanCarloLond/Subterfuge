@@ -25,7 +25,7 @@ otra_vez = PackedStringArray("Otra vez tú. Se te oye desde el rellano.", "Géne
 objetivo = "genesis"
 
 [node name="Figura" type="Sprite2D" parent="."]
-position = Vector2(0, -32)
+position = Vector2(0, -26)
 texture = ExtResource("3_figura")
 
 [node name="Luz" type="PointLight2D" parent="."]
@@ -36,7 +36,7 @@ texture = SubResource("GradientTexture2D_luz")
 
 [node name="Aviso" type="Label" parent="."]
 visible = false
-z_index = 20
+z_index = 60
 offset_left = -48.0
 offset_top = -70.0
 offset_right = 48.0

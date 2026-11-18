@@ -3,8 +3,8 @@
 ## de la interfaz, con el juego parado. Las leidas se guardan en Progreso.
 extends Node2D
 
-## Se ha leido: la sala la pasa a la interfaz.
-signal leida(titulo: String, texto: String)
+## Se ha leido: la sala la pasa a la interfaz. `nueva`, si es la primera vez.
+signal leida(titulo: String, texto: String, nueva: bool)
 
 const ALCANCE := Vector2(16.0, 26.0)
 
@@ -19,6 +19,8 @@ const ALCANCE := Vector2(16.0, 26.0)
 ## Quien la lee: el Cirujano. Lo pone el nivel.
 var cirujano: CharacterBody2D
 
+var _ya_recogida := false
+
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _luz: PointLight2D = $Luz
 @onready var _aviso: Label = $Aviso
@@ -28,6 +30,7 @@ func _ready() -> void:
 	var progreso := get_node_or_null("/root/Progreso")
 	if progreso and progreso.leida(id):
 		_sprite.modulate = Color(0.7, 0.66, 0.62)
+		_ya_recogida = true
 
 
 func _process(_delta: float) -> void:
@@ -52,5 +55,29 @@ func _process(_delta: float) -> void:
 				progreso.contar(cuenta, id)
 			if objetivo != "" and primera:
 				progreso.fijar_objetivo(objetivo)
+		var nueva := progreso != null and not _ya_recogida
+		_ya_recogida = true
 		_sprite.modulate = Color(0.7, 0.66, 0.62)
-		leida.emit(titulo, texto)
+		if nueva:
+			_recogida()
+		leida.emit(titulo, texto, nueva)
+
+
+## La primera vez que se lee, se ve que se ha recogido (feedback de Jean): un
+## destello de su luz y una copia dorada que sube y se deshace. Con el juego
+## parado mientras se lee, se ve al cerrar, ya de vuelta en la sala.
+func _recogida() -> void:
+	var copia := Sprite2D.new()
+	copia.texture = _sprite.texture
+	copia.position = _sprite.position
+	copia.modulate = Color(1.0, 0.85, 0.45, 0.9)
+	var brillo := CanvasItemMaterial.new()
+	brillo.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	copia.material = brillo
+	add_child(copia)
+	var vuelo := create_tween().set_parallel()
+	vuelo.tween_property(copia, "position:y", copia.position.y - 22.0, 0.7).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	vuelo.tween_property(copia, "scale", Vector2(1.8, 1.8), 0.7)
+	vuelo.tween_property(copia, "modulate:a", 0.0, 0.7)
+	vuelo.tween_property(_luz, "energy", 2.4, 0.12)
+	vuelo.chain().tween_callback(copia.queue_free)

@@ -87,7 +87,7 @@ z_index = -5
 position = Vector2(520, 192)
 texture = ExtResource("nico_encapuchada_1")
 centered = false
-offset = Vector2(-13, -62)
+offset = Vector2(-11, -50)
 script = ExtResource("90_figura")
 lineas = PackedStringArray("Hoy no ha salido nadie.", "Mañana, dicen. Ayer también.")
 
