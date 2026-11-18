@@ -744,13 +744,15 @@ iglesia; los Sacramentos ya no.
 | El Vientre   | 4           | El plano: salas, pasos y atajos, del Atrio a la Puerta del Cuerpo.               |
 | Linaje       | 5           | El esquema de #62: dioses, clero, oficio, fieles, ofrenda y destinos (SVG).      |
 | Sacramentos  | 6           | El **Examen de Pureza** y **El Sacramento** (canvas). Los minijuegos de #64.     |
-| Asentamiento | 7           | El expediente de Sigma (#236): los avisos y el plano que se cierra.              |
+| Asentamiento | 7           | El expediente de Sigma (#236): los avisos, el plano y el tablón.                 |
 
 **El expediente del asentamiento (#236).** `#/avisos` dejó de ser una lista de comunicados y
-pasó a ser la puerta de Sigma en el Portal: el parte oficial y un plano de las seis capas que
-se juntan al tocarlas. Los datos viven en `web/src/sigma.ts`, separados de `src/lore` para no
-mezclar el canon del teaser con el del remake, y un test comprueba que las juntas no pierden
-capas y que lo publicado no adelanta el giro.
+pasó a ser la puerta de Sigma en el Portal: el parte oficial, un plano de las seis capas que
+se juntan al tocarlas y el tablón de la Oficina, con el cartel de desaparecido del Cegado y el
+nombramiento del Prior del Diezmo. Los datos viven en `web/src/sigma.ts`, separados de
+`src/lore` para no mezclar el canon del teaser con el del remake, y un test comprueba que las
+juntas no pierden capas, que los retratos del tablón están al tamaño del juego y que lo
+publicado no adelanta el giro.
 
 **La Cripta de Lectura.** El material de la biblia que no es juego se guarda en una
 biblioteca de las Criptas de Espera: 17 libros en cinco estantes. Los libros visibles se abren

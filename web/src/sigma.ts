@@ -330,3 +330,80 @@ export const NOMBRES_SIGMA: readonly NombreSigma[] = [
     nota: 'La Mano que mira se corta. Las Manos operan con la máscara cerrada y no ven lo que cortan.',
   },
 ];
+
+export interface PapelSigma {
+  id: string;
+  /** El membrete: quién cuelga el papel y dónde. */
+  membrete: string;
+  /** Lo que se lee en grande, como lo imprimiría la Oficina. */
+  titulo: string;
+  /** El nombre, tal como consta (o como no consta). */
+  nombre: string;
+  /** Debajo del nombre: el oficio o la condición. */
+  condicion: string;
+  /** El retrato, relativo a la raíz del despliegue. */
+  retrato: string;
+  /** Lo que dice el papel, párrafo a párrafo. */
+  lineas: readonly string[];
+  /** La ficha que lleva al pie, si la lleva. */
+  datos?: readonly { readonly campo: string; readonly valor: string }[];
+  /** Lo que la Oficina estampa encima del papel. */
+  sello: string;
+  /** Quién firma. */
+  firma: string;
+}
+
+/**
+ * El tablón de la Oficina del Diezmo. Los dos papeles llevan meses clavados y
+ * son los dos primeros nombres con retrato que el Portal publica de Sigma: la
+ * casa de Ulpiano lo busca sin permiso, y la Diócesis nombra al pastor de la
+ * Nave del Libro. Ninguno de los dos adelanta el giro: el Cegado ya consta en
+ * los avisos y el Prior, en el parte del diezmo.
+ */
+export const PAPELES_SIGMA: readonly PapelSigma[] = [
+  {
+    id: 'ulpiano',
+    membrete: 'Tablón de la Oficina · puesto por su casa',
+    titulo: 'Desaparecido',
+    nombre: 'Ulpiano',
+    condicion: 'Mano del Sacramento, retirada',
+    retrato: 'sigma/retratos/ulpiano.png',
+    lineas: [
+      'Se le vio por última vez en la Escalera de los Ciegos, donde vive desde que dejó el oficio. Baja poco. Cuando baja, no pide permiso.',
+      'No ve, y no hace falta hablarle más alto: oye mejor que nosotros. Responde si se le llama por su nombre, que es el que consta aquí y el que la Diócesis no escribe.',
+      'Si lo encuentra, no le pregunte por lo que miró ni le diga que lo estamos buscando. Avise en la Oficina y vuelva por su casa. Su vela la pagamos nosotros.',
+    ],
+    datos: [
+      { campo: 'Oficio', valor: 'Mano del Sacramento, hasta que miró' },
+      {
+        campo: 'Señas',
+        valor: 'Alto y seco. Sin ojos: se los arrancó él mismo y no se deja curar',
+      },
+      { campo: 'Visto', valor: 'La Escalera de los Ciegos, junto al Altar' },
+      { campo: 'Quién lo busca', valor: 'Su casa' },
+    ],
+    sello: 'Consta como ejemplo de obediencia. No se busca.',
+    firma: 'Puesto por su casa. Copiado en el tablón por orden de la Oficina.',
+  },
+  {
+    id: 'prior',
+    membrete: 'Oficina del Diezmo · capa VII',
+    titulo: 'Pastor de la Nave del Libro',
+    nombre: 'El Prior del Diezmo',
+    condicion: 'Guardián de la Nave del Libro',
+    retrato: 'sigma/retratos/prior.png',
+    lineas: [
+      'Se hace saber que la Nave del Libro tiene pastor propio. Administra el metal que se injerta en los fieles, lleva la cuenta de lo que entra y no delega el peso.',
+      'No recibe visitas ni responde a preguntas. El fiel que tenga algo que decirle lo dejará por escrito en la puerta; él lo apuntará o no.',
+      'Cuando apoya el báculo en el suelo, la nave guarda silencio. Es su forma de pedir orden, y se ruega no tomarla a mal.',
+    ],
+    datos: [
+      { campo: 'Nave', valor: 'La del Libro, al final de los Pasillos' },
+      { campo: 'Oficio', valor: 'Injertar el metal del diezmo y guardar el Libro' },
+      { campo: 'Instrumento', valor: 'La Injertadora, que no se expone' },
+      { campo: 'Turno', valor: 'Sin falta desde que consta' },
+    ],
+    sello: 'Nombrado por la Vestal Mayor. El cargo no se hereda.',
+    firma: 'Por la Vestal Mayor, una Vestal de Registro.',
+  },
+];

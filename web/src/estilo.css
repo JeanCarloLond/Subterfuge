@@ -635,6 +635,135 @@ button:disabled {
   line-height: 1.5;
 }
 
+/* El tablón: dos papeles clavados con su retrato al lado. El retrato va al
+ * tamaño nativo del juego (71x79, ampliado x2) y sin suavizar, como la lámina
+ * del Registro: el píxel del juego, no una foto de ella. */
+.carteles-sigma {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 26px 20px;
+  margin-top: 26px;
+}
+.cartel-sigma {
+  position: relative;
+  margin: 0;
+  padding: 18px 20px 16px;
+}
+.cartel-sigma::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, var(--perg), #b98c34 45%, #6d5314 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.55);
+}
+.cartel-titulo {
+  margin: 2px 0 12px;
+  font-family: var(--f-titulo);
+  font-size: 26px;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sangre);
+}
+.cartel-cuerpo {
+  display: grid;
+  grid-template-columns: 142px minmax(0, 1fr);
+  gap: 14px 16px;
+  align-items: start;
+}
+.cartel-retrato {
+  margin: 0;
+}
+.cartel-retrato img {
+  display: block;
+  width: 142px;
+  height: 158px;
+  image-rendering: pixelated;
+  border: 2px solid #6d5314;
+  outline: 1px solid rgba(42, 26, 30, 0.5);
+  background: var(--piedra);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 248, 230, 0.14),
+    0 4px 10px rgba(0, 0, 0, 0.45);
+}
+.cartel-nombre {
+  font-family: var(--f-titulo);
+  font-size: 22px;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+.cartel-texto p {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.cartel-condicion {
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+.cartel-datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--regla);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.cartel-datos dt {
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oro);
+  padding-top: 3px;
+}
+.cartel-datos dd {
+  margin: 0;
+  color: var(--tinta);
+}
+.cartel-sello {
+  display: inline-block;
+  margin: 16px 0 0;
+  padding: 5px 12px;
+  border: 2px solid var(--sangre);
+  font-family: var(--f-pixel);
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sangre);
+  opacity: 0.85;
+  transform: rotate(-1.6deg);
+}
+.cartel-firma {
+  margin: 10px 0 0;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--tinta-2);
+}
+
+@media (max-width: 420px) {
+  .cartel-cuerpo {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+  .cartel-titulo {
+    font-size: 22px;
+  }
+}
+
 /* Fichas y listas del mundo que la biblia cuenta fuera de Sigma. */
 .ficha-mundo {
   padding: 16px 18px;

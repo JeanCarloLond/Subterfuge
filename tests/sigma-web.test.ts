@@ -4,6 +4,7 @@ import {
   JUNTAS_SIGMA,
   NIVELES_SIGMA,
   NOMBRES_SIGMA,
+  PAPELES_SIGMA,
   avisosOrdenados,
   fusionar,
 } from '../web/src/sigma';
@@ -66,7 +67,32 @@ describe('Los avisos y los nombres del asentamiento', () => {
   });
 
   it('lo que se publica no adelanta el giro de Sigma', () => {
-    const publicado = JSON.stringify({ AVISOS_SIGMA, NOMBRES_SIGMA });
+    const publicado = JSON.stringify({ AVISOS_SIGMA, NOMBRES_SIGMA, PAPELES_SIGMA });
     expect(publicado).not.toMatch(/niña|villano|ojos de los dioses|manipula/i);
+  });
+});
+
+describe('El tablón de la Oficina', () => {
+  it('cada papel trae su nombre, su firma y su retrato', () => {
+    expect(new Set(PAPELES_SIGMA.map((papel) => papel.id)).size).toBe(PAPELES_SIGMA.length);
+    for (const papel of PAPELES_SIGMA) {
+      const textos = [
+        papel.membrete,
+        papel.titulo,
+        papel.nombre,
+        papel.condicion,
+        papel.sello,
+        papel.firma,
+      ];
+      for (const texto of textos) expect(texto.trim()).not.toBe('');
+      expect(papel.lineas.length).toBeGreaterThan(0);
+      expect(papel.retrato).toMatch(/^sigma\/retratos\/[a-z-]+\.png$/);
+    }
+  });
+
+  it('los dos retratos son los de Sigma: uno por papel y sin repetir', () => {
+    const retratos = PAPELES_SIGMA.map((papel) => papel.retrato);
+    expect(new Set(retratos).size).toBe(retratos.length);
+    expect(retratos.every((retrato) => retrato.startsWith('sigma/retratos/'))).toBe(true);
   });
 });

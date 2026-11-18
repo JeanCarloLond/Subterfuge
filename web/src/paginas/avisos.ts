@@ -2,9 +2,11 @@
  * El expediente del asentamiento (#236): lo que pasa en Subterfuge Sigma,
  * contado como lo contaría la Diócesis.
  *
- * La página reúne dos cosas que antes estaban sueltas: el parte oficial de los
- * avisos y el plano de las seis capas que se juntan. El templo se compacta y la
- * Diócesis lo llama «asentamiento»; la carne no llega y ella dice que «falta
+ * La página reúne tres cosas: el parte oficial de los avisos, el plano de las
+ * seis capas que se juntan y el tablón de la Oficina, donde están clavados los
+ * dos primeros nombres con retrato de Sigma —el Cegado, en un cartel de su casa,
+ * y el Prior del Diezmo, en su nombramiento de pastor—. El templo se compacta y
+ * la Diócesis lo llama «asentamiento»; la carne no llega y ella dice que «falta
  * camino».
  *
  * Sigue la regla de la issue: pistas, no el giro. Ni la niña ni el papel real
@@ -13,7 +15,7 @@
  */
 
 import { elemento, html } from '../texto';
-import { avisosOrdenados, fusionar, JUNTAS_SIGMA, NIVELES_SIGMA } from '../sigma';
+import { avisosOrdenados, fusionar, JUNTAS_SIGMA, NIVELES_SIGMA, PAPELES_SIGMA } from '../sigma';
 
 const QUIETO =
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,8 +30,8 @@ export function renderAvisos(contenedor: HTMLElement): void {
       <p class="lede">
         Los muros del Vientre se desplazan y la carne no llega a los pabellones. La Diócesis
         informa a los fieles de lo que deben hacer mientras el templo se asienta. Este expediente
-        reúne el parte de los avisos y el plano de las seis capas. Lo que no consta aquí está en
-        otras manos.
+        reúne el parte de los avisos, el plano de las seis capas y el tablón de la Oficina. Lo que no
+        consta aquí está en otras manos.
       </p>
       <div class="escena-acciones">
         <a class="boton boton-lleno" href="${import.meta.env.BASE_URL}sigma/">Jugar la demo de Sigma</a>
@@ -58,6 +60,11 @@ export function renderAvisos(contenedor: HTMLElement): void {
             <span class="indice-num">III</span>
             <span class="indice-nombre">Avisos a los fieles</span>
             <span class="indice-cita">del más reciente al más antiguo</span>
+          </button></li>
+          <li><button type="button" data-ir-a="el-tablon">
+            <span class="indice-num">IV</span>
+            <span class="indice-nombre">El tablón de la Oficina</span>
+            <span class="indice-cita">lo que los fieles clavan y ella sella</span>
           </button></li>
         </ol>
       </nav>
@@ -166,6 +173,52 @@ export function renderAvisos(contenedor: HTMLElement): void {
         <p class="aviso-pie">
           Los avisos se retiran cuando dejan de ser necesarios. Ninguno de estos ha sido retirado.
         </p>
+      </section>
+
+      <section class="seccion" id="el-tablon" tabindex="-1">
+        <div class="eyebrow">El tablón de la Oficina · capa VII</div>
+        <h2>El tablón</h2>
+        <p>
+          Junto a la Oficina del Diezmo hay un tablón donde los fieles clavan lo que quieren que se
+          lea. La Oficina lo revisa cada mañana y sella lo que procede. De todo lo que ha pasado por
+          ahí, estos dos papeles llevan meses sin retirarse: uno lo puso una casa, y el otro lo puso
+          ella.
+        </p>
+        <div class="carteles-sigma">
+          ${PAPELES_SIGMA.map(
+            (papel) => `
+            <article class="documento cartel-sigma cartel-${papel.id}">
+              <div class="eyebrow">${html(papel.membrete)}</div>
+              <h3 class="cartel-titulo">${html(papel.titulo)}</h3>
+              <div class="cartel-cuerpo">
+                <figure class="cartel-retrato">
+                  <img
+                    src="${import.meta.env.BASE_URL}${papel.retrato}"
+                    width="142"
+                    height="158"
+                    loading="lazy"
+                    decoding="async"
+                    alt="Retrato de ${html(papel.nombre)}"
+                  />
+                </figure>
+                <div class="cartel-texto">
+                  <div class="cartel-nombre">${html(papel.nombre)}</div>
+                  <div class="cartel-condicion">${html(papel.condicion)}</div>
+                  ${papel.lineas.map((linea) => `<p>${html(linea)}</p>`).join('')}
+                </div>
+              </div>
+              ${
+                papel.datos
+                  ? `<dl class="cartel-datos">${papel.datos
+                      .map((dato) => `<dt>${html(dato.campo)}</dt><dd>${html(dato.valor)}</dd>`)
+                      .join('')}</dl>`
+                  : ''
+              }
+              <p class="cartel-sello">${html(papel.sello)}</p>
+              <p class="cartel-firma">${html(papel.firma)}</p>
+            </article>`,
+          ).join('')}
+        </div>
       </section>
     </article>
   `);

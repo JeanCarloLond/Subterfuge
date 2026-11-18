@@ -149,12 +149,17 @@ Reformado.
 ### 9. El Asentamiento · `#/avisos`
 
 **Qué se ve.** El expediente de Sigma contado por la Diócesis: el parte oficial, el plano de
-las seis capas que se juntan al pulsar sus juntas y los avisos a los fieles.
+las seis capas que se juntan al pulsar sus juntas, los avisos a los fieles y el tablón de la
+Oficina, con dos papeles clavados y sus retratos: el cartel de desaparecido que puso la casa
+de Ulpiano —el Cegado— y el nombramiento del Prior del Diezmo como pastor de la Nave del
+Libro.
 
 **Qué representa.** La compactación del templo, llamada «asentamiento» por la institución.
 Los Mil son el templo; las paredes se mueven; la carne no llega y la Diócesis dice que
 «falta camino». El plano se cierra capa a capa, y el jugador ve el efecto sin que la página
-le cuente la causa.
+le cuente la causa. En el tablón habla por primera vez una casa y no la institución: la de un
+hombre que se arrancó los ojos para volver a la ley, buscado por los suyos y sellado por la
+Oficina como ejemplo de obediencia.
 
 **Lo que no se cuenta.** Ni que la niña son los ojos de los dioses, ni que el Cirujano es el
 villano que los lleva puestos. La página da pistas —la ley de la Mano que mira, el Cegado,
@@ -170,17 +175,17 @@ expediente.
 
 ## Qué se añadió en esta revisión
 
-| Sección      | Lo que ya estaba                                  | Lo que se añadió                                                                 |
-| ------------ | ------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Portada      | Atrio, tarjetas, trámites, expediente, comunicado | Enlace al expediente, tarjeta de Sigma con el Cirujano de Mariana, capa VII.     |
-| Pabellón 9   | Libro de casas, jornada, capilla, Oficina         | Enlace a la Cripta; el Libro de costumbres vive allí.                            |
-| Cripta       | —                                                 | 17 libros en cinco estantes, vela y estante reservado.                           |
-| Doctrina     | 10 hojas, márgenes, manual, Vigilia               | Enlace a la Cripta; los Libros, relatos y lengua viven allí.                     |
-| Registro     | 31 fichas, siluetas, familias                     | Enlace a la Cripta; el aparato de Génesis vive allí.                             |
-| El Vientre   | 14 salas, 20 pasos, capas, atajos                 | Enlace a la Cripta; la Intemperie vive allí.                                     |
-| Linaje       | Organigrama, facciones, oficios, ofrenda          | Enlace a la Cripta; herencias, Capucha, Manos, escuelas y cronología viven allí. |
-| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, capa VII y avisos nuevos.                |
-| Navegación   | Menú superior y riel con paradas distintas        | Portal, Pabellón y Cripta en ambos; Portal `⌂`, Pabellón `0`, Cripta `I`.        |
+| Sección      | Lo que ya estaba                                  | Lo que se añadió                                                                        |
+| ------------ | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Portada      | Atrio, tarjetas, trámites, expediente, comunicado | Enlace al expediente, tarjeta de Sigma con el Cirujano de Mariana, capa VII.            |
+| Pabellón 9   | Libro de casas, jornada, capilla, Oficina         | Enlace a la Cripta; el Libro de costumbres vive allí.                                   |
+| Cripta       | —                                                 | 17 libros en cinco estantes, vela y estante reservado.                                  |
+| Doctrina     | 10 hojas, márgenes, manual, Vigilia               | Enlace a la Cripta; los Libros, relatos y lengua viven allí.                            |
+| Registro     | 31 fichas, siluetas, familias                     | Enlace a la Cripta; el aparato de Génesis vive allí.                                    |
+| El Vientre   | 14 salas, 20 pasos, capas, atajos                 | Enlace a la Cripta; la Intemperie vive allí.                                            |
+| Linaje       | Organigrama, facciones, oficios, ofrenda          | Enlace a la Cripta; herencias, Capucha, Manos, escuelas y cronología viven allí.        |
+| Asentamiento | Avisos de #236                                    | Expediente completo, plano interactivo, capa VII, avisos y tablón con los dos retratos. |
+| Navegación   | Menú superior y riel con paradas distintas        | Portal, Pabellón y Cripta en ambos; Portal `⌂`, Pabellón `0`, Cripta `I`.               |
 
 Lo que ya existía —las diez hojas del Códice, las 31 fichas, el plano del Vientre, los
 Sacramentos, la Vigilia, el Pabellón— se dejó como estaba y se completó con el material de
@@ -198,7 +203,7 @@ la biblia que faltaba.
 | El Vientre   | El edificio               | Capas, salas, atajos                                   | Qué hay en las capas selladas y por qué se mueven.          |
 | Linaje       | El poder                  | Dioses, clero, oficios, herejías                       | La manipulación de los Cerebrales, el papel de la niña.     |
 | Sacramentos  | La liturgia               | El Examen y la práctica del Sacramento                 | Que el Sacramento nunca completa a nadie.                   |
-| Asentamiento | Sigma                     | El asentamiento, las juntas y los avisos               | El giro: la niña, el Cirujano, la causa de la compactación. |
+| Asentamiento | Sigma                     | El asentamiento, las juntas, los avisos y el tablón    | El giro: la niña, el Cirujano, la causa de la compactación. |
 
 ## Lo que se publica y lo que se guarda
 
@@ -216,7 +221,7 @@ la biblia que faltaba.
   leyes, calendario, oficios, clases, artes, tecnología, leyendas, escuelas, linajes,
   parentesco y cronología.
 - `web/src/biblioteca.ts` agrupa ese material en libros y estantes para la Cripta.
-- `web/src/sigma.ts` reúne el material de Sigma: capas, juntas y avisos.
+- `web/src/sigma.ts` reúne el material de Sigma: capas, juntas, avisos y los papeles del tablón.
 - Las páginas de `web/src/paginas/` solo renderizan. Si cambia el canon, se cambia el dato,
   no el marcado.
 - `tests/mundo-web.test.ts`, `tests/biblioteca-web.test.ts` y `tests/sigma-web.test.ts`
