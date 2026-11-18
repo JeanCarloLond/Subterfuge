@@ -228,7 +228,7 @@ Este es un proyecto académico del equipo conformado por:
 - Agustin Figueroa
 - Alejandro Garces Ramirez
 - Jean Carlo Londoño Ocampo
-- Mariana Echeverri Ramirez
+- Nico Echeverri
 
 Para consultas o comentarios, contactar a los integrantes del equipo.
 

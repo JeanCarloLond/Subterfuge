@@ -135,8 +135,9 @@ func _sala_siete() -> void:
 	_sprite("res://arte/provisional/vela.png", Vector2(420, 218), Vector2(2, 2))
 	_luz(Vector2(425, 220), Color(1, 0.7, 0.4), 1.1)
 	# Las Manos operan con la mascara ciega puesta (#246): aqui aun la lleva. Los
-	# fotogramas `intro-*` la llevan dibujada (scripts/cirujano-sigma.mjs).
-	var cirujano := _sprite("res://arte/cirujano/intro-andar-0.png", Vector2(ENTRA_X, 152), Vector2(2, 2))
+	# fotogramas `intro-*` la llevan puesta sobre el dibujo de Nico (scripts/nico-sigma.mjs).
+	# Con los pies en la fila 268, como la camilla: el fotograma mide 67 de alto, al doble.
+	var cirujano := _sprite("res://arte/cirujano/intro-andar-0.png", Vector2(ENTRA_X, 268 - 2 * 67), Vector2(2, 2))
 	await _abrir()
 	# Entra andando hasta la camilla, sin prisa: es su oficio de cada dia.
 	await _andar(cirujano, ENTRA_X, LLEGA_X)

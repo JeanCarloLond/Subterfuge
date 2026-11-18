@@ -11,7 +11,6 @@
 [ext_resource type="TileSet" path="res://arte/silleria/membrana.tres" id="6_f6eap"]
 [ext_resource type="Script" path="res://scripts/atrezo.gd" id="7_muvbx"]
 [ext_resource type="Script" path="res://scripts/pieza.gd" id="7_ym7ni"]
-[ext_resource type="Texture2D" path="res://arte/provisional/honguera.png" id="8_4ghe6"]
 [ext_resource type="Script" path="res://scripts/ambiente.gd" id="8_iib37"]
 [ext_resource type="Script" path="res://scripts/temblor.gd" id="9_pwx2s"]
 [ext_resource type="Texture2D" path="res://arte/provisional/flor-hueso.png" id="9_yvl6e"]
@@ -28,6 +27,7 @@
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="16_4ghe6"]
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="16_p1gg7"]
 [ext_resource type="Script" path="res://scripts/figura.gd" id="90_figura"]
+[ext_resource type="Texture2D" path="res://arte/fieles/fiel-2.png" id="nico_fiel_2"]
 
 [sub_resource type="Gradient" id="Gradient_cbjqj"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -166,9 +166,9 @@ script = ExtResource("7_ym7ni")
 
 [node name="Honguera3" type="Sprite2D" parent="Decorado" unique_id=1317331569]
 position = Vector2(480, 432)
-texture = ExtResource("8_4ghe6")
+texture = ExtResource("nico_fiel_2")
 centered = false
-offset = Vector2(-11, -34)
+offset = Vector2(-11, -61)
 script = ExtResource("90_figura")
 lineas = PackedStringArray("Ya no me crecen los hongos.", "Pon la mano aquí. ¿Lo notas?")
 

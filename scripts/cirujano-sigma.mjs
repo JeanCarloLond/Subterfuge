@@ -22,7 +22,7 @@
  * Uso:  npm run sigma:cirujano
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -1156,11 +1156,14 @@ export function hoja(cuadros, k = 4) {
 }
 
 const esPrincipal = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+// Desde el arte de Nico (npm run sigma:nico), los fotogramas del Cirujano y
+// animaciones.gd salen de sus dibujos: aquí solo quedan el ojo y las reliquias.
+const conNico = existsSync(join(raiz, 'docs/arte/nico/1x/cirujano'));
 if (esPrincipal) {
   mkdirSync(destino, { recursive: true });
   const cuadros = {};
   const recuento = {};
-  for (const [nombre, poses] of Object.entries(ANIMACIONES)) {
+  for (const [nombre, poses] of Object.entries(conNico ? {} : ANIMACIONES)) {
     cuadros[nombre] = poses.map((pose) => dibujar(pose, { normales: true }));
     recuento[nombre] = poses.length;
     cuadros[nombre].forEach((img, i) => {
@@ -1168,34 +1171,36 @@ if (esPrincipal) {
       writeFileSync(join(destino, `${nombre}-${i}_n.png`), png(img.normal));
     });
   }
-  const lineas = Object.entries(recuento).map(([n, c]) => `\t"${n}": ${c},`);
-  // Donde pintar el ojo rojo en cada fotograma, respecto a la cadera.
-  const ojos = Object.entries(ANIMACIONES).map(([n, poses]) => {
-    const lista = poses.map((pose) => {
-      const [x, y] = ojoDe(pose);
-      return `Vector2i(${x}, ${y})`;
+  if (!conNico) {
+    const lineas = Object.entries(recuento).map(([n, c]) => `\t"${n}": ${c},`);
+    // Donde pintar el ojo rojo en cada fotograma, respecto a la cadera.
+    const ojos = Object.entries(ANIMACIONES).map(([n, poses]) => {
+      const lista = poses.map((pose) => {
+        const [x, y] = ojoDe(pose);
+        return `Vector2i(${x}, ${y})`;
+      });
+      return `\t"${n}": [${lista.join(', ')}],`;
     });
-    return `\t"${n}": [${lista.join(', ')}],`;
-  });
-  writeFileSync(
-    join(destino, 'animaciones.gd'),
-    [
-      '## Generado por scripts/cirujano-sigma.mjs: no se edita a mano.',
-      '## Cuantos fotogramas tiene cada animacion del Cirujano.',
-      'extends RefCounted',
-      '',
-      'const RECUENTO := {',
-      ...lineas,
-      '}',
-      '',
-      '## Donde cae el ojo rojo en cada fotograma, en pixeles del fotograma.',
-      'const OJOS := {',
-      ...ojos,
-      '}',
-      '',
-    ].join('\n'),
-  );
-  writeFileSync(join(destino, 'hoja.png'), png(hoja(cuadros)));
+    writeFileSync(
+      join(destino, 'animaciones.gd'),
+      [
+        '## Generado por scripts/cirujano-sigma.mjs: no se edita a mano.',
+        '## Cuantos fotogramas tiene cada animacion del Cirujano.',
+        'extends RefCounted',
+        '',
+        'const RECUENTO := {',
+        ...lineas,
+        '}',
+        '',
+        '## Donde cae el ojo rojo en cada fotograma, en pixeles del fotograma.',
+        'const OJOS := {',
+        ...ojos,
+        '}',
+        '',
+      ].join('\n'),
+    );
+    writeFileSync(join(destino, 'hoja.png'), png(hoja(cuadros)));
+  }
   // El ojo de los Mil y la sangre que le baja, encima de cualquier fotograma.
   const R = [224, 40, 20, 255];
   const B = [255, 110, 50, 255];
@@ -1219,6 +1224,8 @@ if (esPrincipal) {
   }
   const total = Object.values(recuento).reduce((a, b) => a + b, 0);
   console.log(
-    `${total} fotogramas en ${Object.keys(recuento).length} animaciones -> sigma/arte/cirujano/`,
+    conNico
+      ? 'El Cirujano es de Nico (npm run sigma:nico): aquí solo el ojo y las reliquias.'
+      : `${total} fotogramas en ${Object.keys(recuento).length} animaciones -> sigma/arte/cirujano/`,
   );
 }

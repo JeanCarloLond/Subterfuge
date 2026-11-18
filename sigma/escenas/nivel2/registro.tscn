@@ -7,7 +7,6 @@
 [ext_resource type="TileSet" path="res://arte/silleria/vientre.tres" id="4_83uqa"]
 [ext_resource type="Script" path="res://scripts/silleria.gd" id="5_hhlpi"]
 [ext_resource type="Texture2D" path="res://arte/provisional/columna.png" id="5_j8yx0"]
-[ext_resource type="Texture2D" path="res://arte/provisional/registradora.png" id="6_8v7qi"]
 [ext_resource type="TileSet" path="res://arte/silleria/membrana.tres" id="6_yj3fh"]
 [ext_resource type="Script" path="res://scripts/atrezo.gd" id="7_hnchk"]
 [ext_resource type="Script" path="res://scripts/pieza.gd" id="7_imx18"]
@@ -26,6 +25,8 @@
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="16_uyti8"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="17_i3frj"]
 [ext_resource type="Script" path="res://scripts/figura.gd" id="90_figura"]
+[ext_resource type="Texture2D" path="res://arte/fieles/encapuchada-1.png" id="nico_encapuchada_1"]
+[ext_resource type="Texture2D" path="res://arte/fieles/encapuchada-2.png" id="nico_encapuchada_2"]
 
 [sub_resource type="Gradient" id="Gradient_wsb7v"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -109,17 +110,17 @@ z_index = -5
 
 [node name="Registradora0" type="Sprite2D" parent="Decorado" unique_id=744109153]
 position = Vector2(90, 384)
-texture = ExtResource("6_8v7qi")
+texture = ExtResource("nico_encapuchada_1")
 centered = false
-offset = Vector2(-11, -34)
+offset = Vector2(-13, -62)
 script = ExtResource("90_figura")
 lineas = PackedStringArray("¿Turno? ¿Casa? ¿Número?", "Entonces usted no consta.")
 
 [node name="Registradora1" type="Sprite2D" parent="Decorado" unique_id=1320520883]
 position = Vector2(760, 384)
-texture = ExtResource("6_8v7qi")
+texture = ExtResource("nico_encapuchada_2")
 centered = false
-offset = Vector2(-11, -34)
+offset = Vector2(-13, -62)
 script = ExtResource("90_figura")
 lineas = PackedStringArray("Cuarenta y uno, cuarenta y…", "Ya me ha hecho perder.")
 

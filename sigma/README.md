@@ -173,8 +173,27 @@ npx vite preview                                  # Sigma queda en /sigma/
 
 ## El arte
 
-**El Cirujano** es el de Sigma, no el del original: en tres cuartos, de unos 50 px de
-alto (lo que mide el Penitente de _Blasphemous_ a 640×360), con el diseño de Mariana
+**El arte de Nico.** Nico Echeverri pinta a mano los personajes: el Cirujano (seis
+animaciones: correr, saltar, golpe, parada, herido y rezar), el Prior, Ulpiano, la niña,
+los fieles y sus retratos. Los entrega a 10x sobre fondo claro; `docs/arte/nico/originales/`
+guarda la entrega tal cual y `docs/arte/nico/1x/` lo mismo a su tamaño real, sin fondo. Un
+píxel de Nico es un píxel del juego: no se reescala.
+
+```bash
+npm run sigma:nico   # vuelve a sacar sus figuras de docs/arte/nico/1x/ a sigma/arte/
+```
+
+El script voltea las figuras (Nico dibuja mirando a la izquierda; el juego, a la derecha),
+pone los pies del Cirujano en la misma fila, reparte sus fotogramas entre las 24
+animaciones del juego (las que no dibujó salen de su gesto más cercano), le pone la máscara
+para la intro y escribe `arte/cirujano/animaciones.gd` con el pie y el sitio del ojo rojo de
+cada fotograma. El lienzo del Cirujano es de 64×67, con el pie en (31, 67). Para añadir una
+animación suya: su PNG en `1x/cirujano/` y su nombre en `ANIMACIONES` de
+`scripts/nico-sigma.mjs`.
+
+Lo que sigue describe el Cirujano en código que hubo antes, que aún sirve de modelo a los
+enemigos sin arte de Nico: en tres cuartos, de unos 50 px de
+alto (lo que mide el Penitente de _Blasphemous_ a 640×360), con el diseño de Nico
 (#245: mitra blanca con su gema, velo, hábito blanco y el rostro descubierto) y 53 fotogramas en 18 animaciones (reposo, carrera, salto,
 caída, aterrizaje, dash, agarre, herido, rezar, guardia, golpe, cargado, arriba, abajo,
 contragolpe, poción y ejecución). Cada golpe tiene aviso sostenido, un fotograma de
@@ -192,12 +211,8 @@ cuerpo píxel a píxel en esa pose, sin girar imágenes, así que no se emborron
 sombrea por bandas y contornea. Una animación nueva es una lista de poses:
 
 ```bash
-npm run sigma:cirujano   # vuelve a sacar sigma/arte/cirujano/ (y hoja.png, para revisar)
+npm run sigma:cirujano   # con el arte de Nico, solo saca el ojo y las reliquias
 ```
-
-Es provisional hasta que llegue el de Mariana: sus PNG pisan a estos con el mismo nombre
-(`golpe-2.png`…). El lienzo es de 48×58 con la cadera en la columna 21 y los pies en la
-fila 56.
 
 El resto del arte es pixel art hecho a mano. Mientras llega el de Mariana, Sigma usa el arte
 provisional del original: las figuras de `src/systems/ArteProvisional.ts`, escritas píxel a

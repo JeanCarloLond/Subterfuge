@@ -75,7 +75,7 @@ const DESTELLO_PX := 13.0
 ## El ojo rojo (#243): donde esta en la cara, mirando a la derecha, su color y
 ## cuanto brilla quieto y mirando.
 ## El origen de los fotogramas, para poner el ojo donde cae en cada uno.
-const ORIGEN := Vector2i(21, 57)
+const ORIGEN := Animaciones.ORIGEN
 const MARCA_OJO := preload("res://arte/cirujano/ojo-marca.png")
 const COLOR_OJO := Color(1.0, 0.25, 0.12)
 const OJO_QUIETO := 0.2

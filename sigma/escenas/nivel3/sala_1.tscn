@@ -15,7 +15,6 @@
 [ext_resource type="Script" path="res://scripts/ambiente.gd" id="8_ir6xo"]
 [ext_resource type="Script" path="res://scripts/temblor.gd" id="9_nimtf"]
 [ext_resource type="Texture2D" path="res://arte/provisional/exvoto.png" id="9_uuern"]
-[ext_resource type="Texture2D" path="res://arte/provisional/auxiliar.png" id="10_fvubc"]
 [ext_resource type="Script" path="res://scripts/remedo.gd" id="10_jwusi"]
 [ext_resource type="PackedScene" path="res://escenas/nota.tscn" id="11_43lom"]
 [ext_resource type="Script" path="res://scripts/figura.gd" id="11_qk1a6"]
@@ -26,6 +25,7 @@
 [ext_resource type="Texture2D" path="res://arte/silleria/vientre-musgo.png" id="15_0n2lo"]
 [ext_resource type="Shader" path="res://arte/vineta.gdshader" id="15_5mlsm"]
 [ext_resource type="PackedScene" path="res://escenas/interfaz.tscn" id="16_uuern"]
+[ext_resource type="Texture2D" path="res://arte/fieles/encapuchada-2.png" id="nico_encapuchada_2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fvubc"]
 shader = ExtResource("15_5mlsm")
@@ -163,9 +163,9 @@ offset = Vector2(-6, -41)
 
 [node name="Auxiliar100" type="Sprite2D" parent="Decorado" unique_id=1096217953]
 position = Vector2(190, 256)
-texture = ExtResource("10_fvubc")
+texture = ExtResource("nico_encapuchada_2")
 centered = false
-offset = Vector2(-11, -34)
+offset = Vector2(-13, -62)
 script = ExtResource("11_qk1a6")
 lineas = PackedStringArray("¿Viene a relevarme?", "Llevo aquí dos turnos.")
 

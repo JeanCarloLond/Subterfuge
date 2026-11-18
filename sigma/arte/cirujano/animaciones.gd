@@ -1,6 +1,9 @@
-## Generado por scripts/cirujano-sigma.mjs: no se edita a mano.
+## Generado por scripts/nico-sigma.mjs con el arte de Nico: no se edita a mano.
 ## Cuantos fotogramas tiene cada animacion del Cirujano.
 extends RefCounted
+
+## El pie de la figura dentro del fotograma (64x67).
+const ORIGEN := Vector2i(31, 67)
 
 const RECUENTO := {
 	"reposo": 4,
@@ -31,28 +34,28 @@ const RECUENTO := {
 
 ## Donde cae el ojo rojo en cada fotograma, en pixeles del fotograma.
 const OJOS := {
-	"reposo": [Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 19), Vector2i(23, 19)],
-	"correr": [Vector2i(25, 20), Vector2i(25, 21), Vector2i(25, 18), Vector2i(25, 17), Vector2i(25, 20), Vector2i(25, 21), Vector2i(25, 18), Vector2i(25, 17)],
-	"andar": [Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18)],
-	"salto": [Vector2i(23, 16)],
-	"caida": [Vector2i(22, 18), Vector2i(21, 17)],
-	"aterrizaje": [Vector2i(25, 22)],
-	"dash": [Vector2i(33, 23)],
-	"agarre": [Vector2i(25, 18)],
-	"agarre-girado": [Vector2i(20, 18)],
-	"herido": [Vector2i(14, 19)],
-	"rezar": [Vector2i(27, 26)],
-	"guardia": [Vector2i(21, 18), Vector2i(20, 19)],
-	"golpe": [Vector2i(20, 19), Vector2i(18, 19), Vector2i(24, 18), Vector2i(28, 18), Vector2i(26, 18), Vector2i(24, 18)],
-	"cargado": [Vector2i(17, 21), Vector2i(15, 22), Vector2i(24, 19), Vector2i(31, 21), Vector2i(28, 19), Vector2i(24, 18)],
-	"arriba": [Vector2i(23, 21), Vector2i(21, 17), Vector2i(21, 16), Vector2i(22, 18)],
-	"abajo": [Vector2i(23, 17), Vector2i(24, 18), Vector2i(24, 18)],
-	"contragolpe": [Vector2i(20, 19), Vector2i(33, 23), Vector2i(33, 22), Vector2i(26, 19)],
-	"bebe": [Vector2i(22, 18), Vector2i(19, 17), Vector2i(20, 17)],
-	"alza": [Vector2i(20, 16), Vector2i(19, 15)],
-	"tajo": [Vector2i(27, 20), Vector2i(32, 24), Vector2i(32, 24)],
-	"muerte": [Vector2i(12, 20), Vector2i(26, 24), Vector2i(32, 30), Vector2i(37, 37)],
-	"intro-andar": [Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 20), Vector2i(23, 20), Vector2i(23, 18), Vector2i(23, 18)],
-	"intro-reposo": [Vector2i(23, 18), Vector2i(23, 18), Vector2i(23, 19), Vector2i(23, 19)],
-	"intro-alza": [Vector2i(20, 16), Vector2i(19, 15)],
+	"reposo": [Vector2i(35, 18), Vector2i(35, 18), Vector2i(35, 18), Vector2i(35, 18)],
+	"correr": [Vector2i(35, 18), Vector2i(35, 17), Vector2i(35, 16), Vector2i(35, 17), Vector2i(35, 18), Vector2i(35, 17), Vector2i(35, 16), Vector2i(35, 17)],
+	"andar": [Vector2i(35, 18), Vector2i(35, 17), Vector2i(35, 16), Vector2i(35, 17), Vector2i(35, 18), Vector2i(35, 17), Vector2i(35, 16), Vector2i(35, 17)],
+	"salto": [Vector2i(36, 18)],
+	"caida": [Vector2i(36, 18), Vector2i(36, 18)],
+	"aterrizaje": [Vector2i(36, 19)],
+	"dash": [Vector2i(35, 16)],
+	"agarre": [Vector2i(36, 18)],
+	"agarre-girado": [Vector2i(36, 18)],
+	"herido": [Vector2i(40, 20)],
+	"rezar": [Vector2i(37, 25)],
+	"guardia": [Vector2i(30, 19), Vector2i(30, 19)],
+	"golpe": [Vector2i(35, 18), Vector2i(35, 18), Vector2i(35, 18), Vector2i(32, 18), Vector2i(39, 17), Vector2i(35, 18)],
+	"cargado": [Vector2i(35, 18), Vector2i(35, 18), Vector2i(35, 18), Vector2i(32, 18), Vector2i(39, 17), Vector2i(35, 18)],
+	"arriba": [Vector2i(35, 18), Vector2i(32, 18), Vector2i(32, 18), Vector2i(39, 17)],
+	"abajo": [Vector2i(39, 17), Vector2i(35, 18), Vector2i(35, 18)],
+	"contragolpe": [Vector2i(35, 18), Vector2i(34, 18), Vector2i(34, 18), Vector2i(35, 18)],
+	"bebe": [Vector2i(37, 21), Vector2i(37, 25), Vector2i(37, 25)],
+	"alza": [Vector2i(32, 18), Vector2i(32, 18)],
+	"tajo": [Vector2i(32, 18), Vector2i(39, 17), Vector2i(35, 18)],
+	"muerte": [Vector2i(39, 19), Vector2i(40, 20), Vector2i(40, 20), Vector2i(40, 20)],
+	"intro-andar": [Vector2i(35, 18), Vector2i(35, 17), Vector2i(35, 16), Vector2i(35, 17), Vector2i(35, 18), Vector2i(35, 17), Vector2i(35, 16), Vector2i(35, 17)],
+	"intro-reposo": [Vector2i(35, 18), Vector2i(35, 18), Vector2i(35, 18), Vector2i(35, 18)],
+	"intro-alza": [Vector2i(32, 18), Vector2i(32, 18)],
 }
