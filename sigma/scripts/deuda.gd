@@ -7,6 +7,7 @@ extends Node2D
 
 signal saldada
 
+const Controles := preload("res://scripts/controles.gd")
 const ALCANCE := Vector2(18.0, 26.0)
 
 ## Quien la recupera: el Cirujano. Lo pone el nivel.
@@ -61,6 +62,8 @@ func _process(_delta: float) -> void:
 	var distancia := (cirujano.position - position).abs()
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
+	if cerca:
+		_aviso.text = Controles.con_boton("E  recuperar tu carne")
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
 		set_process(false)
 		saldada.emit()

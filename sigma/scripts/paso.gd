@@ -9,6 +9,7 @@
 ## dejar una marca al cruzarla (`abre`): asi se abre el atajo.
 extends Node2D
 
+const Controles := preload("res://scripts/controles.gd")
 const Objetivos := preload("res://scripts/objetivos.gd")
 
 ## Lo ha cruzado: la sala carga la otra.
@@ -76,6 +77,8 @@ func _physics_process(_delta: float) -> void:
 	var dentro := caja().intersects(cirujano.caja())
 	if con_e:
 		_cartel.visible = dentro
+		if dentro:
+			_cartel.text = Controles.con_boton(aviso)
 		# Con un aturdido al alcance, la E es para ejecutarlo.
 		if not (dentro and Input.is_action_just_pressed("interactuar") and not cirujano.puede_ejecutar()):
 			return

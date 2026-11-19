@@ -118,6 +118,14 @@ static func rellenar(texto: String) -> String:
 	return texto
 
 
+## Un aviso escrito con la tecla de interactuar («E  rezar», en las escenas):
+## con mando, su boton (△, Y). Lo demas, como `rellenar`.
+static func con_boton(texto: String) -> String:
+	if texto.begins_with("E ") or texto == "E":
+		texto = "{interactuar}" + texto.substr(1)
+	return rellenar(texto)
+
+
 ## Si se esta jugando con mando: lo ultimo que se toco. Antes de tocar nada,
 ## si hay uno enchufado.
 static func usa_mando() -> bool:

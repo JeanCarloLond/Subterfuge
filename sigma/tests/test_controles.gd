@@ -143,3 +143,24 @@ func test_la_fuente_tiene_los_simbolos() -> void:
 	var fuente: Font = load("res://arte/fuentes/FlechasSigma.ttf")
 	for simbolo in ["✕", "○", "□", "△", "←", "→", "↑", "↓"]:
 		afirmar(fuente.has_char(simbolo.unicode_at(0)), "falta %s en la fuente" % simbolo)
+
+
+## Los avisos de las escenas llevan la E escrita («E  rezar»): con mando, su
+## boton; con teclado, la E.
+func test_los_avisos_cambian_la_e_por_el_boton() -> void:
+	var Controles: GDScript = load("res://scripts/controles.gd")
+	var antes := [Controles._tocado, Controles._usa_mando, Controles._familia, Controles._forzada]
+	Controles._forzada = ""
+	Controles._tocado = true
+	Controles._usa_mando = false
+	afirmar_igual(Controles.con_boton("E  rezar"), "E  rezar", "con teclado, la E")
+	Controles._usa_mando = true
+	Controles._familia = Controles.PLAYSTATION
+	afirmar_igual(Controles.con_boton("E  rezar"), "△  rezar", "con mando de PlayStation")
+	Controles._familia = Controles.XBOX
+	afirmar_igual(Controles.con_boton("E  a tu Sala"), "Y  a tu Sala", "con mando de Xbox")
+	afirmar_igual(Controles.con_boton("Entrar"), "Entrar", "una palabra con E no se toca")
+	Controles._tocado = antes[0]
+	Controles._usa_mando = antes[1]
+	Controles._familia = antes[2]
+	Controles._forzada = antes[3]
