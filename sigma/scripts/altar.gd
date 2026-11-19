@@ -9,6 +9,7 @@ extends Node2D
 signal rezado
 
 ## Lo cerca que hay que estar de su centro, en x y en y.
+const Controles := preload("res://scripts/controles.gd")
 const ALCANCE := Vector2(20.0, 24.0)
 const COLOR_CARNE := Color(0.66, 0.22, 0.18)
 ## La luz: tenue sin rezar (que se vea que esta ahi) y viva una vez rezada.
@@ -27,6 +28,8 @@ var encendido := false:
 			_pintar()
 
 @onready var _aviso: Label = $Aviso
+## Lo que dice el aviso, con la E del teclado: con mando se cambia por su boton.
+@onready var _texto_aviso: String = _aviso.text
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _luz: PointLight2D = $Luz
 
@@ -58,6 +61,8 @@ func _process(_delta: float) -> void:
 	var distancia := (cirujano.position - position).abs()
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
+	if cerca:
+		_aviso.text = Controles.con_boton(_texto_aviso)
 	# La luz respira: un latido lento, no un fallo de luz.
 	var base := LUZ_ENCENDIDA if encendido else LUZ_APAGADA
 	_luz.energy = base + _destello + 0.08 * sin(Time.get_ticks_msec() / 140.0)

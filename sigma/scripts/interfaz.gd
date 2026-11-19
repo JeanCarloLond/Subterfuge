@@ -881,6 +881,9 @@ func leer(titulo: String, texto: String, nueva := false) -> void:
 	_lectura_nueva = titulo if nueva else ""
 	_lectura_titulo.text = titulo
 	_lectura_texto.text = texto
+	var cerrar := _lectura.find_child("Cerrar", true, false) as Label
+	if cerrar:
+		cerrar.text = Controles.con_boton("E  cerrar")
 	_lectura.visible = true
 	get_tree().paused = true
 
@@ -904,6 +907,7 @@ func _preparar_lectura() -> void:
 	_lectura_texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_lectura_texto.custom_minimum_size = Vector2(392, 0)
 	var cerrar := Label.new()
+	cerrar.name = "Cerrar"
 	cerrar.text = "E  cerrar"
 	cerrar.add_theme_color_override("font_color", Color(0.6, 0.55, 0.5))
 	cerrar.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

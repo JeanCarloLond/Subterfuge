@@ -7,6 +7,7 @@ extends Node2D
 ## Habla: la sala se lo pasa a la interfaz (hablar).
 signal habla(lineas: Array, retratos: Dictionary, al_terminar: Callable)
 
+const Controles := preload("res://scripts/controles.gd")
 const ALCANCE := Vector2(26.0, 30.0)
 
 @export var id := ""
@@ -25,6 +26,8 @@ var cirujano: CharacterBody2D
 var _vez := 0
 
 @onready var _aviso: Label = $Aviso
+## Lo que dice el aviso, con la E del teclado: con mando se cambia por su boton.
+@onready var _texto_aviso: String = _aviso.text
 
 
 func _process(_delta: float) -> void:
@@ -33,6 +36,8 @@ func _process(_delta: float) -> void:
 	var distancia := (cirujano.position - position).abs()
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
+	if cerca:
+		_aviso.text = Controles.con_boton(_texto_aviso)
 	# Con un aturdido al alcance, la E es para ejecutarlo.
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
 		# Mientras habla, el «E  hablar» sobra (y con el juego parado se quedaba).

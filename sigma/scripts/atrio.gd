@@ -19,12 +19,14 @@
 extends "res://scripts/sala.gd"
 
 ## Lo cerca del umbral que hay que estar para descender.
+const Controles := preload("res://scripts/controles.gd")
 const ALCANCE_UMBRAL := 20.0
 
 var _terminado := false
 
 @onready var _umbral: Marker2D = $Umbral
 @onready var _aviso_umbral: Label = $Umbral/Aviso
+@onready var _texto_umbral: String = _aviso_umbral.text
 @onready var _fin: CanvasLayer = $Fin
 
 
@@ -32,6 +34,8 @@ func _physics_process(delta: float) -> void:
 	super(delta)
 	var cerca := _cirujano.position.distance_to(_umbral.position) <= ALCANCE_UMBRAL
 	_aviso_umbral.visible = cerca and not _terminado
+	if _aviso_umbral.visible:
+		_aviso_umbral.text = Controles.con_boton(_texto_umbral)
 	if cerca and not _terminado and Input.is_action_just_pressed("interactuar") and not _cirujano.puede_ejecutar():
 		_terminado = true
 		_fin.visible = true

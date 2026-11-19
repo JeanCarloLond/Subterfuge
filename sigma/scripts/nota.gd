@@ -6,6 +6,7 @@ extends Node2D
 ## Se ha leido: la sala la pasa a la interfaz. `nueva`, si es la primera vez.
 signal leida(titulo: String, texto: String, nueva: bool)
 
+const Controles := preload("res://scripts/controles.gd")
 const ALCANCE := Vector2(16.0, 26.0)
 
 @export var id := ""
@@ -24,6 +25,8 @@ var _ya_recogida := false
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _luz: PointLight2D = $Luz
 @onready var _aviso: Label = $Aviso
+## Lo que dice el aviso, con la E del teclado: con mando se cambia por su boton.
+@onready var _texto_aviso: String = _aviso.text
 
 
 func _ready() -> void:
@@ -43,6 +46,8 @@ func _process(_delta: float) -> void:
 	var distancia := (cirujano.position - position).abs()
 	var cerca := distancia.x <= ALCANCE.x and distancia.y <= ALCANCE.y
 	_aviso.visible = cerca
+	if cerca:
+		_aviso.text = Controles.con_boton(_texto_aviso)
 	# Con un aturdido al alcance, la E es para ejecutarlo.
 	if cerca and Input.is_action_just_pressed("interactuar") and cirujano.e_libre():
 		var progreso := get_node_or_null("/root/Progreso")
