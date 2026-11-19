@@ -116,6 +116,28 @@ func test_los_botones_de_playstation() -> void:
 	afirmar_igual(Controles.nombre("saltar", false, ps), "Espacio", "sin mando, la tecla")
 
 
+## Mirar va en el gatillo derecho: R3 costaba mantenerlo (Jean).
+func test_mirar_va_en_el_gatillo_derecho() -> void:
+	var Controles: GDScript = load("res://scripts/controles.gd")
+	afirmar_igual(Controles.nombre("mirar", true, Controles.PLAYSTATION), "R2", "con un mando de Play")
+	afirmar_igual(Controles.nombre("mirar", true, Controles.XBOX), "RT", "con uno de Xbox")
+	afirmar_igual(Controles.nombre("mirar"), "O", "con teclado")
+	Controles.registrar()
+	var gatillo := InputEventJoypadMotion.new()
+	gatillo.axis = JOY_AXIS_TRIGGER_RIGHT
+	gatillo.axis_value = 1.0
+	afirmar(InputMap.event_is_action(gatillo, "mirar"), "el gatillo mira")
+
+
+## En la web el navegador da el nombre de verdad: con el de Chrome, Play.
+func test_el_nombre_que_da_el_navegador_delata_al_dualsense() -> void:
+	var Controles: GDScript = load("res://scripts/controles.gd")
+	var chrome := "Standard Gamepad Mapping DualSense Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 0ce6)"
+	afirmar_igual(Controles.familia_de(chrome), Controles.PLAYSTATION, "Chrome")
+	afirmar_igual(Controles.familia_de("Standard Gamepad Mapping 054c-0ce6-DualSense Wireless Controller"), Controles.PLAYSTATION, "Firefox")
+	afirmar_igual(Controles.familia_de("Standard Gamepad Mapping "), Controles.XBOX, "sin pistas, Xbox")
+
+
 ## La fuente de reserva tiene los simbolos: si no, en la web salen cajas.
 func test_la_fuente_tiene_los_simbolos() -> void:
 	var fuente: Font = load("res://arte/fuentes/FlechasSigma.ttf")

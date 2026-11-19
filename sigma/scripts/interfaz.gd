@@ -55,7 +55,9 @@ const COLOR_MUERTE := Color(0.66, 0.1, 0.09)
 
 var _ayuda_abierta := false
 ## La pausa: lo que se elige, si se ven los controles y si salir ya pregunta.
-const OPCIONES_PAUSA := ["Seguir", "Controles", "Salir a la portada"]
+const OPCIONES_PAUSA := ["Seguir", "Controles", "Botones", "Salir a la portada"]
+## Lo que se lee en la opcion de los botones del mando, segun lo elegido.
+const BOTONES_PAUSA := {"": "Botones del mando: los suyos", "playstation": "Botones del mando: PlayStation", "xbox": "Botones del mando: Xbox"}
 var _pausa: PanelContainer
 var _pausa_texto: Label
 var _pausa_elegida := 0
@@ -520,7 +522,8 @@ func controles() -> String:
 ".join(lineas))
 
 
-## La pausa (#230): Seguir, Controles y Salir a la portada (que pregunta).
+## La pausa (#230): Seguir, Controles, los botones del mando (los suyos,
+## PlayStation o Xbox) y Salir a la portada (que pregunta).
 
 
 func pausar() -> void:
@@ -559,6 +562,11 @@ func _mover_pausa(evento: InputEvent) -> void:
 				_pausa_controles = not _pausa_controles
 				_pintar_pausa()
 			2:
+				var controles := get_node_or_null("/root/Controles")
+				if controles:
+					controles.cambiar_botones()
+				_pintar_pausa()
+			3:
 				if _pausa_confirma:
 					get_tree().paused = false
 					get_tree().change_scene_to_file("res://escenas/principal.tscn")
@@ -576,7 +584,9 @@ func _pintar_pausa() -> void:
 		lineas.append("")
 	for i in OPCIONES_PAUSA.size():
 		var opcion: String = OPCIONES_PAUSA[i]
-		if i == 2 and _pausa_confirma:
+		if i == 2:
+			opcion = BOTONES_PAUSA.get(Controles.botones_forzados(), opcion)
+		if i == 3 and _pausa_confirma:
 			opcion = "¿Salir? Se pierde lo hecho desde el último Altar"
 		lineas.append(("›  %s  ‹" if i == _pausa_elegida else "%s") % opcion)
 	if _pausa_controles:

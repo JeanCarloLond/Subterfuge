@@ -41,8 +41,9 @@ const ACCIONES := {
 	"mapa": {"teclas": [KEY_N], "mando": [JOY_BUTTON_BACK]},
 	"pausa": {"teclas": [KEY_ESCAPE, KEY_P], "mando": [JOY_BUTTON_START]},
 	"ayuda": {"teclas": [KEY_H, KEY_TAB]},
-	# Mirar con el ojo de los Mil (#243): se mantiene. O de ojo.
-	"mirar": {"teclas": [KEY_O], "mando": [JOY_BUTTON_RIGHT_STICK]},
+	# Mirar con el ojo de los Mil (#243): se mantiene. O de ojo. Con el mando,
+	# el gatillo derecho: R3 (apretar el stick) costaba mantenerlo (Jean).
+	"mirar": {"teclas": [KEY_O], "eje": [JOY_AXIS_TRIGGER_RIGHT, 1.0]},
 	"silencio": {"teclas": [KEY_M]},
 }
 
@@ -80,6 +81,10 @@ static var _usa_mando := false
 ## Si ya se toco algo: hasta entonces, con un mando enchufado se ensena el mando.
 static var _tocado := false
 static var _familia := XBOX
+## Los botones que se ensenan, elegidos a mano en la pausa: "" (los del mando
+## que se reconozca), PLAYSTATION o XBOX. Se guarda entre partidas.
+static var _forzada := ""
+const AJUSTES := "user://ajustes.cfg"
 static var _dispositivo := 0
 
 
@@ -93,6 +98,8 @@ static func nombre(accion: String, con_mando := false, familia := XBOX) -> Strin
 			return nombres.get(def["mando"][0], "?")
 		if def.has("eje") and def["eje"][0] == JOY_AXIS_TRIGGER_LEFT:
 			return "L2" if familia == PLAYSTATION else "LT"
+		if def.has("eje") and def["eje"][0] == JOY_AXIS_TRIGGER_RIGHT:
+			return "R2" if familia == PLAYSTATION else "RT"
 	var teclas: Array = def.get("teclas", [])
 	if teclas.is_empty():
 		return "?"
@@ -107,7 +114,7 @@ static func nombre(accion: String, con_mando := false, familia := XBOX) -> Strin
 static func rellenar(texto: String) -> String:
 	var con_mando := usa_mando()
 	for accion in ACCIONES:
-		texto = texto.replace("{%s}" % accion, nombre(accion, con_mando, _familia))
+		texto = texto.replace("{%s}" % accion, nombre(accion, con_mando, familia_actual()))
 	return texto
 
 
@@ -137,15 +144,44 @@ static func familia_de(nombre_mando: String, info := {}) -> String:
 static func nombre_del_mando() -> String:
 	if not usa_mando():
 		return ""
-	return Input.get_joy_name(_dispositivo)
+	var web := _id_web(_dispositivo)
+	return web.get_slice(" (", 0) if web != "" else Input.get_joy_name(_dispositivo)
+
+
+## En la web Godot llama a todos los mandos «Standard Gamepad Mapping», y un
+## DualSense salia como uno de Xbox. El navegador si sabe cual es: su `id` lleva
+## el nombre y el fabricante («DualSense Wireless Controller (... Vendor: 054c»).
+## Se le suma a lo que ya se miraba; fuera de la web no hace nada.
+static func _id_web(dispositivo: int) -> String:
+	if not OS.has_feature("web"):
+		return ""
+	var id = JavaScriptBridge.eval("(function(){var g=navigator.getGamepads?navigator.getGamepads():[];var p=g[%d];if(p)return p.id;for(var i=0;i<g.length;i++){if(g[i])return g[i].id;}return '';})()" % dispositivo, true)
+	return str(id) if id != null else ""
 
 
 static func _familia_del(dispositivo: int) -> String:
-	return familia_de(Input.get_joy_name(dispositivo), Input.get_joy_info(dispositivo))
+	return familia_de(Input.get_joy_name(dispositivo) + " " + _id_web(dispositivo), Input.get_joy_info(dispositivo))
 
 
+## La familia de botones que se ensena: la elegida en la pausa o, si no, la del mando.
 static func familia_actual() -> String:
-	return _familia
+	return _forzada if _forzada != "" else _familia
+
+
+## Lo que se eligio en la pausa: "" (automatico), PLAYSTATION o XBOX.
+static func botones_forzados() -> String:
+	return _forzada
+
+
+## Pasa a la siguiente: automatico, PlayStation, Xbox. Se guarda.
+func cambiar_botones() -> void:
+	var orden := ["", PLAYSTATION, XBOX]
+	_forzada = orden[(orden.find(_forzada) + 1) % orden.size()]
+	var ajustes := ConfigFile.new()
+	ajustes.load(AJUSTES)
+	ajustes.set_value("mando", "botones", _forzada)
+	ajustes.save(AJUSTES)
+	dispositivo_cambio.emit()
 
 
 ## Hace vibrar el mando que se esta usando: `debil` y `fuerte` son los dos
@@ -165,6 +201,9 @@ func _ready() -> void:
 	# Tambien en pausa y en los menus: alli tambien se cambia de mando.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	Input.joy_connection_changed.connect(_al_conectar)
+	var ajustes := ConfigFile.new()
+	if ajustes.load(AJUSTES) == OK:
+		_forzada = str(ajustes.get_value("mando", "botones", ""))
 	var mandos := Input.get_connected_joypads()
 	if not mandos.is_empty():
 		_dispositivo = mandos[0]

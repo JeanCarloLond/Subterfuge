@@ -354,9 +354,13 @@ polvo, la viñeta (`arte/vineta.gdshader`) y el pulso de carne de los muros vivo
   | Parry (y clavarse) | L1           | LB    |
   | Injertadora        | R1           | RB    |
   | Poción             | L2           | LT    |
-  | Mirar con el ojo   | R3           | R3    |
+  | Mirar con el ojo   | R2           | RT    |
   | Mapa               | Create       | Back  |
   | Pausa              | Options      | Start |
+
+  En la web Godot llama «Standard Gamepad Mapping» a todos los mandos; el de PlayStation se
+  reconoce por el nombre que da el navegador. Si aun así salen los botones que no son, en la
+  pausa, «Botones del mando», se eligen a mano (los suyos, PlayStation o Xbox) y se guarda.
 
 - **Los números** del Cirujano (salto, dash, agarre…) vienen de `src/config/Sacramento.ts`
   y no se cambian sin motivo: la sensación del juego está ajustada con ellos.
